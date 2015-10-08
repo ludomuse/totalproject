@@ -4,6 +4,8 @@
 #include <string>
 #include "helpers.h"
 #include "cocos2d.h"
+#include "../cocos2d/cocos/platform/android/jni/JniHelper.h"
+
 
 class LmJniJavaFacade {
 

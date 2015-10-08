@@ -13,26 +13,7 @@ public final class R {
     public static final class drawable {
         public static final int icon=0x7f020000;
     }
-    public static final class id {
-        public static final int classname=0x7f050005;
-        public static final int classname_lbl=0x7f050004;
-        public static final int filename=0x7f050007;
-        public static final int filename_lbl=0x7f050006;
-        public static final int linear_layout_toast=0x7f050001;
-        public static final int lnumber=0x7f05000b;
-        public static final int lnumber_lbl=0x7f05000a;
-        public static final int methodname=0x7f050009;
-        public static final int methodname_lbl=0x7f050008;
-        public static final int msg=0x7f050003;
-        public static final int msg_lbl=0x7f050002;
-        public static final int msgtype=0x7f05000d;
-        public static final int msgtype_lbl=0x7f05000c;
-        public static final int toast_layout_root=0x7f050000;
-    }
-    public static final class layout {
-        public static final int debugview=0x7f030000;
-    }
     public static final class string {
-        public static final int app_name=0x7f040000;
+        public static final int app_name=0x7f030000;
     }
 }

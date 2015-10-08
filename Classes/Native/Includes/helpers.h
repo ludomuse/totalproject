@@ -10,15 +10,6 @@
 
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))
 
-struct Event{
-	static byte E1 = 0;
-	static byte E2 = 1;
-	static byte E3 = 2;
-	static byte E4 = 4;
-	static byte E5 = 5;
-};
-typedef struct Event Event;
-
 typedef char byte;
 
 struct bytes {
