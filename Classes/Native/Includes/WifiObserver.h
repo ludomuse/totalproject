@@ -17,10 +17,8 @@ class WifiObserver {
 public:
 	//attributs
 
-
 	virtual void onGettingPeers(std::vector<std::string> peers) = 0;
 
-	virtual void onReceiving(std::string s);
 
 	virtual void onReceiving(int i) = 0;
 
@@ -36,7 +34,6 @@ public:
 
 	virtual void onReceiving(char c) = 0;
 
-	virtual void onReceivingByte(byte b);
 
 	virtual void onReceiving(bytes byteArray) = 0;
 
