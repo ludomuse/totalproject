@@ -30,4 +30,7 @@ ant.properties
 build.xml
 *.md
 R.java.d
+proj.android/jni/Application.mk
+proj.android/jni/hellocpp/
+
 
