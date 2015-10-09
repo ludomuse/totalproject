@@ -27,11 +27,11 @@ public class DebugManager {
 
 	public static final int DEFAULT_LEVEL = 0;
 	public static final int IMPORTANT_LEVEL = 1;
-	public static boolean useToast = true;
+	public static boolean useToast = false;
 
-	public static final boolean askForImmortalToast = true;
+	public static final boolean askForImmortalToast = false;
 
-	public static boolean append = true;
+	public static boolean append = false;
 	public static boolean displayExtraInfo = true;
 
 	public static Activity activity;
@@ -143,6 +143,7 @@ public class DebugManager {
 			alert = view.create();
 
 			Window alertWindow = alert.getWindow();
+			alertWindow.setLayout(1000, 100);
 			// Make us non-modal, so that others can receive touch events.
 			alertWindow.setGravity(Gravity.LEFT);
 			alertWindow.setFlags(LayoutParams.FLAG_NOT_TOUCH_MODAL,

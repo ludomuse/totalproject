@@ -8,10 +8,13 @@ USING_NS_CC;
 AppDelegate::AppDelegate()
 {
 	//object
-	m_pwifiFacade = new WifiDirectFacade();
+	m_pwifiFacade = new WifiDirectFacade();//Create the wifi direct
+	//and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
+	//trough this the jni facade class)
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
 
 	m_pLmGameManager = new LmGameManager(m_pwifiFacade); //need to be delete
+
 	m_pLmMenu = new LmMenu; //need to be delete
 
 
