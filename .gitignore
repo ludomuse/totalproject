@@ -1,4 +1,6 @@
-Resources
+Resources/*Size
+Resources/Fonts
+Resources/Audio
 proj.win32
 proj.win10
 proj.win8.1-universal
@@ -18,13 +20,13 @@ proj.android/libs
 proj.android/bin
 proj.android/assets
 proj.android/gen
+proj.android/build-cfg.json
 .*
 proguard-project.txt
 local.properties
 lint.xml
 LICENSE
 *.log
-*.json
 build_native.py
 ant.properties
 build.xml
