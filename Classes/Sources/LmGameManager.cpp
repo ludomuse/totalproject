@@ -38,6 +38,8 @@ LmGameManager::LmGameManager()
 	m_pPlayNextInteractionButton = nullptr;
 	m_pPinkLayer = nullptr;
 	m_pSpriteBandMid = nullptr;
+	m_pListener = nullptr;
+	m_pSplashSreenLayer = nullptr;
 
 }
 
