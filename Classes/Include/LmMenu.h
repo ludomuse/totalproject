@@ -21,11 +21,11 @@ static const int s_iMaxLenghtUserName = 10;
 static const std::string s_sFilenameSpriteBackground = "Ludomuse/Background/splash.png";
 static const std::string s_sFilenameSplash = "Ludomuse/Background/splash.png";
 
-class LmMenu
+class LmMenu : public WifiObserver
 {
 public:
 
-	LmMenu();
+	LmMenu(WifiDirectFacade* a_wifiFacade);
 	~LmMenu();
 
 	//display a sprite during s_fSplashScreenDuration then call logscreen method cll from AppDelegate
@@ -44,6 +44,8 @@ public:
 private:
 
 	//ATTRIBUTES
+
+	WifiDirectFacade* m_pWifiDirectFacade;
 
 	//the scene of the menu (log + wifi)
 	cocos2d::Scene* m_pLmMenuScene;
@@ -73,6 +75,10 @@ private:
 	cocos2d::ui::CheckBox* m_pCheckBoxMale;
 	cocos2d::ui::CheckBox* m_pCheckBoxFemale;
 
+	//stock menuitemlabel
+	std::vector<cocos2d::MenuItemLabel*> m_aMenuItemLabels;
+	cocos2d::Menu* m_pMenuLabels;
+
 	bool m_bNoGenderSelected;
 
 	//METHODS
@@ -91,6 +97,9 @@ private:
 	void femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
 	void scan(cocos2d::Ref*);
+
+	void makeMenuItemLabel(std::vector<std::string> );
+
 
 
 };

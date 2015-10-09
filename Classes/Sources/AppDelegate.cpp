@@ -15,7 +15,7 @@ AppDelegate::AppDelegate()
 
 	m_pLmGameManager = new LmGameManager(m_pwifiFacade); //need to be delete
 
-	m_pLmMenu = new LmMenu; //need to be delete
+	m_pLmMenu = new LmMenu(m_pwifiFacade); //need to be delete
 
 
 }
@@ -24,6 +24,7 @@ AppDelegate::~AppDelegate()
 {
 	delete m_pLmGameManager;
 	delete m_pLmMenu;
+	delete m_pwifiFacade;
 
 	//remove listener
 	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(

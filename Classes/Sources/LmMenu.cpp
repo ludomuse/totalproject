@@ -13,8 +13,13 @@
 USING_NS_CC;
 using namespace cocos2d::ui;
 
-LmMenu::LmMenu()
+LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 {
+
+	//register to direct wifi
+	m_pWifiDirectFacade = a_wifiFacade;
+	m_pWifiDirectFacade->addObserver(this);
+
 	//object
 	m_pUser1 = new LmUser; //delete in LmGameManager
 	m_pUser2 = new LmUser; //delete in LmGameManager
@@ -91,7 +96,8 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(m_pSpriteLogBackground);
 
 	//log button
-	auto l_oLogButton = MenuItemImage::create("Ludomuse/GUIElements/logNormal.png",
+	auto l_oLogButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/logNormal.png",
 			"Ludomuse/GUIElements/logPressed.png",
 			CC_CALLBACK_1(LmMenu::wifiDirectScreen, this));
 	l_oLogButton->setAnchorPoint(Point(0.5, 0));
@@ -101,7 +107,8 @@ bool LmMenu::logScreen()
 	// Create the textfield
 	m_pLogEditBox = EditBox::create(
 			Size(l_oVisibleSize.width * 0.6, l_oVisibleSize.height * 0.2),
-			Scale9Sprite::create("Ludomuse/GUIElements/textfieldBackground.png"));
+			Scale9Sprite::create(
+					"Ludomuse/GUIElements/textfieldBackground.png"));
 	m_pLogEditBox->setPosition(
 			Point(l_oVisibleSize.width * 0.5f, l_oVisibleSize.height * 0.8f));
 	m_pLogEditBox->setPlaceHolder("Name");
@@ -147,7 +154,6 @@ bool LmMenu::logScreen()
 			CC_CALLBACK_2(LmMenu::femaleSelected, this));
 	m_pLogLayer->addChild(m_pCheckBoxFemale);
 
-
 	return true;
 }
 
@@ -181,7 +187,8 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pWifiLayer->addChild(m_pSpriteWifiBackground);
 
 		//Play button
-		auto l_oPlayButton = MenuItemImage::create("Ludomuse/GUIElements/playNormal.png",
+		auto l_oPlayButton = MenuItemImage::create(
+				"Ludomuse/GUIElements/playNormal.png",
 				"Ludomuse/GUIElements/playPressed.png",
 				CC_CALLBACK_1(LmMenu::menuIsFinished, this));
 		l_oPlayButton->setAnchorPoint(Point(0.5, 0));
@@ -190,7 +197,8 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 						l_oVisibleSize.height * 0.2f));
 
 		//scan button
-		auto l_oScanButton = MenuItemImage::create("Ludomuse/GUIElements/logNormal.png",
+		auto l_oScanButton = MenuItemImage::create(
+				"Ludomuse/GUIElements/logNormal.png",
 				"Ludomuse/GUIElements/logPressed.png",
 				CC_CALLBACK_1(LmMenu::scan, this));
 		l_oScanButton->setAnchorPoint(Point(0.5, 0));
@@ -199,7 +207,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 						l_oVisibleSize.height * 0.7f));
 
 		// create menu, it's an autorelease object
-		auto l_oMenu = Menu::create(l_oPlayButton,l_oScanButton, nullptr);
+		auto l_oMenu = Menu::create(l_oPlayButton, l_oScanButton, nullptr);
 		l_oMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(l_oMenu, 1);
 
@@ -269,4 +277,23 @@ void LmMenu::scan(cocos2d::Ref* l_pSender)
 	CCLOG("scan");
 	LmJniCppFacade::getWifiFacade()->discoverPeers();
 }
+
+/*void LmMenu::makeMenuItemLabel(std::vector<std::string> l_aVectorOfTabletName)
+{
+	//reset vector and init with the new vector of string
+	for (std::vector<cocos2d::MenuItemLabel*>::iterator it = m_aMenuItemLabels.begin();
+			it != m_aMenuItemLabels.end(); ++it)
+	{
+		m_pMenuLabels->removeChild(it,true);
+		it->release();
+	}
+	m_aMenuItemLabels.clear();
+
+	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
+			it != l_aVectorOfTabletName.end(); ++it)
+	{
+		auto l_pMenuItemLabel = MenuItemLabel
+	}
+
+}*/
 
