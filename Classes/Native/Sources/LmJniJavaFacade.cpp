@@ -2,7 +2,7 @@
 #include "../Includes/LmJniJavaFacade.h"
 #include <iostream>
 
-#define JAVACLASS "org/cocos2dx/cpp/JniFacade"
+#define JAVACLASS "org/cocos2dx/cpp/jniFacade/JniJavaFacade"
 #define PARAM_VOID "()V"
 #define PARAM_STRING "(Ljava/lang/String;)V"
 #define PARAM_BOOLEAN "(Z)V"
@@ -21,43 +21,43 @@ void LmJniJavaFacade::callJavaMethod(const char* name, void* arg,
 	NS_CC::JniMethodInfo method;
 	NS_CC::JniHelper::getStaticMethodInfo(method, JAVACLASS, name, param);
 
-	if (arg == PARAM_VOID) {
-		method.env->CallStaticObjectMethod(method.classID, method.methodID);
-	} else if (arg == PARAM_STRING) {
-
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+	if (param == PARAM_VOID) {
+		CCLOG("void parameter");
+		method.env->CallStaticVoidMethod(method.classID, method.methodID);
+	} else if (param == PARAM_STRING) {
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, string), method.env));
-			} else if (arg == PARAM_INT) {
+			} else if (param == PARAM_INT) {
 
-				method.env->CallStaticObjectMethod(method.classID, method.methodID,
+				method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, int)));
-	} else if (arg == PARAM_FLOAT) {
+	} else if (param == PARAM_FLOAT) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, float)));
-	} else if (arg == PARAM_LONG) {
+	} else if (param == PARAM_LONG) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, long)));
-	} else if (arg == PARAM_DOUBLE) {
+	} else if (param == PARAM_DOUBLE) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, double)));
-	} else if (arg == PARAM_BOOLEAN) {
+	} else if (param == PARAM_BOOLEAN) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, bool)));
-	} else if (arg == PARAM_CHAR) {
+	} else if (param == PARAM_CHAR) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, char)));
-	} else if (arg == PARAM_BYTE) {
+	} else if (param == PARAM_BYTE) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJByte(PTR_TO_OBJ(arg, byte)));
-	} else if (arg == PARAM_BYTES) {
+	} else if (param == PARAM_BYTES) {
 
-		method.env->CallStaticObjectMethod(method.classID, method.methodID,
+		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, bytes), method.env));
 	}
 	}
@@ -103,6 +103,7 @@ void LmJniJavaFacade::send(float f) {
 }
 
 void LmJniJavaFacade::discoverPeers() {
+	CCLOG("calling java method discover peers");
 	callJavaMethod("discoverPeers", (void*) 0, PARAM_VOID);
 }
 
