@@ -6,165 +6,6 @@
     },
     "SceneArray": [
       {
-        "Id": 3,
-        "RewardParent": {
-          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "Game/Content/milk.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 51
-        },
-        "RewardChild": {
-          "FilenameSpriteBackground": "Game/Background/rewardbg2.png",
-          "FilenameSpriteReward": "Game/Content/eggs.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 96
-        },
-        "SetPointBeginParent": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          },
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso2left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          },
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "SetPointBeginChild": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "SetPointEndParent": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "SetPointEndChild": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "FilenameSpriteBackground": "Game/Background/background4.png",
-        "FilenameSpriteMainImage": "Game/Content/audioHintImage.png",
-        "Labels": [
-          {
-            "Id": 0,
-            "WidthPercent": 45,
-            "HeightPercent": 26,
-            "FilenameSpriteLabel": "Game/Content/labelCuisson.png",
-            "FilenameAudioLabel": "Audio/Game/son.mp3"
-          },
-          {
-            "Id": 1,
-            "WidthPercent": 78,
-            "HeightPercent": 56,
-            "FilenameSpriteLabel": "Game/Content/labelEmballage.png",
-            "FilenameAudioLabel": "Audio/Game/son.mp3"
-          },
-          {
-            "Id": 2,
-            "WidthPercent": 80,
-            "HeightPercent": 80,
-            "FilenameSpriteLabel": "Game/Content/labelFabrication.png",
-            "FilenameAudioLabel": "Audio/Game/son1.mp3"
-          },
-          {
-            "Id": 3,
-            "WidthPercent": 23,
-            "HeightPercent": 89,
-            "FilenameSpriteLabel": "Game/Content/labelTransport.png",
-            "FilenameAudioLabel": "Audio/Game/son.mp3"
-          }
-        ]
-      },
-      {
         "Id": 0,
         "RewardParent": {
           "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
@@ -472,6 +313,165 @@
           {
             "Id": 3,
             "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category4.png"
+          }
+        ]
+      },
+      {
+        "Id": 3,
+        "RewardParent": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
+          "FilenameSpriteReward": "Game/Content/milk.png",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 51
+        },
+        "RewardChild": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg2.png",
+          "FilenameSpriteReward": "Game/Content/eggs.png",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 96
+        },
+        "SetPointBeginParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteMainImage": "Game/Content/audioHintImage.png",
+        "Labels": [
+          {
+            "Id": 0,
+            "WidthPercent": 45,
+            "HeightPercent": 26,
+            "FilenameSpriteLabel": "Game/Content/labelCuisson.png",
+            "FilenameAudioLabel": "Audio/Game/son.mp3"
+          },
+          {
+            "Id": 1,
+            "WidthPercent": 78,
+            "HeightPercent": 56,
+            "FilenameSpriteLabel": "Game/Content/labelEmballage.png",
+            "FilenameAudioLabel": "Audio/Game/son.mp3"
+          },
+          {
+            "Id": 2,
+            "WidthPercent": 80,
+            "HeightPercent": 80,
+            "FilenameSpriteLabel": "Game/Content/labelFabrication.png",
+            "FilenameAudioLabel": "Audio/Game/son1.mp3"
+          },
+          {
+            "Id": 3,
+            "WidthPercent": 23,
+            "HeightPercent": 89,
+            "FilenameSpriteLabel": "Game/Content/labelTransport.png",
+            "FilenameAudioLabel": "Audio/Game/son.mp3"
           }
         ]
       }
