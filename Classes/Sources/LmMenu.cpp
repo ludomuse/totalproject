@@ -189,7 +189,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				Vect(l_oVisibleSize.width * 0.5f,
 						l_oVisibleSize.height * 0.2f));
 
-		//Play button
+		//scan button
 		auto l_oScanButton = MenuItemImage::create("Ludomuse/GUIElements/logNormal.png",
 				"Ludomuse/GUIElements/logPressed.png",
 				CC_CALLBACK_1(LmMenu::scan, this));
