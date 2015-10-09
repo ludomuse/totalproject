@@ -108,6 +108,7 @@ void WifiDirectFacade::onReceiving(bytes byteArray) {
 }
 
 void WifiDirectFacade::discoverPeers() {
+	CCLOG("calling java method discover peers");
 	LmJniJavaFacade::discoverPeers();
 }
 

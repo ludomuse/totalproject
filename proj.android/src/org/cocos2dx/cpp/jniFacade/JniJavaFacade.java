@@ -70,6 +70,7 @@ public class JniJavaFacade {
 
 	public static void discoverPeers()
 	{
+		DebugManager.print("discover peers is called from c++", WifiDirectManager.DEBUGGER_CHANNEL);
 		_wifiDirectFacade.discoverPeers();
 	}
 
