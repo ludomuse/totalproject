@@ -189,8 +189,17 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				Vect(l_oVisibleSize.width * 0.5f,
 						l_oVisibleSize.height * 0.2f));
 
+		//Play button
+		auto l_oScanButton = MenuItemImage::create("Ludomuse/GUIElements/logNormal.png",
+				"Ludomuse/GUIElements/logPressed.png",
+				CC_CALLBACK_1(LmMenu::scan, this));
+		l_oScanButton->setAnchorPoint(Point(0.5, 0));
+		l_oScanButton->setPosition(
+				Vect(l_oVisibleSize.width * 0.5f,
+						l_oVisibleSize.height * 0.7f));
+
 		// create menu, it's an autorelease object
-		auto l_oMenu = Menu::create(l_oPlayButton, nullptr);
+		auto l_oMenu = Menu::create(l_oPlayButton,l_oScanButton, nullptr);
 		l_oMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(l_oMenu, 1);
 
@@ -254,3 +263,9 @@ void LmMenu::femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_pUser1->setBMale(false);
 	m_bNoGenderSelected = false;
 }
+
+void LmMenu::scan(cocos2d::Ref* l_pSender)
+{
+	CCLOG("scan");
+}
+

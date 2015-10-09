@@ -89,6 +89,8 @@ private:
 	void maleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 	void femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
+	void scan(cocos2d::Ref*);
+
 
 };
 
