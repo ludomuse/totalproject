@@ -17,6 +17,7 @@
 
 static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;
+static const float s_fMarginLeftMenu = 100.0f;
 //filename sprite
 static const std::string s_sFilenameSpriteBackground = "Ludomuse/Background/splash.png";
 static const std::string s_sFilenameSplash = "Ludomuse/Background/splash.png";
@@ -77,7 +78,7 @@ private:
 
 	//stock menuitemlabel
 	std::vector<cocos2d::MenuItemLabel*> m_aMenuItemLabels;
-	cocos2d::Menu* m_pMenuLabels;
+	cocos2d::Menu* m_pMenu;
 
 	bool m_bNoGenderSelected;
 
@@ -97,6 +98,7 @@ private:
 	void femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
 	void scan(cocos2d::Ref*);
+	void updateUser2NameTablet(cocos2d::Ref*);
 
 	void makeMenuItemLabel(std::vector<std::string> );
 
