@@ -453,6 +453,7 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 			//we send the id to the other tablet test
 			CCLOG("we send the %d gamecomponent",
 					m_aIdTable.find(m_iBufferId)->first);
+			send(m_iBufferId);
 
 			//move gamecomponent
 			setPositionInSendingArea(m_iBufferId);

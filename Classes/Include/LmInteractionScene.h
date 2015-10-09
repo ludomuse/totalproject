@@ -12,6 +12,8 @@
 #include "LmSprite.h"
 #include "LmReward.h"
 
+#include "../Native/Includes/LmJniCppFacade.h"
+
 typedef std::map<int, LmGameComponent*>::iterator it_type;
 
 static const float s_fDashboardRatioHidden = 0.95f;
@@ -156,6 +158,8 @@ protected:
 
 	//call when the finishgamebutton is pressed
 	void endGame();
+
+	void send(int);
 
 };
 

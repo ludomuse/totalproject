@@ -7,7 +7,6 @@ USING_NS_CC;
 
 AppDelegate::AppDelegate()
 {
-	CCLOG("modification pour test commit");
 	//object
 	m_pwifiFacade = new WifiDirectFacade();
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);

@@ -554,7 +554,7 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 	return true;
 }
 
-void LmGameManager::onReceiving(bool b)
+void LmGameManager::onReceiving(int b)
 {
-	CCLOG("I received bool. Value is: " + b ? "true" : "false");
+	CCLOG("I received int. Value is: %d",b);
 }

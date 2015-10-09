@@ -43,7 +43,7 @@ public:
 		m_pWifiDirectFacade->send(b);
 	}
 
-	virtual void onReceiving(bool b);
+	virtual void onReceiving(int);
 
 private:
 
