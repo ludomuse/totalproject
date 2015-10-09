@@ -27,7 +27,7 @@ public class DebugManager {
 
 	public static final int DEFAULT_LEVEL = 0;
 	public static final int IMPORTANT_LEVEL = 1;
-	public static boolean useToast = true;
+	public static boolean useToast = false;
 
 	public static final boolean askForImmortalToast = false;
 
