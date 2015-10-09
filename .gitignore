@@ -17,14 +17,14 @@ proj.android/obj
 proj.android/libs
 proj.android/bin
 proj.android/assets
-#.*
-project.properties
+.*
+#project.properties
 proguard-project.txt
 local.properties
 lint.xml
 LICENSE
 *.log
-#*.json
+*.json
 build_native.py
 ant.properties
 build.xml
