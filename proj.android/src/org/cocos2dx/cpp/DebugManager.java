@@ -158,13 +158,15 @@ public class DebugManager {
 
 	}
 
+	@SuppressWarnings("unused")
 	public static void RemoveDebugButton(String name)
 	{
-		if (mute)
+		if (!askForImmortalToast || mute)
 			return;
 		linear_layout.removeView(linear_layout.findViewWithTag(name));
 	}
 
+	@SuppressWarnings("unused")
 	public static void AddDebugButton(String name, OnClickListener effect)
 	{
 		if (!askForImmortalToast || mute)
@@ -224,7 +226,7 @@ public class DebugManager {
 
 			messageStr = append ? messageStr + formatedMessage
 					: formatedMessage;
-			 Log.d(tag, formatedMessage);
+			Log.d(tag, formatedMessage);
 		}
 		else
 		{

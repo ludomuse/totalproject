@@ -10,12 +10,11 @@ import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 import android.app.Activity;
 
 /**
- * This is a wrapper for the WifiDirectManager, 
- * that expose simple method such as onReceive(data)
- * or send(data)F
+ * This is a wrapper for the WifiDirectManager, that expose simple method such
+ * as onReceive(data) or send(data)F
  * 
  * @author Gregoire
- *
+ * 
  */
 public class WifiDirectFacade {
 
@@ -100,23 +99,28 @@ public class WifiDirectFacade {
 
 	public WifiDirectFacade(Activity activity)
 	{
-		
+
 		JniJavaFacade._wifiDirectFacade = this;
-		
-		WifiDirectManager.registerCallBackReceiver(cmOnReceiveString, cmOnReceiveInt,
-				cmOnReceiveBool, cmOnReceiveFloat, cmOnReceiveDouble,
-				cmOnReceiveByte, cmOnReceiveLong, cmOnReceiveFile,
-				cmOnReceiveByteArray, cmOnReceiveChar);
-		
+
+		WifiDirectManager.registerCallBackReceiver(cmOnReceiveString,
+				cmOnReceiveInt, cmOnReceiveBool, cmOnReceiveFloat,
+				cmOnReceiveDouble, cmOnReceiveByte, cmOnReceiveLong,
+				cmOnReceiveFile, cmOnReceiveByteArray, cmOnReceiveChar);
+
 		_manager = new WifiDirectManager(activity);
 		_manager.initialize();
-		
-		DebugManager.print("WifiDirectFacade is created !", WifiDirectManager.DEBUGGER_CHANNEL);
+
+		DebugManager.print("WifiDirectFacade is created !",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
 	public void onGettingPeers(List<String> peers)
 	{
+		DebugManager.print("facade has got peers !",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 		JniCppFacade.onGettingPeers(peers);
+		DebugManager.print("facade has got peers ! - end",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
 	public void onReceiving(String s)
@@ -126,7 +130,8 @@ public class WifiDirectFacade {
 
 	public void onReceiving(int i)
 	{
-		DebugManager.print("Java WifiDirectFacade received int", WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print("Java WifiDirectFacade received int",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 		JniCppFacade.onReceivingInt(i);
 	}
 
@@ -234,7 +239,7 @@ public class WifiDirectFacade {
 	{
 		_manager.pause();
 	}
-	
+
 	public void resume()
 	{
 		_manager.resume();

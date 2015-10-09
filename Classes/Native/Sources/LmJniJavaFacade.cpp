@@ -17,17 +17,23 @@
 using namespace std;
 
 void LmJniJavaFacade::callJavaMethod(const char* name, void* arg,
-		const char* param) {
+		const char* param)
+{
 	NS_CC::JniMethodInfo method;
 	NS_CC::JniHelper::getStaticMethodInfo(method, JAVACLASS, name, param);
 
-	if (param == PARAM_VOID) {
+	if (param == PARAM_VOID)
+	{
 		CCLOG("void parameter");
 		method.env->CallStaticVoidMethod(method.classID, method.methodID);
-	} else if (param == PARAM_STRING) {
+	}
+	else if (param == PARAM_STRING)
+	{
 		method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, string), method.env));
-			} else if (param == PARAM_INT) {
+			}
+			else if (param == PARAM_INT)
+			{
 
 				method.env->CallStaticVoidMethod(method.classID, method.methodID,
 				toJObject(PTR_TO_OBJ(arg, int)));
@@ -62,65 +68,80 @@ void LmJniJavaFacade::callJavaMethod(const char* name, void* arg,
 	}
 	}
 
-void LmJniJavaFacade::send(string s) {
+void LmJniJavaFacade::send(string s)
+{
 	callJavaMethod("send", (void*) &s, PARAM_STRING);
 }
 
-void LmJniJavaFacade::send(bool b) {
+void LmJniJavaFacade::send(bool b)
+{
 	callJavaMethod("send", (void*) &b, PARAM_BOOLEAN);
 }
 
-void LmJniJavaFacade::send(int i) {
+void LmJniJavaFacade::send(int i)
+{
 	callJavaMethod("send", (void*) &i, PARAM_INT);
 }
 
-void LmJniJavaFacade::send(long l) {
+void LmJniJavaFacade::send(long l)
+{
 	callJavaMethod("send", (void*) &l, PARAM_LONG);
 }
 
-void LmJniJavaFacade::send(char c) {
+void LmJniJavaFacade::send(char c)
+{
 	callJavaMethod("send", (void*) &c, PARAM_CHAR);
 }
 
-void LmJniJavaFacade::send(double d) {
+void LmJniJavaFacade::send(double d)
+{
 	callJavaMethod("send", (void*) &d, PARAM_DOUBLE);
 }
 
-void LmJniJavaFacade::sendFile(string path) {
+void LmJniJavaFacade::sendFile(string path)
+{
 	callJavaMethod("sendFile", (void*) &path, PARAM_STRING);
 }
 
-void LmJniJavaFacade::sendByte(byte b) {
+void LmJniJavaFacade::sendByte(byte b)
+{
 	callJavaMethod("sendByte", (void*) &b, PARAM_BYTE);
 }
 
-void LmJniJavaFacade::sendBytes(bytes bytes) {
+void LmJniJavaFacade::sendBytes(bytes bytes)
+{
 	callJavaMethod("sendBytes", (void*) &bytes, PARAM_BYTES);
 }
 
-void LmJniJavaFacade::send(float f) {
+void LmJniJavaFacade::send(float f)
+{
 	callJavaMethod("send", (void*) &f, PARAM_FLOAT);
 }
 
-void LmJniJavaFacade::discoverPeers() {
+void LmJniJavaFacade::discoverPeers()
+{
 	CCLOG("calling java method discover peers");
 	callJavaMethod("discoverPeers", (void*) 0, PARAM_VOID);
 }
 
-void LmJniJavaFacade::connectTo(string deviceName) {
+void LmJniJavaFacade::connectTo(string deviceName)
+{
 	callJavaMethod("connectTo", (void*) (&deviceName), PARAM_STRING);
 
 }
 
-LmJniJavaFacade::LmJniJavaFacade(const LmJniJavaFacade & unLmJniBridge) {
+LmJniJavaFacade::LmJniJavaFacade(const LmJniJavaFacade & unLmJniBridge)
+{
 
 }
 
-LmJniJavaFacade::LmJniJavaFacade() {
+LmJniJavaFacade::LmJniJavaFacade()
+{
 
 }
 
-LmJniJavaFacade::~LmJniJavaFacade() {
+LmJniJavaFacade::~LmJniJavaFacade()
+{
 
 }
 

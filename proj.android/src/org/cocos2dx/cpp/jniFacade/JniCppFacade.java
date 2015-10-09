@@ -1,5 +1,10 @@
 package org.cocos2dx.cpp.jniFacade;
 
+import java.util.List;
+
+import org.cocos2dx.cpp.DebugManager;
+import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
+
 
 /**
  * This class define all the native methods to be called
@@ -11,8 +16,15 @@ package org.cocos2dx.cpp.jniFacade;
  */
 public class JniCppFacade {
 
+	public static void onGettingPeers(List<String> peers)
+	{
+		DebugManager.print("Jni cpp facade has got peers !", WifiDirectManager.DEBUGGER_CHANNEL);
+		String devices = JSONMaker.MakeJSONFromDeviceList(peers);
+		DebugManager.print("Devices are: " + devices, WifiDirectManager.DEBUGGER_CHANNEL);
+		onGettingPeers(devices);
+	}
 	
-	public static native void onGettingPeers(Object peers);
+	private static native void onGettingPeers(String peers);
 	
 	public static native void onReceivingString(String s);
 
