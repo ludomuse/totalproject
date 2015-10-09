@@ -10,6 +10,8 @@
 #ifndef CLASSES_SOURCES_LMUSER_H_
 #define CLASSES_SOURCES_LMUSER_H_
 
+#include "string"
+
 class LmUser
 {
 
@@ -18,22 +20,22 @@ public:
 	LmUser();
 	~LmUser();
 
-	const char* getPUserName() const
+	std::string getPUserName() const
 	{
 		return m_pUserName;
 	}
 
-	void setPUserName(const char* pUserName)
+	void setPUserName(std::string pUserName)
 	{
 		m_pUserName = pUserName;
 	}
 
-	const char* getPUserTabletName() const
+	std::string getPUserTabletName() const
 	{
 		return m_pUserTabletName;
 	}
 
-	void setPUserTabletName(const char* pUserTabletName)
+	void setPUserTabletName(std::string pUserTabletName)
 	{
 		m_pUserTabletName = pUserTabletName;
 	}
@@ -67,8 +69,8 @@ public:
 
 private:
 
-	const char* m_pUserName;
-	const char* m_pUserTabletName;
+	std::string m_pUserName;
+	std::string m_pUserTabletName;
 	int m_iScore;
 	bool m_bParent;
 	bool m_bMale;

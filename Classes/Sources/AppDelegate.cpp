@@ -83,7 +83,7 @@ void AppDelegate::initPathsForResolution()
 
 	if (!l_glview)
 	{
-		l_glview = GLViewImpl::create("Ludomuse");
+		l_glview = GLViewImpl::create("LudoMuse");
 		l_director->setOpenGLView(l_glview);
 	}
 
