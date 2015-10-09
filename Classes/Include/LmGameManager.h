@@ -17,7 +17,7 @@ static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.4f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 
-class LmGameManager
+class LmGameManager : public WifiObserver
 {
 
 public:
