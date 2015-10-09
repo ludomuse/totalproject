@@ -3,6 +3,9 @@ package org.cocos2dx.cpp.jniFacade;
 import java.io.File;
 import java.lang.String;
 
+import org.cocos2dx.cpp.DebugManager;
+import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
+
 /**
  * These method are called by c++, when the cpp part of the WifiDirectFacade
  * want to send data or launch a service (request peer and connection)
@@ -26,6 +29,7 @@ public class JniJavaFacade {
 
 	public static void send(int i)
 	{
+		DebugManager.print("sending int", WifiDirectManager.DEBUGGER_CHANNEL);
 		_wifiDirectFacade.send(i);
 	}
 

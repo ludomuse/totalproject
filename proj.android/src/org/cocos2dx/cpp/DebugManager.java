@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 public class DebugManager {
 
-	public static boolean mute = true;
+	public static boolean mute = false;
 
 	private static String tag = "LudoMuse";
 	public static int currentDebugLevel = WifiDirectManager.DEBUGGER_CHANNEL;
@@ -223,7 +223,7 @@ public class DebugManager {
 
 			messageStr = append ? messageStr + formatedMessage
 					: formatedMessage;
-			// Log.d(tag, formatedMessage);
+			 Log.d(tag, formatedMessage);
 		}
 		else
 		{

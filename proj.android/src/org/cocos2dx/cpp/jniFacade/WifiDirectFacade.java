@@ -3,6 +3,7 @@ package org.cocos2dx.cpp.jniFacade;
 import java.io.File;
 import java.util.List;
 
+import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
@@ -99,6 +100,7 @@ public class WifiDirectFacade {
 
 	public WifiDirectFacade(Activity activity)
 	{
+		
 		JniJavaFacade._wifiDirectFacade = this;
 		
 		WifiDirectManager.registerCallBackReceiver(cmOnReceiveString, cmOnReceiveInt,
@@ -109,6 +111,7 @@ public class WifiDirectFacade {
 		_manager = new WifiDirectManager(activity);
 		_manager.initialize();
 		
+		DebugManager.print("WifiDirectFacade is created !", WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
 	public void onGettingPeers(List<String> peers)
@@ -123,6 +126,7 @@ public class WifiDirectFacade {
 
 	public void onReceiving(int i)
 	{
+		DebugManager.print("Java WifiDirectFacade received int", WifiDirectManager.DEBUGGER_CHANNEL);
 		JniCppFacade.onReceivingInt(i);
 	}
 
