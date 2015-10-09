@@ -10,6 +10,7 @@
 #include "LmUser.h"
 #include "LmInteractionScene.h"
 #include "../Native/Includes/WifiDirectFacade.h"
+#include "../Native/Includes/LmJniCppFacade.h"
 
 
 static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.4f;
@@ -21,7 +22,7 @@ class LmGameManager
 
 public:
 
-	LmGameManager();
+	LmGameManager(WifiDirectFacade* a_wifiFacade);
 	~LmGameManager();
 
 	//call different method of gamemanager, init launch scene and handle layers of interactions
@@ -37,9 +38,18 @@ public:
 		m_pUser2 = pUser2;
 	}
 
+	inline void send(bool b)
+	{
+		m_pWifiDirectFacade->send(b);
+	}
+
+	virtual void onReceiving(bool b);
+
 private:
 
 	//ATTRIBUTES
+
+	WifiDirectFacade* m_pWifiDirectFacade;
 
 	//layer splash
 	cocos2d::Layer* m_pSplashSreenLayer;

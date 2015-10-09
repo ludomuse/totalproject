@@ -5,8 +5,14 @@
 
 USING_NS_CC;
 
-LmGameManager::LmGameManager()
+LmGameManager::LmGameManager(WifiDirectFacade* a_wifiFacade)
 {
+
+	//register to direct wifi
+	m_pWifiDirectFacade = a_wifiFacade;
+	m_pWifiDirectFacade->addObserver(this);
+
+
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
 
@@ -548,3 +554,7 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 	return true;
 }
 
+void LmGameManager::onReceiving(bool b)
+{
+	CCLOG("I received bool. Value is: " + b ? "true" : "false");
+}

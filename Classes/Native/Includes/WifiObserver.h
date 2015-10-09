@@ -41,7 +41,10 @@ public:
 
 	virtual void discoverPeers(){};
 
-	virtual ~WifiObserver();
+	virtual ~WifiObserver()
+	{
+
+	}
 };
 
 #endif /* WIFIOBSERVER_H_ */
