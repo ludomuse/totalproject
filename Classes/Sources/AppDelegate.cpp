@@ -9,8 +9,13 @@ AppDelegate::AppDelegate()
 {
 	CCLOG("modification pour test commit");
 	//object
-	m_pLmGameManager = new LmGameManager; //need to be delete
+	m_pwifiFacade = new WifiDirectFacade();
+	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
+
+	m_pLmGameManager = new LmGameManager(m_pwifiFacade); //need to be delete
 	m_pLmMenu = new LmMenu; //need to be delete
+
+
 }
 
 AppDelegate::~AppDelegate()
