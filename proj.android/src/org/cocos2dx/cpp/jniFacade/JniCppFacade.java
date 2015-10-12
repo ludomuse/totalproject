@@ -19,9 +19,19 @@ public class JniCppFacade {
 	public static void onGettingPeers(List<String> peers)
 	{
 		DebugManager.print("Jni cpp facade has got peers !", WifiDirectManager.DEBUGGER_CHANNEL);
-		String devices = JSONMaker.MakeJSONFromDeviceList(peers);
+		String devices = concat(peers);
 		DebugManager.print("Devices are: " + devices, WifiDirectManager.DEBUGGER_CHANNEL);
 		onGettingPeers(devices);
+	}
+	
+	private static String concat(List<String> peers)
+	{
+		String res = "";
+		for(String s : peers)
+		{
+			res += "-" + s;
+		}
+		return res.substring(1);
 	}
 	
 	private static native void onGettingPeers(String peers);

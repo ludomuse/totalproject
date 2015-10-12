@@ -285,7 +285,7 @@ void LmMenu::femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
 	CCLOG("scan");
-	//LmJniCppFacade::getWifiFacade()->discoverPeers();
+	LmJniCppFacade::getWifiFacade()->discoverPeers();
 
 	std::vector<std::string> vectorString;
 	vectorString.push_back("fbdjh");
