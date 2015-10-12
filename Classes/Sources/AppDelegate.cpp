@@ -109,6 +109,7 @@ void AppDelegate::initPathsForResolution()
 	auto l_fileUtils = FileUtils::getInstance();
 	std::vector<std::string> l_resDirOrders;
 
+
 	// if the frame's height is larger than the height of medium size we want to get large ressources
 	if (l_frameSize.height > s_MediumResolutionSize.height)
 	{
@@ -173,4 +174,6 @@ bool AppDelegate::init()
 	//add the custom event to the event dispatcher
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"MenuFinished", MenuFinished);
+
+	return true;
 }

@@ -9,7 +9,7 @@
 
 using namespace cocos2d;
 
-LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed ) :
+LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed) :
 		LmInteractionScene()
 {
 
@@ -20,7 +20,7 @@ LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed ) :
 	m_iHoleOnX = l_Seed.HoleOnX;
 	m_iHoleOnY = l_Seed.HoleOnY;
 	m_aLocationOfHole = l_Seed.LocationOfHole;
-	if(m_aLocationOfHole.size()==0)
+	if (m_aLocationOfHole.size() == 0)
 	{
 		CCLOG("No Hole in LmRightSpot");
 	}
@@ -35,18 +35,16 @@ LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed ) :
 	m_bSendingAreaElementTouched = false;
 
 	//pointer
-	m_pSendingAreaElement=nullptr;
+	m_pSendingAreaElement = nullptr;
 	m_pBufferSprite = nullptr;
 	m_pListener = nullptr;
 	m_pSpriteBackground = nullptr;
-	m_pSendingArea=nullptr;
-
+	m_pSendingArea = nullptr;
 
 }
 
 LmRightSpotScene::~LmRightSpotScene()
 {
-
 
 }
 
@@ -169,6 +167,7 @@ bool LmRightSpotScene::initGame()
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+	Size l_oWinSize = Director::getInstance()->getWinSize();
 
 	//add the layer game
 	this->addChild(m_pLayerGame, 0);
@@ -191,7 +190,7 @@ bool LmRightSpotScene::initGame()
 
 	//init buffer sprite
 	m_pBufferSprite = Sprite::create();
-	m_pLayerGame->addChild(m_pBufferSprite,1);
+	m_pLayerGame->addChild(m_pBufferSprite, 1);
 
 	//init some usefull variable
 	Point l_oMiddleOfPlayableArea = Point(
@@ -293,8 +292,7 @@ bool LmRightSpotScene::initGame()
 		auto l_fHeightImage = m_fHeightRect + s_fMarginBetweenImage;
 
 		//check height of piece to know how many to display in a row
-		int numberOfImageInLine = (int) l_oPlayableScreenSize.height
-				/ l_fHeightImage;
+		int numberOfImageInLine = (int) (l_oVisibleSize.height / l_fHeightImage);
 
 		//shuffle the vector
 		std::random_device rd;
@@ -314,9 +312,11 @@ bool LmRightSpotScene::initGame()
 
 			(*it)->setPosition(
 					Vec2((l_iIndex) * (l_fWidthImage) + s_fMarginLeft,
-							l_oPlayableScreenSize.height
-									* ((float) l_iLineIndex
-											/ (float) (numberOfImageInLine + 1))));
+							(l_iLineIndex - 1) * s_fMarginBetweenImage
+									+ l_oWinSize.height
+											* ((float) l_iLineIndex
+													/ (float) (numberOfImageInLine
+															+ 1))));
 
 			//create hole associated
 			m_aHolesLayerParent.push_back(
@@ -391,13 +391,13 @@ bool LmRightSpotScene::initGame()
 bool LmRightSpotScene::onTouchBeganParent(Touch* touch, Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if(m_bUserIsTouchingScreen)
+	if (m_bUserIsTouchingScreen)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen=true;
+		m_bUserIsTouchingScreen = true;
 	}
 
 	m_iBufferId = idDynamicLmGameComponent(touch);
@@ -463,7 +463,8 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 			if (m_pSendingAreaElement)
 			{
 				//place to his last position the current m_psending area element
-				auto m_oHoleToFill = holeOfThisDynamicElement(m_pSendingAreaElement->getIId());
+				auto m_oHoleToFill = holeOfThisDynamicElement(
+						m_pSendingAreaElement->getIId());
 				m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
 				m_pSendingAreaElement->setPosition(
 						Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
@@ -496,21 +497,20 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 		m_aIdTable.find(m_iBufferId)->second->setVisible(true);
 	}
 
-	m_bUserIsTouchingScreen=false;
-
+	m_bUserIsTouchingScreen = false;
 
 }
 
 bool LmRightSpotScene::onTouchBeganChild(Touch* touch, Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if(m_bUserIsTouchingScreen)
+	if (m_bUserIsTouchingScreen)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen=true;
+		m_bUserIsTouchingScreen = true;
 	}
 
 	m_iBufferId = idLmGameComponentTouchedInSendingArea(touch);
@@ -605,7 +605,7 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 
 	}
 
-	m_bUserIsTouchingScreen=false;
+	m_bUserIsTouchingScreen = false;
 
 }
 
@@ -675,8 +675,11 @@ void LmRightSpotScene::setPositionInSendingArea(int id)
 
 	m_aIdTable.find(id)->second->setAnchorPoint(Vec2(0, 0.5));
 	m_aIdTable.find(id)->second->setPosition(
-			Vec2(l_oVisibleSize.width - (m_fWidthRect+m_pSendingArea->getContentSize().width)*0.5,
-					l_oVisibleSize.height * 0.5));
+			Vec2(
+					l_oVisibleSize.width
+							- (m_fWidthRect
+									+ m_pSendingArea->getContentSize().width)
+									* 0.5, l_oVisibleSize.height * 0.5));
 }
 
 void LmRightSpotScene::moveBufferSprite(Touch* touch)
@@ -691,7 +694,8 @@ void LmRightSpotScene::initBufferSprite(int l_iIdGameComponent)
 	m_bSpriteSelected = true;
 	//the gamecomponent selected is copy in the buffer
 
-	m_pBufferSprite->setSpriteFrame(m_aIdTable.find(l_iIdGameComponent)->second->getPSpriteComponent()->getSpriteFrame());
+	m_pBufferSprite->setSpriteFrame(
+			m_aIdTable.find(l_iIdGameComponent)->second->getPSpriteComponent()->getSpriteFrame());
 	m_pBufferSprite->setAnchorPoint(Vec2(0.5, 0.5));
 	m_pBufferSprite->setPosition(
 			m_aIdTable.find(l_iIdGameComponent)->second->getPosition());

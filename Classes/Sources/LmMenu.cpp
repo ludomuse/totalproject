@@ -38,8 +38,9 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 	m_pCheckBoxMale = nullptr;
 
 	//primitive type
-	m_bPlayButtonClicked = false; //the play has not been clicked yet
 	m_bNoGenderSelected = true;
+	m_bRoleSelected = false;
+
 }
 
 LmMenu::~LmMenu()
@@ -123,7 +124,7 @@ bool LmMenu::logScreen()
 	m_pLogEditBox->retain();
 
 	//test
-	m_pLogEditBox->setText("P");
+	m_pLogEditBox->setText("UserName");
 
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
@@ -190,11 +191,11 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		auto l_oPlayButton = MenuItemImage::create(
 				"Ludomuse/GUIElements/playNormal.png",
 				"Ludomuse/GUIElements/playPressed.png",
-				CC_CALLBACK_1(LmMenu::menuIsFinished, this));
+				CC_CALLBACK_1(LmMenu::ready, this));
 		l_oPlayButton->setAnchorPoint(Point(0.5, 0));
 		l_oPlayButton->setPosition(
 				Vect(l_oVisibleSize.width * 0.5f,
-						l_oVisibleSize.height * 0.2f));
+						l_oVisibleSize.height * 0.1f));
 
 		//scan button
 		auto l_oScanButton = MenuItemImage::create(
@@ -216,53 +217,65 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pMenuUserTabletName->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenuUserTabletName, 1);
 
-		//TODO find peers and set attributes and instanciate socket
 
+		//TODO find peers and set attributes and instanciate socket
+//////////////////////////////////////////////////////////////////
 		//tablet are connected create both user
 		m_pUser1->setPScore(0);
 		m_pUser1->setPUserName(m_pLogEditBox->getText());
 		m_pUser1->setPUserTabletName("tablet1_name");
 
-		//to know what part of the game he is going to play
-
-		//test if P alors we play parent role
-		if (strcmp(m_pLogEditBox->getText(), "P"))
-		{
-			m_pUser1->setBParent(true);
-			m_pUser2->setBParent(false);
-		}
-		else
-		{
-			m_pUser1->setBParent(false);
-			m_pUser2->setBParent(true);
-		}
-
 		m_pUser2->setPScore(0);
 		m_pUser2->setPUserName("2nd user");
 		m_pUser2->setPUserTabletName("tablet2_name");
+/////////////////////////////////////////////////////////////////
+		//init checkbox parent
+		m_pCheckBoxParent = CheckBox::create(
+				"Ludomuse/GUIElements/logNormal.png",
+				"Ludomuse/GUIElements/logPressed.png");
+		m_pCheckBoxParent->setTouchEnabled(true);
+		m_pCheckBoxParent->setSwallowTouches(false);
+		m_pCheckBoxParent->setPosition(
+				Vec2(l_oVisibleSize.width * 0.33, l_oVisibleSize.height * 0.2));
+		m_pCheckBoxParent->addEventListener(
+				CC_CALLBACK_2(LmMenu::parentSelected, this));
+		m_pWifiLayer->addChild(m_pCheckBoxParent);
 
-		//m_pWifiDirectFacade->discoverPeers();
+		//init checkbox child
+		m_pCheckBoxChild = CheckBox::create(
+				"Ludomuse/GUIElements/playNormal.png",
+				"Ludomuse/GUIElements/playPressed.png");
+		m_pCheckBoxChild->setTouchEnabled(true);
+		m_pCheckBoxChild->setSwallowTouches(false);
+		m_pCheckBoxChild->setPosition(
+				Vec2(l_oVisibleSize.width * 0.66, l_oVisibleSize.height * 0.2));
+		m_pCheckBoxChild->addEventListener(
+				CC_CALLBACK_2(LmMenu::childSelected, this));
+		m_pWifiLayer->addChild(m_pCheckBoxChild);
 
-		std::vector<std::string> vectorString;
-		vectorString.push_back("fbdjh");
-		vectorString.push_back("sdfsdf");
-		vectorString.push_back("sdfsdggfd");
-		vectorString.push_back("encore un autre");
-		makeMenuItemUserTabletName(vectorString);
+
+		m_pWifiDirectFacade->discoverPeers();
 
 		return true;
 
 	}
 }
 
-bool LmMenu::menuIsFinished(cocos2d::Ref* l_oSender)
+void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
-	if (!m_bPlayButtonClicked)
+
+	if (m_bRoleSelected)
 	{
-		m_bPlayButtonClicked = true;
-		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
-				"MenuFinished");
+		menuIsFinished();
 	}
+
+}
+
+void LmMenu::menuIsFinished()
+{
+
+	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+			"MenuFinished");
 
 }
 
@@ -284,6 +297,31 @@ void LmMenu::femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_pCheckBoxMale->setSelected(false);
 	m_pUser1->setBMale(false);
 	m_bNoGenderSelected = false;
+
+}
+
+void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
+{
+	//update state of checkbox
+	m_pCheckBoxParent->setSelected(true);
+	m_pCheckBoxChild->setSelected(false);
+	//update user role
+	m_pUser1->setBParent(true);
+	m_bRoleSelected = true;
+
+	CCLOG("parent selected");
+
+}
+
+void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
+{
+	//update state of checkbox
+	m_pCheckBoxChild->setSelected(true);
+	m_pCheckBoxParent->setSelected(false);
+	m_pUser1->setBParent(false);
+	m_bRoleSelected = true;
+
+	CCLOG("child selected");
 }
 
 void LmMenu::scan(cocos2d::Ref* l_pSender)
@@ -323,6 +361,9 @@ void LmMenu::makeMenuItemUserTabletName(
 				"Ludomuse/GUIElements/logNormal.png",
 				"Ludomuse/GUIElements/logPressed.png",
 				CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
+
+		float l_fWidthButton  = l_pMenuItemImage->getContentSize().width;
+
 		l_pMenuItemImage->addChild(l_pLabel);
 
 		m_aMenuItemUserTabletName.insert(
@@ -337,11 +378,13 @@ void LmMenu::makeMenuItemUserTabletName(
 		l_pMenuItemImage->setPosition(
 				Vec2(
 						s_fMarginLeftMenu
-								+ (l_oVisibleSize.width * l_iIndex) / l_iSize,
+								+ (l_fWidthButton * l_iIndex),
 						l_oVisibleSize.height * 0.5));
 		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
 	}
+
+
 
 }
 
@@ -354,13 +397,15 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 		CCLOG("%s", (*i).c_str());
 	}
 
-	//wait a while to be sure
-	auto delay =
-			DelayTime::create(0);
+
+
+	//wait a while to leave this method before update interface
+	auto delay = DelayTime::create(0);
 	m_pWifiLayer->runAction(
 			Sequence::create(delay,
-					CallFunc::create(std::bind(&LmMenu::makeMenuItemUserTabletName, this,peers)),
-					nullptr));
+					CallFunc::create(
+							std::bind(&LmMenu::makeMenuItemUserTabletName, this,
+									peers)), nullptr));
 
 }
 
@@ -374,4 +419,7 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 
 	CCLOG("tablet name user 2 = %s", m_pUser2->getPUserTabletName().c_str());
 	m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
+
+	//
 }
+

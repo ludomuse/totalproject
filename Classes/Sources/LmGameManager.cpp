@@ -12,7 +12,6 @@ LmGameManager::LmGameManager(WifiDirectFacade* a_wifiFacade)
 	m_pWifiDirectFacade = a_wifiFacade;
 	m_pWifiDirectFacade->addObserver(this);
 
-
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
 
@@ -96,7 +95,6 @@ bool LmGameManager::init()
 		return false;
 	}
 
-
 	//get the vector of scene through the serverManager and indicate if it's for child or parent
 	m_aInteractionSceneOfTheGame =
 			m_pLmServerManager->getInteractionSceneOfTheGame(
@@ -159,13 +157,15 @@ bool LmGameManager::initDashboard()
 	//we add the different background with different zorder
 
 	//background blue
-	m_pSpriteBackgroundBlue = Sprite::create("Ludomuse/GUIElements/fullBlue.png");
+	m_pSpriteBackgroundBlue = Sprite::create(
+			"Ludomuse/GUIElements/fullBlue.png");
 	m_pSpriteBackgroundBlue->setPosition(l_oVisibleSize.width * 0.5f,
 			l_oVisibleSize.height * 0.5f);
 	m_pBlueLayer->addChild(m_pSpriteBackgroundBlue);
 
 	//background pink
-	m_pSpriteBackgroundPink = Sprite::create("Ludomuse/GUIElements/halfPink.png");
+	m_pSpriteBackgroundPink = Sprite::create(
+			"Ludomuse/GUIElements/halfPink.png");
 	m_pSpriteBackgroundPink->setPosition(l_oVisibleSize.width * 0.5f,
 			m_pSpriteBackgroundPink->getContentSize().height
 					* (-0.5f + s_fMagingRatioOfSpriteBackgroundUser2Profile));
@@ -181,7 +181,7 @@ bool LmGameManager::initDashboard()
 
 	//user1 name
 	m_pLabelUser1Name = Label::createWithTTF(m_pUser1->getPUserName(),
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pLabelUser1Name->setPosition(
 			m_pSpriteBackgroundBlueProfile->getContentSize().width * 0.5f,
 			m_pSpriteBackgroundBlueProfile->getContentSize().height * 0.95f);
@@ -193,7 +193,7 @@ bool LmGameManager::initDashboard()
 	char l_aScoreString[20];
 	sprintf(l_aScoreString, "%d pts", m_pUser1->getPScore());
 	m_pLabelScore = Label::createWithTTF(l_aScoreString,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pLabelScore->setPosition(
 			m_pSpriteBackgroundBlueProfile->getContentSize().width * 0.5f,
 			m_pSpriteBackgroundBlueProfile->getContentSize().height * 0.65f);
@@ -204,7 +204,7 @@ bool LmGameManager::initDashboard()
 	sprintf(l_aInteractionDoneString, "%d/%d", m_iInteractionDone,
 			m_aInteractionSceneOfTheGame.size());
 	m_pLabelInteractionDone = Label::createWithTTF(l_aInteractionDoneString,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pLabelInteractionDone->setPosition(
 			m_pSpriteBackgroundBlueProfile->getContentSize().width * 0.5f,
 			m_pSpriteBackgroundBlueProfile->getContentSize().height * 0.55f);
@@ -229,7 +229,8 @@ bool LmGameManager::initDashboard()
 	m_pPinkLayer->addChild(m_pSpriteBandMid);
 
 	//compare button with ui::Button
-	m_pCompareButton = ui::Button::create("Ludomuse/GUIElements/compareNormal.png");
+	m_pCompareButton = ui::Button::create(
+			"Ludomuse/GUIElements/compareNormal.png");
 	m_pCompareButton->setTouchEnabled(true);
 	m_pCompareButton->setPosition(
 			Vect(l_oVisibleSize.width * 0.5f, l_oVisibleSize.height * 0.1f));
@@ -240,7 +241,7 @@ bool LmGameManager::initDashboard()
 
 	//label compare button
 	m_pLabelCompareButton = Label::createWithTTF("comparer",
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pLabelCompareButton->setPosition(
 			l_oVisibleSize.width * 0.6f
 					+ m_pCompareButton->getContentSize().width,
@@ -272,7 +273,7 @@ bool LmGameManager::initDashboard()
 	//title label app
 	m_sTitleApplication = m_pLmServerManager->getSTitleApplication();
 	m_pLabelTitleApplication = Label::createWithTTF(m_sTitleApplication,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pLabelTitleApplication->setPosition(
 			Vec2(
 					(l_oVisibleSize.width
@@ -313,10 +314,6 @@ void LmGameManager::runGame()
 	//replace the menu scene with the first one of the game
 	Director::getInstance()->replaceScene(
 			TransitionFade::create(s_fTimeBetweenLmLayer, m_pGameManagerScene));
-
-	//test
-	CCLOG("%s",m_pUser1->getPUserName().c_str());
-
 }
 
 void LmGameManager::compare()
@@ -324,11 +321,12 @@ void LmGameManager::compare()
 	if (m_bActionIsDone)
 	{
 		m_bActionIsDone = false;
-		auto l_oCompareAction = MoveBy::create(s_fTimeCompareAction,
-				Vect(0,
-						(m_pSpriteBackgroundPink->getContentSize().height)
-								* 0.5f
-								- s_fMagingRatioOfSpriteBackgroundUser2Profile));
+		auto l_oCompareAction =
+				MoveBy::create(s_fTimeCompareAction,
+						Vect(0,
+								(m_pSpriteBackgroundPink->getContentSize().height)
+										* 0.5f
+										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
 		auto l_oCompareActionIsDone = CallFunc::create(
 				std::bind(&LmGameManager::compareDone, this));
 		m_pPinkLayer->runAction(
@@ -352,11 +350,12 @@ void LmGameManager::back()
 	if (m_bActionIsDone)
 	{
 		m_bActionIsDone = false;
-		auto l_oBackAction = MoveBy::create(s_fTimeCompareAction,
-				Vect(0,
-						-(m_pSpriteBackgroundPink->getContentSize().height)
-								* 0.5f
-								- s_fMagingRatioOfSpriteBackgroundUser2Profile));
+		auto l_oBackAction =
+				MoveBy::create(s_fTimeCompareAction,
+						Vect(0,
+								-(m_pSpriteBackgroundPink->getContentSize().height)
+										* 0.5f
+										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
 		auto l_oBackActionIsDone = CallFunc::create(
 				std::bind(&LmGameManager::backDone, this));
 		m_pPinkLayer->runAction(
@@ -389,7 +388,8 @@ void LmGameManager::initDashboardInteraction()
 			m_aInteractionSceneOfTheGame.begin();
 			it != m_aInteractionSceneOfTheGame.end(); ++it)
 	{
-		l_pSpriteBuffer = Sprite::create("Ludomuse/GUIElements/interactionNotDone.png");
+		l_pSpriteBuffer = Sprite::create(
+				"Ludomuse/GUIElements/interactionNotDone.png");
 		l_pSpriteBuffer->setAnchorPoint(Vec2(0, 0));
 		l_pSpriteBuffer->setPosition(
 				Vec2((l_iIndex) * s_fMarginBetweenInteraction, 0));
@@ -559,5 +559,5 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 
 void LmGameManager::onReceiving(int b)
 {
-	CCLOG("I received int. Value is: %d",b);
+	CCLOG("I received int. Value is: %d", b);
 }
