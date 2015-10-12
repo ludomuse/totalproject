@@ -42,6 +42,8 @@ public:
 		return m_pUser2;
 	}
 
+	virtual void onGettingPeers(std::vector<std::string>);
+
 private:
 
 	//ATTRIBUTES

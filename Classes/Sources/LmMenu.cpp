@@ -139,8 +139,7 @@ bool LmMenu::logScreen()
 	m_pCheckBoxMale->setSwallowTouches(false);
 	m_pCheckBoxMale->setPosition(
 			Vec2(l_oVisibleSize.width * 0.33, l_oVisibleSize.height * 0.5));
-	m_pCheckBoxMale->addEventListener(
-			CC_CALLBACK_2(LmMenu::maleSelected, this));
+	m_pCheckBoxMale->addEventListener(CC_CALLBACK_2(LmMenu::maleSelected, this));
 	m_pLogLayer->addChild(m_pCheckBoxMale);
 
 	//init checkbox female
@@ -241,15 +240,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pUser2->setPUserName("2nd user");
 		m_pUser2->setPUserTabletName("tablet2_name");
 
-
-		std::vector<std::string> vectorString;
-		vectorString.push_back("test");
-		vectorString.push_back("coucouc");
-		vectorString.push_back("la tablet de jacqui");
-
-
-		makeMenuItemUserTabletName(vectorString);
-
+		m_pWifiDirectFacade->discoverPeers();
 
 		return true;
 
@@ -290,34 +281,36 @@ void LmMenu::femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
 	CCLOG("scan");
-	LmJniCppFacade::getWifiFacade()->discoverPeers();
+	m_pWifiDirectFacade->discoverPeers();
 
-	std::vector<std::string> vectorString;
-	vectorString.push_back("fbdjh");
-	vectorString.push_back("sdfsdf");
-	vectorString.push_back("sdfsdggfd");
-	vectorString.push_back("encore un autre");
+	/*std::vector<std::string> vectorString;
+	 vectorString.push_back("fbdjh");
+	 vectorString.push_back("sdfsdf");
+	 vectorString.push_back("sdfsdggfd");
+	 vectorString.push_back("encore un autre");
 
 
 
-	makeMenuItemUserTabletName(vectorString);
+	 makeMenuItemUserTabletName(vectorString);*/
 }
 
-void LmMenu::makeMenuItemUserTabletName(std::vector<std::string> l_aVectorOfTabletName)
+void LmMenu::makeMenuItemUserTabletName(
+		std::vector<std::string> l_aVectorOfTabletName)
 {
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
 	//reset vector and init with the new vector of string
-	for (std::map<cocos2d::MenuItemImage*,cocos2d::Label*>::iterator it = m_aMenuItemUserTabletName.begin();
+	for (std::map<cocos2d::MenuItemImage*, cocos2d::Label*>::iterator it =
+			m_aMenuItemUserTabletName.begin();
 			it != m_aMenuItemUserTabletName.end(); ++it)
 	{
 		m_pMenuUserTabletName->removeAllChildrenWithCleanup(true);
 	}
 	m_aMenuItemUserTabletName.clear();
 
-	int l_iIndex=0;
+	int l_iIndex = 0;
 	int l_iSize = l_aVectorOfTabletName.size();
 	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
 			it != l_aVectorOfTabletName.end(); ++it)
@@ -325,7 +318,7 @@ void LmMenu::makeMenuItemUserTabletName(std::vector<std::string> l_aVectorOfTabl
 
 		//init label and menuitem associated
 		auto l_pLabel = Label::createWithTTF((*it),
-				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
+				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 		l_pLabel->setColor(Color3B::BLACK);
 		auto l_pMenuItemImage = MenuItemImage::create(
 				"Ludomuse/GUIElements/logNormal.png",
@@ -333,18 +326,33 @@ void LmMenu::makeMenuItemUserTabletName(std::vector<std::string> l_aVectorOfTabl
 				CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
 		l_pMenuItemImage->addChild(l_pLabel);
 
-		m_aMenuItemUserTabletName.insert({l_pMenuItemImage,l_pLabel});
+		m_aMenuItemUserTabletName.insert(
+		{ l_pMenuItemImage, l_pLabel });
 
-		l_pLabel->setAnchorPoint(Vec2(0.5,0.5));
-		l_pLabel->setPosition(Vec2(l_pMenuItemImage->getContentSize().width*0.5,l_pMenuItemImage->getContentSize().height*0.5));
-		l_pLabel->setMaxLineWidth(
-				l_pMenuItemImage->getContentSize().width);
-		l_pMenuItemImage->setAnchorPoint(Vec2(0,0.5));
-		l_pMenuItemImage->setPosition(Vec2(s_fMarginLeftMenu+(l_oVisibleSize.width*l_iIndex)/l_iSize,l_oVisibleSize.height*0.5));
+		l_pLabel->setAnchorPoint(Vec2(0.5, 0.5));
+		l_pLabel->setPosition(
+				Vec2(l_pMenuItemImage->getContentSize().width * 0.5,
+						l_pMenuItemImage->getContentSize().height * 0.5));
+		l_pLabel->setMaxLineWidth(l_pMenuItemImage->getContentSize().width);
+		l_pMenuItemImage->setAnchorPoint(Vec2(0, 0.5));
+		l_pMenuItemImage->setPosition(
+				Vec2(
+						s_fMarginLeftMenu
+								+ (l_oVisibleSize.width * l_iIndex) / l_iSize,
+						l_oVisibleSize.height * 0.5));
 		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
 	}
 
+}
+
+void LmMenu::onGettingPeers(std::vector<std::string> peers)
+{
+	CCLOG("I received a list of peers. List is: ");
+	for (std::vector<std::string>::const_iterator i = peers.begin();
+			i != peers.end(); ++i)
+		CCLOG("%s", (*i).c_str());
+	makeMenuItemUserTabletName(peers);
 }
 
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
@@ -354,7 +362,7 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 	//set user 2 tablet name
 	m_pUser2->setPUserTabletName(l_pLabel->getString());
 
-	CCLOG("tablet name user 2 = %s",m_pUser2->getPUserTabletName().c_str());
+	CCLOG("tablet name user 2 = %s", m_pUser2->getPUserTabletName().c_str());
+	m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
 }
-
 
