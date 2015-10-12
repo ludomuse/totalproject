@@ -39,6 +39,8 @@ public:
 
 	virtual void onReceiving(bytes byteArray){};
 
+	virtual void onReceivingAccuse(){};
+
 	virtual void discoverPeers(){};
 
 	virtual ~WifiObserver()

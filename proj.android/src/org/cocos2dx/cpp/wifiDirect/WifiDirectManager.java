@@ -1075,13 +1075,13 @@ public class WifiDirectManager {
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar)
+			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
 	{
 		SocketHandler
 				.registerCallBackReceiver(onReceiveString, onReceiveInt,
 						onReceiveBool, onReceiveFloat, onReceiveDouble,
 						onReceiveByte, onReceiveLong, onReceiveFile,
-						onReceiveByteArray, onReceiveChar);
+						onReceiveByteArray, onReceiveChar, onReceiveAccuseStaticCallback);
 	}
 
 	private void onConnect()

@@ -96,7 +96,14 @@ public class WifiDirectFacade {
 			onReceiving((Character) vars[0]);
 		}
 	};
-
+	private CallBackMethod cmOnReceiveAccuseStaticCallback = new CallBackMethod() {
+		@Override
+		public void Do(Object... vars)
+		{
+			onReceivingAccuse();
+		}
+	};
+	
 	public WifiDirectFacade(Activity activity)
 	{
 
@@ -105,7 +112,7 @@ public class WifiDirectFacade {
 		WifiDirectManager.registerCallBackReceiver(cmOnReceiveString,
 				cmOnReceiveInt, cmOnReceiveBool, cmOnReceiveFloat,
 				cmOnReceiveDouble, cmOnReceiveByte, cmOnReceiveLong,
-				cmOnReceiveFile, cmOnReceiveByteArray, cmOnReceiveChar);
+				cmOnReceiveFile, cmOnReceiveByteArray, cmOnReceiveChar, cmOnReceiveAccuseStaticCallback);
 
 		_manager = new WifiDirectManager(activity);
 		_manager.initialize();
@@ -165,6 +172,11 @@ public class WifiDirectFacade {
 		JniCppFacade.onReceivingChar(c);
 	}
 
+	public void onReceivingAccuse()
+	{
+		JniCppFacade.onReceivingAccuse();
+	}
+	
 	public void onReceiving(byte b)
 	{
 		JniCppFacade.onReceivingByte(b);

@@ -85,3 +85,9 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingC
 	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(c));
 }
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingAccuse(
+		JNIEnv* env)
+{
+	LmJniCppFacade::getWifiFacade()->onReceivingAccuse();
+}
+

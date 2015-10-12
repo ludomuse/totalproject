@@ -30,12 +30,12 @@ public class SocketHandler {
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar)
+			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
 	{
 		ServerSocketHandler.registerCallBackReceiver(onReceiveString,
 				onReceiveInt, onReceiveBool, onReceiveFloat, onReceiveDouble,
 				onReceiveByte, onReceiveLong, onReceiveFile,
-				onReceiveByteArray, onReceiveChar);
+				onReceiveByteArray, onReceiveChar, onReceiveAccuseStaticCallback);
 	}
 
 	public void resend()

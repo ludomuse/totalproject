@@ -55,6 +55,8 @@ public class JniCppFacade {
 	public static native void onReceivingByte(byte d);
 	
 	public static native void onReceivingBytes(byte[] bytes);
+
+	public static native void onReceivingAccuse();
 	
 		
 }
