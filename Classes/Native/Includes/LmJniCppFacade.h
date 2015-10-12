@@ -17,7 +17,7 @@
 
 extern "C" {
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPeers(
-		JNIEnv* env, jobject thiz, jobject peers);
+		JNIEnv* env, jobject thiz, jstring peers);
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingString(
 		JNIEnv* env, jobject thiz, jstring s);

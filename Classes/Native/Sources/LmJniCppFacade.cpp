@@ -1,4 +1,5 @@
 #include "../Includes/LmJniCppFacade.h"
+#include "cocos2d.h"
 
 WifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
 
@@ -12,8 +13,9 @@ void LmJniCppFacade::setWifiFacade(WifiDirectFacade* wifiFacade) {
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPeers(
 		JNIEnv* env, jobject thiz, jstring peers) {
-	LmJniCppFacade::getWifiFacade()->onGettingPeers(
-			LmJniCppFacade::toSTDStringList(peers, env));
+	CCLOG("cpp method onGettingPeers is called from Java");
+	//LmJniCppFacade::getWifiFacade()->onGettingPeers(
+		//	LmJniCppFacade::toSTDStringList(peers, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingString(
