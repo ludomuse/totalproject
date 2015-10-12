@@ -71,13 +71,16 @@ private:
 	LmUser* m_pUser1;
 	LmUser* m_pUser2;
 
-	//bool to be sure to click one time the play button
-	bool m_bPlayButtonClicked;
+	//to knwo when a role have been picked parent or child
+	bool m_bRoleSelected;
 
 	//to know gender
 
 	cocos2d::ui::CheckBox* m_pCheckBoxMale;
 	cocos2d::ui::CheckBox* m_pCheckBoxFemale;
+
+	cocos2d::ui::CheckBox* m_pCheckBoxParent;
+	cocos2d::ui::CheckBox* m_pCheckBoxChild;
 
 	//stock menuitemlabel
 	std::map<cocos2d::MenuItemImage*,cocos2d::Label*> m_aMenuItemUserTabletName;
@@ -86,13 +89,17 @@ private:
 
 	bool m_bNoGenderSelected;
 
+	cocos2d::ui::ScrollView* m_pScrollView;
+
 	//METHODS
 
 	//callback button methods
 	bool wifiDirectScreen(cocos2d::Ref*);
 
 	//function to end menu by sending a custom event
-	bool menuIsFinished(cocos2d::Ref*);
+	void ready(cocos2d::Ref*);
+	void menuIsFinished();
+
 
 	//callback method of splashscreen
 	bool logScreen();
@@ -101,12 +108,15 @@ private:
 	void maleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 	void femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
+	void parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
+	void childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
+
 	void scan(cocos2d::Ref*);
 	void updateUser2NameTablet(cocos2d::Ref*);
 
 	void makeMenuItemUserTabletName(std::vector<std::string> );
 
-	void test();
+
 
 
 
