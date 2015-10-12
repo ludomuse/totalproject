@@ -105,6 +105,8 @@ private:
 
 	void makeMenuItemUserTabletName(std::vector<std::string> );
 
+	void test();
+
 
 
 };
