@@ -77,8 +77,9 @@ private:
 	cocos2d::ui::CheckBox* m_pCheckBoxFemale;
 
 	//stock menuitemlabel
-	std::vector<cocos2d::MenuItemLabel*> m_aMenuItemLabels;
+	std::map<cocos2d::MenuItemImage*,cocos2d::Label*> m_aMenuItemUserTabletName;
 	cocos2d::Menu* m_pMenu;
+	cocos2d::Menu* m_pMenuUserTabletName;
 
 	bool m_bNoGenderSelected;
 
@@ -100,7 +101,7 @@ private:
 	void scan(cocos2d::Ref*);
 	void updateUser2NameTablet(cocos2d::Ref*);
 
-	void makeMenuItemLabel(std::vector<std::string> );
+	void makeMenuItemUserTabletName(std::vector<std::string> );
 
 
 
