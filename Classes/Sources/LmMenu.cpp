@@ -211,6 +211,11 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenu, 1);
 
+		//create menu for the list of user
+		m_pMenuUserTabletName = Menu::create();
+		m_pMenuUserTabletName->setPosition(Vec2::ZERO);
+		m_pWifiLayer->addChild(m_pMenuUserTabletName, 1);
+
 		//TODO find peers and set attributes and instanciate socket
 
 		//tablet are connected create both user
@@ -243,7 +248,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		vectorString.push_back("la tablet de jacqui");
 
 
-		makeMenuItemLabel(vectorString);
+		makeMenuItemUserTabletName(vectorString);
 
 
 		return true;
@@ -295,35 +300,48 @@ void LmMenu::scan(cocos2d::Ref* l_pSender)
 
 
 
-	makeMenuItemLabel(vectorString);
+	makeMenuItemUserTabletName(vectorString);
 }
 
-void LmMenu::makeMenuItemLabel(std::vector<std::string> l_aVectorOfTabletName)
+void LmMenu::makeMenuItemUserTabletName(std::vector<std::string> l_aVectorOfTabletName)
 {
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
 	//reset vector and init with the new vector of string
-	for (std::vector<cocos2d::MenuItemLabel*>::iterator it = m_aMenuItemLabels.begin();
-			it != m_aMenuItemLabels.end(); ++it)
+	for (std::map<cocos2d::MenuItemImage*,cocos2d::Label*>::iterator it = m_aMenuItemUserTabletName.begin();
+			it != m_aMenuItemUserTabletName.end(); ++it)
 	{
-		m_pMenu->removeChild((*it),true);
-		(*it)->release();
+		m_pMenuUserTabletName->removeAllChildrenWithCleanup(true);
 	}
-	m_aMenuItemLabels.clear();
+	m_aMenuItemUserTabletName.clear();
 
 	int l_iIndex=0;
 	int l_iSize = l_aVectorOfTabletName.size();
 	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
 			it != l_aVectorOfTabletName.end(); ++it)
 	{
+
+		//init label and menuitem associated
 		auto l_pLabel = Label::createWithTTF((*it),
 				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width*0.04);
 		l_pLabel->setColor(Color3B::BLACK);
-		auto l_pMenuItemLabel = MenuItemLabel::create(l_pLabel,CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
-		l_pMenuItemLabel->setPosition(Vec2(s_fMarginLeftMenu+(l_oVisibleSize.width*l_iIndex)/l_iSize,l_oVisibleSize.height*0.5));
-		m_pMenu->addChild(l_pMenuItemLabel);
+		auto l_pMenuItemImage = MenuItemImage::create(
+				"Ludomuse/GUIElements/logNormal.png",
+				"Ludomuse/GUIElements/logPressed.png",
+				CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
+		l_pMenuItemImage->addChild(l_pLabel);
+
+		m_aMenuItemUserTabletName.insert({l_pMenuItemImage,l_pLabel});
+
+		l_pLabel->setAnchorPoint(Vec2(0.5,0.5));
+		l_pLabel->setPosition(Vec2(l_pMenuItemImage->getContentSize().width*0.5,l_pMenuItemImage->getContentSize().height*0.5));
+		l_pLabel->setMaxLineWidth(
+				l_pMenuItemImage->getContentSize().width);
+		l_pMenuItemImage->setAnchorPoint(Vec2(0,0.5));
+		l_pMenuItemImage->setPosition(Vec2(s_fMarginLeftMenu+(l_oVisibleSize.width*l_iIndex)/l_iSize,l_oVisibleSize.height*0.5));
+		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
 	}
 
@@ -331,10 +349,10 @@ void LmMenu::makeMenuItemLabel(std::vector<std::string> l_aVectorOfTabletName)
 
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 {
-	auto l_pMenuItemPressed = dynamic_cast<MenuItemLabel*>(p_Sender);
-	auto l_lLabel = dynamic_cast<Label*>(l_pMenuItemPressed->getLabel());
+	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);
+	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pMenuItemPressed)->second;
 	//set user 2 tablet name
-	m_pUser2->setPUserTabletName(l_lLabel->getString());
+	m_pUser2->setPUserTabletName(l_pLabel->getString());
 
 	CCLOG("tablet name user 2 = %s",m_pUser2->getPUserTabletName().c_str());
 }
