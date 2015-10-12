@@ -314,6 +314,9 @@ void LmGameManager::runGame()
 	Director::getInstance()->replaceScene(
 			TransitionFade::create(s_fTimeBetweenLmLayer, m_pGameManagerScene));
 
+	//test
+	CCLOG("%s",m_pUser1->getPUserName().c_str());
+
 }
 
 void LmGameManager::compare()
