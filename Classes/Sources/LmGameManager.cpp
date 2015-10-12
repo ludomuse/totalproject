@@ -561,3 +561,8 @@ void LmGameManager::onReceiving(int b)
 {
 	CCLOG("I received int. Value is: %d", b);
 }
+
+void LmGameManager::onReceivingAccuse()
+{
+	CCLOG("I received an accuse");
+}

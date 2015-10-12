@@ -42,6 +42,8 @@ public:
 
 	void onReceiving(bytes byteArray);
 
+	void onReceivingAccuse();
+
 	void discoverPeers();
 
 	void connectTo(std::string deviceName);

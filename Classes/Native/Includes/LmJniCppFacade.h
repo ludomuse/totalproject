@@ -50,6 +50,9 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingC
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingByte(
 		JNIEnv* env, jobject thiz, jbyte byte);
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingAccuse(
+		JNIEnv* env);
+
 }
 ;
 

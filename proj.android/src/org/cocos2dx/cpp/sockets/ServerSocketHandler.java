@@ -281,7 +281,13 @@ class Communication implements Runnable {
 		if (onReceiveAccuseCallBack != null)
 		{
 			onReceiveAccuseCallBack.Do();
-			onReceiveAccuseCallBack = null;
+			onReceiveAccuseCallBack = null;//we want the callback to be call only one time
+		}
+		if(onReceiveAccuseStaticCallback != null)
+		{
+			//accuse static callback differ from accuse callback
+			//by the fact it can be call more than one time
+			onReceiveAccuseStaticCallback.Do();
 		}
 		//we are not more waiting for an accuse...
 		isWaitingForAccuse = false;
@@ -579,13 +585,14 @@ class Communication implements Runnable {
 	private static CallBackMethod onReceiveFile = null;
 	private static CallBackMethod onReceiveByteArray = null;
 	private static CallBackMethod onReceiveChar = null;
+	private static CallBackMethod onReceiveAccuseStaticCallback = null;
 
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
 			CallBackMethod onReceiveInt, CallBackMethod onReceiveBool,
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar)
+			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
 	{
 		Communication.onReceiveString = onReceiveString;
 		Communication.onReceiveInt = onReceiveInt;
@@ -597,6 +604,7 @@ class Communication implements Runnable {
 		Communication.onReceiveFile = onReceiveFile;
 		Communication.onReceiveByteArray = onReceiveByteArray;
 		Communication.onReceiveChar = onReceiveChar;
+		Communication.onReceiveAccuseStaticCallback = onReceiveAccuseStaticCallback;
 	}
 
 }
@@ -764,13 +772,13 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar)
+			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
 	{
 		Communication
 				.registerCallBackReceiver(onReceiveString, onReceiveInt,
 						onReceiveBool, onReceiveFloat, onReceiveDouble,
 						onReceiveByte, onReceiveLong, onReceiveFile,
-						onReceiveByteArray, onReceiveChar);
+						onReceiveByteArray, onReceiveChar, onReceiveAccuseStaticCallback);
 	}
 
 	public void stopHandlers()

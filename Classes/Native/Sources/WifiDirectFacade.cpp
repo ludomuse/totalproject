@@ -107,6 +107,15 @@ void WifiDirectFacade::onReceiving(bytes byteArray) {
 	}
 }
 
+void WifiDirectFacade::onReceivingAccuse() {
+	list<WifiObserver*>::const_iterator lit(_observers.begin());
+	list<WifiObserver*>::const_iterator lend(_observers.end());
+	for (; lit != lend; ++lit) {
+		WifiObserver* tps = (*lit);
+		tps->onReceivingAccuse();
+	}
+}
+
 void WifiDirectFacade::discoverPeers() {
 
 	LmJniJavaFacade::discoverPeers();

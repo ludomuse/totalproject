@@ -45,6 +45,7 @@ public:
 
 	virtual void onReceiving(int);
 
+	virtual void onReceivingAccuse();
 
 private:
 
