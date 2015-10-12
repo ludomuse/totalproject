@@ -558,8 +558,3 @@ void LmGameManager::onReceiving(int b)
 {
 	CCLOG("I received int. Value is: %d",b);
 }
-
-void LmGameManager::onGettingPeers(std::vector<std::string> peers)
-{
-	CCLOG("I received a list of peers");
-}

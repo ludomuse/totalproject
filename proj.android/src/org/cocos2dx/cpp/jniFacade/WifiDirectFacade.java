@@ -182,6 +182,7 @@ public class WifiDirectFacade {
 
 	public void connectTo(String deviceName)
 	{
+		DebugManager.print("peer is: " + deviceName, WifiDirectManager.DEBUGGER_CHANNEL);
 		_manager.setPeerName(deviceName);
 	}
 

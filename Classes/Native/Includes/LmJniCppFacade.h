@@ -12,6 +12,7 @@
 #include "../cocos2d/cocos/platform/android/jni/JniHelper.h"
 #include <string>
 #include <vector>
+#include <sstream>
 #include "../../JSONParser/Includes/LmJParserWifiDirect.h"
 #include "WifiDirectFacade.h"
 
@@ -104,11 +105,26 @@ public:
 	inline static std::vector<std::string> toSTDStringList(jstring jstr,
 			JNIEnv* env) {
 		std::string str = toCObject(jstr, env);
-		LmJParserWifiDirect parser = LmJParserWifiDirect();
-		return parser.ParseJSONDeviceOperation(str);
+		return split(str, '-');
 	}
 
 private:
+	inline static std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	    std::stringstream ss(s);
+	    std::string item;
+	    while (std::getline(ss, item, delim)) {
+	        elems.push_back(item);
+	    }
+	    return elems;
+	}
+
+
+	inline static std::vector<std::string> split(const std::string &s, char delim) {
+	    std::vector<std::string> elems;
+	    split(s, delim, elems);
+	    return elems;
+	}
+
 	static WifiDirectFacade* _wifiDirectFacade;
 };
 
