@@ -32,6 +32,10 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 	m_pSpriteSplashScreen = nullptr;
 	m_pSpriteWifiBackground = nullptr;
 	m_pWifiLayer = nullptr;
+	m_pMenuUserTabletName=nullptr;
+	m_pMenu=nullptr;
+	m_pCheckBoxFemale=nullptr;
+	m_pCheckBoxMale=nullptr;
 
 	//primitive type
 	m_bPlayButtonClicked = false; //the play has not been clicked yet
@@ -40,9 +44,8 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 
 LmMenu::~LmMenu()
 {
-	//we don't user because gamemanger get pointer on them and it's him which is gonna to delete them
+	//we don't delete user here because gamemanger get pointer on them and it's him which is gonna to delete them
 
-	//release the editbox
 	m_pLogEditBox->release();
 }
 
@@ -117,15 +120,13 @@ bool LmMenu::logScreen()
 	m_pLogEditBox->setFontColor(Color3B::BLACK);
 	m_pLogEditBox->setMaxLength(s_iMaxLenghtUserName);
 	m_pLogEditBox->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
+	m_pLogEditBox->retain();
 
 	//test
 	m_pLogEditBox->setText("P");
 
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
-	//the string which contain the user name is contain is an autorelease object editbox and will disapear when use in the gamemanager
-	//we retain it here to release it in the destructor
-	m_pLogEditBox->retain();
 
 	// create menu, it's an autorelease object
 	auto l_oMenu = Menu::create(l_oLogButton, nullptr);
@@ -352,7 +353,8 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);
 	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pMenuItemPressed)->second;
 	//set user 2 tablet name
-	m_pUser2->setPUserTabletName(l_pLabel->getString());
+	std::string l_sBufferString = l_pLabel->getString().c_str();
+	m_pUser2->setPUserTabletName(l_sBufferString);
 
 	CCLOG("tablet name user 2 = %s",m_pUser2->getPUserTabletName().c_str());
 }
