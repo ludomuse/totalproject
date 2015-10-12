@@ -8,72 +8,97 @@
 #ifndef WIFIDIRECTFACADE_H_
 #define WIFIDIRECTFACADE_H_
 
-
 #include <vector>
 #include <list>
 #include "../Includes/helpers.h"
-#include "../Includes/WifiObserver.h"
 #include <string>
 
+class WifiObserver;
+
 class WifiDirectFacade {
-public:
+	public:
 
-	WifiDirectFacade();
+		enum SEND_F
+		{
+			SEND_INT,
+			SEND_FLOAT,
+			SEND_LONG,
+			SEND_DOUBLE,
+			SEND_FILE,
+			SEND_CHAR,
+			SEND_BYTE,
+			SEND_BYTES
+		};
 
-	void onGettingPeers(std::vector<std::string> peers);
+		WifiDirectFacade();
 
-	void onReceiving(std::string s);
+		void onGettingPeers(std::vector<std::string> peers);
 
-	void onReceiving(int i);
+		void onReceiving(std::string s);
 
-	void onReceiving(bool b);
+		void onReceiving(int i);
 
-	void onReceiving(long l);
+		void onReceiving(bool b);
 
-	void onReceivingFile(std::string path);
+		void onReceiving(long l);
 
-	void onReceiving(double d);
+		void onReceivingFile(std::string path);
 
-	void onReceiving(float f);
+		void onReceiving(double d);
 
-	void onReceiving(char c);
+		void onReceiving(float f);
 
-	void onReceivingByte(byte b);
+		void onReceiving(char c);
 
-	void onReceiving(bytes byteArray);
+		void onReceivingByte(byte b);
 
-	void onReceivingAccuse();
+		void onReceiving(bytes byteArray);
 
-	void discoverPeers();
+		void onReceivingAccuse();
 
-	void connectTo(std::string deviceName);
+		void discoverPeers();
 
-	void send(std::string s);
+		void connectTo(std::string deviceName);
 
-	void send(int i);
+		void send(std::string s);
 
-	void send(bool b);
+		void send(int i);
 
-	void send(long l);
+		void send(bool b);
 
-	void sendFile(std::string filePath);
+		void send(long l);
 
-	void send(double d);
+		void sendFile(std::string filePath);
 
-	void send(float f);
+		void send(double d);
 
-	void send(char c);
+		void send(float f);
 
-	void sendByte(byte b);
+		void send(char c);
 
-	void sendBytes(bytes bytes);
+		void sendByte(byte b);
 
-	int addObserver(WifiObserver* wo);
+		void sendBytes(bytes bytes);
 
-	void removeObserver(int index);
+		void group(int size, SEND_F* send_functions, void** params);
 
-private:
-	std::list<WifiObserver*> _observers;
+		int addObserver(WifiObserver* wo);
+
+		void removeObserver(int index);
+
+		void sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
+
+	private:
+
+		void sendNextInGroup();
+
+		bool _isSendingGroup = false;
+		int _groupSize = -1;
+		int _currentGroupIndex = -1;
+		SEND_F* _groupMethod;
+		void** _params;
+
+		std::list<WifiObserver*> _observers;
 };
 
 #endif /* WIFIDIRECTFACADE_H_ */

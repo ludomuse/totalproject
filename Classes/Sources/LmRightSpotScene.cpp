@@ -6,6 +6,7 @@
  */
 
 #include "../Include/LmRightSpotScene.h"
+#include "../Native/Includes/helpers.h"
 
 using namespace cocos2d;
 
@@ -454,7 +455,7 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 			CCLOG("we send the %d gamecomponent",
 					m_aIdTable.find(m_iBufferId)->first);
 
-			LmJniCppFacade::getWifiFacade()->send(m_iBufferId);
+			LmJniCppFacade::getWifiFacade()->sendEvent(m_iBufferId == 5 ? LmEvent::E1 : LmEvent::E2, WifiDirectFacade::SEND_F::SEND_INT, &m_iBufferId);
 
 			//move gamecomponent
 			setPositionInSendingArea(m_iBufferId);

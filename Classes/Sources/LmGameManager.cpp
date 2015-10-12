@@ -2,6 +2,7 @@
 #define COCOS2D_DEBUG 1
 
 #include "../Include/LmGameManager.h"
+#include "../Native/Includes/WifiObserver.h"
 
 USING_NS_CC;
 
@@ -559,7 +560,8 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 
 void LmGameManager::onReceiving(int b)
 {
-	CCLOG("I received int. Value is: %d",b);
+	CCLOG("I received int. Value is: %d and Event is %d", b, _event);
+
 }
 
 void LmGameManager::onReceivingAccuse()

@@ -10,6 +10,7 @@
 
 #include "../Include/LmMenu.h"
 
+
 USING_NS_CC;
 using namespace cocos2d::ui;
 
@@ -374,4 +375,5 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 
 	CCLOG("tablet name user 2 = %s", m_pUser2->getPUserTabletName().c_str());
 	m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
+	m_pWifiDirectFacade->send("");
 }
