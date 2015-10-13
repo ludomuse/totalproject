@@ -75,7 +75,6 @@ private:
 	bool m_bRoleSelected;
 	//to know when we are connected to someone
 	bool m_bConnected;
-
 	//to know when ready or not
 	bool m_bReady;
 
@@ -86,7 +85,6 @@ private:
 
 	cocos2d::ui::CheckBox* m_pCheckBoxMale;
 	cocos2d::ui::CheckBox* m_pCheckBoxFemale;
-
 	cocos2d::ui::CheckBox* m_pCheckBoxParent;
 	cocos2d::ui::CheckBox* m_pCheckBoxChild;
 

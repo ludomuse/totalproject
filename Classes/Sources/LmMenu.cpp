@@ -295,7 +295,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			int l_iBufferValue = 3;
 			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,
 					WifiDirectFacade::SEND_INT, &l_iBufferValue);
-			CCLOG("send msg to the second tablet");
+			CCLOG("send msg to %s",m_pUser2->getPUserTabletName().c_str());
 			//menuIsFinished();
 		}
 	}
@@ -372,10 +372,11 @@ void LmMenu::scan(cocos2d::Ref* l_pSender)
 void LmMenu::makeMenuItemUserTabletName(
 		std::vector<std::string> l_aVectorOfTabletName)
 {
+	CCLOG("0");
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
-
+	CCLOG("1");
 	//reset vector and init with the new vector of string
 	for (std::map<cocos2d::MenuItemImage*, cocos2d::Label*>::iterator it =
 			m_aMenuItemUserTabletName.begin();
@@ -384,13 +385,15 @@ void LmMenu::makeMenuItemUserTabletName(
 		m_pMenuUserTabletName->removeAllChildrenWithCleanup(true);
 	}
 	m_aMenuItemUserTabletName.clear();
+
+	//make
 	int l_iIndex = 0;
 	int l_iLine = 0;
 	int l_iSize = l_aVectorOfTabletName.size();
 	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
 			it != l_aVectorOfTabletName.end(); ++it)
 	{
-
+		CCLOG("2");
 		//init label and menuitem associated
 		auto l_pLabel = Label::createWithTTF((*it),
 				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
@@ -409,7 +412,7 @@ void LmMenu::makeMenuItemUserTabletName(
 				Vec2(l_pMenuItemImage->getContentSize().width * 0.5,
 						l_pMenuItemImage->getContentSize().height * 0.5));
 		l_pLabel->setMaxLineWidth(l_pMenuItemImage->getContentSize().width);
-
+		CCLOG("3");
 		l_pMenuItemImage->addChild(l_pLabel);
 		m_aMenuItemUserTabletName.insert(
 		{ l_pMenuItemImage, l_pLabel });
@@ -422,9 +425,10 @@ void LmMenu::makeMenuItemUserTabletName(
 			l_iLine++;
 			l_iIndex = 0;
 		}
+		CCLOG("4");
 		l_pMenuItemImage->setPosition(
 				Vec2(s_fMarginLeftMenu + (l_fWidthButton * l_iIndex),
-						l_oVisibleSize.height * 0.8
+						l_oVisibleSize.height * 0.9
 								- (l_iLine * l_fHeightButton)));
 		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
@@ -459,6 +463,9 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 					CallFunc::create(
 							std::bind(&LmMenu::makeMenuItemUserTabletName, this,
 									peers)), nullptr));
+
+
+	CCLOG("after launching delay");
 
 }
 
