@@ -266,6 +266,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 
 	if (m_bRoleSelected)
 	{
+
 		menuIsFinished();
 	}
 
@@ -420,6 +421,7 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 	CCLOG("tablet name user 2 = %s", m_pUser2->getPUserTabletName().c_str());
 	m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
 
-	//
 }
+
+
 

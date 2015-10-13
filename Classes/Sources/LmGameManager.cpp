@@ -297,7 +297,7 @@ bool LmGameManager::initDashboard()
 	m_pPlayNextInteractionButton->setTouchEnabled(true);
 	m_pPlayNextInteractionButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pPlayNextInteractionButton->setPosition(
-			Vec2(m_pSpriteBandMid->getContentSize().width,
+			Vec2(m_pSpriteBandMid->getContentSize().width*0.5,
 					m_pSpriteBandMid->getContentSize().height * 0.5f));
 	m_pPlayNextInteractionButton->addTouchEventListener(
 			CC_CALLBACK_0(LmGameManager::runNextInteraction, this));
