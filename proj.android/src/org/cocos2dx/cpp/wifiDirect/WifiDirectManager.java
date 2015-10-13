@@ -905,7 +905,7 @@ public class WifiDirectManager {
 	{
 		if (socket.isDettachedFromRemoteHost())
 		{
-			if (_deviceList == null || _deviceList.size() == 0)
+			if (_allDeviceList == null || _allDeviceList.size() == 0)
 			{
 				DebugManager
 						.print("Peers are not discovered yet. Launching required service",
