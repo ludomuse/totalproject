@@ -221,14 +221,18 @@ public class WifiDirectManager {
 
 	};
 
+	public boolean keepAliveConnection = false;
+	
 	public void stopServerNotificator()
 	{
-		notificator.removeCallbacks(notificatorTask);
+		if(keepAliveConnection)
+			notificator.removeCallbacks(notificatorTask);
 	}
 
 	public void rearmServerNotificator()
 	{
-		notificator.postDelayed(notificatorTask, 5000);
+		if(keepAliveConnection)
+			notificator.postDelayed(notificatorTask, 5000);
 	}
 
 	public void clear()
@@ -539,6 +543,8 @@ public class WifiDirectManager {
 
 	private boolean requestForServiceRequestPeersAlreadyLaunched = false;
 
+	public boolean enabledAutoRelanchingServiceDiscoverPeers = false;
+	
 	public void launchServiceRequestPeers()
 	{
 		if (requestForServiceRequestPeersAlreadyLaunched)
@@ -563,7 +569,7 @@ public class WifiDirectManager {
 					
 					int previousSize = _deviceList.size();
 
-					if (peers.getDeviceList().size() < previousSize)
+					if (enabledAutoRelanchingServiceDiscoverPeers && peers.getDeviceList().size() < previousSize)
 					{
 						DebugManager
 								.print("requestPeers service seems not stable. We try to relaunch it...",
