@@ -63,6 +63,7 @@ private:
 	//title of the application
 	std::string m_sFilenameSpriteSplashScreen;
 
+
 	//our vector of Scene
 	std::vector<LmInteractionScene*> m_aInteractionSceneOfTheGame;
 

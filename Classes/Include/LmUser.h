@@ -10,7 +10,12 @@
 #ifndef CLASSES_SOURCES_LMUSER_H_
 #define CLASSES_SOURCES_LMUSER_H_
 
-#include "string"
+#include <string>
+#include <sstream>
+
+//for debug
+#include "cocos2d.h"
+
 
 class LmUser
 {
@@ -19,6 +24,9 @@ public:
 
 	LmUser();
 	~LmUser();
+
+	//use for the serialization
+	const char m_cSeparator = '|';
 
 	std::string getPUserName() const
 	{
@@ -67,13 +75,29 @@ public:
 		m_bMale = bMale;
 	}
 
+	std::string getUserSerialized();
+
+	void setUser(std::string l_sUserSerialized);
+
+
 private:
 
+	//ATTRIBUTES
 	std::string m_pUserName;
 	std::string m_pUserTabletName;
 	int m_iScore;
 	bool m_bParent;
 	bool m_bMale;
+
+	//METHODS
+	inline std::string boolToString(bool b)
+	{
+		return b ? "true" : "false";
+	}
+
+	bool stringToBool(std::string);
+	int stringToInt(std::string );
+
 
 };
 
