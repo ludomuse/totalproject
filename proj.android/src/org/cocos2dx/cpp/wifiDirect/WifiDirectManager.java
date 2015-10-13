@@ -348,9 +348,10 @@ public class WifiDirectManager {
 
 	private boolean requestForConnectionAlreadyLaunched = false;
 
+	public boolean forceConnectionRequest = true;
 	public void connectToPeer(String peerName, CallBackMethod cmPeerConnected)
 	{
-		if (requestForConnectionAlreadyLaunched)
+		if (!forceConnectionRequest && requestForConnectionAlreadyLaunched)
 		{
 			DebugManager
 					.print("request for connection already launched. Please wait.",
@@ -359,6 +360,9 @@ public class WifiDirectManager {
 		}
 		else
 		{
+			DebugManager
+			.print("launching request for connection...",
+					DEBUGGER_CHANNEL);
 			requestForConnectionAlreadyLaunched = true;
 		}
 		
@@ -877,6 +881,7 @@ public class WifiDirectManager {
 	void onConnectionChanged(Intent intent)
 	{
 
+		requestForConnectionAlreadyLaunched = false;
 		// Respond to new connection or disconnections
 		if (_manager == null)
 		{
@@ -1123,6 +1128,7 @@ public class WifiDirectManager {
 		});
 	}
 
+	public boolean autoReconnect = true;
 	private void onDisconnect(NetworkInfo ni)
 	{
 		socket.notifyIsDisconnectedFromNetwork();
@@ -1139,7 +1145,8 @@ public class WifiDirectManager {
 				DEBUGGER_CHANNEL);
 		DebugManager.print("-> network is roaming = " + ni.isRoaming(),
 				DEBUGGER_CHANNEL);
-		reconnectToPeer();
+		if(autoReconnect)
+			reconnectToPeer();
 	}
 
 	public Activity getActivity()
