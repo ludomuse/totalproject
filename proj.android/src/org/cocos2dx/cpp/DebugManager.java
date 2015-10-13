@@ -32,7 +32,7 @@ public class DebugManager {
 	public static final boolean askForImmortalToast = false;
 
 	public static boolean append = false;
-	public static boolean displayExtraInfo = true;
+	public static boolean displayExtraInfo = false;
 
 	public static Activity activity;
 
