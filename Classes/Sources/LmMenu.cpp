@@ -295,7 +295,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			int l_iBufferValue = 3;
 			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,
 					WifiDirectFacade::SEND_INT, &l_iBufferValue);
-			CCLOG("send msg to %s",m_pUser2->getPUserTabletName().c_str());
+			CCLOG("send msg to %s", m_pUser2->getPUserTabletName().c_str());
 			//menuIsFinished();
 		}
 	}
@@ -376,7 +376,6 @@ void LmMenu::makeMenuItemUserTabletName(
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
-	CCLOG("1");
 	//reset vector and init with the new vector of string
 	for (std::map<cocos2d::MenuItemImage*, cocos2d::Label*>::iterator it =
 			m_aMenuItemUserTabletName.begin();
@@ -393,15 +392,14 @@ void LmMenu::makeMenuItemUserTabletName(
 	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
 			it != l_aVectorOfTabletName.end(); ++it)
 	{
-		CCLOG("2");
 		//init label and menuitem associated
 		auto l_pLabel = Label::createWithTTF((*it),
-				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
+				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 		l_pLabel->setColor(Color3B::BLACK);
 
 		auto l_pMenuItemImage = MenuItemImage::create(
-				"Ludomuse/GUIElements/logNormal.png",
-				"Ludomuse/GUIElements/logPressed.png",
+				"Ludomuse/GUIElements/playNormal.png",
+				"Ludomuse/GUIElements/playPressed.png",
 				CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
 
 		float l_fWidthButton = l_pMenuItemImage->getContentSize().width;
@@ -411,8 +409,7 @@ void LmMenu::makeMenuItemUserTabletName(
 		l_pLabel->setPosition(
 				Vec2(l_pMenuItemImage->getContentSize().width * 0.5,
 						l_pMenuItemImage->getContentSize().height * 0.5));
-		l_pLabel->setMaxLineWidth(l_pMenuItemImage->getContentSize().width);
-		CCLOG("3");
+		l_pLabel->setMaxLineWidth(l_fWidthButton);
 		l_pMenuItemImage->addChild(l_pLabel);
 		m_aMenuItemUserTabletName.insert(
 		{ l_pMenuItemImage, l_pLabel });
@@ -425,7 +422,6 @@ void LmMenu::makeMenuItemUserTabletName(
 			l_iLine++;
 			l_iIndex = 0;
 		}
-		CCLOG("4");
 		l_pMenuItemImage->setPosition(
 				Vec2(s_fMarginLeftMenu + (l_fWidthButton * l_iIndex),
 						l_oVisibleSize.height * 0.9
@@ -457,13 +453,12 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 	CCLOG("Before making menuitem image");
 
 	//wait a while to leave this method before update interface
-	auto delay = DelayTime::create(0.1);
-	m_pWifiLayer->runAction(
+	auto delay = DelayTime::create(1);
+	m_pLmMenuScene->runAction(
 			Sequence::create(delay,
 					CallFunc::create(
 							std::bind(&LmMenu::makeMenuItemUserTabletName, this,
 									peers)), nullptr));
-
 
 	CCLOG("after launching delay");
 
