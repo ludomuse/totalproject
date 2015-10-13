@@ -330,6 +330,7 @@ public class WifiDirectManager {
 
 	public void reconnectToPeer()
 	{
+		connectToPeer(lastPeerName, _cmPeerConnected);
 		/*
 		 * Handler handler = new Handler();
 		 * DebugManager.print("Trying to reconnect to peer",
@@ -1138,7 +1139,7 @@ public class WifiDirectManager {
 				DEBUGGER_CHANNEL);
 		DebugManager.print("-> network is roaming = " + ni.isRoaming(),
 				DEBUGGER_CHANNEL);
-		// reconnectToPeer();
+		reconnectToPeer();
 	}
 
 	public Activity getActivity()
