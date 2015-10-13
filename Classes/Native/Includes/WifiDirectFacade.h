@@ -60,35 +60,40 @@ class WifiDirectFacade {
 
 		void connectTo(std::string deviceName);
 
-		void send(std::string s);
+		bool send(std::string s);
 
-		void send(int i);
+		bool send(int i);
 
-		void send(bool b);
+		bool send(bool b);
 
-		void send(long l);
+		bool send(long l);
 
-		void sendFile(std::string filePath);
+		bool sendFile(std::string filePath);
 
-		void send(double d);
+		bool send(double d);
 
-		void send(float f);
+		bool send(float f);
 
-		void send(char c);
+		bool send(char c);
 
-		void sendByte(byte b);
+		bool sendByte(byte b);
 
-		void sendBytes(bytes bytes);
+		bool sendBytes(bytes bytes);
 
-		void group(int size, SEND_F* send_functions, void** params);
+		bool group(int size, SEND_F* send_functions, void** params);
 
 		int addObserver(WifiObserver* wo);
 
 		void removeObserver(int index);
 
-		void sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
+		bool sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
 
 	private:
+
+		inline bool canSend()
+		{
+			return !_isSendingGroup && !_isSending;
+		}
 
 		void sendNextInGroup();
 
@@ -98,6 +103,7 @@ class WifiDirectFacade {
 		SEND_F* _groupMethod;
 		void** _params;
 
+		bool _isSending = false;
 		std::list<WifiObserver*> _observers;
 };
 

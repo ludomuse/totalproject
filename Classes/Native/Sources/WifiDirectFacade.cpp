@@ -133,6 +133,7 @@ void WifiDirectFacade::onReceiving(bytes byteArray)
 
 void WifiDirectFacade::onReceivingAccuse()
 {
+	_isSending = false;
 	if (_isSendingGroup)
 	{
 		sendNextInGroup();
@@ -158,54 +159,114 @@ void WifiDirectFacade::connectTo(string deviceName)
 	LmJniJavaFacade::connectTo(deviceName);
 }
 
-void WifiDirectFacade::send(string s)
+bool WifiDirectFacade::send(string s)
 {
-	LmJniJavaFacade::send(s);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(s);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::send(int i)
+bool WifiDirectFacade::send(int i)
 {
-	LmJniJavaFacade::send(i);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(i);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::send(bool b)
+bool WifiDirectFacade::send(bool b)
 {
-	LmJniJavaFacade::send(b);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(b);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::send(long l)
+bool WifiDirectFacade::send(long l)
 {
-	LmJniJavaFacade::send(l);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(l);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::sendFile(string filePath)
+bool WifiDirectFacade::sendFile(string filePath)
 {
-	LmJniJavaFacade::sendFile(filePath);
+	if(canSend())
+	{
+		LmJniJavaFacade::sendFile(filePath);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::send(double d)
+bool WifiDirectFacade::send(double d)
 {
-	LmJniJavaFacade::send(d);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(d);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::send(float f)
+bool WifiDirectFacade::send(float f)
 {
-	LmJniJavaFacade::send(f);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(f);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::send(char c)
+bool WifiDirectFacade::send(char c)
 {
-	LmJniJavaFacade::send(c);
+	if(canSend())
+	{
+		LmJniJavaFacade::send(c);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::sendByte(byte b)
+bool WifiDirectFacade::sendByte(byte b)
 {
-	LmJniJavaFacade::sendByte(b);
+	if(canSend())
+	{
+		LmJniJavaFacade::sendByte(b);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::sendBytes(bytes bytes)
+bool WifiDirectFacade::sendBytes(bytes bytes)
 {
-	LmJniJavaFacade::sendBytes(bytes);
+	if(canSend())
+	{
+		LmJniJavaFacade::sendBytes(bytes);
+		_isSending = true;
+		return true;
+	}
+	return false;
 }
 
 int WifiDirectFacade::addObserver(WifiObserver* wo)
@@ -260,22 +321,27 @@ void WifiDirectFacade::sendNextInGroup()
 
 }
 
-void WifiDirectFacade::group(int size, SEND_F* send_functions, void** params)
+bool WifiDirectFacade::group(int size, SEND_F* send_functions, void** params)
 {
-	_isSendingGroup = true;
-	_groupSize = size;
-	_currentGroupIndex = 0;
-	_groupMethod = send_functions;
-	_params = params;
-	sendNextInGroup();
+	if(canSend())
+	{
+		_isSendingGroup = true;
+		_groupSize = size;
+		_currentGroupIndex = 0;
+		_groupMethod = send_functions;
+		_params = params;
+		sendNextInGroup();
+		return true;
+	}
+	return false;
 }
 
-void WifiDirectFacade::sendEvent(event e, WifiDirectFacade::SEND_F method,
+bool WifiDirectFacade::sendEvent(event e, WifiDirectFacade::SEND_F method,
 		void* arg)
 {
 	WifiDirectFacade::SEND_F* functions = new WifiDirectFacade::SEND_F[2]
 	{ WifiDirectFacade::SEND_F::SEND_BYTE, method };
 	void** params = new void*[2]
 	{ &e, arg };
-	group(2, functions, params);
+	return group(2, functions, params);
 }
