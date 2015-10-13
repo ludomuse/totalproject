@@ -345,3 +345,16 @@ bool WifiDirectFacade::sendEvent(event e, WifiDirectFacade::SEND_F method,
 	{ &e, arg };
 	return group(2, functions, params);
 }
+
+bool WifiDirectFacade::sendEvent(event e, int size, const WifiDirectFacade::SEND_F* methods,
+		const void** args)
+{
+	WifiDirectFacade::SEND_F* functions = new WifiDirectFacade::SEND_F[size + 1];
+	functions[0] = WifiDirectFacade::SEND_F::SEND_BYTE;
+	memcpy((void*) functions[1], (const void*) methods[0], size);
+
+	void** params = new void*[size + 1];
+	params[0] = &e;
+	memcpy(params[1], args[0], size);
+	return group(size + 1, functions, params);
+}

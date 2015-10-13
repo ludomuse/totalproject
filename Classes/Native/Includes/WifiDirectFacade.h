@@ -88,6 +88,9 @@ class WifiDirectFacade {
 
 		bool sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
 
+		bool sendEvent(event e, int size, const WifiDirectFacade::SEND_F* method,
+				const void** args);
+
 	private:
 
 		inline bool canSend()

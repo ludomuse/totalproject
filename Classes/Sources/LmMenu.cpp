@@ -266,7 +266,8 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 
 	if (m_bRoleSelected)
 	{
-		LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,WifiDirectFacade::SEND_INT,&3);
+		int value = 3;
+		LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,WifiDirectFacade::SEND_INT,&value);
 		menuIsFinished();
 	}
 
