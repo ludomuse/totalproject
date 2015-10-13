@@ -36,10 +36,13 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 	m_pMenu = nullptr;
 	m_pCheckBoxFemale = nullptr;
 	m_pCheckBoxMale = nullptr;
+	m_pSpriteReadyIndicator = nullptr;
 
 	//primitive type
 	m_bNoGenderSelected = true;
 	m_bRoleSelected = false;
+	m_bConnected = false;
+	m_bReady = false;
 
 }
 
@@ -187,28 +190,39 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				l_oVisibleSize.height / 2 + l_oOrigin.y);
 		m_pWifiLayer->addChild(m_pSpriteWifiBackground);
 
-		//Play button
-		auto l_oPlayButton = MenuItemImage::create(
+		//sprite to indicate if ready or not
+		m_pSpriteReadyIndicator = Sprite::create(
+				"Ludomuse/GUIElements/nextButtonPressed.png");
+		m_pSpriteReadyIndicator->setAnchorPoint(Vec2(1, 0.5));
+		m_pSpriteReadyIndicator->setPosition(
+				Vec2(l_oVisibleSize.width - s_fMarginLeftMenu,
+						l_oVisibleSize.height * 0.2f));
+		m_pWifiLayer->addChild(m_pSpriteReadyIndicator);
+
+		//ready button
+		auto l_pReadyButton = MenuItemImage::create(
 				"Ludomuse/GUIElements/playNormal.png",
 				"Ludomuse/GUIElements/playPressed.png",
 				CC_CALLBACK_1(LmMenu::ready, this));
-		l_oPlayButton->setAnchorPoint(Point(0.5, 0));
-		l_oPlayButton->setPosition(
-				Vect(l_oVisibleSize.width * 0.5f,
-						l_oVisibleSize.height * 0.1f));
+		l_pReadyButton->setAnchorPoint(Point(1, 0.5));
+		l_pReadyButton->setPosition(
+				Vec2(
+						l_oVisibleSize.width - s_fMarginLeftMenu
+								- m_pSpriteReadyIndicator->getContentSize().width,
+						l_oVisibleSize.height * 0.2f));
 
-		//scan button
-		auto l_oScanButton = MenuItemImage::create(
+		//refresh button
+		auto l_pRefreshButton = MenuItemImage::create(
 				"Ludomuse/GUIElements/logNormal.png",
 				"Ludomuse/GUIElements/logPressed.png",
 				CC_CALLBACK_1(LmMenu::scan, this));
-		l_oScanButton->setAnchorPoint(Point(0.5, 0));
-		l_oScanButton->setPosition(
+		l_pRefreshButton->setAnchorPoint(Point(0.5, 0.5));
+		l_pRefreshButton->setPosition(
 				Vect(l_oVisibleSize.width * 0.5f,
-						l_oVisibleSize.height * 0.7f));
+						l_oVisibleSize.height * 0.2f));
 
 		// create menu, it's an autorelease object
-		m_pMenu = Menu::create(l_oPlayButton, l_oScanButton, nullptr);
+		m_pMenu = Menu::create(l_pReadyButton, l_pRefreshButton, nullptr);
 		m_pMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenu, 1);
 
@@ -217,6 +231,34 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pMenuUserTabletName->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenuUserTabletName, 1);
 
+		//init checkbox parent
+		m_pCheckBoxParent = CheckBox::create(
+				"Ludomuse/GUIElements/logNormal.png",
+				"Ludomuse/GUIElements/logPressed.png");
+		m_pCheckBoxParent->setTouchEnabled(true);
+		m_pCheckBoxParent->setSwallowTouches(false);
+		m_pCheckBoxParent->setAnchorPoint(Vec2(0, 0.5));
+		m_pCheckBoxParent->setPosition(
+				Vec2(s_fMarginLeftMenu, l_oVisibleSize.height * 0.2));
+		m_pCheckBoxParent->addEventListener(
+				CC_CALLBACK_2(LmMenu::parentSelected, this));
+		m_pWifiLayer->addChild(m_pCheckBoxParent);
+
+		//init checkbox child
+		m_pCheckBoxChild = CheckBox::create(
+				"Ludomuse/GUIElements/playNormal.png",
+				"Ludomuse/GUIElements/playPressed.png");
+		m_pCheckBoxChild->setTouchEnabled(true);
+		m_pCheckBoxChild->setSwallowTouches(false);
+		m_pCheckBoxChild->setAnchorPoint(Vec2(0, 0.5));
+		m_pCheckBoxChild->setPosition(
+				Vec2(
+						s_fMarginLeftMenu
+								+ m_pCheckBoxParent->getCustomSize().width,
+						l_oVisibleSize.height * 0.2));
+		m_pCheckBoxChild->addEventListener(
+				CC_CALLBACK_2(LmMenu::childSelected, this));
+		m_pWifiLayer->addChild(m_pCheckBoxChild);
 
 		//TODO find peers and set attributes and instanciate socket
 //////////////////////////////////////////////////////////////////
@@ -229,30 +271,6 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pUser2->setPUserName("2nd user");
 		m_pUser2->setPUserTabletName("tablet2_name");
 /////////////////////////////////////////////////////////////////
-		//init checkbox parent
-		m_pCheckBoxParent = CheckBox::create(
-				"Ludomuse/GUIElements/logNormal.png",
-				"Ludomuse/GUIElements/logPressed.png");
-		m_pCheckBoxParent->setTouchEnabled(true);
-		m_pCheckBoxParent->setSwallowTouches(false);
-		m_pCheckBoxParent->setPosition(
-				Vec2(l_oVisibleSize.width * 0.33, l_oVisibleSize.height * 0.2));
-		m_pCheckBoxParent->addEventListener(
-				CC_CALLBACK_2(LmMenu::parentSelected, this));
-		m_pWifiLayer->addChild(m_pCheckBoxParent);
-
-		//init checkbox child
-		m_pCheckBoxChild = CheckBox::create(
-				"Ludomuse/GUIElements/playNormal.png",
-				"Ludomuse/GUIElements/playPressed.png");
-		m_pCheckBoxChild->setTouchEnabled(true);
-		m_pCheckBoxChild->setSwallowTouches(false);
-		m_pCheckBoxChild->setPosition(
-				Vec2(l_oVisibleSize.width * 0.66, l_oVisibleSize.height * 0.2));
-		m_pCheckBoxChild->addEventListener(
-				CC_CALLBACK_2(LmMenu::childSelected, this));
-		m_pWifiLayer->addChild(m_pCheckBoxChild);
-
 
 		m_pWifiDirectFacade->discoverPeers();
 
@@ -263,12 +281,31 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
-
-	if (m_bRoleSelected)
+	if (!m_bReady)
 	{
-		int value = 3;
-		LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,WifiDirectFacade::SEND_INT,&value);
-		menuIsFinished();
+		//can't be ready if no role selected and no user 2 choose
+		if (m_bRoleSelected && m_bConnected)
+		{
+			//wer are ready
+			m_bReady = true;
+
+			m_pSpriteReadyIndicator->setTexture(
+					"Ludomuse/GUIElements/nextButtonNormal.png");
+
+			int l_iBufferValue = 3;
+			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,
+					WifiDirectFacade::SEND_INT, &l_iBufferValue);
+			CCLOG("send msg to the second tablet");
+			//menuIsFinished();
+		}
+	}
+	else
+	{
+		//not ready anymore
+		m_bReady = false;
+
+		m_pSpriteReadyIndicator->setTexture(
+				"Ludomuse/GUIElements/nextButtonPressed.png");
 	}
 
 }
@@ -330,7 +367,6 @@ void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
 	CCLOG("scan");
 	m_pWifiDirectFacade->discoverPeers();
-	m_pWifiDirectFacade->send("");
 }
 
 void LmMenu::makeMenuItemUserTabletName(
@@ -348,8 +384,8 @@ void LmMenu::makeMenuItemUserTabletName(
 		m_pMenuUserTabletName->removeAllChildrenWithCleanup(true);
 	}
 	m_aMenuItemUserTabletName.clear();
-
 	int l_iIndex = 0;
+	int l_iLine = 0;
 	int l_iSize = l_aVectorOfTabletName.size();
 	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
 			it != l_aVectorOfTabletName.end(); ++it)
@@ -359,34 +395,40 @@ void LmMenu::makeMenuItemUserTabletName(
 		auto l_pLabel = Label::createWithTTF((*it),
 				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 		l_pLabel->setColor(Color3B::BLACK);
+
 		auto l_pMenuItemImage = MenuItemImage::create(
 				"Ludomuse/GUIElements/logNormal.png",
 				"Ludomuse/GUIElements/logPressed.png",
 				CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
 
-		float l_fWidthButton  = l_pMenuItemImage->getContentSize().width;
-
-		l_pMenuItemImage->addChild(l_pLabel);
-
-		m_aMenuItemUserTabletName.insert(
-		{ l_pMenuItemImage, l_pLabel });
+		float l_fWidthButton = l_pMenuItemImage->getContentSize().width;
+		float l_fHeightButton = l_pMenuItemImage->getContentSize().height;
 
 		l_pLabel->setAnchorPoint(Vec2(0.5, 0.5));
 		l_pLabel->setPosition(
 				Vec2(l_pMenuItemImage->getContentSize().width * 0.5,
 						l_pMenuItemImage->getContentSize().height * 0.5));
 		l_pLabel->setMaxLineWidth(l_pMenuItemImage->getContentSize().width);
+
+		l_pMenuItemImage->addChild(l_pLabel);
+		m_aMenuItemUserTabletName.insert(
+		{ l_pMenuItemImage, l_pLabel });
+
 		l_pMenuItemImage->setAnchorPoint(Vec2(0, 0.5));
+
+		if (s_fMarginLeftMenu + (l_fWidthButton * l_iIndex + 1)
+				> l_oVisibleSize.width - s_fMarginLeftMenu - l_fWidthButton)
+		{
+			l_iLine++;
+			l_iIndex = 0;
+		}
 		l_pMenuItemImage->setPosition(
-				Vec2(
-						s_fMarginLeftMenu
-								+ (l_fWidthButton * l_iIndex),
-						l_oVisibleSize.height * 0.5));
+				Vec2(s_fMarginLeftMenu + (l_fWidthButton * l_iIndex),
+						l_oVisibleSize.height * 0.8
+								- (l_iLine * l_fHeightButton)));
 		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
 	}
-
-
 
 }
 
@@ -399,10 +441,19 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 		CCLOG("%s", (*i).c_str());
 	}
 
+	peers.push_back("1");
+	peers.push_back("2");
+	peers.push_back("3");
+	peers.push_back("4");
+	peers.push_back("5");
+	peers.push_back("6");
+	peers.push_back("7");
+	peers.push_back("8");
 
+	CCLOG("Before making menuitem image");
 
 	//wait a while to leave this method before update interface
-	auto delay = DelayTime::create(0);
+	auto delay = DelayTime::create(0.1);
 	m_pWifiLayer->runAction(
 			Sequence::create(delay,
 					CallFunc::create(
@@ -416,13 +467,12 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);
 	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pMenuItemPressed)->second;
 	//set user 2 tablet name
-	std::string l_sBufferString = l_pLabel->getString().c_str();
-	m_pUser2->setPUserTabletName(l_sBufferString);
+	m_pUser2->setPUserTabletName(l_pLabel->getString().c_str());
 
-	CCLOG("tablet name user 2 = %s", m_pUser2->getPUserTabletName().c_str());
+	CCLOG("connect to  %s", m_pUser2->getPUserTabletName().c_str());
 	m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
+	m_pWifiDirectFacade->send("");
 
+	m_bConnected = true;
 }
-
-
 

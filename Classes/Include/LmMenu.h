@@ -18,7 +18,7 @@
 
 static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;
-static const float s_fMarginLeftMenu = 100.0f;
+static const float s_fMarginLeftMenu = 70.0f;
 //filename sprite
 static const std::string s_sFilenameSpriteBackground = "Ludomuse/Background/splash.png";
 static const std::string s_sFilenameSplash = "Ludomuse/Background/splash.png";
@@ -73,6 +73,14 @@ private:
 
 	//to knwo when a role have been picked parent or child
 	bool m_bRoleSelected;
+	//to know when we are connected to someone
+	bool m_bConnected;
+
+	//to know when ready or not
+	bool m_bReady;
+
+	//sprite to indicate when ready
+	cocos2d::Sprite* m_pSpriteReadyIndicator;
 
 	//to know gender
 
