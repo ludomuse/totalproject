@@ -17,7 +17,6 @@ LmUser::LmUser()
 
 	//pointer
 
-
 }
 
 LmUser::~LmUser()
