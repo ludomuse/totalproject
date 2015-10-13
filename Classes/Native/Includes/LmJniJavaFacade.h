@@ -9,7 +9,7 @@
 
 class LmJniJavaFacade {
 
-public:
+private:
 
 	static void send(std::string s);
 
@@ -82,6 +82,8 @@ public:
 	LmJniJavaFacade();
 
 	virtual ~LmJniJavaFacade();
+
+	friend class WifiDirectFacade;
 
 };
 

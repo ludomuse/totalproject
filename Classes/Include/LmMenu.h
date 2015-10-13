@@ -14,6 +14,7 @@
 #include "ui/CocosGUI.h"
 #include "LmUser.h"
 #include "../Native/Includes/LmJniCppFacade.h"
+#include "../Native/Includes/WifiObserver.h"
 
 static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;

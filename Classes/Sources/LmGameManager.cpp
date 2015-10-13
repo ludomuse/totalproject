@@ -559,7 +559,7 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 
 void LmGameManager::onReceiving(int b)
 {
-	CCLOG("I received int. Value is: %d", b);
+	CCLOG("I received int. Value is: %d and Event is %d", b, _event);
 }
 
 void LmGameManager::onReceivingAccuse()

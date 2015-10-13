@@ -11,42 +11,100 @@
 #include <vector>
 #include <string>
 #include "../Includes/helpers.h"
+#include "WifiDirectFacade.h"
+#include "LmJniCppFacade.h"
 
 class WifiObserver {
 
-public:
-	//attributs
+	protected:
+		event _event;
+		WifiDirectFacade* _wifiFacade;
 
-	virtual void onGettingPeers(std::vector<std::string> peers){};
+	public:
+		//attributs
 
-	virtual void onReceiving(std::string s){};
+		WifiObserver()
+		{
+			_wifiFacade = LmJniCppFacade::getWifiFacade();
+		}
 
-	virtual void onReceiving(int i){};
 
-	virtual void onReceiving(bool b){};
+		virtual void onGettingPeers(std::vector<std::string> peers)
+		{
+		}
+		;
 
-	virtual void onReceiving(long l){};
+		virtual void onReceiving(std::string s)
+		{
+		}
+		;
 
-	virtual void onReceivingFile(std::string path){};
+		virtual void onReceiving(int i)
+		{
+		}
+		;
 
-	virtual void onReceiving(double d){};
+		virtual void onReceiving(bool b)
+		{
+		}
+		;
 
-	virtual void onReceiving(float f){};
+		virtual void onReceiving(long l)
+		{
+		}
+		;
 
-	virtual void onReceiving(char c){};
+		virtual void onReceivingFile(std::string path)
+		{
+		}
+		;
 
-	virtual void onReceivingByte(byte byte){};
+		virtual void onReceiving(double d)
+		{
+		}
+		;
 
-	virtual void onReceiving(bytes byteArray){};
+		virtual void onReceiving(float f)
+		{
+		}
+		;
 
-	virtual void onReceivingAccuse(){};
+		virtual void onReceiving(char c)
+		{
+		}
+		;
 
-	virtual void discoverPeers(){};
+		void onReceivingByte(event byte)
+		{
+			_event = byte;
+			onReceivingEvent();
+		}
 
-	virtual ~WifiObserver()
-	{
+		virtual void onReceivingEvent()
+		{
+		}
+		;
 
-	}
+		virtual void onReceiving(bytes byteArray)
+		{
+		}
+		;
+
+		virtual void onReceivingAccuse()
+		{
+		}
+		;
+
+		virtual void discoverPeers()
+		{
+		}
+		;
+
+		virtual ~WifiObserver()
+		{
+
+		}
+
 };
 
 #endif /* WIFIOBSERVER_H_ */

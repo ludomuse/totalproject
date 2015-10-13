@@ -329,7 +329,7 @@ void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
 	CCLOG("scan");
 	m_pWifiDirectFacade->discoverPeers();
-
+	m_pWifiDirectFacade->send("");
 }
 
 void LmMenu::makeMenuItemUserTabletName(
