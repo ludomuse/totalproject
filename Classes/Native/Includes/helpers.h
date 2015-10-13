@@ -10,20 +10,27 @@
 
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))
 
-
-
 typedef char byte;
 typedef byte event;
 
 struct LmEvent
 {
-	static const event E1 = 0;
+	/*
+	 * the parameter is the user serialized it's indicate thta he is ready to begin a session
+	 */
+	static const event UserIsReady = 0;
+	/*
+	 *
+	 */
+	static const event E1 = 1;
+
 	static const event E2 = 1;
 };
 
 typedef struct LmEvent LmEvent;
 
-struct bytes {
+struct bytes
+{
 	byte* data;
 	int len;
 };

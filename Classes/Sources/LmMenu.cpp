@@ -293,10 +293,10 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			m_pSpriteReadyIndicator->setTexture(
 					"Ludomuse/GUIElements/nextButtonNormal.png");
 
-			int l_iBufferValue = 3;
-			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,
-					WifiDirectFacade::SEND_INT, &l_iBufferValue);
-			CCLOG("send msg to %s", m_pUser2->getPUserTabletName().c_str());
+			std::string l_sBufferValue =  m_pUser1->getUserSerialized();
+			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::UserIsReady,
+					WifiDirectFacade::SEND_STRING,&l_sBufferValue);
+			CCLOG("send msg {%s} to %s",l_sBufferValue.c_str(), m_pUser2->getPUserTabletName().c_str());
 			//menuIsFinished();
 		}
 	}

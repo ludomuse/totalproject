@@ -102,11 +102,11 @@ bool LmUser::stringToBool(std::string string)
 {
 	bool result;
 
-	if (strcmp("true", string.c_str()))
+	if (!strcmp("true", string.c_str()))
 	{
 		result = true;
 	}
-	else if (strcmp("false", string.c_str()))
+	else if (!strcmp("false", string.c_str()))
 	{
 		result = false;
 	}
