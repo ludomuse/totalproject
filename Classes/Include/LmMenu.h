@@ -78,6 +78,9 @@ private:
 	//to know when ready or not
 	bool m_bReady;
 
+	//to sync makebuttonmenuitem
+	bool m_bMakeMenuItemUserTabletNameDone;
+
 	//sprite to indicate when ready
 	cocos2d::Sprite* m_pSpriteReadyIndicator;
 

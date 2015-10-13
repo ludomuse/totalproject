@@ -43,6 +43,7 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 	m_bRoleSelected = false;
 	m_bConnected = false;
 	m_bReady = false;
+	m_bMakeMenuItemUserTabletNameDone = false;
 
 }
 
@@ -430,6 +431,8 @@ void LmMenu::makeMenuItemUserTabletName(
 		l_iIndex++;
 	}
 
+	m_bMakeMenuItemUserTabletNameDone=true;
+
 }
 
 void LmMenu::onGettingPeers(std::vector<std::string> peers)
@@ -452,8 +455,10 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 
 	CCLOG("Before making menuitem image");
 
+	m_bMakeMenuItemUserTabletNameDone = false;
+
 	//wait a while to leave this method before update interface
-	auto delay = DelayTime::create(1);
+	auto delay = DelayTime::create(0);
 	m_pLmMenuScene->runAction(
 			Sequence::create(delay,
 					CallFunc::create(
@@ -462,6 +467,12 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 
 	CCLOG("after launching delay");
 
+	//wait the makemenuitem to finish button
+	while(!m_bMakeMenuItemUserTabletNameDone)
+	{
+	}
+
+	CCLOG("done");
 }
 
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
