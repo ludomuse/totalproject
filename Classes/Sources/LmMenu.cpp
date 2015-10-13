@@ -431,7 +431,7 @@ void LmMenu::makeMenuItemUserTabletName(
 		l_iIndex++;
 	}
 
-	m_bMakeMenuItemUserTabletNameDone=true;
+	m_bMakeMenuItemUserTabletNameDone = true;
 
 }
 
@@ -468,7 +468,7 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 	CCLOG("after launching delay");
 
 	//wait the makemenuitem to finish button
-	while(!m_bMakeMenuItemUserTabletNameDone)
+	while (!m_bMakeMenuItemUserTabletNameDone)
 	{
 	}
 
@@ -479,13 +479,24 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 {
 	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);
 	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pMenuItemPressed)->second;
-	//set user 2 tablet name
-	m_pUser2->setPUserTabletName(l_pLabel->getString().c_str());
+	const char* l_sDeviceName = l_pLabel->getString().c_str();
 
-	CCLOG("connect to  %s", m_pUser2->getPUserTabletName().c_str());
-	m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
-	m_pWifiDirectFacade->send("");
+	//if we don't click the same device name
+	if (strcmp(l_sDeviceName, m_pUser2->getPUserTabletName().c_str()))
+	{
+		//set user 2 tablet name
+		m_pUser2->setPUserTabletName(l_sDeviceName);
 
-	m_bConnected = true;
+		CCLOG("connect to  %s", m_pUser2->getPUserTabletName().c_str());
+		m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
+
+		m_bConnected = true;
+
+		if (m_bReady)
+		{
+			ready(nullptr);
+		}
+	}
+
 }
 
