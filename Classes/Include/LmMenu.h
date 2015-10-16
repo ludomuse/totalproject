@@ -123,6 +123,26 @@ private:
 
 	void makeMenuItemUserTabletName(std::vector<std::string> );
 
+	//when we receive a string
+	void onReceiving(std::string );
+
+	//block input
+	void inputEnabled(bool );
+
+	//get the tablet name of the user 1
+	std::string getUser1TabletName();
+
+	//callback methods of events
+	void onUserIsReadyEvent(std::string);
+	void onCompatibleToPlayEvent(std::string);
+	void onPlayEvent(std::string );
+
+
+
+
+
+
+
 
 
 
