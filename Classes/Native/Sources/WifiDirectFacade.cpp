@@ -131,23 +131,6 @@ void WifiDirectFacade::onReceiving(bytes byteArray)
 	}
 }
 
-void WifiDirectFacade::onReceivingAccuse()
-{
-	_isSending = false;
-	if (_isSendingGroup)
-	{
-		sendNextInGroup();
-		return;
-	}
-	list<WifiObserver*>::const_iterator lit(_observers.begin());
-	list<WifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		WifiObserver* tps = (*lit);
-		tps->onReceivingAccuse();
-	}
-}
-
 void WifiDirectFacade::discoverPeers()
 {
 
@@ -159,114 +142,56 @@ void WifiDirectFacade::connectTo(string deviceName)
 	LmJniJavaFacade::connectTo(deviceName);
 }
 
-bool WifiDirectFacade::send(string s)
+void WifiDirectFacade::send(string s)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(s);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::send(s);
 }
 
-bool WifiDirectFacade::send(int i)
+void WifiDirectFacade::send(int i)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(i);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	CCLOG("sending int");
+	LmJniJavaFacade::send(i);
 }
 
-bool WifiDirectFacade::send(bool b)
+void WifiDirectFacade::send(bool b)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(b);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::send(b);
 }
 
-bool WifiDirectFacade::send(long l)
+void WifiDirectFacade::send(long l)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(l);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::send(l);
 }
 
-bool WifiDirectFacade::sendFile(string filePath)
+void WifiDirectFacade::sendFile(string filePath)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::sendFile(filePath);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::sendFile(filePath);
 }
 
-bool WifiDirectFacade::send(double d)
+void WifiDirectFacade::send(double d)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(d);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::send(d);
 }
 
-bool WifiDirectFacade::send(float f)
+void WifiDirectFacade::send(float f)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(f);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::send(f);
 }
 
-bool WifiDirectFacade::send(char c)
+void WifiDirectFacade::send(char c)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::send(c);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::send(c);
 }
 
-bool WifiDirectFacade::sendByte(byte b)
+void WifiDirectFacade::sendByte(byte b)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::sendByte(b);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	CCLOG("sending byte");
+	LmJniJavaFacade::sendByte(b);
 }
 
-bool WifiDirectFacade::sendBytes(bytes bytes)
+void WifiDirectFacade::sendBytes(bytes bytes)
 {
-	if(canSend())
-	{
-		LmJniJavaFacade::sendBytes(bytes);
-		_isSending = true;
-		return true;
-	}
-	return false;
+	LmJniJavaFacade::sendBytes(bytes);
 }
 
 int WifiDirectFacade::addObserver(WifiObserver* wo)
@@ -282,63 +207,47 @@ void WifiDirectFacade::removeObserver(int index)
 	_observers.erase(it);
 }
 
-void WifiDirectFacade::sendNextInGroup()
+void WifiDirectFacade::group(int size, SEND_F* send_functions, void** params)
 {
-	SEND_F function = _groupMethod[_currentGroupIndex];
-	void* param = _params[_currentGroupIndex];
-	_currentGroupIndex++;
-	if (_currentGroupIndex >= _groupSize)
+	CCLOG("sending group");
+	for (int i = 0; i < size; i++)
 	{
-		_isSendingGroup = false;
+		SEND_F function = send_functions[i];
+		void* param = params[i];
+		switch (function)
+		{
+		case SEND_INT:
+			send(PTR_TO_OBJ(param, int));
+			break;
+			case SEND_FLOAT:
+			send(PTR_TO_OBJ(param, float));
+			break;
+			case SEND_DOUBLE:
+			send(PTR_TO_OBJ(param, int));
+			break;
+			case SEND_FILE:
+			sendFile(PTR_TO_OBJ(param, std::string));
+			break;
+			case SEND_CHAR:
+			send(PTR_TO_OBJ(param, char));
+			break;
+			case SEND_BYTE:
+			sendByte(PTR_TO_OBJ(param, byte));
+			break;
+			case SEND_LONG:
+			send(PTR_TO_OBJ(param, long));
+			break;
+			case SEND_BYTES:
+			sendBytes(PTR_TO_OBJ(param, bytes));
+			break;
+		}
 	}
-	switch (function)
-	{
-	case SEND_INT:
-		send(PTR_TO_OBJ(param, int));
-		break;
-		case SEND_FLOAT:
-		send(PTR_TO_OBJ(param, float));
-		break;
-		case SEND_DOUBLE:
-		send(PTR_TO_OBJ(param, int));
-		break;
-		case SEND_FILE:
-		sendFile(PTR_TO_OBJ(param, std::string));
-		break;
-		case SEND_CHAR:
-		send(PTR_TO_OBJ(param, char));
-		break;
-		case SEND_BYTE:
-		sendByte(PTR_TO_OBJ(param, byte));
-		break;
-		case SEND_LONG:
-		send(PTR_TO_OBJ(param, long));
-		break;
-		case SEND_BYTES:
-		sendBytes(PTR_TO_OBJ(param, bytes));
-		break;
-	}
-
 }
 
-bool WifiDirectFacade::group(int size, SEND_F* send_functions, void** params)
-{
-	if(canSend())
-	{
-		_isSendingGroup = true;
-		_groupSize = size;
-		_currentGroupIndex = 0;
-		_groupMethod = send_functions;
-		_params = params;
-		sendNextInGroup();
-		return true;
-	}
-	return false;
-}
-
-bool WifiDirectFacade::sendEvent(event e, WifiDirectFacade::SEND_F method,
+void WifiDirectFacade::sendEvent(event e, WifiDirectFacade::SEND_F method,
 		void* arg)
 {
+	CCLOG("sending event");
 	WifiDirectFacade::SEND_F* functions = new WifiDirectFacade::SEND_F[2]
 	{ WifiDirectFacade::SEND_F::SEND_BYTE, method };
 	void** params = new void*[2]
@@ -346,8 +255,8 @@ bool WifiDirectFacade::sendEvent(event e, WifiDirectFacade::SEND_F method,
 	return group(2, functions, params);
 }
 
-bool WifiDirectFacade::sendEvent(event e, int size, const WifiDirectFacade::SEND_F* methods,
-		const void** args)
+void WifiDirectFacade::sendEvent(event e, int size,
+		const WifiDirectFacade::SEND_F* methods, const void** args)
 {
 	WifiDirectFacade::SEND_F* functions = new WifiDirectFacade::SEND_F[size + 1];
 	functions[0] = WifiDirectFacade::SEND_F::SEND_BYTE;

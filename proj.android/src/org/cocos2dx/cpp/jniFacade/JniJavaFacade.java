@@ -55,6 +55,7 @@ public class JniJavaFacade {
 
 	public static void sendByte(byte b)
 	{
+		DebugManager.print("send byte is called from c++", WifiDirectManager.DEBUGGER_CHANNEL);
 		_wifiDirectFacade.send(b);
 	}
 

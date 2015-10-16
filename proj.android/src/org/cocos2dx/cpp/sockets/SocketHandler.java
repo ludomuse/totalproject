@@ -1,28 +1,27 @@
 package org.cocos2dx.cpp.sockets;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+
 public class SocketHandler {
 
 	private ClientSocketHandler client;
 	private ServerSocketHandler server;
 
-	private String lastMethodName;
-	private Object[] args;
-	private Class<?>[] parameterTypes;
 
 	private int listenningPort;
+	private MailBox mailBox;
 
 	public SocketHandler(int bufferLen, int listenningPort)
 	{
 		client = new ClientSocketHandler(bufferLen);
 		this.listenningPort = listenningPort;
+		mailBox = new MailBox(client);
 	}
 
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
@@ -30,42 +29,14 @@ public class SocketHandler {
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
+			CallBackMethod onReceiveChar)
 	{
 		ServerSocketHandler.registerCallBackReceiver(onReceiveString,
 				onReceiveInt, onReceiveBool, onReceiveFloat, onReceiveDouble,
 				onReceiveByte, onReceiveLong, onReceiveFile,
-				onReceiveByteArray, onReceiveChar, onReceiveAccuseStaticCallback);
+				onReceiveByteArray, onReceiveChar);
 	}
 
-	public void resend()
-	{
-		try
-		{
-			getClass().getMethod(lastMethodName, parameterTypes).invoke(this,
-					args);
-		}
-		catch (IllegalAccessException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IllegalArgumentException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (InvocationTargetException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (NoSuchMethodException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	public boolean isConnected()
 	{
@@ -102,101 +73,57 @@ public class SocketHandler {
 
 	public void send(File f)
 	{
-		lastMethodName = "send";
-		args = new Object[] { f };
-		parameterTypes = new Class<?>[] { File.class };
-		server.waitForAccuse();
-		client.send(f);
+		mailBox.post("send", f, File.class);
 	}
 	
 	public void send(byte[] bytes)
 	{
-		lastMethodName = "send";
-		args = new Object[] { bytes };
-		parameterTypes = new Class<?>[] { byte[].class };
-		server.waitForAccuse();
-		client.sendBytes(bytes);
+		mailBox.post("sendBytes", bytes, byte[].class);
 	}
 	
 	public void send(double d)
 	{
-		lastMethodName = "send";
-		args = new Object[] { d };
-		parameterTypes = new Class<?>[] { Double.class };
-		server.waitForAccuse();
-		client.send(d);
+		mailBox.post("send", d, double.class);
 	}
 	
 	public void send(long l)
 	{
-		lastMethodName = "send";
-		args = new Object[] { l };
-		parameterTypes = new Class<?>[] { Long.class };
-		server.waitForAccuse();
-		client.send(l);
+		mailBox.post("send", l, long.class);
 	}
 	
 	public void send(float f)
 	{
-		lastMethodName = "send";
-		args = new Object[] { f };
-		parameterTypes = new Class<?>[] { Float.class };
-		server.waitForAccuse();
-		client.send(f);
+		mailBox.post("send", f, float.class);
 	}
 
 	public void send(byte b)
 	{
-		lastMethodName = "send";
-		args = new Object[] { b };
-		parameterTypes = new Class<?>[] { Byte.class };
-		server.waitForAccuse();
-		client.send(b);
+		mailBox.post("send", b, byte.class);
 	}
 
 	public void send(char c)
 	{
-		lastMethodName = "send";
-		args = new Object[] { c };
-		parameterTypes = new Class<?>[] { Character.class };
-		server.waitForAccuse();
-		client.send(c);
+		mailBox.post("send", c, char.class);
 	}
 
 	public void send(int i)
 	{
-		lastMethodName = "send";
-		args = new Object[] { i };
-		parameterTypes = new Class<?>[] { Integer.class };
-		server.waitForAccuse();
-		client.send(i);
+		mailBox.post("send", i, int.class);
 	}
 
 	public void send(boolean b)
 	{
-		lastMethodName = "send";
-		args = new Object[] { b };
-		parameterTypes = new Class<?>[] { Boolean.class };
-		server.waitForAccuse();
-		client.send(b);
+		mailBox.post("send", b, boolean.class);
 	}
 
 	public void send(String str)
 	{
-		lastMethodName = "send";
-		args = new Object[] { str };
-		parameterTypes = new Class<?>[] { String.class };
-		server.waitForAccuse();
-		client.send(str);
+		mailBox.post("send", str, String.class);
 	}
 
-	public void sendIP()
+	private void sendIP()
 	{
-		lastMethodName = "sendIP";
-		args = new Object[] {};
-		parameterTypes = new Class<?>[] {};
-		server.waitForAccuse();
-		client.sendIP(listenningPort);
+		mailBox.post("sendIP", listenningPort, int.class, 0);
 	}
 
 	public void sendAccuse()
@@ -269,22 +196,34 @@ public class SocketHandler {
 		server.setOnReceiveIPCallBack(cm);
 	}
 
-	public void setRemoteHost(String hostAddress, int listenningPort2)
+	void setRemoteHost(String hostAddress, int listenningPort)
 	{
+		this.listenningPort = listenningPort;
 		client.setRemoteHost(hostAddress, listenningPort);
-
 	}
 
-	public void setOnReceiveAccuseCallBack(CallBackMethod cm)
+	public void connectTo(String hostAddress)
 	{
-		server.setOnReceiveAccuseCallBack(cm);
+		setRemoteHost(hostAddress, listenningPort);
+		sendIP();
+		send();
 	}
-
+	
 	public void stopHandlers()
 	{
 		if (server != null)
 			server.stopHandlers();
 		if (client != null)
 			client.stopHandlers();
+	}
+
+	void send()
+	{
+		mailBox.send();
+	}
+	
+	void sendNext()
+	{
+		mailBox.sendNext();
 	}
 }

@@ -54,59 +54,43 @@ class WifiDirectFacade {
 
 		void onReceiving(bytes byteArray);
 
-		void onReceivingAccuse();
-
 		void discoverPeers();
 
 		void connectTo(std::string deviceName);
 
-		bool send(std::string s);
+		void send(std::string s);
 
-		bool send(int i);
+		void send(int i);
 
-		bool send(bool b);
+		void send(bool b);
 
-		bool send(long l);
+		void send(long l);
 
-		bool sendFile(std::string filePath);
+		void sendFile(std::string filePath);
 
-		bool send(double d);
+		void send(double d);
 
-		bool send(float f);
+		void send(float f);
 
-		bool send(char c);
+		void send(char c);
 
-		bool sendByte(byte b);
+		void sendByte(byte b);
 
-		bool sendBytes(bytes bytes);
+		void sendBytes(bytes bytes);
 
-		bool group(int size, SEND_F* send_functions, void** params);
+		void group(int size, SEND_F* send_functions, void** params);
 
 		int addObserver(WifiObserver* wo);
 
 		void removeObserver(int index);
 
-		bool sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
+		void sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
 
-		bool sendEvent(event e, int size, const WifiDirectFacade::SEND_F* method,
+		void sendEvent(event e, int size, const WifiDirectFacade::SEND_F* method,
 				const void** args);
 
 	private:
 
-		inline bool canSend()
-		{
-			return !_isSendingGroup && !_isSending;
-		}
-
-		void sendNextInGroup();
-
-		bool _isSendingGroup = false;
-		int _groupSize = -1;
-		int _currentGroupIndex = -1;
-		SEND_F* _groupMethod;
-		void** _params;
-
-		bool _isSending = false;
 		std::list<WifiObserver*> _observers;
 };
 

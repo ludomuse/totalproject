@@ -90,11 +90,6 @@ class WifiObserver {
 		}
 		;
 
-		virtual void onReceivingAccuse()
-		{
-		}
-		;
-
 		virtual void discoverPeers()
 		{
 		}
