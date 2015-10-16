@@ -93,6 +93,8 @@ private:
 	cocos2d::ui::CheckBox* m_pCheckBoxParent;
 	cocos2d::ui::CheckBox* m_pCheckBoxChild;
 
+	cocos2d::MenuItemImage* m_pReadyButton;
+
 	//stock menuitemlabel
 	std::map<cocos2d::MenuItemImage*,cocos2d::Label*> m_aMenuItemUserTabletName;
 	cocos2d::Menu* m_pMenu;

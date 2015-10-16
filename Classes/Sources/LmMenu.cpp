@@ -226,12 +226,12 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pWifiLayer->addChild(m_pSpriteReadyIndicator);
 
 		//ready button
-		auto l_pReadyButton = MenuItemImage::create(
+		m_pReadyButton = MenuItemImage::create(
 				"Ludomuse/GUIElements/playNormal.png",
 				"Ludomuse/GUIElements/playPressed.png",
 				CC_CALLBACK_1(LmMenu::ready, this));
-		l_pReadyButton->setAnchorPoint(Point(1, 0.5));
-		l_pReadyButton->setPosition(
+		m_pReadyButton->setAnchorPoint(Point(1, 0.5));
+		m_pReadyButton->setPosition(
 				Vec2(
 						l_oVisibleSize.width - s_fMarginLeftMenu
 								- m_pSpriteReadyIndicator->getContentSize().width,
@@ -248,7 +248,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 						l_oVisibleSize.height * 0.2f));
 
 		// create menu
-		m_pMenu = Menu::create(l_pReadyButton, l_pRefreshButton, nullptr);
+		m_pMenu = Menu::create(m_pReadyButton, l_pRefreshButton, nullptr);
 		m_pMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenu, 1);
 
@@ -292,6 +292,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pUser1->setPUserTabletName(getUser1TabletName());
 
 		m_pWifiDirectFacade->discoverPeers();
+
 
 		return true;
 
@@ -516,6 +517,8 @@ void LmMenu::inputEnabled(bool enabled)
 	//checkbox parent child
 	m_pCheckBoxChild->setEnabled(enabled);
 	m_pCheckBoxParent->setEnabled(enabled);
+
+	m_pReadyButton->setEnabled(enabled);
 }
 
 void LmMenu::onReceiving(std::string l_sMsg)
@@ -530,7 +533,7 @@ void LmMenu::onReceiving(std::string l_sMsg)
 		onCompatibleToPlayEvent(l_sMsg);
 		break;
 	case LmEvent::Play:
-	onPlayEvent(l_sMsg);
+		onPlayEvent(l_sMsg);
 	default:
 		break;
 	}
@@ -545,19 +548,21 @@ void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
 
 	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
 	if ((m_pUser2->isBParent() && !m_pUser1->isBParent())
-			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()))
+			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()) || !m_bReady)
 	{
 		//disable input to be sure to not change his state
 		inputEnabled(false);
 
 		//send CompatibleToPlay user A & B as parameters TODO
 
-		CCLOG("send CompatibleToPlay {%s;%s} to %s", m_pUser1->getUserSerialized().c_str(),
-				m_pUser2->getUserSerialized().c_str(), m_pUser2->getPUserTabletName().c_str());
+		CCLOG("send CompatibleToPlay {%s;%s} to %s",
+				m_pUser1->getUserSerialized().c_str(),
+				m_pUser2->getUserSerialized().c_str(),
+				m_pUser2->getPUserTabletName().c_str());
 	}
 	else
 	{
-		CCLOG("user not compatible");
+		CCLOG("user not compatible or user1 not ready");
 	}
 }
 
@@ -568,7 +573,7 @@ void LmMenu::onCompatibleToPlayEvent(std::string l_sMsg)
 	l_pUserBuffer->setUser(l_sMsg);
 
 	//it's an answer from the guy we send UserIsReady
-	if(l_pUserBuffer==m_pUser1 && m_bReady)
+	if (l_pUserBuffer == m_pUser1 && m_bReady)
 	{
 		//set second user
 		m_pUser2->setUser(l_sMsg);
@@ -589,7 +594,7 @@ void LmMenu::onPlayEvent(std::string l_sMsg)
 {
 	bool msg = false;
 
-	if(msg)
+	if (msg)
 	{
 		menuIsFinished();
 	}
@@ -599,6 +604,4 @@ void LmMenu::onPlayEvent(std::string l_sMsg)
 		inputEnabled(true);
 	}
 }
-
-
 
