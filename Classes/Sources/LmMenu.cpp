@@ -310,7 +310,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 	if (!m_bReady)
 	{
 		//can't be ready if no role selected and no user 2 choose
-		if (m_bRoleSelected)		//&& m_bConnected)
+		if (m_bRoleSelected && m_bConnected)
 		{
 			//wer are ready
 			m_bReady = true;
