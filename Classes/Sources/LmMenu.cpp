@@ -222,12 +222,12 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				Vect(l_oVisibleSize.width * 0.5f,
 						l_oVisibleSize.height * 0.2f));
 
-		// create menu, it's an autorelease object
+		// create menu
 		m_pMenu = Menu::create(l_pReadyButton, l_pRefreshButton, nullptr);
 		m_pMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenu, 1);
 
-		//create menu for the list of user
+		//create menu for the list of name device
 		m_pMenuUserTabletName = Menu::create();
 		m_pMenuUserTabletName->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenuUserTabletName, 1);
@@ -293,10 +293,10 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			m_pSpriteReadyIndicator->setTexture(
 					"Ludomuse/GUIElements/nextButtonNormal.png");
 
-			int l_iBufferValue = 3;
-			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::E1,
-					WifiDirectFacade::SEND_INT, &l_iBufferValue);
-			CCLOG("send msg to %s", m_pUser2->getPUserTabletName().c_str());
+			std::string l_sBufferValue =  m_pUser1->getUserSerialized();
+			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::UserIsReady,
+					WifiDirectFacade::SEND_STRING,&l_sBufferValue);
+			CCLOG("send msg {%s} to %s",l_sBufferValue.c_str(), m_pUser2->getPUserTabletName().c_str());
 			//menuIsFinished();
 		}
 	}
@@ -437,24 +437,6 @@ void LmMenu::makeMenuItemUserTabletName(
 
 void LmMenu::onGettingPeers(std::vector<std::string> peers)
 {
-	CCLOG("I received a list of peers. List is: ");
-	for (std::vector<std::string>::const_iterator i = peers.begin();
-			i != peers.end(); ++i)
-	{
-		CCLOG("%s", (*i).c_str());
-	}
-
-	peers.push_back("1");
-	peers.push_back("2");
-	peers.push_back("3");
-	peers.push_back("4");
-	peers.push_back("5");
-	peers.push_back("6");
-	peers.push_back("7");
-	peers.push_back("8");
-
-	CCLOG("Before making menuitem image");
-
 	m_bMakeMenuItemUserTabletNameDone = false;
 
 	//wait a while to leave this method before update interface

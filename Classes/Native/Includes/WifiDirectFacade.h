@@ -27,7 +27,8 @@ class WifiDirectFacade {
 			SEND_FILE,
 			SEND_CHAR,
 			SEND_BYTE,
-			SEND_BYTES
+			SEND_BYTES,
+			SEND_STRING
 		};
 
 		WifiDirectFacade();

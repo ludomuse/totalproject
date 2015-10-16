@@ -240,6 +240,9 @@ void WifiDirectFacade::group(int size, SEND_F* send_functions, void** params)
 			case SEND_BYTES:
 			sendBytes(PTR_TO_OBJ(param, bytes));
 			break;
+			case SEND_STRING:
+			send(PTR_TO_OBJ(param, std::string));
+			break;
 		}
 	}
 }
