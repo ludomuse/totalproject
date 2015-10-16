@@ -215,6 +215,7 @@ public class SocketHandler {
 			server.stopHandlers();
 		if (client != null)
 			client.stopHandlers();
+		mailBox.stopHandlers();
 	}
 
 	void send()

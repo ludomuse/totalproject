@@ -472,6 +472,11 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 
 }
 
+void LmMenu::onReceiving(std::string s)
+{
+	CCLOG("I received string %s. Event is : %d", s.c_str(), _event);
+}
+
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 {
 	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);

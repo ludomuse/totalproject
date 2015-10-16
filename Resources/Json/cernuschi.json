@@ -1,0 +1,336 @@
+{
+  "Ludomuse": {
+    "Configuration": {
+      "Title": "Cernuschi",
+      "FilenameSpriteSplashScreen": "Game/Background/splashScreenCernuschi.png"
+    },
+    "SceneArray": [
+      {
+        "Id": 2,
+        "Description": "la description du jeu 9",
+        "RewardParent": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
+          "FilenameSpriteReward": "Game/Content/milk.png",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 51
+        },
+        "RewardChild": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg2.png",
+          "FilenameSpriteReward": "Game/Content/eggs.png",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 96
+        },
+        "SetPointBeginParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteSendingArea": "Game/GUIElements/sendingArea.png",
+        "Images": [
+          {
+            "Id": 0,
+            "FilenameImage": "Game/Content/cernuschi_etape1.1.png"
+          },
+          {
+            "Id": 1,
+            "FilenameImage": "Game/Content/cernuschi_etape1.2.png"
+          },
+          {
+            "Id": 0,
+            "FilenameImage": "Game/Content/cernuschi_etape1.3.png"
+          },
+          {
+            "Id": 0,
+            "FilenameImage": "Game/Content/cernuschi_etape1.4.png"
+          },
+          {
+            "Id": 0,
+            "FilenameImage": "Game/Content/cernuschi_etape1.5.png"
+          },
+          {
+            "Id": 0,
+            "FilenameImage": "Game/Content/cernuschi_etape1.6.png"
+          }
+        ],
+        "Categories": [
+          {
+            "Id": 0,
+            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category1.png"
+          },
+          {
+            "Id": 1,
+            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category2.png"
+          },
+          {
+            "Id": 2,
+            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category3.png"
+          },
+          {
+            "Id": 3,
+            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category4.png"
+          }
+        ]
+      },
+      {
+        "Id": 4,
+        "Description": "description 4",
+        "RewardParent": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 51
+        },
+        "RewardChild": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
+          "FilenameSpriteReward": "Game/Content/eggs.png",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 51
+        },
+        "SetPointBeginParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "sound": "Audio/Game/son1.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
+        "FilenameSpriteAnswerBackground": "Ludomuse/GUIElements/playNormal.png",
+        "FilenameSpriteAnswerCross": "Ludomuse/GUIElements/playPressed.png",
+        "FilenameSpriteGoodAnswerButton": "Game/GUIElements/youwin.png",
+        "FilenameSpriteBadAnswerButton": "Game/Background/background2.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/son.mp3",
+        "Questions": [
+          {
+            "Question": "Demande à ton ouvrier combien de marche il a compté:",
+            "Answer1Child": "Game/Content/cernuschi_etape1_category1.png",
+            "Answer1Parent": "84",
+            "Answer2Child": "Game/Content/cernuschi_etape1_category1.png",
+            "Answer2Parent": "102",
+            "Answer3Child": "Game/Content/cernuschi_etape1_category1.png",
+            "Answer3Parent": "201",
+            "Answer4Child": "Game/Content/cernuschi_etape1_category1.png",
+            "Answer4Parent": "156",
+            "NumberRightAnswer": 2
+          }
+        ],
+        "AttemptByQuestion": 1,
+        "TimerDuration": 30,
+        "TimerEnbaled": true
+      }
+    ]
+  }
+}
