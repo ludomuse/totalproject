@@ -1,4 +1,4 @@
-#include "../Includes/LmJniCppFacade.h"
+#include "../Include/LmJniCppFacade.h"
 #include "cocos2d.h"
 
 WifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;

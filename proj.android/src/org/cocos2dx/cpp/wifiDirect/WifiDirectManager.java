@@ -33,7 +33,6 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -207,19 +206,6 @@ public class WifiDirectManager {
 			turnOnWifi();
 		}
 	}
-
-	private Handler notificator = new Handler();
-
-	private Runnable notificatorTask = new Runnable() {
-
-		@Override
-		public void run()
-		{
-			keepAlive();
-			notificator.postDelayed(notificatorTask, 5000);
-		}
-
-	};
 
 	public void clear()
 	{

@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include "../../JSONParser/Includes/LmJParserWifiDirect.h"
 #include "WifiDirectFacade.h"
 
 extern "C" {

@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <string>
-#include "../Includes/helpers.h"
+#include "../Include/helpers.h"
 #include "WifiDirectFacade.h"
 #include "LmJniCppFacade.h"
 

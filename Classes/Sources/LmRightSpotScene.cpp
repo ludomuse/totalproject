@@ -6,7 +6,7 @@
  */
 
 #include "../Include/LmRightSpotScene.h"
-#include "../Native/Includes/helpers.h"
+#include "../Include/helpers.h"
 
 using namespace cocos2d;
 

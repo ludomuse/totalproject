@@ -1,7 +1,7 @@
-#include "../Includes/WifiObserver.h"
-#include "../Includes/WifiDirectFacade.h"
-#include "../Includes/LmJniCppFacade.h"
-#include "../Includes/LmJniJavaFacade.h"
+#include "../Include/WifiObserver.h"
+#include "../Include/WifiDirectFacade.h"
+#include "../Include/LmJniCppFacade.h"
+#include "../Include/LmJniJavaFacade.h"
 
 using namespace std;
 
