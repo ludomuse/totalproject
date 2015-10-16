@@ -80,4 +80,8 @@ public class JniJavaFacade {
 		_wifiDirectFacade.connectTo(deviceName);
 	}
 
+	public static String getTabletName()
+	{
+		return android.os.Build.MODEL;
+	}
 }

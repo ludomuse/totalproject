@@ -12,6 +12,7 @@
 #include <list>
 #include "../Include/LmHelpers.h"
 #include <string>
+#include "LmBytesMessage.h"
 
 class LmWifiObserver;
 
@@ -84,6 +85,8 @@ class LmWifiDirectFacade {
 		int addObserver(LmWifiObserver* wo);
 
 		void removeObserver(int index);
+
+		void sendMessage(LmBytesMessage msg);
 
 		void sendEvent(event e, LmWifiDirectFacade::SEND_F method, void* arg);
 
