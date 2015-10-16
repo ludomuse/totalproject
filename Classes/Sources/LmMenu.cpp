@@ -545,6 +545,7 @@ void LmMenu::onReceiving(std::string l_sMsg)
 		break;
 	case LmEvent::Play:
 		onPlayEvent(l_sMsg);
+		break;
 	default:
 		break;
 	}
@@ -559,7 +560,7 @@ void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
 
 	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
 	if ((m_pUser2->isBParent() && !m_pUser1->isBParent())
-			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()) || !m_bReady)
+			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()) && !m_bReady)
 	{
 		//disable input to be sure to not change his state
 		inputEnabled(false);
