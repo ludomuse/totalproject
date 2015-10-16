@@ -17,7 +17,7 @@
 class LmWifiObserver {
 
 	protected:
-		event _event;
+	event _event;
 		LmWifiDirectFacade* _wifiFacade;
 
 	public:
