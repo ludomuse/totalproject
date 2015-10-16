@@ -10,12 +10,12 @@
 
 #include <vector>
 #include <list>
-#include "../Include/helpers.h"
+#include "../Include/LmHelpers.h"
 #include <string>
 
-class WifiObserver;
+class LmWifiObserver;
 
-class WifiDirectFacade {
+class LmWifiDirectFacade {
 	public:
 
 		enum SEND_F
@@ -31,7 +31,7 @@ class WifiDirectFacade {
 			SEND_STRING
 		};
 
-		WifiDirectFacade();
+		LmWifiDirectFacade();
 
 		void onGettingPeers(std::vector<std::string> peers);
 
@@ -81,18 +81,18 @@ class WifiDirectFacade {
 
 		void group(int size, SEND_F* send_functions, void** params);
 
-		int addObserver(WifiObserver* wo);
+		int addObserver(LmWifiObserver* wo);
 
 		void removeObserver(int index);
 
-		void sendEvent(event e, WifiDirectFacade::SEND_F method, void* arg);
+		void sendEvent(event e, LmWifiDirectFacade::SEND_F method, void* arg);
 
-		void sendEvent(event e, int size, const WifiDirectFacade::SEND_F* method,
+		void sendEvent(event e, int size, const LmWifiDirectFacade::SEND_F* method,
 				const void** args);
 
 	private:
 
-		std::list<WifiObserver*> _observers;
+		std::list<LmWifiObserver*> _observers;
 };
 
 #endif /* WIFIDIRECTFACADE_H_ */

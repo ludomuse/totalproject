@@ -13,7 +13,7 @@ LOCAL_MODULE_FILENAME := libcocos2dcpp
 LOCAL_SRC_FILES := hellocpp/main.cpp \
 				   ../../Classes/Sources/LmJniJavaFacade.cpp \
 				   ../../Classes/Sources/LmJniCppFacade.cpp \
-				   ../../Classes/Sources/WifiDirectFacade.cpp \
+				   ../../Classes/Sources/LmWifiDirectFacade.cpp \
 				   ../../Classes/Sources/AppDelegate.cpp \
                    ../../Classes/Sources/LmGameManager.cpp\
                    ../../Classes/Sources/LmServerManager.cpp\

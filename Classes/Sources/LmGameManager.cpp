@@ -5,7 +5,7 @@
 
 USING_NS_CC;
 
-LmGameManager::LmGameManager(WifiDirectFacade* a_wifiFacade)
+LmGameManager::LmGameManager(LmWifiDirectFacade* a_wifiFacade)
 {
 
 	//register to direct wifi

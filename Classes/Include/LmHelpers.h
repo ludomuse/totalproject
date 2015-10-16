@@ -1,5 +1,5 @@
 /*
- * helpers.h
+ * LmHelpers.h
  *
  *  Created on: 7 oct. 2015
  *      Author: Gregoire
@@ -9,6 +9,7 @@
 #define HELPERS_H_
 
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))
+#define WIFIFACADE LmJniCppFacade::getWifiFacade()
 
 typedef char byte;
 typedef byte event;

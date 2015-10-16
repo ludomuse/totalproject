@@ -1,5 +1,5 @@
 /*
- * WifiObserver.h
+ * LmWifiObserver.h
  *
  *  Created on: 7 oct. 2015
  *      Author: Gregoire
@@ -10,22 +10,22 @@
 
 #include <vector>
 #include <string>
-#include "../Include/helpers.h"
-#include "WifiDirectFacade.h"
+#include "../Include/LmHelpers.h"
+#include "LmWifiDirectFacade.h"
 #include "LmJniCppFacade.h"
 
-class WifiObserver {
+class LmWifiObserver {
 
 	protected:
 		event _event;
-		WifiDirectFacade* _wifiFacade;
+		LmWifiDirectFacade* _wifiFacade;
 
 	public:
 		//attributs
 
-		WifiObserver()
+		LmWifiObserver()
 		{
-			_wifiFacade = LmJniCppFacade::getWifiFacade();
+			_wifiFacade = WIFIFACADE;
 		}
 
 
@@ -95,7 +95,7 @@ class WifiObserver {
 		}
 		;
 
-		virtual ~WifiObserver()
+		virtual ~LmWifiObserver()
 		{
 
 		}

@@ -1,14 +1,14 @@
 #include "../Include/LmJniCppFacade.h"
 #include "cocos2d.h"
 
-WifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
+LmWifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
 
-WifiDirectFacade* LmJniCppFacade::getWifiFacade()
+LmWifiDirectFacade* LmJniCppFacade::getWifiFacade()
 {
 	return _wifiDirectFacade;
 }
 
-void LmJniCppFacade::setWifiFacade(WifiDirectFacade* wifiFacade)
+void LmJniCppFacade::setWifiFacade(LmWifiDirectFacade* wifiFacade)
 {
 	_wifiDirectFacade = wifiFacade;
 }
@@ -17,71 +17,71 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPee
 		JNIEnv* env, jobject thiz, jstring peers)
 {
 	CCLOG("cpp method onGettingPeers is called from Java");
-	LmJniCppFacade::getWifiFacade()->onGettingPeers(
+	WIFIFACADE->onGettingPeers(
 			LmJniCppFacade::toSTDStringList(peers, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingString(
 		JNIEnv* env, jobject thiz, jstring s)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(
+	WIFIFACADE->onReceiving(
 			LmJniCppFacade::toCObject(s, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingInt(
 		JNIEnv* env, jobject thiz, jint i)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(i));
+	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(i));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingBool(
 		JNIEnv* env, jobject thiz, jboolean b)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(b));
+	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(b));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingLong(
 		JNIEnv* env, jobject thiz, jlong l)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(l));
+	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(l));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingFloat(
 		JNIEnv* env, jobject thiz, jfloat f)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(f));
+	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(f));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingDouble(
 		JNIEnv* env, jobject thiz, jdouble d)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(d));
+	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(d));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingBytes(
 		JNIEnv* env, jobject thiz, jbyteArray bytes)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(
+	WIFIFACADE->onReceiving(
 			LmJniCppFacade::toCObject(bytes, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingFile(
 		JNIEnv* env, jobject thiz, jstring path)
 {
-	LmJniCppFacade::getWifiFacade()->onReceivingFile(
+	WIFIFACADE->onReceivingFile(
 			LmJniCppFacade::toCObject(path, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingByte(
 		JNIEnv* env, jobject thiz, jbyte byte)
 {
-	LmJniCppFacade::getWifiFacade()->onReceivingByte(
+	WIFIFACADE->onReceivingByte(
 			LmJniCppFacade::toCObject(byte));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingChar(
 		JNIEnv* env, jobject thiz, jchar c)
 {
-	LmJniCppFacade::getWifiFacade()->onReceiving(LmJniCppFacade::toCObject(c));
+	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(c));
 }
 

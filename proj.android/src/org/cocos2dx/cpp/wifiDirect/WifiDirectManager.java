@@ -12,6 +12,7 @@ import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
 import org.cocos2dx.cpp.sockets.SocketHandler;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -157,6 +158,7 @@ public class WifiDirectManager {
 
 		DebugManager.AddDebugButton("SendFile", new OnClickListener() {
 
+			@SuppressLint("SdCardPath")
 			@Override
 			public void onClick(View arg0)
 			{
