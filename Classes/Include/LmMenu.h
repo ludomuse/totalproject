@@ -45,7 +45,7 @@ public:
 
 	virtual void onGettingPeers(std::vector<std::string>);
 
-	virtual void onReceiving(std::string s);
+	virtual void onReceiving(std::string );
 
 private:
 
@@ -93,6 +93,8 @@ private:
 	cocos2d::ui::CheckBox* m_pCheckBoxParent;
 	cocos2d::ui::CheckBox* m_pCheckBoxChild;
 
+	cocos2d::MenuItemImage* m_pReadyButton;
+
 	//stock menuitemlabel
 	std::map<cocos2d::MenuItemImage*,cocos2d::Label*> m_aMenuItemUserTabletName;
 	cocos2d::Menu* m_pMenu;
@@ -124,6 +126,23 @@ private:
 	void updateUser2NameTablet(cocos2d::Ref*);
 
 	void makeMenuItemUserTabletName(std::vector<std::string> );
+
+	//block input
+	void inputEnabled(bool );
+
+	//get the tablet name of the user 1
+	std::string getUser1TabletName();
+
+	//callback methods of events
+	void onUserIsReadyEvent(std::string);
+	void onCompatibleToPlayEvent(std::string);
+	void onPlayEvent(std::string );
+
+
+
+
+
+
 
 
 

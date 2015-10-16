@@ -17,15 +17,27 @@ typedef byte event;
 struct LmEvent
 {
 	/*
-	 * the parameter is the user serialized it's indicate thta he is ready to begin a session
+	 * parameter is the user serialized it's indicate that he is ready to begin a session
 	 */
 	static const event UserIsReady = 0;
+
+	/*
+	 * parameters are user1 and user2 wait the Play event to begin then
+	 */
+	static const event CompatibleToPlay = 1;
+
+	/*
+	 * parameter is a bool true the game begin
+	 */
+	static const event Play = 2;
+
+
 	/*
 	 *
 	 */
-	static const event E1 = 1;
+	static const event E1 = 89;
 
-	static const event E2 = 1;
+	static const event E2 = 66;
 };
 
 typedef struct LmEvent LmEvent;

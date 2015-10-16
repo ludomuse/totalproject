@@ -84,6 +84,9 @@ public:
 		return m_bMale;
 	}
 
+	bool operator==(const LmUser& )const;
+
+
 private:
 
 	//ATTRIBUTES
@@ -104,5 +107,7 @@ private:
 
 
 };
+
+
 
 #endif /* CLASSES_SOURCES_LMUSER_H_ */

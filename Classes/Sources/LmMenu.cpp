@@ -226,12 +226,12 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pWifiLayer->addChild(m_pSpriteReadyIndicator);
 
 		//ready button
-		auto l_pReadyButton = MenuItemImage::create(
+		m_pReadyButton = MenuItemImage::create(
 				"Ludomuse/GUIElements/playNormal.png",
 				"Ludomuse/GUIElements/playPressed.png",
 				CC_CALLBACK_1(LmMenu::ready, this));
-		l_pReadyButton->setAnchorPoint(Point(1, 0.5));
-		l_pReadyButton->setPosition(
+		m_pReadyButton->setAnchorPoint(Point(1, 0.5));
+		m_pReadyButton->setPosition(
 				Vec2(
 						l_oVisibleSize.width - s_fMarginLeftMenu
 								- m_pSpriteReadyIndicator->getContentSize().width,
@@ -248,7 +248,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 						l_oVisibleSize.height * 0.2f));
 
 		// create menu
-		m_pMenu = Menu::create(l_pReadyButton, l_pRefreshButton, nullptr);
+		m_pMenu = Menu::create(m_pReadyButton, l_pRefreshButton, nullptr);
 		m_pMenu->setPosition(Vec2::ZERO);
 		m_pWifiLayer->addChild(m_pMenu, 1);
 
@@ -286,19 +286,13 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				CC_CALLBACK_2(LmMenu::childSelected, this));
 		m_pWifiLayer->addChild(m_pCheckBoxChild);
 
-		//TODO find peers and set attributes and instanciate socket
-//////////////////////////////////////////////////////////////////
-		//tablet are connected create both user
-		m_pUser1->setPScore(22);
+		//init user1
+		m_pUser1->setPScore(0);
 		m_pUser1->setPUserName(m_pLogEditBox->getText());
-		m_pUser1->setPUserTabletName("tablet1_name");
-
-		m_pUser2->setPScore(54);
-		m_pUser2->setPUserName("2nd user");
-		m_pUser2->setPUserTabletName("tablet2_name");
-/////////////////////////////////////////////////////////////////
+		m_pUser1->setPUserTabletName(getUser1TabletName());
 
 		m_pWifiDirectFacade->discoverPeers();
+
 
 		return true;
 
@@ -323,7 +317,6 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 					LmWifiDirectFacade::SEND_STRING,&l_sBufferValue);
 			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
 					m_pUser2->getPUserTabletName().c_str());
-			//menuIsFinished();
 		}
 	}
 	else
@@ -418,13 +411,9 @@ void LmMenu::makeMenuItemUserTabletName(
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
-	//reset vector and init with the new vector of string
-	for (std::map<cocos2d::MenuItemImage*, cocos2d::Label*>::iterator it =
-			m_aMenuItemUserTabletName.begin();
-			it != m_aMenuItemUserTabletName.end(); ++it)
-	{
-		m_pMenuUserTabletName->removeAllChildrenWithCleanup(true);
-	}
+
+	m_pMenuUserTabletName->removeAllChildrenWithCleanup(true);
+
 	m_aMenuItemUserTabletName.clear();
 
 	//make
@@ -484,11 +473,6 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 
 }
 
-void LmMenu::onReceiving(std::string s)
-{
-	CCLOG("I received string %s. Event is : %d", s.c_str(), _event);
-}
-
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 {
 	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);
@@ -512,5 +496,112 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 		}
 	}
 
+}
+
+std::string LmMenu::getUser1TabletName()
+{
+	return "tabletname";
+}
+
+void LmMenu::inputEnabled(bool enabled)
+{
+
+	//menuitemtabletname
+	for (std::map<cocos2d::MenuItemImage*, cocos2d::Label*>::iterator it =
+			m_aMenuItemUserTabletName.begin();
+			it != m_aMenuItemUserTabletName.end(); ++it)
+	{
+		it->first->setEnabled(enabled);
+	}
+
+	//checkbox parent child
+	m_pCheckBoxChild->setEnabled(enabled);
+	m_pCheckBoxParent->setEnabled(enabled);
+
+	m_pReadyButton->setEnabled(enabled);
+}
+
+void LmMenu::onReceiving(std::string l_sMsg)
+{
+
+	switch (_event)
+	{
+	case LmEvent::UserIsReady:
+		onUserIsReadyEvent(l_sMsg);
+		break;
+	case LmEvent::CompatibleToPlay:
+		onCompatibleToPlayEvent(l_sMsg);
+		break;
+	case LmEvent::Play:
+		onPlayEvent(l_sMsg);
+	default:
+		break;
+	}
+
+}
+
+void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
+{
+
+	//set user2
+	m_pUser2->setUser(l_sMsg);
+
+	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
+	if ((m_pUser2->isBParent() && !m_pUser1->isBParent())
+			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()) || !m_bReady)
+	{
+		//disable input to be sure to not change his state
+		inputEnabled(false);
+
+		//send CompatibleToPlay user A & B as parameters TODO
+
+		CCLOG("send CompatibleToPlay {%s;%s} to %s",
+				m_pUser1->getUserSerialized().c_str(),
+				m_pUser2->getUserSerialized().c_str(),
+				m_pUser2->getPUserTabletName().c_str());
+	}
+	else
+	{
+		CCLOG("user not compatible or user1 not ready");
+	}
+}
+
+void LmMenu::onCompatibleToPlayEvent(std::string l_sMsg)
+{
+	//init user to compare
+	LmUser* l_pUserBuffer = new LmUser;
+	l_pUserBuffer->setUser(l_sMsg);
+
+	//it's an answer from the guy we send UserIsReady
+	if (l_pUserBuffer == m_pUser1 && m_bReady)
+	{
+		//set second user
+		m_pUser2->setUser(l_sMsg);
+
+		CCLOG("send Play(true)");
+
+		menuIsFinished();
+	}
+	else
+	{
+		CCLOG("send Play(false)");
+	}
+
+	delete l_pUserBuffer;
+}
+
+void LmMenu::onPlayEvent(std::string l_sMsg)
+{
+	bool msg = false;
+
+	if (msg)
+	{
+		menuIsFinished();
+	}
+	else
+	{
+		//unblock input
+		inputEnabled(true);
+	}
 }
 
