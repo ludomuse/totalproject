@@ -472,11 +472,6 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 
 }
 
-void LmMenu::onReceiving(std::string s)
-{
-	CCLOG("I received string %s. Event is : %d", s.c_str(), _event);
-}
-
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 {
 	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(p_Sender);
@@ -558,7 +553,7 @@ void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
 		//send CompatibleToPlay user A & B as parameters TODO
 
 		CCLOG("send CompatibleToPlay {%s;%s} to %s", m_pUser1->getUserSerialized().c_str(),
-				m_pUser2->getUserSerialized().c_str() m_pUser2->getPUserTabletName().c_str());
+				m_pUser2->getUserSerialized().c_str(), m_pUser2->getPUserTabletName().c_str());
 	}
 	else
 	{

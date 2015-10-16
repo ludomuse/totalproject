@@ -45,7 +45,7 @@ public:
 
 	virtual void onGettingPeers(std::vector<std::string>);
 
-	virtual void onReceiving(std::string s);
+	virtual void onReceiving(std::string );
 
 private:
 
@@ -124,9 +124,6 @@ private:
 	void updateUser2NameTablet(cocos2d::Ref*);
 
 	void makeMenuItemUserTabletName(std::vector<std::string> );
-
-	//when we receive a string
-	void onReceiving(std::string );
 
 	//block input
 	void inputEnabled(bool );

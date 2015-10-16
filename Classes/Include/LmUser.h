@@ -84,6 +84,9 @@ public:
 		return m_bMale;
 	}
 
+	bool operator==(const LmUser& )const;
+
+
 private:
 
 	//ATTRIBUTES
@@ -105,31 +108,6 @@ private:
 
 };
 
-bool operator==(const LmUser& user1, const LmUser& user2)
-{
 
-	if(strcmp(user1.m_pUserName.c_str(),user2.m_pUserName.c_str()))
-	{
-		return false;
-	}
-	else if(strcmp(user1.m_pUserTabletName.c_str(),user2.m_pUserTabletName.c_str()))
-	{
-		return false;
-	}
-	else if(user1.m_iScore!=user2.m_iScore)
-	{
-		return false;
-	}
-	else if(user1.m_bParent != user2.m_bParent)
-	{
-		return false;
-	}
-	else if(user1.m_bMale!=user2.m_bMale)
-	{
-		return false;
-	}
-
-    return true;
-}
 
 #endif /* CLASSES_SOURCES_LMUSER_H_ */
