@@ -79,6 +79,10 @@ public:
 
 	void setUser(std::string l_sUserSerialized);
 
+	bool isBMale() const
+	{
+		return m_bMale;
+	}
 
 private:
 

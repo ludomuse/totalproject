@@ -26,7 +26,6 @@ class LmAudioHintScene: public LmInteractionScene
 public:
 
 	static const int s_iId = 3;
-	static const int s_iNumberLabel = 4;
 
 	LmAudioHintScene(const LmAudioHintSceneSeed &);
 	~LmAudioHintScene();

@@ -115,7 +115,7 @@ bool LmAudioHintScene::initGame()
 		l_pGameComponentCreated->setPosition(
 				Vec2(l_oVisibleSize.width,
 						(l_iIndex + 1) * l_oVisibleSize.height
-								/ (s_iNumberLabel + 1)));
+								/ (m_aLabelsFilenameSprite.size() + 1)));
 		l_pGameComponentCreated->addTo(m_pLayerGame);
 		l_pGameComponentCreated->setVisible(false);
 
@@ -305,18 +305,19 @@ void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 
 				m_aIdLabelWellPlaced.find(m_iBufferId)->second = true;
 
-				int l_iCounterBuffer=0;
+				m_bWin=true;
 				//check win
 				for(std::map<int,bool>::iterator it=m_aIdLabelWellPlaced.begin();it!=m_aIdLabelWellPlaced.end();++it)
 				{
-					//for each well placed label increment counter
-					if(it->second)
+					//if one is not well placed
+					if(!it->second)
 					{
-						l_iCounterBuffer++;
+						m_bWin=false;
+						break;
 					}
 				}
 
-				if(l_iCounterBuffer==s_iNumberLabel)
+				if(m_bWin)
 				{
 					//win
 					m_pFinishGameButton->setVisible(true);

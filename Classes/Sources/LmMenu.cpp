@@ -18,7 +18,7 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 
 	//register to direct wifi
 	m_pWifiDirectFacade = a_wifiFacade;
-	m_pWifiDirectFacade->addObserver(this);
+	m_iIdWifiObserver = m_pWifiDirectFacade->addObserver(this);
 
 	//object
 	m_pUser1 = new LmUser; //delete in LmGameManager
@@ -37,13 +37,14 @@ LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
 	m_pCheckBoxFemale = nullptr;
 	m_pCheckBoxMale = nullptr;
 	m_pSpriteReadyIndicator = nullptr;
+	m_pCheckBoxChild = nullptr;
+	m_pCheckBoxParent = nullptr;
 
 	//primitive type
 	m_bNoGenderSelected = true;
 	m_bRoleSelected = false;
 	m_bConnected = false;
 	m_bReady = false;
-	m_bMakeMenuItemUserTabletNameDone = false;
 
 }
 
@@ -103,58 +104,82 @@ bool LmMenu::logScreen()
 			l_oVisibleSize.height / 2 + l_oOrigin.y);
 	m_pLogLayer->addChild(m_pSpriteLogBackground);
 
+	//add the sprite of the form
+	auto l_pFormSprite = Sprite::create("Ludomuse/GUIElements/form.png");
+	l_pFormSprite->setPosition(l_oVisibleSize.width / 2 + l_oOrigin.x,
+			l_oVisibleSize.height / 2 + l_oOrigin.y);
+	m_pLogLayer->addChild(l_pFormSprite);
+
 	//log button
 	auto l_oLogButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/logNormal.png",
 			"Ludomuse/GUIElements/logPressed.png",
 			CC_CALLBACK_1(LmMenu::wifiDirectScreen, this));
-	l_oLogButton->setAnchorPoint(Point(0.5, 0));
+	l_oLogButton->setAnchorPoint(Point(0.5, 0.5));
 	l_oLogButton->setPosition(
-			Vect(l_oVisibleSize.width * 0.5f, l_oVisibleSize.height * 0.2f));
-
-	// Create the textfield
-	m_pLogEditBox = EditBox::create(
-			Size(l_oVisibleSize.width * 0.6, l_oVisibleSize.height * 0.2),
-			Scale9Sprite::create(
-					"Ludomuse/GUIElements/textfieldBackground.png"));
-	m_pLogEditBox->setPosition(
-			Point(l_oVisibleSize.width * 0.5f, l_oVisibleSize.height * 0.8f));
-	m_pLogEditBox->setPlaceHolder("Name");
-	m_pLogEditBox->setFontSize(l_oVisibleSize.width * 0.04);
-	m_pLogEditBox->setFontName("Fonts/JosefinSans-Regular.ttf");
-	m_pLogEditBox->setFontColor(Color3B::BLACK);
-	m_pLogEditBox->setMaxLength(s_iMaxLenghtUserName);
-	m_pLogEditBox->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
-	m_pLogEditBox->retain();
-
-	//test
-	m_pLogEditBox->setText("UserName");
-
-	m_pLogLayer->addChild(m_pLogEditBox, 1);
+			Vect(
+					(l_oVisibleSize.width
+							+ l_pFormSprite->getContentSize().width * 0.5)
+							* 0.5, l_oVisibleSize.height * 0.5f));
 
 	// create menu, it's an autorelease object
 	auto l_oMenu = Menu::create(l_oLogButton, nullptr);
 	l_oMenu->setPosition(Vec2::ZERO);
 	m_pLogLayer->addChild(l_oMenu, 1);
 
+	// Create the textfield
+	m_pLogEditBox = EditBox::create(
+			Size(l_pFormSprite->getContentSize().width * 0.4,
+					l_oVisibleSize.height * 0.1),
+			Scale9Sprite::create(
+					"Ludomuse/GUIElements/textfieldBackground.png"));
+	m_pLogEditBox->setPosition(
+			Vect(
+					(l_oVisibleSize.width
+							- l_pFormSprite->getContentSize().width * 0.5)
+							* 0.5, l_oVisibleSize.height * 0.5f));
+	m_pLogEditBox->setPlaceHolder("Name");
+	m_pLogEditBox->setFontSize(l_oVisibleSize.width * 0.03);
+	m_pLogEditBox->setFontName("Fonts/JosefinSans-Regular.ttf");
+	m_pLogEditBox->setFontColor(Color3B::BLACK);
+	m_pLogEditBox->setMaxLength(s_iMaxLenghtUserName);
+	m_pLogEditBox->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
+	m_pLogEditBox->retain();
+	m_pLogLayer->addChild(m_pLogEditBox, 1);
+
+	//test
+	m_pLogEditBox->setText("UserName");
+
 	//init checkbox male
-	m_pCheckBoxMale = CheckBox::create("Ludomuse/GUIElements/logNormal.png",
-			"Ludomuse/GUIElements/logPressed.png");
+	m_pCheckBoxMale = CheckBox::create(
+			"Ludomuse/GUIElements/maleUnselected.png",
+			"Ludomuse/GUIElements/maleSelected.png");
 	m_pCheckBoxMale->setTouchEnabled(true);
 	m_pCheckBoxMale->setSwallowTouches(false);
+	m_pCheckBoxMale->setAnchorPoint(Vec2(1, 0.5));
 	m_pCheckBoxMale->setPosition(
-			Vec2(l_oVisibleSize.width * 0.33, l_oVisibleSize.height * 0.5));
+			Vec2(
+					m_pLogEditBox->getPosition().x
+							- m_pLogEditBox->getContentSize().width * 0.2,
+					l_oVisibleSize.height * 0.5f
+							- l_pFormSprite->getContentSize().height * 0.3));
 	m_pCheckBoxMale->addEventListener(
 			CC_CALLBACK_2(LmMenu::maleSelected, this));
 	m_pLogLayer->addChild(m_pCheckBoxMale);
 
 	//init checkbox female
-	m_pCheckBoxFemale = CheckBox::create("Ludomuse/GUIElements/playNormal.png",
-			"Ludomuse/GUIElements/playPressed.png");
+	m_pCheckBoxFemale = CheckBox::create(
+			"Ludomuse/GUIElements/femaleUnselected.png",
+			"Ludomuse/GUIElements/femaleSelected.png");
 	m_pCheckBoxFemale->setTouchEnabled(true);
 	m_pCheckBoxFemale->setSwallowTouches(false);
+	m_pCheckBoxFemale->setAnchorPoint(Vec2(0, 0.5));
 	m_pCheckBoxFemale->setPosition(
-			Vec2(l_oVisibleSize.width * 0.66, l_oVisibleSize.height * 0.5));
+			Vec2(
+					m_pLogEditBox->getPosition().x
+							+ m_pLogEditBox->getContentSize().width * 0.2,
+					l_oVisibleSize.height * 0.5f
+							- l_pFormSprite->getContentSize().height * 0.3));
 	m_pCheckBoxFemale->addEventListener(
 			CC_CALLBACK_2(LmMenu::femaleSelected, this));
 	m_pLogLayer->addChild(m_pCheckBoxFemale);
@@ -264,11 +289,11 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		//TODO find peers and set attributes and instanciate socket
 //////////////////////////////////////////////////////////////////
 		//tablet are connected create both user
-		m_pUser1->setPScore(0);
+		m_pUser1->setPScore(22);
 		m_pUser1->setPUserName(m_pLogEditBox->getText());
 		m_pUser1->setPUserTabletName("tablet1_name");
 
-		m_pUser2->setPScore(0);
+		m_pUser2->setPScore(54);
 		m_pUser2->setPUserName("2nd user");
 		m_pUser2->setPUserTabletName("tablet2_name");
 /////////////////////////////////////////////////////////////////
@@ -285,7 +310,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 	if (!m_bReady)
 	{
 		//can't be ready if no role selected and no user 2 choose
-		if (m_bRoleSelected && m_bConnected)
+		if (m_bRoleSelected)		//&& m_bConnected)
 		{
 			//wer are ready
 			m_bReady = true;
@@ -293,11 +318,12 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			m_pSpriteReadyIndicator->setTexture(
 					"Ludomuse/GUIElements/nextButtonNormal.png");
 
-			std::string l_sBufferValue =  m_pUser1->getUserSerialized();
+			std::string l_sBufferValue = m_pUser1->getUserSerialized();
 			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::UserIsReady,
-					WifiDirectFacade::SEND_STRING,&l_sBufferValue);
-			CCLOG("send msg {%s} to %s",l_sBufferValue.c_str(), m_pUser2->getPUserTabletName().c_str());
-			//menuIsFinished();
+					WifiDirectFacade::SEND_STRING, &l_sBufferValue);
+			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
+					m_pUser2->getPUserTabletName().c_str());
+			menuIsFinished();
 		}
 	}
 	else
@@ -314,6 +340,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 void LmMenu::menuIsFinished()
 {
 
+	m_pWifiDirectFacade->removeObserver(m_iIdWifiObserver);
 	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 			"MenuFinished");
 
@@ -373,7 +400,7 @@ void LmMenu::scan(cocos2d::Ref* l_pSender)
 void LmMenu::makeMenuItemUserTabletName(
 		std::vector<std::string> l_aVectorOfTabletName)
 {
-	CCLOG("0");
+	CCLOG("makemenuitem");
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
@@ -431,30 +458,17 @@ void LmMenu::makeMenuItemUserTabletName(
 		l_iIndex++;
 	}
 
-	m_bMakeMenuItemUserTabletNameDone = true;
 
 }
 
 void LmMenu::onGettingPeers(std::vector<std::string> peers)
 {
-	m_bMakeMenuItemUserTabletNameDone = false;
 
-	//wait a while to leave this method before update interface
-	auto delay = DelayTime::create(0);
-	m_pLmMenuScene->runAction(
-			Sequence::create(delay,
-					CallFunc::create(
-							std::bind(&LmMenu::makeMenuItemUserTabletName, this,
-									peers)), nullptr));
+	auto scheduler = Director::getInstance()->getScheduler();
 
-	CCLOG("after launching delay");
+	scheduler->performFunctionInCocosThread(
+			std::bind(&LmMenu::makeMenuItemUserTabletName, this, peers));
 
-	//wait the makemenuitem to finish button
-	while (!m_bMakeMenuItemUserTabletNameDone)
-	{
-	}
-
-	CCLOG("done");
 }
 
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)

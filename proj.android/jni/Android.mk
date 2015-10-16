@@ -27,6 +27,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Sources/LmRightSpotScene.cpp\
                    ../../Classes/Sources/LmGameComponent.cpp\
                    ../../Classes/Sources/LmQuizz_v1Scene.cpp\
+                   ../../Classes/Sources/LmQuizz_v2Scene.cpp\
                    ../../Classes/Sources/LmSprite.cpp\
                    ../../Classes/Sources/LmQuestion.cpp\
                    ../../Classes/Sources/LmReward.cpp\

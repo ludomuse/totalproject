@@ -9,15 +9,17 @@
 
 using namespace cocos2d;
 
-LmReward::LmReward(std::string l_sFilenameSpriteBackground, std::string l_sFilenameSpriteReward, int l_iRewardScore,std::string l_sFilenameSound)
+LmReward::LmReward(std::string l_sFilenameSpriteBackground,
+		std::string l_sFilenameSpriteReward, int l_iRewardScore,
+		std::string l_sFilenameSound)
 {
-	m_sFilenameSpriteBackground=l_sFilenameSpriteBackground;
-	m_sFilenameSpriteReward=l_sFilenameSpriteReward;
-	m_iRewardScore=l_iRewardScore;
+	m_sFilenameSpriteBackground = l_sFilenameSpriteBackground;
+	m_sFilenameSpriteReward = l_sFilenameSpriteReward;
+	m_iRewardScore = l_iRewardScore;
 	m_sFilenameSound = l_sFilenameSound;
 
 	//pointer
-	m_pSpriteReward=nullptr;
+	m_pSpriteReward = nullptr;
 }
 
 LmReward::~LmReward()
@@ -28,17 +30,23 @@ LmReward::~LmReward()
 void LmReward::init()
 {
 	//init the sprite component
-	m_pSpriteReward = Sprite::create(m_sFilenameSpriteReward);
-	m_pSpriteReward->setAnchorPoint(Vec2(0.5,0.5));
+
+	//if the reward is composed with a sprite
+	if (strcmp(m_sFilenameSpriteReward.c_str(), ""))
+	{
+		CCLOG("init sprite reward");
+		m_pSpriteReward = Sprite::create(m_sFilenameSpriteReward);
+		m_pSpriteReward->setAnchorPoint(Vec2(0.5, 0.5));
+	}
 
 	//we preload the sound
-		CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(
-				m_sFilenameSound.c_str());
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(
+			m_sFilenameSound.c_str());
 
 }
 
 void LmReward::playRewardSound()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
-					m_sFilenameSound.c_str(), false);
+			m_sFilenameSound.c_str(), false);
 }

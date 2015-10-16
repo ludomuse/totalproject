@@ -22,6 +22,7 @@ struct LmQuizz_v1SceneSeed
 	std::string FilenameSpriteGoodAnswerButton;
 	std::string FilenameSpriteBadAnswerButton;
 	std::string FilenameAudioAnswerSelected;
+	LmLayer* InGameScreenParent;
 	std::vector<LmQuestion*> Questions;
 	int AttemptByQuestion;
 	float TimerDuration;
@@ -57,6 +58,8 @@ private:
 	std::string m_sFilenameSpriteGoodAnswerButton;
 	std::string m_sFilenameSpriteBadAnswerButton;
 	std::string m_sFilenameAudioAnswerSelected;
+	LmLayer* m_pInGameScreenParent;
+
 
 	std::vector<LmQuestion*> m_aQuestions;
 	int m_iAttemptByQuestion;
@@ -127,7 +130,7 @@ private:
 	void checkAnswer();
 
 	//call when question is finish
-	void questionFinish();
+	void questionFinish(bool);
 
 	//enbaled touch checkbox question
 	void checkBoxTouchEnabled(bool);

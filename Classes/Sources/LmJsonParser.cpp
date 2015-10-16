@@ -121,7 +121,7 @@ void LmJsonParser::initInteractionSceneOfTheGame()
 				l_aSceneArray[i]["Id"].IsInt()
 						&& l_aSceneArray[i].HasMember("Id"));
 		l_iIdScene = l_aSceneArray[i]["Id"].GetInt();
-		CCLOG("init scene id = %d", l_iIdScene);
+		CCLOG("Initialization LmInteractionScene Id = %d", l_iIdScene);
 		switch (l_iIdScene)
 		{
 
@@ -137,12 +137,15 @@ void LmJsonParser::initInteractionSceneOfTheGame()
 		case LmAudioHintScene::s_iId:
 			makeLmAudioHintScene(l_aSceneArray[i]);
 			break;
+		case LmQuizz_v2Scene::s_iId:
+			makeLmQuizz_v2Scene(l_aSceneArray[i]);
+			break;
 		default:
 			break;
 		}
 	}
 
-	CCLOG("after init all scene in json");
+	CCLOG("All LmInteractionScene have been initialized");
 
 }
 
@@ -167,6 +170,30 @@ void LmJsonParser::initSetPoint(const rapidjson::Value& l_oScene,
 		l_pInteractionScene->setPLmSetPointEnd(
 				getLmSetPoint(l_oScene, "SetPointEndChild"));
 	}
+}
+
+void LmJsonParser::initDescription(const rapidjson::Value& l_oScene,
+		LmInteractionScene* l_pInteractionScene)
+{
+	//use to deep copy string
+	std::string l_sBufferString;
+
+	assert(
+			l_oScene["Description"].IsString()
+					&& l_oScene.HasMember("Description"));
+	l_sBufferString = l_oScene["Description"].GetString();
+	l_pInteractionScene->setSDescription(l_sBufferString.c_str());
+}
+
+void LmJsonParser::initInteraction(const rapidjson::Value& l_oScene,
+		LmInteractionScene* l_pInteractionScene)
+{
+	//get the element we just push to set the introduction
+	initSetPoint(l_oScene, l_pInteractionScene);
+
+	initReward(l_oScene, l_pInteractionScene);
+
+	initDescription(l_oScene, l_pInteractionScene);
 }
 
 void LmJsonParser::initReward(const rapidjson::Value& l_oScene,
@@ -355,14 +382,10 @@ void LmJsonParser::makeLmRightSpotScene(const rapidjson::Value& l_oScene)
 	//create the scene delete in the game manager
 	m_aInteractionSceneOfTheGame.push_back(new LmRightSpotScene(l_SeedBuffer));
 
-	//get the element we just push to set the introduction
-	initSetPoint(l_oScene,
+	initInteraction(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 
-	initReward(l_oScene,
-			m_aInteractionSceneOfTheGame.at(
-					m_aInteractionSceneOfTheGame.size() - 1));
 }
 
 void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
@@ -415,6 +438,53 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 					&& l_oScene.HasMember("FilenameAudioAnswerSelected"));
 	l_sBufferString = l_oScene["FilenameAudioAnswerSelected"].GetString();
 	l_SeedBuffer.FilenameAudioAnswerSelected = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["InGameScreen"].IsObject()
+					&& l_oScene.HasMember("InGameScreen"));
+
+	std::string l_sImgURLBuffer;
+	int l_iAnchorPointBuffer;
+	std::vector<std::pair<std::string, int>> l_aImgBuffer;
+	std::string l_sSoundURLBuffer;
+	std::string l_sTextURLBuffer;
+
+	assert(
+			l_oScene["InGameScreen"]["img"].IsArray()
+					&& l_oScene["InGameScreen"].HasMember("img"));
+	for (int j = 0; j < l_oScene["InGameScreen"]["img"].Size(); j++)
+	{
+		assert(
+				l_oScene["InGameScreen"]["img"][j]["imgURL"].IsString()
+						&& l_oScene["InGameScreen"]["img"][j].HasMember(
+								"imgURL"));
+
+		l_sBufferString =
+				l_oScene["InGameScreen"]["img"][j]["imgURL"].GetString();
+		l_sImgURLBuffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["InGameScreen"]["img"][j]["anchorPoint"].IsInt()
+						&& l_oScene["InGameScreen"]["img"][j].HasMember(
+								"anchorPoint"));
+		l_iAnchorPointBuffer =
+				l_oScene["InGameScreen"]["img"][j]["anchorPoint"].GetInt();
+		l_aImgBuffer.push_back(
+		{ l_sImgURLBuffer, l_iAnchorPointBuffer });
+	}
+	assert(
+			l_oScene["InGameScreen"]["sound"].IsString()
+					&& l_oScene["InGameScreen"].HasMember("sound"));
+	l_sBufferString = l_oScene["InGameScreen"]["sound"].GetString();
+	l_sSoundURLBuffer = l_sBufferString.c_str();
+	assert(
+			l_oScene["InGameScreen"]["text"].IsString()
+					&& l_oScene["InGameScreen"].HasMember("text"));
+	l_sBufferString = l_oScene["InGameScreen"]["text"].GetString();
+	l_sTextURLBuffer = l_sBufferString.c_str();
+
+	l_SeedBuffer.InGameScreenParent = new LmLayer(l_aImgBuffer,
+			l_sSoundURLBuffer, l_sTextURLBuffer);
 
 	assert(l_oScene["Questions"].IsArray());
 
@@ -491,6 +561,7 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 			l_oScene["TimerDuration"].IsInt()
 					&& l_oScene.HasMember("TimerDuration"));
 	l_SeedBuffer.TimerDuration = (float) l_oScene["TimerDuration"].GetInt();
+	l_SeedBuffer.TimerDuration *= 0.01; //conversion
 
 	assert(
 			l_oScene["TimerEnbaled"].IsBool()
@@ -499,11 +570,194 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 
 	m_aInteractionSceneOfTheGame.push_back(new LmQuizz_v1Scene(l_SeedBuffer));
 
-	initSetPoint(l_oScene,
+	initInteraction(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 
-	initReward(l_oScene,
+}
+
+void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
+{
+
+	//buffer seed
+	LmQuizz_v2SceneSeed l_SeedBuffer;
+
+	//use to deep copy string
+	std::string l_sBufferString;
+
+	assert(
+			l_oScene["FilenameSpriteBackground"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteBackground"));
+	l_sBufferString = l_oScene["FilenameSpriteBackground"].GetString();
+	l_SeedBuffer.FilenameSpriteBackground = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameSpriteBandTop"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteBandTop"));
+	l_sBufferString = l_oScene["FilenameSpriteBandTop"].GetString();
+	l_SeedBuffer.FilenameSpriteBandTop = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameSpriteAnswerBackground"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteAnswerBackground"));
+	l_sBufferString = l_oScene["FilenameSpriteAnswerBackground"].GetString();
+	l_SeedBuffer.FilenameSpriteAnswerBackground = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameSpriteAnswerCross"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteAnswerCross"));
+	l_sBufferString = l_oScene["FilenameSpriteAnswerCross"].GetString();
+	l_SeedBuffer.FilenameSpriteAnswerCross = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameSpriteGoodAnswerButton"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButton"));
+	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButton"].GetString();
+	l_SeedBuffer.FilenameSpriteGoodAnswerButton = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameSpriteBadAnswerButton"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteBadAnswerButton"));
+	l_sBufferString = l_oScene["FilenameSpriteBadAnswerButton"].GetString();
+	l_SeedBuffer.FilenameSpriteBadAnswerButton = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameAudioAnswerSelected"].IsString()
+					&& l_oScene.HasMember("FilenameAudioAnswerSelected"));
+	l_sBufferString = l_oScene["FilenameAudioAnswerSelected"].GetString();
+	l_SeedBuffer.FilenameAudioAnswerSelected = l_sBufferString.c_str();
+
+	assert(l_oScene["Questions"].IsArray());
+
+	//buffers to construct an LmQuestion
+	std::string l_sAnswer1Buffer;
+	std::string l_sAnswer2Buffer;
+	std::string l_sAnswer3Buffer;
+	std::string l_sAnswer4Buffer;
+	int l_iNumberGoodAnswerBuffer;
+	std::string l_sQuestionBuffer;
+
+	for (int i = 0; i < l_oScene["Questions"].Size(); i++)
+	{
+		assert(l_oScene["Questions"][i].IsObject());
+
+		assert(
+				l_oScene["Questions"][i]["Question"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Question"));
+		l_sBufferString = l_oScene["Questions"][i]["Question"].GetString();
+		l_sQuestionBuffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["NumberRightAnswer"].IsInt()
+						&& l_oScene["Questions"][i].HasMember(
+								"NumberRightAnswer"));
+		l_iNumberGoodAnswerBuffer =
+				l_oScene["Questions"][i]["NumberRightAnswer"].GetInt();
+
+		/*
+		 * INIT PARENT ANSWER
+		 */
+
+		assert(
+				l_oScene["Questions"][i]["Answer1Parent"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer1Parent"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer1Parent"].GetString();
+		l_sAnswer1Buffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["Answer2Parent"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer2Parent"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer2Parent"].GetString();
+		l_sAnswer2Buffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["Answer3Parent"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer3Parent"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer3Parent"].GetString();
+		l_sAnswer3Buffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["Answer4Parent"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer4Parent"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer4Parent"].GetString();
+		l_sAnswer4Buffer = l_sBufferString.c_str();
+
+		/*
+		 * answer1
+		 * answer2
+		 * answer3
+		 * answer4
+		 * number good answer
+		 * question
+		 */
+
+		l_SeedBuffer.QuestionsParent.push_back(
+				new LmQuestion(l_sAnswer1Buffer, l_sAnswer2Buffer,
+						l_sAnswer3Buffer, l_sAnswer4Buffer,
+						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
+
+		/*
+		 * INIT CHILD ANSWER
+		 */
+
+		assert(
+				l_oScene["Questions"][i]["Answer1Child"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer1Child"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer1Child"].GetString();
+		l_sAnswer1Buffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["Answer2Child"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer2Child"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer2Child"].GetString();
+		l_sAnswer2Buffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["Answer3Child"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer3Child"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer3Child"].GetString();
+		l_sAnswer3Buffer = l_sBufferString.c_str();
+
+		assert(
+				l_oScene["Questions"][i]["Answer4Child"].IsString()
+						&& l_oScene["Questions"][i].HasMember("Answer4Child"));
+		l_sBufferString = l_oScene["Questions"][i]["Answer4Child"].GetString();
+		l_sAnswer4Buffer = l_sBufferString.c_str();
+
+		/*
+		 * answer1
+		 * answer2
+		 * answer3
+		 * answer4
+		 * number good answer
+		 * question
+		 */
+
+		l_SeedBuffer.QuestionsChild.push_back(
+				new LmQuestion(l_sAnswer1Buffer, l_sAnswer2Buffer,
+						l_sAnswer3Buffer, l_sAnswer4Buffer,
+						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
+	}
+
+	assert(
+			l_oScene["AttemptByQuestion"].IsInt()
+					&& l_oScene.HasMember("AttemptByQuestion"));
+	l_SeedBuffer.AttemptByQuestion = l_oScene["AttemptByQuestion"].GetInt();
+
+	assert(
+			l_oScene["TimerDuration"].IsInt()
+					&& l_oScene.HasMember("TimerDuration"));
+	l_SeedBuffer.TimerDuration = (float) l_oScene["TimerDuration"].GetInt();
+	l_SeedBuffer.TimerDuration *= 0.01; //conversion
+
+	assert(
+			l_oScene["TimerEnbaled"].IsBool()
+					&& l_oScene.HasMember("TimerEnbaled"));
+	l_SeedBuffer.TimerEnbaled = l_oScene["TimerEnbaled"].GetBool();
+
+	m_aInteractionSceneOfTheGame.push_back(new LmQuizz_v2Scene(l_SeedBuffer));
+
+	initInteraction(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 
@@ -565,11 +819,7 @@ void LmJsonParser::makeLmFindGoodCategoryScene(const rapidjson::Value& l_oScene)
 	m_aInteractionSceneOfTheGame.push_back(
 			new LmFindGoodCategoryScene(l_SeedBuffer));
 
-	initSetPoint(l_oScene,
-			m_aInteractionSceneOfTheGame.at(
-					m_aInteractionSceneOfTheGame.size() - 1));
-
-	initReward(l_oScene,
+	initInteraction(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 }
@@ -634,11 +884,7 @@ void LmJsonParser::makeLmAudioHintScene(const rapidjson::Value& l_oScene)
 
 	m_aInteractionSceneOfTheGame.push_back(new LmAudioHintScene(l_SeedBuffer));
 
-	initSetPoint(l_oScene,
-			m_aInteractionSceneOfTheGame.at(
-					m_aInteractionSceneOfTheGame.size() - 1));
-
-	initReward(l_oScene,
+	initInteraction(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 }

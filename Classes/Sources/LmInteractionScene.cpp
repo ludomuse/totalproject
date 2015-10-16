@@ -39,6 +39,7 @@ LmInteractionScene::LmInteractionScene()
 	m_pReplayButton = nullptr;
 	m_pNextButton = nullptr;
 	m_pPreviousButton = nullptr;
+	m_pListener = nullptr;
 
 }
 
@@ -127,6 +128,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	//if there is a reward we init the button with the appropriate sprite
 	if (m_pLmReward)
 	{
+
 		//init sprite reward
 		m_pLmReward->init();
 		//init background button
@@ -134,11 +136,18 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 				m_pLmReward->getSFilenameSpriteBackground(),
 				m_pLmReward->getSFilenameSpriteBackground(),
 				m_pLmReward->getSFilenameSpriteBackground());
-		//add the sprite to the button
-		m_pLmReward->getPSpriteReward()->setPosition(
-				Vec2(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-						l_oVisibleSize.height * 0.5 + l_oOrigin.y));
-		m_pFinishGameButton->addChild(m_pLmReward->getPSpriteReward());
+
+		//if there is a sprite reward
+		if (m_pLmReward->getPSpriteReward())
+		{
+			//add the sprite to the button
+			m_pLmReward->getPSpriteReward()->setPosition(
+					Vec2(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
+							l_oVisibleSize.height * 0.5 + l_oOrigin.y));
+
+			m_pFinishGameButton->addChild(m_pLmReward->getPSpriteReward());
+		}
+
 	}
 
 	m_pFinishGameButton->setTouchEnabled(true);
@@ -253,7 +262,7 @@ void LmInteractionScene::initDashboardLayer()
 
 	//spritebackground
 	m_pSpriteDashboardBand = LmSprite::create(
-			"Ludomuse/GUIElements/spriteBackgroundUser1Profile.png");
+			"Ludomuse/GUIElements/dashboardLayerTexture.png");
 	m_pSpriteDashboardBand->setAnchorPoint(Vec2(0, 0));
 	m_pSpriteDashboardBand->setPosition(Vec2(0, 0));
 	m_pDashboardBandLayer->addChild(m_pSpriteDashboardBand, 0);
@@ -288,7 +297,7 @@ void LmInteractionScene::initDashboardLayer()
 	m_pDashboardBandLayer->addChild(m_pLabelScore);
 
 	m_pBackDashboardButton = ui::Button::create(
-			"Ludomuse/GUIElements/backToDashboard.png");
+			"Ludomuse/GUIElements/backToDashboard.png","Ludomuse/GUIElements/backToDashboardPressed.png");
 	m_pBackDashboardButton->setTouchEnabled(true);
 	m_pBackDashboardButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width * (0.5f),
@@ -379,6 +388,9 @@ void LmInteractionScene::backToDashboard()
 	{
 		m_bBackPressed = true;
 
+		CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
+		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+
 		CCLOG("popscene");
 		Director::getInstance()->popScene();
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
@@ -440,4 +452,9 @@ void LmInteractionScene::send(int msg)
 	LmJniCppFacade::getWifiFacade()->send(msg);
 }
 
+void LmInteractionScene::restart()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+
+}
 

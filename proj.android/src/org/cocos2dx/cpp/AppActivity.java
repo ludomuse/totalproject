@@ -38,6 +38,14 @@ public class AppActivity extends Cocos2dxActivity {
 		super.onCreate(savedInstanceState);
 		
 		_wifiFacade = new WifiDirectFacade(this);
+		
+		
+		//test to see if it fix this => https://github.com/cocos2d/cocos2d-x/issues/8305
+		if ((getIntent().getFlags() & getIntent().FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) 
+		{
+		    finish();
+		    return;
+		}
 
 	}
 

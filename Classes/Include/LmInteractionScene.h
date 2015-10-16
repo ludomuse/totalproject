@@ -33,7 +33,7 @@ public:
 	virtual ~LmInteractionScene();
 
 	//in case we need to do stuff when we get the focus again after a back
-	virtual void restart()=0;
+	void restart();
 
 	//call by replay button
 	virtual void resetScene()=0;
@@ -66,9 +66,31 @@ public:
 		m_pLmReward = pLmReward;
 	}
 
+	bool getReward() const
+	{
+		if (m_pLmReward)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	const std::string& getSDescription() const
+	{
+		return m_sDescription;
+	}
+
+	void setSDescription(const std::string& sDescription)
+	{
+		m_sDescription = sDescription;
+	}
+
 protected:
 
 	//ATTRIBUTES
+
+	//text to display in the dashboard to describe the scene
+	std::string m_sDescription;
 
 	//use to sync movement
 	bool m_bUserIsTouchingScreen;

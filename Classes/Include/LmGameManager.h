@@ -13,11 +13,11 @@
 #include "../Native/Includes/LmJniCppFacade.h"
 #include "../Native/Includes/WifiObserver.h"
 
-static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.4f;
+static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 
-class LmGameManager : public WifiObserver
+class LmGameManager: public WifiObserver
 {
 
 public:
@@ -73,6 +73,7 @@ private:
 	cocos2d::Layer* m_pPinkLayer;
 
 	cocos2d::ui::ScrollView* m_pScrollView;
+	cocos2d::Layer* m_pLayerScrollView;
 
 	//dashboard GUI elements
 	cocos2d::Sprite* m_pSpriteBackgroundBlue;
@@ -86,7 +87,9 @@ private:
 
 	cocos2d::Label* m_pLabelUser1Name;
 	cocos2d::Label* m_pLabelScore;
+	cocos2d::Sprite* m_pStarUser1Sprite;
 	cocos2d::Label* m_pLabelInteractionDone;
+	cocos2d::Sprite* m_pCheckSpriteUser1;
 	cocos2d::Label* m_pLabelTitleApplication;
 	std::string m_sTitleApplication;
 
@@ -94,6 +97,14 @@ private:
 	cocos2d::Label* m_pLabelCompareButton;
 	cocos2d::ui::Button* m_pBackButton;
 	cocos2d::ui::Button* m_pPlayNextInteractionButton;
+
+	//need to be member so we can make it visible or not
+	cocos2d::Sprite* m_pAvatarSpriteUser2;
+
+	cocos2d::Label* m_pLabelScoreUser2;
+	cocos2d::Sprite* m_pStarUser2Sprite;
+	cocos2d::Label* m_pLabelInteractionDoneUser2;
+	cocos2d::Sprite* m_pCheckSpriteUser2;
 
 	//vector interaction sprite
 	std::vector<cocos2d::Sprite*> m_aSpritesInteractions;
@@ -109,6 +120,8 @@ private:
 
 	//listener
 	cocos2d::EventListenerTouchOneByOne* m_pListener;
+	cocos2d::Sprite* m_pDescriptionBox;
+	cocos2d::Label* m_pDescriptionLabel;
 
 	//METHODS
 
@@ -143,6 +156,24 @@ private:
 
 	//callback method for the layer splash
 	bool onTouchBeganSplashScreen(cocos2d::Touch*, cocos2d::Event*);
+
+	//to init texture of the user
+	cocos2d::Sprite* makeUserAvatarSprite(LmUser*);
+
+	//to add a star sprite to a label true = red; false = green
+	cocos2d::Sprite* addSpriteToLabel(cocos2d::Label*, std::string);
+
+	//callback method of parent layer
+	bool onTouchBegan(cocos2d::Touch*, cocos2d::Event*);
+	void onTouchMoved(cocos2d::Touch*, cocos2d::Event*);
+	void onTouchEnded(cocos2d::Touch*, cocos2d::Event*);
+
+	//return index of interaction sprite touched
+	int interactionTouched(cocos2d::Touch*);
+
+	//update position of chack and the star
+	void updateSpriteToLabel(cocos2d::Sprite* ,cocos2d::Label* );
+
 
 };
 

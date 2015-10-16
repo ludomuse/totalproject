@@ -25,6 +25,7 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed ) : LmInterac
 	m_sFilenameSpriteGoodAnswerButton = l_Seed.FilenameSpriteGoodAnswerButton;
 	m_sFilenameSpriteBadAnswerButton = l_Seed.FilenameSpriteBadAnswerButton;
 	m_sFilenameAudioAnswerSelected = l_Seed.FilenameAudioAnswerSelected;
+	m_pInGameScreenParent = l_Seed.InGameScreenParent;
 
 	//pointer
 	m_pSpriteBackground = nullptr;
@@ -112,6 +113,10 @@ void LmQuizz_v1Scene::resetScene()
 
 		//reset replay button
 		m_pReplayButton->setVisible(false);
+		m_pNextQuestionButton->setVisible(false);
+		m_pNextButton->setTouchEnabled(true);
+		m_bQuestionFinished=false;
+
 		m_bReplayButtonSync = true;
 
 	}
@@ -125,7 +130,15 @@ bool LmQuizz_v1Scene::initGame()
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
 	//add the layer game
-	this->addChild(m_pLayerGame, 0);
+	if(m_pUser->isBParent())
+	{
+		m_pInGameScreenParent->init();
+		this->addChild(m_pInGameScreenParent, 0);
+	}
+	else
+	{
+		this->addChild(m_pLayerGame, 0);
+	}
 
 	//init the background
 	m_pSpriteBackground = Sprite::create(m_sFilenameSpriteBackground);
@@ -204,7 +217,7 @@ bool LmQuizz_v1Scene::initGame()
 
 	//init label question
 	m_pQuestionLabel = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.02);
+			l_oVisibleSize.width * 0.04);
 	m_pBandTopSprite->addChild(m_pQuestionLabel);
 	m_pQuestionLabel->setPosition(
 			Vec2(m_pBandTopSprite->getContentSize().width * 0.5,
@@ -215,7 +228,7 @@ bool LmQuizz_v1Scene::initGame()
 	//init label answer and add them to their menuitemiamge
 	//1
 	m_pAnswerLabel[0] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.02);
+			l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[0]->addChild(m_pAnswerLabel[0]);
 	m_pAnswerLabel[0]->setPosition(
 			Vec2(m_pCheckBoxAnswer[0]->getContentSize().width * 0.5,
@@ -225,7 +238,7 @@ bool LmQuizz_v1Scene::initGame()
 			m_pCheckBoxAnswer[0]->getContentSize().width * 0.9);
 	//2
 	m_pAnswerLabel[1] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.02);
+			l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[1]->addChild(m_pAnswerLabel[1]);
 	m_pAnswerLabel[1]->setPosition(
 			Vec2(m_pCheckBoxAnswer[1]->getContentSize().width * 0.5,
@@ -235,7 +248,7 @@ bool LmQuizz_v1Scene::initGame()
 			m_pCheckBoxAnswer[1]->getContentSize().width * 0.9);
 	//3
 	m_pAnswerLabel[2] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.02);
+			l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[2]->addChild(m_pAnswerLabel[2]);
 	m_pAnswerLabel[2]->setPosition(
 			Vec2(m_pCheckBoxAnswer[2]->getContentSize().width * 0.5,
@@ -245,7 +258,7 @@ bool LmQuizz_v1Scene::initGame()
 			m_pCheckBoxAnswer[2]->getContentSize().width * 0.9);
 	//4
 	m_pAnswerLabel[3] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.02);
+			l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[3]->addChild(m_pAnswerLabel[3]);
 	m_pAnswerLabel[3]->setPosition(
 			Vec2(m_pCheckBoxAnswer[3]->getContentSize().width * 0.5,
@@ -267,6 +280,8 @@ bool LmQuizz_v1Scene::initGame()
 
 	m_iIndexQuestion = -1;	//so when we init the next question index = 0
 	beginQuestion();
+
+	return true;
 
 }
 
@@ -301,8 +316,6 @@ void LmQuizz_v1Scene::beginQuestion()
 		{
 			m_pFinishGameButton->setVisible(true);
 			m_pLmReward->playRewardSound();
-
-			m_pReplayButton->setVisible(true);
 		}
 		else
 		{
@@ -360,7 +373,7 @@ void LmQuizz_v1Scene::checkAnswer()
 				m_sFilenameSpriteGoodAnswerButton);
 		m_pNextQuestionButton->loadTexturePressed(
 				m_sFilenameSpriteGoodAnswerButton);
-		questionFinish();
+		questionFinish(true);
 	}
 	else
 	{
@@ -368,7 +381,7 @@ void LmQuizz_v1Scene::checkAnswer()
 		CCLOG("bad answer");
 
 		//still have attempt
-		if (m_iNumberOfAttempt > 0)
+		if (m_iNumberOfAttempt > 1)
 		{
 			m_iNumberOfAttempt--;
 
@@ -380,7 +393,7 @@ void LmQuizz_v1Scene::checkAnswer()
 					m_sFilenameSpriteBadAnswerButton);
 			m_pNextQuestionButton->loadTexturePressed(
 					m_sFilenameSpriteBadAnswerButton);
-			questionFinish();
+			questionFinish(false);
 		}
 	}
 }
@@ -452,7 +465,7 @@ void LmQuizz_v1Scene::answerSelected(Ref* pSender, CheckBox::EventType type)
 
 }
 
-void LmQuizz_v1Scene::questionFinish()
+void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 {
 	m_bQuestionFinished = true;
 	//disable touch on checkbox
@@ -464,7 +477,17 @@ void LmQuizz_v1Scene::questionFinish()
 
 	//make appear the next question button
 	m_pNextQuestionButton->setVisible(true);
-	m_bNextQuestionButtonCanBePress = true;
+
+	if(goodAnswer)
+	{
+		m_bNextQuestionButtonCanBePress = true;
+	}
+	else
+	{
+		m_pNextButton->setTouchEnabled(false);
+		m_pReplayButton->setVisible(true);
+	}
+
 }
 
 void LmQuizz_v1Scene::select(int l_iIdCheckBoxPressed, bool selected)

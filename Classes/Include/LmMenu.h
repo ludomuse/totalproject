@@ -20,7 +20,7 @@ static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;
 static const float s_fMarginLeftMenu = 70.0f;
 //filename sprite
-static const std::string s_sFilenameSpriteBackground = "Ludomuse/Background/splash.png";
+static const std::string s_sFilenameSpriteBackground = "Ludomuse/Background/menu.png";
 static const std::string s_sFilenameSplash = "Ludomuse/Background/splash.png";
 
 class LmMenu : public WifiObserver
@@ -48,6 +48,8 @@ public:
 private:
 
 	//ATTRIBUTES
+
+	int m_iIdWifiObserver;
 
 	WifiDirectFacade* m_pWifiDirectFacade;
 
@@ -78,9 +80,6 @@ private:
 	//to know when ready or not
 	bool m_bReady;
 
-	//to sync makebuttonmenuitem
-	bool m_bMakeMenuItemUserTabletNameDone;
-
 	//sprite to indicate when ready
 	cocos2d::Sprite* m_pSpriteReadyIndicator;
 
@@ -97,8 +96,6 @@ private:
 	cocos2d::Menu* m_pMenuUserTabletName;
 
 	bool m_bNoGenderSelected;
-
-	cocos2d::ui::ScrollView* m_pScrollView;
 
 	//METHODS
 
