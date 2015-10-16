@@ -118,4 +118,9 @@ public class MailBox {
 		messages.remove(0);
 		send();
 	}
+
+	public void stopHandlers()
+	{
+		unarmTimeOut();
+	}
 }
