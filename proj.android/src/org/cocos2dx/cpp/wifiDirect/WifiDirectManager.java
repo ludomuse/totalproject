@@ -12,6 +12,7 @@ import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
 import org.cocos2dx.cpp.sockets.SocketHandler;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +34,6 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -158,6 +158,7 @@ public class WifiDirectManager {
 
 		DebugManager.AddDebugButton("SendFile", new OnClickListener() {
 
+			@SuppressLint("SdCardPath")
 			@Override
 			public void onClick(View arg0)
 			{
@@ -208,33 +209,6 @@ public class WifiDirectManager {
 		}
 	}
 
-	private Handler notificator = new Handler();
-
-	private Runnable notificatorTask = new Runnable() {
-
-		@Override
-		public void run()
-		{
-			keepAlive();
-			notificator.postDelayed(notificatorTask, 5000);
-		}
-
-	};
-
-	public boolean keepAliveConnection = false;
-	
-	public void stopServerNotificator()
-	{
-		if(keepAliveConnection)
-			notificator.removeCallbacks(notificatorTask);
-	}
-
-	public void rearmServerNotificator()
-	{
-		if(keepAliveConnection)
-			notificator.postDelayed(notificatorTask, 5000);
-	}
-
 	public void clear()
 	{
 		stopHandlers();
@@ -247,7 +221,6 @@ public class WifiDirectManager {
 
 	public void stopHandlers()
 	{
-		stopServerNotificator();
 		socket.stopHandlers();
 	}
 
@@ -349,23 +322,25 @@ public class WifiDirectManager {
 	private boolean requestForConnectionAlreadyLaunched = false;
 
 	public boolean forceConnectionRequest = true;
+
 	public void connectToPeer(String peerName, CallBackMethod cmPeerConnected)
 	{
 		if (!forceConnectionRequest && requestForConnectionAlreadyLaunched)
 		{
-			DebugManager
-					.print("request for connection already launched. Please wait.",
-							DEBUGGER_CHANNEL);
+			DebugManager.print(
+					"request for connection already launched. Please wait.",
+					DEBUGGER_CHANNEL);
 			return;
 		}
 		else
 		{
-			DebugManager
-			.print("launching request for connection...",
+			DebugManager.print("launching request for connection...",
 					DEBUGGER_CHANNEL);
 			requestForConnectionAlreadyLaunched = true;
 		}
-		
+
+		// DebugManager.print("setting callback method",
+		// WifiDirectManager.DEBUGGER_CHANNEL);
 		_cmPeerConnected = cmPeerConnected;
 
 		lastPeerName = peerName;
@@ -448,7 +423,7 @@ public class WifiDirectManager {
 		{
 			requestForLaunchingServiceDnsSdInfoAlreadyLaunched = true;
 		}
-		
+
 		Map<String, String> record = new HashMap<String, String>();
 		record.put(TXTRECORD_PROP_AVAILABLE, "visible");
 		WifiP2pDnsSdServiceInfo service = WifiP2pDnsSdServiceInfo.newInstance(
@@ -484,7 +459,7 @@ public class WifiDirectManager {
 						text = "of unknow error";
 						break;
 				}
-				
+
 				DebugManager.print(text, DEBUGGER_CHANNEL);
 				requestForLaunchingServiceDnsSdInfoAlreadyLaunched = false;
 				// reconnectToPeer();
@@ -507,7 +482,7 @@ public class WifiDirectManager {
 		{
 			requestForServiceServicesDiscoveringAlreadyLaunched = true;
 		}
-		
+
 		_manager.discoverServices(_channel, new ActionListener() {
 			@Override
 			public void onSuccess()
@@ -549,7 +524,7 @@ public class WifiDirectManager {
 	private boolean requestForServiceRequestPeersAlreadyLaunched = false;
 
 	public boolean enabledAutoRelanchingServiceDiscoverPeers = false;
-	
+
 	public void launchServiceRequestPeers()
 	{
 		if (requestForServiceRequestPeersAlreadyLaunched)
@@ -563,23 +538,24 @@ public class WifiDirectManager {
 		{
 			requestForServiceRequestPeersAlreadyLaunched = true;
 		}
-		
+
 		if (_manager != null)
 		{
 			_manager.requestPeers(_channel, new PeerListListener() {
 				@Override
 				public void onPeersAvailable(WifiP2pDeviceList peers)
 				{
-					
-					
+
 					int previousSize = _deviceList.size();
 
-					if (enabledAutoRelanchingServiceDiscoverPeers && peers.getDeviceList().size() < previousSize)
+					if (enabledAutoRelanchingServiceDiscoverPeers
+							&& peers.getDeviceList().size() < previousSize)
 					{
 						DebugManager
 								.print("requestPeers service seems not stable. We try to relaunch it...",
 										DEBUGGER_CHANNEL);
-						//before making new request, make sure this method can be call again
+						// before making new request, make sure this method can
+						// be call again
 						requestForServiceRequestPeersAlreadyLaunched = false;
 						launchServicePeersDiscovering(_cmPeerDiscovered);
 					}
@@ -609,11 +585,11 @@ public class WifiDirectManager {
 
 						DebugManager.print("there is " + _deviceList.size()
 								+ " peers available", DEBUGGER_CHANNEL);
-						
-						//once the list is written
+
+						// once the list is written
 						requestForServiceRequestPeersAlreadyLaunched = false;
-						
-						//JniCppFacade.notify(JniCppFacade.DEVICE_LIST_CHANGE);
+
+						// JniCppFacade.notify(JniCppFacade.DEVICE_LIST_CHANGE);
 
 						// Launch call back method
 						if (_cmPeerDiscovered != null)
@@ -710,7 +686,7 @@ public class WifiDirectManager {
 		{
 			requestForServiceCleearServiceAlreadyLaunched = true;
 		}
-		
+
 		_manager.clearServiceRequests(_channel, new ActionListener() {
 			@Override
 			public void onSuccess()
@@ -764,7 +740,7 @@ public class WifiDirectManager {
 		{
 			requestForServiceClearLocalServicesAlreadyLaunched = true;
 		}
-		
+
 		_manager.clearLocalServices(_channel, new ActionListener() {
 			@Override
 			public void onSuccess()
@@ -818,7 +794,7 @@ public class WifiDirectManager {
 		{
 			requestForAddingDnsRequestAlreadyLaunched = true;
 		}
-		
+
 		// After attaching listeners, create a service request and initiate
 		// discovery.
 		WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest
@@ -913,7 +889,7 @@ public class WifiDirectManager {
 		lastPeerName = name;
 	}
 
-	private void send(final CallBackMethod cm)
+	public void discoverAndConnect()
 	{
 		if (socket.isDettachedFromRemoteHost())
 		{
@@ -927,7 +903,7 @@ public class WifiDirectManager {
 					@Override
 					public void Do(Object... vars)
 					{
-						send(cm);
+						discoverAndConnect();
 					}
 
 				});
@@ -938,148 +914,75 @@ public class WifiDirectManager {
 						"Device is not connected. Launching required service",
 						WifiDirectManager.DEBUGGER_CHANNEL);
 				this.connectToPeer(lastPeerName.equals("") ? _deviceList.get(0)
-						: lastPeerName, new CallBackMethod() {
-
-					@Override
-					public void Do(Object... vars)
-					{
-						send(cm);
-					}
-
-				});
+						: lastPeerName, null);
 			}
-		}
-		else
-		{
-			DebugManager.print("Sending message...",
-					WifiDirectManager.DEBUGGER_CHANNEL);
-			stopServerNotificator();
-			cm.Do();
-			rearmServerNotificator();
 		}
 	}
 
 	public void keepAlive()
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				// stopServerNotificator();
-				socket.keepAlive();
-				// rearmServerNotificator();
-			}
-		});
+		discoverAndConnect();
+		socket.keepAlive();
 	}
 
 	public void send(final File f)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(f);
-			}
-		});
+		discoverAndConnect();
+		socket.send(f);
 	}
 
 	public void send(final byte[] bytes)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(bytes);
-			}
-		});
+		discoverAndConnect();
+		socket.send(bytes);
 	}
 
 	public void send(final double d)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(d);
-			}
-		});
+		discoverAndConnect();
+		socket.send(d);
 	}
 
 	public void send(final long l)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(l);
-			}
-		});
+		discoverAndConnect();
+		socket.send(l);
 	}
 
 	public void send(final float f)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(f);
-			}
-		});
+		discoverAndConnect();
+		socket.send(f);
 	}
 
 	public void send(final char c)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(c);
-			}
-		});
+		discoverAndConnect();
+		socket.send(c);
 	}
 
 	public void send(final byte b)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(b);
-			}
-		});
+		discoverAndConnect();
+		socket.send(b);
 	}
 
 	public void send(final int i)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(i);
-			}
-		});
+		discoverAndConnect();
+		socket.send(i);
 	}
 
 	public void send(final boolean b)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(b);
-			}
-		});
+		discoverAndConnect();
+		socket.send(b);
 	}
 
 	public void send(final String s)
 	{
-		send(new CallBackMethod() {
-			@Override
-			public void Do(Object... vars)
-			{
-				socket.send(s);
-			}
-		});
+		discoverAndConnect();
+		socket.send(s);
 	}
 
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
@@ -1087,20 +990,19 @@ public class WifiDirectManager {
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
+			CallBackMethod onReceiveChar)
 	{
-		SocketHandler
-				.registerCallBackReceiver(onReceiveString, onReceiveInt,
-						onReceiveBool, onReceiveFloat, onReceiveDouble,
-						onReceiveByte, onReceiveLong, onReceiveFile,
-						onReceiveByteArray, onReceiveChar, onReceiveAccuseStaticCallback);
+		SocketHandler.registerCallBackReceiver(onReceiveString, onReceiveInt,
+				onReceiveBool, onReceiveFloat, onReceiveDouble, onReceiveByte,
+				onReceiveLong, onReceiveFile, onReceiveByteArray,
+				onReceiveChar);
 	}
 
 	private void onConnect()
 	{
 		DebugManager.print("device connected to network", DEBUGGER_CHANNEL);
 		socket.listen(LISTENNING_PORT);
-		socket.setOnReceiveIPCallBack(_cmPeerConnected);
+		// socket.setOnReceiveIPCallBack(_cmPeerConnected);
 		// setCallBacks();
 		_manager.requestConnectionInfo(_channel, new ConnectionInfoListener() {
 			@Override
@@ -1108,14 +1010,8 @@ public class WifiDirectManager {
 			{
 				if (!info.isGroupOwner)
 				{
-					// socket.listen(LISTENNING_PORT_OTHER);
-					socket.setRemoteHost(
-							info.groupOwnerAddress.getHostAddress(),
-							LISTENNING_PORT);
-					// Socket socket = new Socket(info.groupOwnerAddress,
-					// LISTENNING_PORT);
-					socket.sendIP();
-					socket.setOnReceiveAccuseCallBack(_cmPeerConnected);
+
+					socket.connectTo(info.groupOwnerAddress.getHostAddress());
 
 				}
 				else
@@ -1129,6 +1025,7 @@ public class WifiDirectManager {
 	}
 
 	public boolean autoReconnect = true;
+
 	private void onDisconnect(NetworkInfo ni)
 	{
 		socket.notifyIsDisconnectedFromNetwork();
@@ -1145,7 +1042,7 @@ public class WifiDirectManager {
 				DEBUGGER_CHANNEL);
 		DebugManager.print("-> network is roaming = " + ni.isRoaming(),
 				DEBUGGER_CHANNEL);
-		if(autoReconnect)
+		if (autoReconnect)
 			reconnectToPeer();
 	}
 

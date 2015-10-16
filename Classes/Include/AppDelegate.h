@@ -52,7 +52,7 @@ private:
 
 	//ATTRIBUTES
 
-	WifiDirectFacade* m_pwifiFacade;
+	LmWifiDirectFacade* m_pwifiFacade;
 
 	//our gameManager which handle the good behavior of the game
 	LmGameManager* m_pLmGameManager;

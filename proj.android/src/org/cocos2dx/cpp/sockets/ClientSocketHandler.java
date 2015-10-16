@@ -11,12 +11,13 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.os.Handler;
-
 
 class ConnectTask2 implements Runnable {
 	private String host;
@@ -43,7 +44,7 @@ class ConnectTask2 implements Runnable {
 		try
 		{
 			socket.bind(null);
-			DebugManager.print("Trying to reach address " + host + ":" + port,
+			DebugManager.print(ClientSocketHandler.GetTag() + "Trying to reach address " + host + ":" + port,
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			socket.connect(new InetSocketAddress(host, port), 500);
 			// socket.connect((new InetSocketAddress(host, port)), 500);
@@ -55,7 +56,7 @@ class ConnectTask2 implements Runnable {
 		catch (IllegalArgumentException e)
 		{
 			// Log.d("A", e.getMessage() + "");
-			DebugManager.print(
+			DebugManager.print(ClientSocketHandler.GetTag() + 
 					"argument exception occure during connection to server at "
 							+ host + ":" + port,
 					WifiDirectManager.DEBUGGER_CHANNEL);
@@ -63,7 +64,7 @@ class ConnectTask2 implements Runnable {
 		catch (IOException e)
 		{
 			// Log.d("A", e.getMessage() + "");
-			DebugManager.print(
+			DebugManager.print(ClientSocketHandler.GetTag() + 
 					"IO Exception occure during connection to server at "
 							+ host + ":" + port + ". Error: "
 							+ e.getLocalizedMessage(),
@@ -84,6 +85,13 @@ public class ClientSocketHandler {
 		buf = new byte[len];
 		// socket = new Socket();
 
+	}
+	
+	public static String GetTag()
+	{
+		Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		return "[LUDOCLIENT][" + sdf.format(cal.getTime()) + "]";
 	}
 
 	public boolean isConnected()
@@ -112,7 +120,7 @@ public class ClientSocketHandler {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print("error while closing outputstream",
+			DebugManager.print(ClientSocketHandler.GetTag() + "error while closing outputstream",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 	}
@@ -131,7 +139,7 @@ public class ClientSocketHandler {
 	{
 		if (remoteIp == null)
 		{
-			DebugManager.print("Not connected to host",
+			DebugManager.print(ClientSocketHandler.GetTag() + "Not connected to host",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 
 			return;
@@ -142,16 +150,23 @@ public class ClientSocketHandler {
 			@Override
 			public void run()
 			{
+				if (remoteIp == null)
+				{
+					DebugManager
+							.print("Ip from remost host is null. Stoping connection now.",
+									WifiDirectManager.DEBUGGER_CHANNEL);
+					return;
+				}
 				if (socket != null && socket.isConnected()
 						&& !socket.isClosed())
 				{
-					DebugManager.print("Connected to server !",
+					DebugManager.print(ClientSocketHandler.GetTag() + "Connected to server !",
 							WifiDirectManager.DEBUGGER_CHANNEL);
 					cm.Do();
 				}
 				else
 				{
-					DebugManager.print(
+					DebugManager.print(ClientSocketHandler.GetTag() + 
 							"Connection to server fail. Trying again...",
 							WifiDirectManager.DEBUGGER_CHANNEL);
 					socket = new Socket();
@@ -174,7 +189,7 @@ public class ClientSocketHandler {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print(
+			DebugManager.print(ClientSocketHandler.GetTag() + 
 					"error while openning outputstream: "
 							+ e.getLocalizedMessage(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
@@ -222,7 +237,7 @@ public class ClientSocketHandler {
 
 	public void send(File f)
 	{
-		DebugManager.print("sending file " + f.getName(),
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending file " + f.getName(),
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		try
 		{
@@ -231,7 +246,7 @@ public class ClientSocketHandler {
 		}
 		catch (FileNotFoundException e)
 		{
-			DebugManager.print("error occured while sending file",
+			DebugManager.print(ClientSocketHandler.GetTag() + "error occured while sending file",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 
@@ -239,7 +254,7 @@ public class ClientSocketHandler {
 
 	public void send(double d)
 	{
-		DebugManager.print("sending double " + d,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending double " + d,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 
 		send(toByte(d), PACKET_TYPE.DOUBLE);
@@ -255,7 +270,7 @@ public class ClientSocketHandler {
 			bytesStr += bytes[i] + "-";
 		}
 
-		DebugManager.print("sending bytes " + bytesStr,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending bytes " + bytesStr,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		/* end debug */
 
@@ -264,70 +279,70 @@ public class ClientSocketHandler {
 
 	public void send(long l)
 	{
-		DebugManager.print("sending long " + l,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending long " + l,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(l), PACKET_TYPE.LONG);
 	}
 
 	public void send(float f)
 	{
-		DebugManager.print("sending float " + f,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending float " + f,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(f), PACKET_TYPE.FLOAT);
 	}
 
 	public void send(byte b)
 	{
-		DebugManager.print("sending byte " + b,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending byte " + b,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(b), PACKET_TYPE.BYTE);
 	}
 
 	public void send(char c)
 	{
-		DebugManager.print("sending char " + c,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending char " + c,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(c), PACKET_TYPE.CHAR);
 	}
 
 	public void send(int i)
 	{
-		DebugManager.print("sending int " + i,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending int " + i,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(i), PACKET_TYPE.INT);
 	}
 
 	public void send(boolean b)
 	{
-		DebugManager.print("sending boolean " + b,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending boolean " + b,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(b), PACKET_TYPE.BOOL);
 	}
 
 	public void send(String str)
 	{
-		DebugManager.print("sending string " + str,
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending string " + str,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(str), PACKET_TYPE.STRING);
 	}
 
 	public void sendAccuse()
 	{
-		DebugManager.print("sending accuse...",
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending accuse...",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(new byte[] {}, PACKET_TYPE.ACCUSE);
 	}
 
 	public void sendIP(int clientListenningPort)
 	{
-		DebugManager.print("sending IP...", WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending IP...", WifiDirectManager.DEBUGGER_CHANNEL);
 		String address = getClientIpAddress() + "!" + clientListenningPort;
 		send(toByte(address), PACKET_TYPE.IP);
 	}
 
 	public void notifyServer()
 	{
-		DebugManager.print("Sending alive packet...",
+		DebugManager.print(ClientSocketHandler.GetTag() + "Sending alive packet...",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		send(new byte[] {}, PACKET_TYPE.KEEP_ALIVE);
 	}
@@ -371,7 +386,7 @@ public class ClientSocketHandler {
 				}
 				catch (Exception e)
 				{
-					DebugManager.print("error occure while sending stream : "
+					DebugManager.print(ClientSocketHandler.GetTag() + "error occure while sending stream : "
 							+ e.getLocalizedMessage(),
 							WifiDirectManager.DEBUGGER_CHANNEL);
 				}

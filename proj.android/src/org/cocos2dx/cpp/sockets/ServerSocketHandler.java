@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
@@ -24,7 +27,6 @@ import android.os.AsyncTask;
 class Communication implements Runnable {
 	private Socket client;
 	private SocketHandler master;
-	public static boolean isWaitingForAccuse = false;
 
 	public Communication(Socket client, SocketHandler master)
 	{
@@ -47,7 +49,8 @@ class Communication implements Runnable {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print("error reading char in inputstream",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "error reading char in inputstream",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			return '#';
 		}
@@ -149,7 +152,8 @@ class Communication implements Runnable {
 		}
 		catch (IOException e1)
 		{
-			DebugManager.print("error while creating new file",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "error while creating new file",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 
@@ -167,9 +171,9 @@ class Communication implements Runnable {
 		}
 		catch (Exception e)
 		{
-			DebugManager.print(
-					"Error while reading file. Default directory is: "
-							+ new File(".").getAbsolutePath(),
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "Error while reading file. Default directory is: "
+					+ new File(".").getAbsolutePath(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			return null;
 		}
@@ -189,7 +193,8 @@ class Communication implements Runnable {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print("error while getting client data",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "error while getting client data",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 		return is;
@@ -201,7 +206,8 @@ class Communication implements Runnable {
 		{
 			if (is == null)
 			{
-				DebugManager.print("Inputstream is null",
+				DebugManager.print(ServerSocketHandler.GetTag()
+						+ "Inputstream is null",
 						WifiDirectManager.DEBUGGER_CHANNEL);
 			}
 			else
@@ -211,7 +217,8 @@ class Communication implements Runnable {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print("error while closing inputstream",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "error while closing inputstream",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 	}
@@ -226,28 +233,26 @@ class Communication implements Runnable {
 		// get the client's server ip and port in the string
 		String clientIP = getStringFromInputStream(stream);
 
-		DebugManager.print("client address is : " + clientIP,
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "client address is : " + clientIP + ". i'm the host."
+				+ "onReceiveIpCallBack is null = "
+				+ (onReceiveIPCallBack == null),
 				WifiDirectManager.DEBUGGER_CHANNEL);
 
 		// notify SocketHandler that this device client should
 		// connect to the ip and port previously got.
 		master.setRemoteHost(clientIP.split("!")[0],
 				Integer.parseInt(clientIP.split("!")[1]));
-
-		if (onReceiveIPCallBack == null)
+		master.send();
+		// send an accuse message with the client newly created and
+		// connected
+		// to the remost server.
+		
+		if (onReceiveIPCallBack != null)
 		{
-			// send an accuse message with the client newly created and
-			// connected
-			// to the remost server.
-			master.sendAccuse();
-		}
-		else
-		{
-			// or call the appropriate callback if setted
 			onReceiveIPCallBack.Do();
-			onReceiveIPCallBack = null;
 		}
-
+		master.sendAccuse();
 	}
 
 	/**
@@ -257,14 +262,15 @@ class Communication implements Runnable {
 	 */
 	private void receiveString(InputStream stream)
 	{
-		//get the string into the message
+		// get the string into the message
 		String res = getStringFromInputStream(stream);
-		DebugManager.print("we receive string : " + res,
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "we receive string : " + res,
 				WifiDirectManager.DEBUGGER_CHANNEL);
-		//call the callback if set
+		// call the callback if set
 		if (onReceiveString != null)
 			onReceiveString.Do(res);
-		//send accuse to client
+		// send accuse to client
 		master.sendAccuse();
 	}
 
@@ -275,22 +281,10 @@ class Communication implements Runnable {
 	 */
 	private void receiveAccuse()
 	{
-		DebugManager.print("Accuse received !",
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "Accuse received !",
 				WifiDirectManager.DEBUGGER_CHANNEL);
-		//call the appropriate callback if set
-		if (onReceiveAccuseCallBack != null)
-		{
-			onReceiveAccuseCallBack.Do();
-			onReceiveAccuseCallBack = null;//we want the callback to be call only one time
-		}
-		if(onReceiveAccuseStaticCallback != null)
-		{
-			//accuse static callback differ from accuse callback
-			//by the fact it can be call more than one time
-			onReceiveAccuseStaticCallback.Do();
-		}
-		//we are not more waiting for an accuse...
-		isWaitingForAccuse = false;
+		master.sendNext();
 	}
 
 	/**
@@ -300,14 +294,14 @@ class Communication implements Runnable {
 	 */
 	private void receiveBool(InputStream is)
 	{
-		//read a bool from the stream
+		// read a bool from the stream
 		boolean res = read(is) == 0 ? false : true;
-		DebugManager.print("we received bool: " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
-		//call the appropriate callback if set
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received bool: "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
+		// call the appropriate callback if set
 		if (onReceiveBool != null)
 			onReceiveBool.Do(res);
-		//send accuse to client
+		// send accuse to client
 		master.sendAccuse();
 	}
 
@@ -318,14 +312,14 @@ class Communication implements Runnable {
 	 */
 	private void receiveInt(InputStream is)
 	{
-		//get an int from the stream
+		// get an int from the stream
 		int res = read(is);
-		DebugManager.print("we received int: " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
-		//call the appropriate callback if set
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received int: "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
+		// call the appropriate callback if set
 		if (onReceiveInt != null)
 			onReceiveInt.Do(res);
-		//send accuse to client
+		// send accuse to client
 		master.sendAccuse();
 	}
 
@@ -337,8 +331,8 @@ class Communication implements Runnable {
 	private void receiveByte(InputStream is)
 	{
 		byte res = (byte) read(is);
-		DebugManager.print("we received byte: " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received byte: "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveByte != null)
 			onReceiveByte.Do(res);
 		master.sendAccuse();
@@ -352,8 +346,8 @@ class Communication implements Runnable {
 	private void receiveChar(InputStream is)
 	{
 		char res = (char) read(is);
-		DebugManager.print("we received char: " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received char: "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveChar != null)
 			onReceiveChar.Do(res);
 		master.sendAccuse();
@@ -367,8 +361,8 @@ class Communication implements Runnable {
 	private void receiveFloat(InputStream is)
 	{
 		float res = getFloatFromInputStream(is);
-		DebugManager.print("we received float: " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received float: "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveFloat != null)
 			onReceiveFloat.Do(res);
 		master.sendAccuse();
@@ -382,7 +376,8 @@ class Communication implements Runnable {
 	private void receiveDouble(InputStream is)
 	{
 		double res = getDoubleFromInputStream(is);
-		DebugManager.print("we received double: " + res,
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "we received double: " + res,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveDouble != null)
 			onReceiveDouble.Do(res);
@@ -397,8 +392,8 @@ class Communication implements Runnable {
 	private void receiveLong(InputStream is)
 	{
 		long res = getLongFromInputStream(is);
-		DebugManager.print("we received long: " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received long: "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveLong != null)
 			onReceiveLong.Do(res);
 		master.sendAccuse();
@@ -419,8 +414,8 @@ class Communication implements Runnable {
 			bytesStr += res[i] + "-";
 		}
 
-		DebugManager.print("we received bytes: " + bytesStr,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag() + "we received bytes: "
+				+ bytesStr, WifiDirectManager.DEBUGGER_CHANNEL);
 		/* end debug */
 		if (onReceiveByteArray != null)
 			onReceiveByteArray.Do(res);
@@ -436,8 +431,8 @@ class Communication implements Runnable {
 	{
 		File res = getFileFromInputStream(is);
 		/* debug */
-		DebugManager.print("new file received " + res,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag() + "new file received "
+				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		/* end debug */
 		if (onReceiveFile != null)
 			onReceiveFile.Do(res);
@@ -460,7 +455,8 @@ class Communication implements Runnable {
 			catch (IOException e)
 			{
 				DebugManager.print(
-						"error when reading inputstream "
+						ServerSocketHandler.GetTag()
+								+ "error when reading inputstream "
 								+ e.getLocalizedMessage(),
 						WifiDirectManager.DEBUGGER_CHANNEL);
 				return -1;
@@ -481,13 +477,15 @@ class Communication implements Runnable {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print("error while getting packet type " + available,
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "error while getting packet type " + available,
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			return PACKET_TYPE.DEFAULT;
 		}
 		catch (Exception e)
 		{
-			DebugManager.print("unknow exception : " + value,
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "unknow exception : " + value,
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			return PACKET_TYPE.DEFAULT;
 		}
@@ -503,7 +501,8 @@ class Communication implements Runnable {
 		switch (type)
 		{
 			case KEEP_ALIVE:
-				DebugManager.print("Client is alive !",
+				DebugManager.print(ServerSocketHandler.GetTag()
+						+ "Client is alive !",
 						WifiDirectManager.DEBUGGER_CHANNEL);
 				break;
 			case DEFAULT:
@@ -548,16 +547,11 @@ class Communication implements Runnable {
 		// break;
 		}
 
-		if (type != PACKET_TYPE.DEFAULT && isWaitingForAccuse)
-		{
-			DebugManager.print("resending packet...",
-					WifiDirectManager.DEBUGGER_CHANNEL);
-			master.resend();
-		}
 
 		closeInputStream(is);
 
-		DebugManager.print("Request is answered",
+		DebugManager.print(
+				ServerSocketHandler.GetTag() + "Request is answered",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
@@ -568,12 +562,6 @@ class Communication implements Runnable {
 		onReceiveIPCallBack = cm;
 	}
 
-	private static CallBackMethod onReceiveAccuseCallBack = null;
-
-	public static void setOnReceiveAccuseCallBack(CallBackMethod cm)
-	{
-		onReceiveAccuseCallBack = cm;
-	}
 
 	private static CallBackMethod onReceiveString = null;
 	private static CallBackMethod onReceiveInt = null;
@@ -585,14 +573,13 @@ class Communication implements Runnable {
 	private static CallBackMethod onReceiveFile = null;
 	private static CallBackMethod onReceiveByteArray = null;
 	private static CallBackMethod onReceiveChar = null;
-	private static CallBackMethod onReceiveAccuseStaticCallback = null;
 
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
 			CallBackMethod onReceiveInt, CallBackMethod onReceiveBool,
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
+			CallBackMethod onReceiveChar)
 	{
 		Communication.onReceiveString = onReceiveString;
 		Communication.onReceiveInt = onReceiveInt;
@@ -604,7 +591,6 @@ class Communication implements Runnable {
 		Communication.onReceiveFile = onReceiveFile;
 		Communication.onReceiveByteArray = onReceiveByteArray;
 		Communication.onReceiveChar = onReceiveChar;
-		Communication.onReceiveAccuseStaticCallback = onReceiveAccuseStaticCallback;
 	}
 
 }
@@ -624,6 +610,13 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	private int port;
 	private SocketHandler master;
 
+	public static String GetTag()
+	{
+		Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		return "[LUDOSERVER][" + sdf.format(cal.getTime()) + "]";
+	}
+
 	public ServerSocketHandler(int port, SocketHandler master)
 	{
 		this.port = port;
@@ -636,6 +629,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	public void stop()
 	{
 		run = false;
+		this.cancel(true);
 	}
 
 	public void listen()
@@ -643,10 +637,6 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		execute();
 	}
 
-	public void waitForAccuse()
-	{
-		Communication.isWaitingForAccuse = true;
-	}
 
 	public String getServerIpAddress()
 	{
@@ -672,7 +662,8 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 			}
 			catch (IOException e1)
 			{
-				DebugManager.print("Error when openning server socket",
+				DebugManager.print(ServerSocketHandler.GetTag()
+						+ "Error when openning server socket",
 						WifiDirectManager.DEBUGGER_CHANNEL);
 			}
 		}
@@ -680,14 +671,16 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		String debugText = "launching server on " + getServerIpAddress() + ":";
 		if (port != serverSocket.getLocalPort())
 		{
-			DebugManager.print("Port " + port + " was already in use. "
-					+ debugText + serverSocket.getLocalPort(),
+			DebugManager.print(
+					ServerSocketHandler.GetTag() + "Port " + port
+							+ " was already in use. " + debugText
+							+ serverSocket.getLocalPort(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			port = serverSocket.getLocalPort();
 		}
 		else
 		{
-			DebugManager.print(debugText + port,
+			DebugManager.print(ServerSocketHandler.GetTag() + debugText + port,
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 
@@ -703,11 +696,12 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		}
 		catch (IOException e1)
 		{
-			DebugManager.print("server.accept() failed",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "server.accept() failed",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
-		DebugManager.print("new client connected",
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "new client connected", WifiDirectManager.DEBUGGER_CHANNEL);
 
 		run = true;
 
@@ -722,10 +716,11 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print("server.close() failed",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "server.close() failed",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
-		DebugManager.print("server is closed",
+		DebugManager.print(ServerSocketHandler.GetTag() + "server is closed",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
@@ -744,10 +739,12 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 		while (isRunning())
 		{
-			DebugManager.print("server is waiting for client...",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "server is waiting for client...",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			Socket client = waitForClient();
-			DebugManager.print("new client request...",
+			DebugManager.print(ServerSocketHandler.GetTag()
+					+ "new client request...",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			new Thread(new Communication(client, master)).start();
 		}
@@ -762,23 +759,17 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		Communication.setOnReceiveIPCallBack(cm);
 	}
 
-	public void setOnReceiveAccuseCallBack(CallBackMethod cm)
-	{
-		Communication.setOnReceiveAccuseCallBack(cm);
-	}
-
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
 			CallBackMethod onReceiveInt, CallBackMethod onReceiveBool,
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
 			CallBackMethod onReceiveByte, CallBackMethod onReceiveLong,
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
-			CallBackMethod onReceiveChar, CallBackMethod onReceiveAccuseStaticCallback)
+			CallBackMethod onReceiveChar)
 	{
-		Communication
-				.registerCallBackReceiver(onReceiveString, onReceiveInt,
-						onReceiveBool, onReceiveFloat, onReceiveDouble,
-						onReceiveByte, onReceiveLong, onReceiveFile,
-						onReceiveByteArray, onReceiveChar, onReceiveAccuseStaticCallback);
+		Communication.registerCallBackReceiver(onReceiveString, onReceiveInt,
+				onReceiveBool, onReceiveFloat, onReceiveDouble, onReceiveByte,
+				onReceiveLong, onReceiveFile, onReceiveByteArray,
+				onReceiveChar);
 	}
 
 	public void stopHandlers()

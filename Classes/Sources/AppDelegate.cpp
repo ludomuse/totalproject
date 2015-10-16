@@ -8,7 +8,7 @@ USING_NS_CC;
 AppDelegate::AppDelegate()
 {
 	//object
-	m_pwifiFacade = new WifiDirectFacade();//Create the wifi direct
+	m_pwifiFacade = new LmWifiDirectFacade();//Create the wifi direct
 	//and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
 	//trough this the jni facade class)
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);

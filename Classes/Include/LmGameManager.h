@@ -9,20 +9,20 @@
 #include "LmServerManager.h"
 #include "LmUser.h"
 #include "LmInteractionScene.h"
-#include "../Native/Includes/WifiDirectFacade.h"
-#include "../Native/Includes/LmJniCppFacade.h"
-#include "../Native/Includes/WifiObserver.h"
+#include "../Include/LmWifiDirectFacade.h"
+#include "../Include/LmJniCppFacade.h"
+#include "../Include/LmWifiObserver.h"
 
 static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 
-class LmGameManager: public WifiObserver
+class LmGameManager : public LmWifiObserver
 {
 
 public:
 
-	LmGameManager(WifiDirectFacade* a_wifiFacade);
+	LmGameManager(LmWifiDirectFacade* a_wifiFacade);
 	~LmGameManager();
 
 	//call different method of gamemanager, init launch scene and handle layers of interactions
@@ -51,7 +51,7 @@ private:
 
 	//ATTRIBUTES
 
-	WifiDirectFacade* m_pWifiDirectFacade;
+	LmWifiDirectFacade* m_pWifiDirectFacade;
 
 	//layer splash
 	cocos2d::Layer* m_pSplashSreenLayer;

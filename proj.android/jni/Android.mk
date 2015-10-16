@@ -11,10 +11,9 @@ LOCAL_MODULE := cocos2dcpp_shared
 LOCAL_MODULE_FILENAME := libcocos2dcpp
 
 LOCAL_SRC_FILES := hellocpp/main.cpp \
-				   ../../Classes/JSONParser/Sources/LmJParserWifiDirect.cpp \
-				   ../../Classes/Native/Sources/LmJniJavaFacade.cpp \
-				   ../../Classes/Native/Sources/LmJniCppFacade.cpp \
-				   ../../Classes/Native/Sources/WifiDirectFacade.cpp \
+				   ../../Classes/Sources/LmJniJavaFacade.cpp \
+				   ../../Classes/Sources/LmJniCppFacade.cpp \
+				   ../../Classes/Sources/LmWifiDirectFacade.cpp \
 				   ../../Classes/Sources/AppDelegate.cpp \
                    ../../Classes/Sources/LmGameManager.cpp\
                    ../../Classes/Sources/LmServerManager.cpp\

@@ -2,7 +2,7 @@
 #define LMJNIJAVAFACADE_H_
 
 #include <string>
-#include "helpers.h"
+#include "LmHelpers.h"
 #include "cocos2d.h"
 #include "../cocos2d/cocos/platform/android/jni/JniHelper.h"
 
@@ -83,7 +83,7 @@ private:
 
 	virtual ~LmJniJavaFacade();
 
-	friend class WifiDirectFacade;
+	friend class LmWifiDirectFacade;
 
 };
 

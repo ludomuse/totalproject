@@ -13,8 +13,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include "../../JSONParser/Includes/LmJParserWifiDirect.h"
-#include "WifiDirectFacade.h"
+#include "LmWifiDirectFacade.h"
 
 extern "C" {
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPeers(
@@ -50,9 +49,6 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingC
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingByte(
 		JNIEnv* env, jobject thiz, jbyte byte);
 
-JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingAccuse(
-		JNIEnv* env);
-
 }
 ;
 
@@ -60,9 +56,9 @@ class LmJniCppFacade {
 
 public:
 
-	static WifiDirectFacade* getWifiFacade();
+	static LmWifiDirectFacade* getWifiFacade();
 
-	static void setWifiFacade(WifiDirectFacade* wifiFacade);
+	static void setWifiFacade(LmWifiDirectFacade* wifiFacade);
 
 	inline static int toCObject(jint i) {
 		return (int) i;
@@ -128,7 +124,7 @@ private:
 	    return elems;
 	}
 
-	static WifiDirectFacade* _wifiDirectFacade;
+	static LmWifiDirectFacade* _wifiDirectFacade;
 };
 
 #endif //LMJNICPPFACADE_H

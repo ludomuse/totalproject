@@ -22,7 +22,7 @@ public class DebugManager {
 
 	public static boolean mute = false;
 
-	private static String tag = "LudoMuse";
+	private static String tag = "LudoMuseDebug";
 	public static int currentDebugLevel = WifiDirectManager.DEBUGGER_CHANNEL;
 
 	public static final int DEFAULT_LEVEL = 0;

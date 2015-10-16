@@ -19,6 +19,9 @@ import android.app.Activity;
 public class WifiDirectFacade {
 
 	private WifiDirectManager _manager;
+	
+	//There, we set callback that are going to be called by the WifiDirectManager
+	//when receiving data such as int, char, byte, string, ....
 	private CallBackMethod cmOnGettingsPeers = new CallBackMethod() {
 		@Override
 		public void Do(Object... vars)
@@ -96,13 +99,6 @@ public class WifiDirectFacade {
 			onReceiving((Character) vars[0]);
 		}
 	};
-	private CallBackMethod cmOnReceiveAccuseStaticCallback = new CallBackMethod() {
-		@Override
-		public void Do(Object... vars)
-		{
-			onReceivingAccuse();
-		}
-	};
 	
 	public WifiDirectFacade(Activity activity)
 	{
@@ -112,11 +108,21 @@ public class WifiDirectFacade {
 		WifiDirectManager.registerCallBackReceiver(cmOnReceiveString,
 				cmOnReceiveInt, cmOnReceiveBool, cmOnReceiveFloat,
 				cmOnReceiveDouble, cmOnReceiveByte, cmOnReceiveLong,
-				cmOnReceiveFile, cmOnReceiveByteArray, cmOnReceiveChar, cmOnReceiveAccuseStaticCallback);
+				cmOnReceiveFile, cmOnReceiveByteArray, cmOnReceiveChar);
 
 		_manager = new WifiDirectManager(activity);
+		//If true, wifi manager will automatically reconnect when is deconnected
+		_manager.autoReconnect = false;
+		//allow wifi manager to relaunch discovery service when the list of found devices
+		//decrease
+		_manager.enabledAutoRelanchingServiceDiscoverPeers = false;
+		//If true, it will launch a connection request, even if a connection was already launched
+		//(but still not answered)
+		_manager.forceConnectionRequest = false;
 		_manager.initialize();
-
+		//should be done in the exit method of the application
+		_manager.clear();
+		
 		DebugManager.print("WifiDirectFacade is created !",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
@@ -172,11 +178,6 @@ public class WifiDirectFacade {
 		JniCppFacade.onReceivingChar(c);
 	}
 
-	public void onReceivingAccuse()
-	{
-		JniCppFacade.onReceivingAccuse();
-	}
-	
 	public void onReceiving(byte b)
 	{
 		JniCppFacade.onReceivingByte(b);

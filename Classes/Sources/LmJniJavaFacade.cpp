@@ -1,5 +1,5 @@
 //------------------------------------------------------ Include personnel
-#include "../Includes/LmJniJavaFacade.h"
+#include "../Include/LmJniJavaFacade.h"
 #include <iostream>
 
 #define JAVACLASS "org/cocos2dx/cpp/jniFacade/JniJavaFacade"

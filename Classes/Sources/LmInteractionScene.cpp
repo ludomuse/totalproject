@@ -449,7 +449,7 @@ void LmInteractionScene::endGame()
 
 void LmInteractionScene::send(int msg)
 {
-	LmJniCppFacade::getWifiFacade()->send(msg);
+	WIFIFACADE->send(msg);
 }
 
 void LmInteractionScene::restart()

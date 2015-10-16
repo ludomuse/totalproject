@@ -13,7 +13,7 @@
 USING_NS_CC;
 using namespace cocos2d::ui;
 
-LmMenu::LmMenu(WifiDirectFacade* a_wifiFacade)
+LmMenu::LmMenu(LmWifiDirectFacade* a_wifiFacade)
 {
 
 	//register to direct wifi
@@ -319,8 +319,8 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 					"Ludomuse/GUIElements/nextButtonNormal.png");
 
 			std::string l_sBufferValue = m_pUser1->getUserSerialized();
-			LmJniCppFacade::getWifiFacade()->sendEvent(LmEvent::UserIsReady,
-					WifiDirectFacade::SEND_STRING, &l_sBufferValue);
+			WIFIFACADE->sendEvent(LmEvent::UserIsReady,
+					LmWifiDirectFacade::SEND_STRING,&l_sBufferValue);
 			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
 					m_pUser2->getPUserTabletName().c_str());
 			menuIsFinished();
@@ -457,7 +457,6 @@ void LmMenu::makeMenuItemUserTabletName(
 		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
 	}
-
 
 }
 

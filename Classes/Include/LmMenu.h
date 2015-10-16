@@ -13,8 +13,8 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "LmUser.h"
-#include "../Native/Includes/LmJniCppFacade.h"
-#include "../Native/Includes/WifiObserver.h"
+#include "../Include/LmJniCppFacade.h"
+#include "../Include/LmWifiObserver.h"
 
 static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;
@@ -23,11 +23,11 @@ static const float s_fMarginLeftMenu = 70.0f;
 static const std::string s_sFilenameSpriteBackground = "Ludomuse/Background/menu.png";
 static const std::string s_sFilenameSplash = "Ludomuse/Background/splash.png";
 
-class LmMenu : public WifiObserver
+class LmMenu : public LmWifiObserver
 {
 public:
 
-	LmMenu(WifiDirectFacade* a_wifiFacade);
+	LmMenu(LmWifiDirectFacade* a_wifiFacade);
 	~LmMenu();
 
 	//display a sprite during s_fSplashScreenDuration then call logscreen method cll from AppDelegate
@@ -51,7 +51,8 @@ private:
 
 	int m_iIdWifiObserver;
 
-	WifiDirectFacade* m_pWifiDirectFacade;
+
+	LmWifiDirectFacade* m_pWifiDirectFacade;
 
 	//the scene of the menu (log + wifi)
 	cocos2d::Scene* m_pLmMenuScene;

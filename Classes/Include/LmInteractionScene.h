@@ -12,7 +12,7 @@
 #include "LmSprite.h"
 #include "LmReward.h"
 
-#include "../Native/Includes/LmJniCppFacade.h"
+#include "../Include/LmJniCppFacade.h"
 
 typedef std::map<int, LmGameComponent*>::iterator it_type;
 
