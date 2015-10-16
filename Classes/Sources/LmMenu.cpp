@@ -369,6 +369,13 @@ void LmMenu::femaleSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 
 void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
+
+	if (m_bReady)
+	{
+		//unclick the ready button
+		ready(nullptr);
+	}
+
 	//update state of checkbox
 	m_pCheckBoxParent->setSelected(true);
 	m_pCheckBoxChild->setSelected(false);
@@ -382,6 +389,13 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 
 void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
+
+	if (m_bReady)
+	{
+		//unclick the ready button
+		ready(nullptr);
+	}
+
 	//update state of checkbox
 	m_pCheckBoxChild->setSelected(true);
 	m_pCheckBoxParent->setSelected(false);
