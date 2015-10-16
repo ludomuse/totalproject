@@ -130,6 +130,11 @@ void LmJniJavaFacade::connectTo(string deviceName)
 
 }
 
+void LmJniJavaFacade::getTabletName()
+{
+	callJavaMethod("getTabletName", (void*) 0, PARAM_VOID);
+}
+
 LmJniJavaFacade::LmJniJavaFacade(const LmJniJavaFacade & unLmJniBridge)
 {
 

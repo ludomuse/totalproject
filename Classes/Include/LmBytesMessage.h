@@ -34,6 +34,14 @@ class LmBytesMessage {
 		}
 
 	public:
+
+		LmBytesMessage(bytes dataBytes)
+		{
+			data = dataBytes.data;
+			writeCursor = dataBytes.len;
+			readCursor = 0;
+		}
+
 		LmBytesMessage()
 		{
 			data = new byte[0];

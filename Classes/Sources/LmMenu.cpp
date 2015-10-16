@@ -317,6 +317,11 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 					LmWifiDirectFacade::SEND_STRING,&l_sBufferValue);
 			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
 					m_pUser2->getPUserTabletName().c_str());
+
+			LmBytesMessage msg;
+			msg.write(LmEvent::UserIsReady);
+			msg.write(std::string("truc"));
+			WIFIFACADE->sendMessage(msg);
 		}
 	}
 	else
@@ -519,6 +524,12 @@ void LmMenu::inputEnabled(bool enabled)
 	m_pCheckBoxParent->setEnabled(enabled);
 
 	m_pReadyButton->setEnabled(enabled);
+}
+
+void LmMenu::onReceivingMsg(LmBytesMessage msg)
+{
+	WIFIFACADE->askTabletName();
+	CCLOG("we receive a bytes message: %s; tabletname is %s; event is %d", msg.readString().c_str(), WIFIFACADE->getTabletName().c_str(), _event);
 }
 
 void LmMenu::onReceiving(std::string l_sMsg)

@@ -13,6 +13,7 @@
 #include "../Include/LmHelpers.h"
 #include "LmWifiDirectFacade.h"
 #include "LmJniCppFacade.h"
+#include "LmBytesMessage.h"
 
 class LmWifiObserver {
 
@@ -85,10 +86,20 @@ class LmWifiObserver {
 		}
 		;
 
-		virtual void onReceiving(bytes byteArray)
+		void onReceiving(bytes byteArray)
 		{
+			LmBytesMessage msg(byteArray);
+			onReceivingByte(msg.readByte());
+			onReceivingMsg(msg);
 		}
 		;
+
+		virtual void onReceivingMsg(LmBytesMessage msg)
+		{
+
+		}
+		;
+
 
 		virtual void discoverPeers()
 		{

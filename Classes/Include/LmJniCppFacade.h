@@ -49,6 +49,9 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingC
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingByte(
 		JNIEnv* env, jobject thiz, jbyte byte);
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setTabletName(
+		JNIEnv* env, jobject thiz, jstring name);
+
 }
 ;
 

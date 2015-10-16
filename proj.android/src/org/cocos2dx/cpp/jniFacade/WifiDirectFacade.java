@@ -123,7 +123,7 @@ public class WifiDirectFacade {
 		//should be done in the exit method of the application
 		_manager.clear();
 		
-		DebugManager.print("WifiDirectFacade is created !" + JniJavaFacade.getTabletName(),
+		DebugManager.print("WifiDirectFacade is created !",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 

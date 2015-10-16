@@ -35,6 +35,8 @@ private:
 
 	static void connectTo(std::string deviceName);
 
+	static void getTabletName();
+
 	inline static jint toJObject(int i) {
 		return (jint) i;
 	}

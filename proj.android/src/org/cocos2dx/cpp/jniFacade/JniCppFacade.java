@@ -56,5 +56,5 @@ public class JniCppFacade {
 	
 	public static native void onReceivingBytes(byte[] bytes);
 	
-		
+	public static native void setTabletName(String name);
 }
