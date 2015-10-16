@@ -45,6 +45,8 @@ public:
 
 	virtual void onGettingPeers(std::vector<std::string>);
 
+	virtual void onReceiving(std::string s);
+
 private:
 
 	//ATTRIBUTES

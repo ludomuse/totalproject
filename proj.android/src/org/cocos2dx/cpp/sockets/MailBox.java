@@ -115,7 +115,8 @@ public class MailBox {
 	
 	public void sendNext()
 	{
-		messages.remove(0);
+		if(messages.size() > 0)
+			messages.remove(0);
 		send();
 	}
 

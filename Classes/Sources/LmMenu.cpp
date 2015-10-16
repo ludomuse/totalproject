@@ -323,7 +323,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 					LmWifiDirectFacade::SEND_STRING,&l_sBufferValue);
 			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
 					m_pUser2->getPUserTabletName().c_str());
-			menuIsFinished();
+			//menuIsFinished();
 		}
 	}
 	else
@@ -468,6 +468,11 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 	scheduler->performFunctionInCocosThread(
 			std::bind(&LmMenu::makeMenuItemUserTabletName, this, peers));
 
+}
+
+void LmMenu::onReceiving(std::string s)
+{
+	CCLOG("I received string %s. Event is : %d", s.c_str(), _event);
 }
 
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
