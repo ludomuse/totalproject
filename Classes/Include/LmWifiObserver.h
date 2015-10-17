@@ -88,9 +88,10 @@ class LmWifiObserver {
 
 		void onReceiving(bytes byteArray)
 		{
-			LmBytesMessage msg(byteArray);
+			LmBytesMessage msg(&byteArray);
 			onReceivingByte(msg.readByte());
-			onReceivingMsg(msg);
+			if(msg.getLen() > 1)
+				onReceivingMsg(msg);
 		}
 		;
 

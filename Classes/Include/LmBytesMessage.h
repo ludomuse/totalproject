@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
+#include "cocos2d.h"
+#include <vector>
 
 class LmBytesMessage {
 
@@ -22,9 +24,10 @@ class LmBytesMessage {
 
 		void allocate(int size)
 		{
-			int len = getLen();
+
 			byte* newBytes = new byte[size];
-			memcpy((void*) &newBytes[0], (void*) &data[0], size);
+			if(data != 0)
+				memcpy(newBytes, data, getLen());
 			data = newBytes;
 		}
 
@@ -35,18 +38,20 @@ class LmBytesMessage {
 
 	public:
 
-		LmBytesMessage(bytes dataBytes)
-		{
-			data = dataBytes.data;
-			writeCursor = dataBytes.len;
-			readCursor = 0;
-		}
 
-		LmBytesMessage()
+		/*LmBytesMessage(int size)
 		{
-			data = new byte[0];
+			LmBytesMessage();
+			allocate(size);
+		}*/
+
+		LmBytesMessage(bytes* dataBytes = 0)
+		{
+			data = 0;
 			writeCursor = 0;
 			readCursor = 0;
+			if(dataBytes != 0)
+				write(*dataBytes);
 		}
 
 		int getLen()
@@ -58,20 +63,23 @@ class LmBytesMessage {
 		{
 			int arrayLen = array.len;
 			increase(arrayLen);
-			memcpy((void*) &data[writeCursor],(void*) &(array.data[0]), arrayLen);
+			memcpy((void*) &(data[writeCursor]),array.data, arrayLen);
 			writeCursor += arrayLen;
 		}
 
-		byte* readBytes(int size)
+		bytes readBytes(int size)
 		{
-			byte* res = new byte[size];
-			memcpy((void*)&res[0], (void*) &data[readCursor], size);
+			bytes res;
+			res.len = size;
+			res.data = new byte[size];
+			memcpy(res.data, (void*) &(data[readCursor]), size);
 			readCursor += size;
 			return res;
 		}
 
 		void write(byte b)
 		{
+			CCLOG("writting byte %d", b);
 			increase(1);
 			data[writeCursor] = b;
 			writeCursor++;
@@ -104,92 +112,130 @@ class LmBytesMessage {
 			return readByte() == 0 ? false : true;
 		}
 
+		void write(const char* str)
+		{
+			write(std::string(str));
+		}
+
 		void write(std::string str)
 		{
-			int len = str.length();
-			bytes res;
-			res.len = len + 1;
-			res.data = new byte[res.len];
-			for (int i = 0; i < len; i++)
-			{
-				res.data[i] = (byte) str.at(i);
-			}
-			res.data[len] = (byte) '\0';
-			write(res);
+			CCLOG("Writting a string");
+			bytes rep;
+			rep.len = str.length();
+
+			std::vector<char> vect(str.begin(), str.end());
+			rep.data = &vect[0];
+
+			CCLOG("Writting an int");
+			write(rep.len);
+
+			CCLOG("Writting a char*");
+			write(rep);
 		}
 
 		std::string readString()
 		{
-			std::string res = "";
-			char tps;
-			while ((tps = readChar()) != '\0')
-			{
-				res += tps;
-			}
-			return res;
+			int len = readInt();
+			CCLOG("string size is: %d", len);
+			bytes array = readBytes(len);
+			return std::string(array.data, len);
 		}
+
 
 		void write(int i)
 		{
-			std::stringstream ss;
-			ss << i;
-			write(ss.str());
+			bytes rep;
+			rep.len = sizeof(int);
+			rep.data = new byte[sizeof(int)];
+			memcpy(rep.data, &i, sizeof(int));
+			write(rep);
 		}
 
 		int readInt()
 		{
-			int i;
-			std::istringstream(readString()) >> i;
-			return i;
+			bytes rep = readBytes(sizeof(int));
+			int res = 0;
+			memcpy(&res, rep.data, sizeof(int));
+			return res;
 		}
 
 		void write(long l)
 		{
-			std::stringstream ss;
-			ss << l;
-			write(ss.str());
+			bytes rep;
+			rep.len = sizeof(long);
+			rep.data = new byte[sizeof(long)];
+			memcpy(rep.data, &l, sizeof(long));
+			write(rep);
 		}
 
 		long readLong()
 		{
-			long v;
-			std::istringstream(readString()) >> v;
-			return v;
+			bytes rep = readBytes(sizeof(long));
+			long res = 0;
+			memcpy(&res, rep.data, sizeof(long));
+			return res;
 		}
 
 		void write(double d)
 		{
-			std::stringstream ss;
-			ss << d;
-			write(ss.str());
+			bytes rep;
+			rep.len = sizeof(double);
+			rep.data = new byte[sizeof(double)];
+			memcpy(rep.data, &d, sizeof(double));
+			write(rep);
 		}
 
 		double readDouble()
 		{
-			double v;
-			std::istringstream(readString()) >> v;
-			return v;
+			bytes rep = readBytes(sizeof(double));
+			double res = 0;
+			memcpy(&res, rep.data, sizeof(double));
+			return res;
 		}
 
 		void write(float v)
 		{
-			std::stringstream ss;
-			ss << v;
-			write(ss.str());
+			bytes rep;
+			rep.len = sizeof(float);
+			rep.data = new byte[sizeof(float)];
+			memcpy(rep.data, &v, sizeof(float));
+			write(rep);
 		}
 
 		float readFloat()
 		{
-			float v;
-			std::istringstream(readString()) >> v;
-			return v;
+			bytes rep = readBytes(sizeof(float));
+			float res = 0;
+			memcpy(&res, rep.data, sizeof(float));
+			return res;
 		}
 
 		bytes toBytes()
 		{
 			bytes res;
 			res.len = writeCursor;
+			if(res.len > 0)
+			{
+				res.data = new byte[res.len];
+				memcpy(res.data, data, res.len);
+			}
+			else
+			{
+				res.data = 0;
+			}
+
 			return res;
+		}
+
+		void print()
+		{
+			std::string res = "";
+			for(int i = 0; i < getLen(); i++)
+			{
+				res.append(1, data[i]);
+				res.append(1, '-');
+			}
+			CCLOG("[BytesMessage] %s, len: %d", res.c_str(), getLen());
 		}
 
 };
