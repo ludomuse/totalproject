@@ -321,9 +321,8 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
 					m_pUser2->getPUserTabletName().c_str());
 
-			LmBytesMessage msg = LmBytesMessage();
-			msg.write(LmEvent::UserIsReady);
-			msg.write("test");
+			LmBytesMessage msg(10);
+			msg << LmEvent::UserIsReady << "test" << *m_pUser1;
 			WIFIFACADE->sendMessage(msg);
 		}
 	}
@@ -532,8 +531,10 @@ void LmMenu::inputEnabled(bool enabled)
 void LmMenu::onReceivingMsg(LmBytesMessage msg)
 {
 	WIFIFACADE->askTabletName();
-	std::string res = msg.readString();
-	CCLOG("we receive a bytes message: %s string size = %d; tabletname is %s; event is %d", res.c_str(), res.length(), WIFIFACADE->getTabletName().c_str(), _event);
+	std::string str;
+	LmUser** user;
+	msg >> str >> user;
+	CCLOG("we receive a bytes message: %s string size = %d; tabletname is %s; event is %d, user is : %s", str.c_str(), str.length(), WIFIFACADE->getTabletName().c_str(), _event, (*(*user)).getUserSerialized().c_str());
 }
 
 void LmMenu::onReceiving(std::string l_sMsg)

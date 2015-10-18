@@ -10,6 +10,7 @@
 
 #include "../Include/LmUser.h"
 
+
 using namespace std;
 
 LmUser::LmUser()
@@ -131,6 +132,16 @@ int LmUser::stringToInt(std::string string)
 
 	return Result;
 }
+
+ void LmUser::writeOn(LmBytesMessage* msg)
+ {
+	 msg->write(getUserSerialized());
+ }
+
+ void LmUser::readOn(LmBytesMessage* msg)
+ {
+	 setUser(msg->readString());
+ }
 
 bool LmUser::operator==(const LmUser& other)const
 {

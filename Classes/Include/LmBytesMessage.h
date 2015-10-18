@@ -15,16 +15,27 @@
 #include "cocos2d.h"
 #include <vector>
 
+class LmBytesMessage;
+class LmSerializable
+{
+	public:
+		virtual void writeOn(LmBytesMessage* msg) = 0;
+		virtual void readOn(LmBytesMessage* msg) = 0;
+};
+
 class LmBytesMessage {
 
 	private:
 		byte* data;
 		int writeCursor;
 		int readCursor;
+		int size;
 
 		void allocate(int size)
 		{
-
+			if(this->size >= size || size == 0)
+				return;
+			this->size = size;
 			byte* newBytes = new byte[size];
 			if(data != 0)
 				memcpy(newBytes, data, getLen());
@@ -36,20 +47,31 @@ class LmBytesMessage {
 			allocate(getLen() + size);
 		}
 
-	public:
-
-
-		/*LmBytesMessage(int size)
-		{
-			LmBytesMessage();
-			allocate(size);
-		}*/
-
-		LmBytesMessage(bytes* dataBytes = 0)
+		void init()
 		{
 			data = 0;
 			writeCursor = 0;
 			readCursor = 0;
+			size = 0;
+		}
+
+	public:
+
+
+		LmBytesMessage()
+		{
+			init();
+		}
+
+		LmBytesMessage(int size)
+		{
+			init();
+			allocate(size);
+		}
+
+		LmBytesMessage(bytes* dataBytes)
+		{
+			init();
 			if(dataBytes != 0)
 				write(*dataBytes);
 		}
@@ -59,12 +81,28 @@ class LmBytesMessage {
 			return writeCursor;
 		}
 
+		int getSize()
+		{
+			return size;
+		}
+
+		int getFreeCount()
+		{
+			return getSize() - getLen();
+		}
+
 		void write(bytes array)
 		{
 			int arrayLen = array.len;
 			increase(arrayLen);
 			memcpy((void*) &(data[writeCursor]),array.data, arrayLen);
 			writeCursor += arrayLen;
+		}
+
+		LmBytesMessage& operator<< (bytes& value)
+		{
+		    write(value);
+		    return *this;
 		}
 
 		bytes readBytes(int size)
@@ -77,19 +115,37 @@ class LmBytesMessage {
 			return res;
 		}
 
+		LmBytesMessage& operator>> (bytes& value)
+		{
+		    value = readBytes(value.len);
+		    return *this;
+		}
+
 		void write(byte b)
 		{
-			CCLOG("writting byte %d", b);
 			increase(1);
 			data[writeCursor] = b;
 			writeCursor++;
 		}
+
+		LmBytesMessage& operator<< (byte value)
+		{
+		    write(value);
+		    return *this;
+		}
+
 
 		byte readByte()
 		{
 			byte res = data[readCursor];
 			readCursor++;
 			return res;
+		}
+
+		LmBytesMessage& operator>> (byte &value)
+		{
+		    value = readByte();
+		    return *this;
 		}
 
 		void writeChar(char c)
@@ -107,9 +163,22 @@ class LmBytesMessage {
 			write(b ? (byte) 1 : (byte) 0);
 		}
 
+		LmBytesMessage& operator<< (bool &value)
+		{
+		    write(value);
+		    return *this;
+		}
+
+
 		bool readBool()
 		{
 			return readByte() == 0 ? false : true;
+		}
+
+		LmBytesMessage& operator>> (bool& value)
+		{
+		    value = readBool();
+		    return *this;
 		}
 
 		void write(const char* str)
@@ -117,30 +186,42 @@ class LmBytesMessage {
 			write(std::string(str));
 		}
 
+		LmBytesMessage& operator<< (const char* value)
+		{
+		    write(value);
+		    return *this;
+		}
+
+
 		void write(std::string str)
 		{
-			CCLOG("Writting a string");
 			bytes rep;
 			rep.len = str.length();
-
 			std::vector<char> vect(str.begin(), str.end());
 			rep.data = &vect[0];
-
-			CCLOG("Writting an int");
 			write(rep.len);
-
-			CCLOG("Writting a char*");
 			write(rep);
 		}
+
+		LmBytesMessage& operator<< (std::string &value)
+		{
+		    write(value);
+		    return *this;
+		}
+
 
 		std::string readString()
 		{
 			int len = readInt();
-			CCLOG("string size is: %d", len);
 			bytes array = readBytes(len);
 			return std::string(array.data, len);
 		}
 
+		LmBytesMessage& operator>> (std::string& value)
+		{
+		    value = readString();
+		    return *this;
+		}
 
 		void write(int i)
 		{
@@ -151,12 +232,25 @@ class LmBytesMessage {
 			write(rep);
 		}
 
+		LmBytesMessage& operator<< (int &value)
+		{
+		    write(value);
+		    return *this;
+		}
+
+
 		int readInt()
 		{
 			bytes rep = readBytes(sizeof(int));
 			int res = 0;
 			memcpy(&res, rep.data, sizeof(int));
 			return res;
+		}
+
+		LmBytesMessage& operator>> (int& value)
+		{
+		    value = readInt();
+		    return *this;
 		}
 
 		void write(long l)
@@ -168,12 +262,25 @@ class LmBytesMessage {
 			write(rep);
 		}
 
+		LmBytesMessage& operator<< (long &value)
+		{
+		    write(value);
+		    return *this;
+		}
+
+
 		long readLong()
 		{
 			bytes rep = readBytes(sizeof(long));
 			long res = 0;
 			memcpy(&res, rep.data, sizeof(long));
 			return res;
+		}
+
+		LmBytesMessage& operator>> (long& value)
+		{
+		    value = readLong();
+		    return *this;
 		}
 
 		void write(double d)
@@ -185,12 +292,25 @@ class LmBytesMessage {
 			write(rep);
 		}
 
+		LmBytesMessage& operator<< (double &value)
+		{
+		    write(value);
+		    return *this;
+		}
+
+
 		double readDouble()
 		{
 			bytes rep = readBytes(sizeof(double));
 			double res = 0;
 			memcpy(&res, rep.data, sizeof(double));
 			return res;
+		}
+
+		LmBytesMessage& operator>> (double &value)
+		{
+		    value = readDouble();
+		    return *this;
 		}
 
 		void write(float v)
@@ -202,12 +322,53 @@ class LmBytesMessage {
 			write(rep);
 		}
 
+		LmBytesMessage& operator<< (float &value)
+		{
+		    write(value);
+		    return *this;
+		}
+
+
 		float readFloat()
 		{
 			bytes rep = readBytes(sizeof(float));
 			float res = 0;
 			memcpy(&res, rep.data, sizeof(float));
 			return res;
+		}
+
+		LmBytesMessage& operator>> (float& value)
+		{
+		    value = readFloat();
+		    return *this;
+		}
+
+		void write(LmSerializable* obj)
+		{
+			obj->writeOn(this);
+		}
+
+		LmBytesMessage& operator<< (LmSerializable &value)
+		{
+		    write(&value);
+		    return *this;
+		}
+
+
+		template<typename Serializable>
+		Serializable* read()
+		{
+		    Serializable* res = new Serializable();
+		    res->readOn(this);
+		    return res;
+		}
+
+
+		template<typename Serializable>
+		LmBytesMessage& operator>> (Serializable** value)
+		{
+		    *value = read<Serializable>();
+		    return *this;
 		}
 
 		bytes toBytes()
@@ -227,16 +388,6 @@ class LmBytesMessage {
 			return res;
 		}
 
-		void print()
-		{
-			std::string res = "";
-			for(int i = 0; i < getLen(); i++)
-			{
-				res.append(1, data[i]);
-				res.append(1, '-');
-			}
-			CCLOG("[BytesMessage] %s, len: %d", res.c_str(), getLen());
-		}
 
 };
 
