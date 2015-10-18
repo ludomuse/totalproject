@@ -11,8 +11,34 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
-#include "cocos2d.h"
 #include <vector>
+
+#define WR_PRIM(X) 		void write(X v)\
+						{\
+							byte* rep = new byte[sizeof(X)];\
+							memcpy(rep, &v, sizeof(X));\
+							write(rep, sizeof(X));\
+						}
+
+#define RD_PRIM(X, Y) 	X Y()\
+						{\
+							byte* rep = readBytes(sizeof(X));\
+							X res = 0;\
+							memcpy(&res, rep, sizeof(X));\
+							return res;\
+						}
+
+#define OP_IN(X) 		bytes& operator<<(X &value)\
+						{\
+							write(value);\
+							return *this;\
+						}
+
+#define OP_OUT(X, Y) 	bytes& operator>>(X& value)\
+						{\
+							value = Y;\
+							return *this;\
+						}
 
 typedef char byte;
 
@@ -103,18 +129,55 @@ class bytes {
 
 		void write(const byte* str, int len)
 		{
-			if(len == 0)
+			if (len == 0)
 				return;
-			CCLOG("writting a byte array of size %d", len);
 			increase(len);
 			memcpy((void*) &(data[writeCursor]), str, len);
 			writeCursor += len;
 		}
 
-		bytes& operator<<(bytes& value)
+		void write(const char* str)
 		{
-			write(value);
-			return *this;
+			write(std::string(str));
+		}
+
+		void write(std::string str)
+		{
+			int len = str.length();
+			std::vector<char> vect(str.begin(), str.end());
+			byte* data = &vect[0];
+			write(len);
+			write(data, len);
+		}
+
+		WR_PRIM(int)
+
+		WR_PRIM(long)
+
+		WR_PRIM(double)
+
+		WR_PRIM(float)
+
+		void write(LmSerializable* obj)
+		{
+			obj->writeOn(this);
+		}
+
+		void writeChar(char c)
+		{
+			write((byte) c);
+		}
+
+		void write(byte b)
+		{
+			increase(1);
+			data[writeCursor] = b;
+			writeCursor++;
+		}
+
+		void write(bool b)
+		{
+			write(b ? (byte) 1 : (byte) 0);
 		}
 
 		byte* readBytes(int size)
@@ -125,26 +188,6 @@ class bytes {
 			return res;
 		}
 
-		bytes& operator>>(bytes& value)
-		{
-			value.write(readBytes(value.getLen()), getLen());
-			return *this;
-		}
-
-		void write(byte b)
-		{
-			increase(1);
-			data[writeCursor] = b;
-			writeCursor++;
-		}
-
-		bytes& operator<<(byte value)
-		{
-			CCLOG("writ byte");
-			write(value);
-			return *this;
-		}
-
 		byte readByte()
 		{
 			byte res = data[readCursor];
@@ -152,31 +195,9 @@ class bytes {
 			return res;
 		}
 
-		bytes& operator>>(byte &value)
-		{
-			value = readByte();
-			return *this;
-		}
-
-		void writeChar(char c)
-		{
-			write((byte) c);
-		}
-
 		char readChar()
 		{
 			return (char) readByte();
-		}
-
-		void write(bool b)
-		{
-			write(b ? (byte) 1 : (byte) 0);
-		}
-
-		bytes& operator<<(bool &value)
-		{
-			write(value);
-			return *this;
 		}
 
 		bool readBool()
@@ -184,174 +205,20 @@ class bytes {
 			return readByte() == 0 ? false : true;
 		}
 
-		bytes& operator>>(bool& value)
-		{
-			value = readBool();
-			return *this;
-		}
-
-		void write(const char* str)
-		{
-			write(std::string(str));
-		}
-
-		bytes& operator<<(const char* value)
-		{
-			write(value);
-			return *this;
-		}
-
-		void write(std::string str)
-		{
-			CCLOG("writ string");
-			int len = str.length();
-			std::vector<char> vect(str.begin(), str.end());
-			byte* data = &vect[0];
-			CCLOG("writ string size");
-			write(len);
-			CCLOG("writ string content");
-			write(data, len);
-		}
-
-		bytes& operator<<(std::string &value)
-		{
-			write(value);
-			return *this;
-		}
-
 		std::string readString()
 		{
 			int len = readInt();
-			CCLOG("size of string = %d", len);
 			byte* array = readBytes(len);
 			return std::string(array, len);
 		}
 
-		bytes& operator>>(std::string& value)
-		{
-			value = readString();
-			return *this;
-		}
+		RD_PRIM(int, readInt)
 
-		void write(int v)
-		{
-			CCLOG("writ int");
-			byte* rep = new byte[sizeof(int)];
-			memcpy(rep, &v, sizeof(int));
-			write(rep, sizeof(int));
-		}
+		RD_PRIM(long, readLong)
 
-		bytes& operator<<(int &value)
-		{
-			write(value);
-			return *this;
-		}
+		RD_PRIM(double, readDouble)
 
-		int readInt()
-		{
-			byte* rep = readBytes(sizeof(int));
-			int res = 0;
-			memcpy(&res, rep, sizeof(int));
-			return res;
-		}
-
-		bytes& operator>>(int& value)
-		{
-			value = readInt();
-			return *this;
-		}
-
-		void write(long v)
-		{
-			byte* rep = new byte[sizeof(long)];
-			memcpy(rep, &v, sizeof(long));
-			write(rep, sizeof(long));
-		}
-
-		bytes& operator<<(long &value)
-		{
-			write(value);
-			return *this;
-		}
-
-		long readLong()
-		{
-			byte* rep = readBytes(sizeof(long));
-			long res = 0;
-			memcpy(&res, rep, sizeof(long));
-			return res;
-		}
-
-		bytes& operator>>(long& value)
-		{
-			value = readLong();
-			return *this;
-		}
-
-		void write(double v)
-		{
-			byte* rep = new byte[sizeof(double)];
-			memcpy(rep, &v, sizeof(double));
-			write(rep, sizeof(double));
-		}
-
-		bytes& operator<<(double &value)
-		{
-			write(value);
-			return *this;
-		}
-
-		double readDouble()
-		{
-			byte* rep = readBytes(sizeof(double));
-			double res = 0;
-			memcpy(&res, rep, sizeof(double));
-			return res;
-		}
-
-		bytes& operator>>(double &value)
-		{
-			value = readDouble();
-			return *this;
-		}
-
-		void write(float v)
-		{
-			byte* rep = new byte[sizeof(float)];
-			memcpy(rep, &v, sizeof(float));
-			write(rep, sizeof(float));
-		}
-
-		bytes& operator<<(float &value)
-		{
-			write(value);
-			return *this;
-		}
-
-		float readFloat()
-		{
-			byte* rep = readBytes(sizeof(float));
-			float res = 0;
-			memcpy(&res, rep, sizeof(float));
-			return res;
-		}
-
-		bytes& operator>>(float& value)
-		{
-			value = readFloat();
-			return *this;
-		}
-
-		void write(LmSerializable* obj)
-		{
-			obj->writeOn(this);
-		}
-
-		bytes& operator<<(LmSerializable &value)
-		{
-			write(&value);
-			return *this;
-		}
+		RD_PRIM(float, readFloat)
 
 		template<typename Serializable>
 		Serializable* read()
@@ -361,6 +228,63 @@ class bytes {
 			return res;
 		}
 
+		const byte* toByteArray()
+		{
+			return data;
+		}
+
+		OP_IN(long)
+
+		OP_IN(int)
+
+		OP_IN(std::string)
+
+		OP_IN(bytes)
+
+		OP_IN(float)
+
+		OP_IN(double)
+
+		OP_IN(bool)
+
+		bytes& operator<<(byte value)
+		{
+			write(value);
+			return *this;
+		}
+
+		bytes& operator<<(const char* value)
+		{
+			write(value);
+			return *this;
+		}
+
+		bytes& operator<<(LmSerializable &value)
+		{
+			write(&value);
+			return *this;
+		}
+
+		OP_OUT(int, readInt())
+
+		OP_OUT(std::string, readString())
+
+		OP_OUT(bool, readBool())
+
+		OP_OUT(byte, readByte())
+
+		OP_OUT(long, readLong())
+
+		OP_OUT(double, readDouble())
+
+		OP_OUT(float, readFloat())
+
+		bytes& operator>>(bytes& value)
+		{
+			value.write(readBytes(value.getLen()), getLen());
+			return *this;
+		}
+
 		template<typename Serializable>
 		bytes& operator>>(Serializable** value)
 		{
@@ -368,10 +292,10 @@ class bytes {
 			return *this;
 		}
 
-		const byte* toByteArray()
+		/*~bytes()
 		{
-			return data;
-		}
+			delete [] data;
+		}*/
 
 };
 

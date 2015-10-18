@@ -535,7 +535,7 @@ void LmMenu::onReceivingMsg(bytes msg)
 	std::string str;
 	LmUser** user;
 	msg >> str >> user; // >> user;
-	CCLOG("event is %d", _event)
+	CCLOG("event is %d", _event);
 	CCLOG("string received = %s", (*user)->getUserSerialized().c_str());
 	//CCLOG("we receive a bytes message: %s string size = %d; tabletname is %s; event is %d, user is : %s", str.c_str(), str.length(), WIFIFACADE->getTabletName().c_str(), _event, (*(*user)).getUserSerialized().c_str());
 }
