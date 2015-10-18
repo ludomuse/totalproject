@@ -80,8 +80,8 @@ public:
 
 	void setUser(std::string l_sUserSerialized);
 
-	virtual void writeOn(LmBytesMessage*);
-	virtual void readOn(LmBytesMessage*);
+	virtual void writeOn(bytes*);
+	virtual void readOn(bytes*);
 
 	bool isBMale() const
 	{

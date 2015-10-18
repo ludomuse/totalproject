@@ -66,9 +66,9 @@ private:
 	}
 
 	inline static jbyteArray toJObject(bytes byteArray, JNIEnv* env) {
-		jbyteArray res = env->NewByteArray(toJObject(byteArray.len));
-		env->SetByteArrayRegion(res, (jsize) 0, (jsize) (byteArray.len),
-				(const jbyte *) byteArray.data);
+		jbyteArray res = env->NewByteArray(toJObject(byteArray.getLen()));
+		env->SetByteArrayRegion(res, (jsize) 0, (jsize) (byteArray.getLen()),
+				(const jbyte *) byteArray.toByteArray());
 		//env->SetByteArrayRegion(jbytearray array, jsize start, jsize len, const jbyte *);
 		return res;
 	}

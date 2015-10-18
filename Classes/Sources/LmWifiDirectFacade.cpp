@@ -189,10 +189,6 @@ void LmWifiDirectFacade::sendByte(byte b)
 	LmJniJavaFacade::sendByte(b);
 }
 
-void LmWifiDirectFacade::sendMessage(LmBytesMessage msg)
-{
-	sendBytes(msg.toBytes());
-}
 
 void LmWifiDirectFacade::sendBytes(bytes bytes)
 {

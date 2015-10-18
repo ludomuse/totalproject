@@ -11,7 +11,9 @@
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))
 #define WIFIFACADE LmJniCppFacade::getWifiFacade()
 
-typedef char byte;
+#include "LmBytesMessage.h"
+
+
 typedef byte event;
 
 struct LmEvent
@@ -42,12 +44,12 @@ struct LmEvent
 
 typedef struct LmEvent LmEvent;
 
-struct bytes
+/*struct bytes
 {
 	byte* data;
 	int len;
 };
 
-typedef struct bytes bytes;
+typedef struct bytes bytes;*/
 
 #endif /* HELPERS_H_ */

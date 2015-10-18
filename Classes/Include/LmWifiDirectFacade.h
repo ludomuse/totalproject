@@ -92,8 +92,6 @@ class LmWifiDirectFacade {
 
 		void removeObserver(int index);
 
-		void sendMessage(LmBytesMessage msg);
-
 		void sendEvent(event e, LmWifiDirectFacade::SEND_F method, void* arg);
 
 		void sendEvent(event e, int size, const LmWifiDirectFacade::SEND_F* method,

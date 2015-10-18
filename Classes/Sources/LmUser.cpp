@@ -133,13 +133,14 @@ int LmUser::stringToInt(std::string string)
 	return Result;
 }
 
- void LmUser::writeOn(LmBytesMessage* msg)
+ void LmUser::writeOn(bytes* msg)
  {
 	 msg->write(getUserSerialized());
  }
 
- void LmUser::readOn(LmBytesMessage* msg)
+ void LmUser::readOn(bytes* msg)
  {
+	 CCLOG("reading on msg");
 	 setUser(msg->readString());
  }
 

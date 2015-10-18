@@ -86,16 +86,15 @@ class LmWifiObserver {
 		}
 		;
 
-		void onReceiving(bytes byteArray)
+		void onReceiving(bytes msg)
 		{
-			LmBytesMessage msg(&byteArray);
 			onReceivingByte(msg.readByte());
 			if(msg.getLen() > 1)
 				onReceivingMsg(msg);
 		}
 		;
 
-		virtual void onReceivingMsg(LmBytesMessage msg)
+		virtual void onReceivingMsg(bytes msg)
 		{
 
 		}
