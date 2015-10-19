@@ -296,8 +296,9 @@ void LmInteractionScene::initDashboardLayer()
 			m_pSpriteDashboardBand->getContentSize().height * 0.5f);
 	m_pDashboardBandLayer->addChild(m_pLabelScore);
 
+	//backtodashborad button
 	m_pBackDashboardButton = ui::Button::create(
-			"Ludomuse/GUIElements/backToDashboard.png","Ludomuse/GUIElements/backToDashboardPressed.png");
+			"Ludomuse/GUIElements/backToDashboard.png");
 	m_pBackDashboardButton->setTouchEnabled(true);
 	m_pBackDashboardButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width * (0.5f),

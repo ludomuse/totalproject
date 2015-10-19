@@ -785,7 +785,6 @@ void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,cocos2d::Label* 
 
 bool LmGameManager::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
-	CCLOG("touch began");
 
 	auto index = interactionTouched(touch);
 
@@ -806,7 +805,6 @@ bool LmGameManager::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 
 void LmGameManager::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 {
-	CCLOG("touch move");
 	auto index = interactionTouched(touch);
 
 	if (index >= 0)
@@ -824,7 +822,6 @@ void LmGameManager::onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 
 void LmGameManager::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
-	CCLOG("touch end");
 	m_pDescriptionBox->setVisible(false);
 
 }

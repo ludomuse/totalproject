@@ -45,8 +45,6 @@ public:
 
 	virtual void onGettingPeers(std::vector<std::string>);
 
-	virtual void onReceiving(std::string );
-
 	virtual void onReceivingMsg(bytes);
 
 private:
@@ -135,10 +133,12 @@ private:
 	//get the tablet name of the user 1
 	std::string getUser1TabletName();
 
+	bool usersAreCompatible();
+
 	//callback methods of events
-	void onUserIsReadyEvent(std::string);
-	void onCompatibleToPlayEvent(std::string);
-	void onPlayEvent(std::string );
+	void onUserIsReadyEvent(bytes);
+	void onCompatibleToPlayEvent(bytes);
+	void onPlayEvent(bytes);
 
 
 

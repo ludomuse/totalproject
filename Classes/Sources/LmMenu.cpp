@@ -301,8 +301,6 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
 
-
-
 	if (!m_bReady)
 	{
 		//can't be ready if no role selected and no user 2 choose
@@ -314,15 +312,13 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			m_pSpriteReadyIndicator->setTexture(
 					"Ludomuse/GUIElements/nextButtonNormal.png");
 
-			std::string l_sBufferValue = m_pUser1->getUserSerialized();
-			WIFIFACADE->sendEvent(LmEvent::UserIsReady,
-					LmWifiDirectFacade::SEND_STRING,&l_sBufferValue);
-			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
-					m_pUser2->getPUserTabletName().c_str());
 
-			bytes msg(10);
-			msg << LmEvent::UserIsReady << "test" << *m_pUser1;
+			//send the msg
+			bytes msg(50);
+			msg << LmEvent::UserIsReady << *m_pUser1;
 			WIFIFACADE->sendBytes(msg);
+
+
 		}
 	}
 	else
@@ -507,7 +503,10 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 
 std::string LmMenu::getUser1TabletName()
 {
-	return "tabletname";
+	WIFIFACADE->askTabletName();
+
+
+	return WIFIFACADE->getTabletName();
 }
 
 void LmMenu::inputEnabled(bool enabled)
@@ -528,31 +527,18 @@ void LmMenu::inputEnabled(bool enabled)
 	m_pReadyButton->setEnabled(enabled);
 }
 
-void LmMenu::onReceivingMsg(bytes msg)
+void LmMenu::onReceivingMsg(bytes l_oMsg)
 {
-	CCLOG("on receiving msg");
-	WIFIFACADE->askTabletName();
-	std::string str;
-	LmUser** user;
-	msg >> str >> user; // >> user;
-	CCLOG("event is %d", _event);
-	CCLOG("string received = %s", (*user)->getUserSerialized().c_str());
-	//CCLOG("we receive a bytes message: %s string size = %d; tabletname is %s; event is %d, user is : %s", str.c_str(), str.length(), WIFIFACADE->getTabletName().c_str(), _event, (*(*user)).getUserSerialized().c_str());
-}
-
-void LmMenu::onReceiving(std::string l_sMsg)
-{
-
 	switch (_event)
 	{
 	case LmEvent::UserIsReady:
-		onUserIsReadyEvent(l_sMsg);
+		onUserIsReadyEvent(l_oMsg);
 		break;
 	case LmEvent::CompatibleToPlay:
-		onCompatibleToPlayEvent(l_sMsg);
+		onCompatibleToPlayEvent(l_oMsg);
 		break;
 	case LmEvent::Play:
-		onPlayEvent(l_sMsg);
+		onPlayEvent(l_oMsg);
 		break;
 	default:
 		break;
@@ -560,15 +546,14 @@ void LmMenu::onReceiving(std::string l_sMsg)
 
 }
 
-void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
+void LmMenu::onUserIsReadyEvent(bytes l_oMsg)
 {
+	l_oMsg>>&m_pUser2;
 
-	//set user2
-	m_pUser2->setUser(l_sMsg);
+	CCLOG("onUserIsReadyEvent user receive = %s",m_pUser2->getUserSerialized());
 
 	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
-	if (((m_pUser2->isBParent() && !m_pUser1->isBParent())
-			|| (!m_pUser2->isBParent() && m_pUser1->isBParent())) && !m_bReady)
+	if (usersAreCompatible() && !m_bReady)
 	{
 		//disable input to be sure to not change his state
 		inputEnabled(false);
@@ -579,6 +564,13 @@ void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
 				m_pUser1->getUserSerialized().c_str(),
 				m_pUser2->getUserSerialized().c_str(),
 				m_pUser2->getPUserTabletName().c_str());
+
+		//send the msg
+		bytes msg(100);
+		msg << LmEvent::CompatibleToPlay << *m_pUser2<<*m_pUser1;
+		WIFIFACADE->sendBytes(msg);
+
+
 	}
 	else
 	{
@@ -586,35 +578,39 @@ void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
 	}
 }
 
-void LmMenu::onCompatibleToPlayEvent(std::string l_sMsg)
+void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 {
 	//init user to compare
-	LmUser* l_pUserBuffer = new LmUser;
-	l_pUserBuffer->setUser(l_sMsg);
+	LmUser* l_pUserBuffer = l_oMsg.read<LmUser>();
 
 	//it's an answer from the guy we send UserIsReady
 	if (l_pUserBuffer == m_pUser1 && m_bReady)
 	{
 		//set second user
-		m_pUser2->setUser(l_sMsg);
+		m_pUser2 = l_oMsg.read<LmUser>();
 
-		CCLOG("send Play(true)");
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::Play << true;
+		WIFIFACADE->sendBytes(msg);
 
 		menuIsFinished();
 	}
 	else
 	{
-		CCLOG("send Play(false)");
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::Play << false;
+		WIFIFACADE->sendBytes(msg);
 	}
 
 	delete l_pUserBuffer;
 }
 
-void LmMenu::onPlayEvent(std::string l_sMsg)
+void LmMenu::onPlayEvent(bytes l_oMsg)
 {
-	bool msg = false;
 
-	if (msg)
+	if (l_oMsg.readBool())
 	{
 		menuIsFinished();
 	}
@@ -623,5 +619,11 @@ void LmMenu::onPlayEvent(std::string l_sMsg)
 		//unblock input
 		inputEnabled(true);
 	}
+}
+
+bool LmMenu::usersAreCompatible()
+{
+	return ((m_pUser2->isBParent() && !m_pUser1->isBParent())
+			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()));
 }
 
