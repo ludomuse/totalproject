@@ -88,8 +88,6 @@ public:
 		return m_bMale;
 	}
 
-	bool operator==(const LmUser& )const;
-
 private:
 
 	//ATTRIBUTES

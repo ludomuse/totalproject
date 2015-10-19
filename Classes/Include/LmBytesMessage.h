@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "cocos2d.h"
 
 #define WR_PRIM(X) 		void write(X v)\
 						{\
@@ -57,6 +58,8 @@ class bytes {
 		int readCursor;
 		int size;
 
+		bool error = false;
+
 		void allocate(int size)
 		{
 			if (this->size >= size || size == 0)
@@ -81,7 +84,22 @@ class bytes {
 			size = 0;
 		}
 
+		void clearError()
+		{
+			error = false;
+		}
+
+		void setError()
+		{
+			error = true;
+		}
+
 	public:
+
+		bool isThereError()
+		{
+			return error;
+		}
 
 		bytes()
 		{
@@ -107,6 +125,11 @@ class bytes {
 			write(dataBytes, len);
 		}
 
+		int getReadCursor()
+		{
+			return readCursor;
+		}
+
 		int getLen()
 		{
 			return writeCursor;
@@ -129,8 +152,12 @@ class bytes {
 
 		void write(const byte* str, int len)
 		{
+			clearError();
 			if (len == 0)
+			{
+				setError();
 				return;
+			}
 			increase(len);
 			memcpy((void*) &(data[writeCursor]), str, len);
 			writeCursor += len;
@@ -177,11 +204,19 @@ class bytes {
 
 		void write(bool b)
 		{
+			CCLOG("writting bool");
 			write(b ? (byte) 1 : (byte) 0);
+			CCLOG("writting bool ok");
 		}
 
 		byte* readBytes(int size)
 		{
+			clearError();
+			if(getSize() == 0 || readCursor + size > getSize())
+			{
+				setError();
+				return 0;
+			}
 			byte* res = new byte[size];
 			memcpy(res, (void*) &(data[readCursor]), size);
 			readCursor += size;
@@ -190,6 +225,12 @@ class bytes {
 
 		byte readByte()
 		{
+			clearError();
+			if(getSize() == 0 || readCursor > getSize())
+			{
+				setError();
+				return 0;
+			}
 			byte res = data[readCursor];
 			readCursor++;
 			return res;
@@ -208,7 +249,9 @@ class bytes {
 		std::string readString()
 		{
 			int len = readInt();
+			CCLOG("string size = %d", size);
 			byte* array = readBytes(len);
+			CCLOG("string read  correctly ! %s", array);
 			return std::string(array, len);
 		}
 

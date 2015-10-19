@@ -190,7 +190,7 @@ bool LmMenu::logScreen()
 bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 {
 	//check if the user enter smthg
-	if (!strcmp(m_pLogEditBox->getText(), "") || m_bNoGenderSelected)
+	if (strcmp(m_pLogEditBox->getText(), "") == 0 || m_bNoGenderSelected)
 	{
 		return false;
 	}
@@ -468,11 +468,7 @@ void LmMenu::makeMenuItemUserTabletName(
 void LmMenu::onGettingPeers(std::vector<std::string> peers)
 {
 
-	auto scheduler = Director::getInstance()->getScheduler();
-
-	//use to not generate conflict between thread
-	scheduler->performFunctionInCocosThread(
-			std::bind(&LmMenu::makeMenuItemUserTabletName, this, peers));
+	ON_CC_THREAD(LmMenu::makeMenuItemUserTabletName, this, peers);
 
 }
 
@@ -512,6 +508,7 @@ std::string LmMenu::getUser1TabletName()
 void LmMenu::inputEnabled(bool enabled)
 {
 
+	CCLOG("on input Enabled");
 	//menuitemtabletname
 	for (std::map<cocos2d::MenuItemImage*, cocos2d::Label*>::iterator it =
 			m_aMenuItemUserTabletName.begin();
@@ -525,19 +522,24 @@ void LmMenu::inputEnabled(bool enabled)
 	m_pCheckBoxParent->setEnabled(enabled);
 
 	m_pReadyButton->setEnabled(enabled);
+	CCLOG("exit input Enabled");
 }
 
 void LmMenu::onReceivingMsg(bytes l_oMsg)
 {
+	CCLOG("_event is %d", _event);
 	switch (_event)
 	{
 	case LmEvent::UserIsReady:
+		CCLOG("onUserIsReadyEvent");
 		onUserIsReadyEvent(l_oMsg);
 		break;
 	case LmEvent::CompatibleToPlay:
+		CCLOG("onCompatibleToPlayEvent");
 		onCompatibleToPlayEvent(l_oMsg);
 		break;
 	case LmEvent::Play:
+		CCLOG("onPlayEvent");
 		onPlayEvent(l_oMsg);
 		break;
 	default:
@@ -548,15 +550,14 @@ void LmMenu::onReceivingMsg(bytes l_oMsg)
 
 void LmMenu::onUserIsReadyEvent(bytes l_oMsg)
 {
-	l_oMsg>>&m_pUser2;
-
-	CCLOG("onUserIsReadyEvent user receive = %s",m_pUser2->getUserSerialized());
+	m_pUser2 = l_oMsg.read<LmUser>();
+	CCLOG("onUserIsReadyEvent user receive = %s",m_pUser2->getUserSerialized().c_str());
 
 	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
-	if (usersAreCompatible() && !m_bReady)
+	if (usersAreCompatible() && m_bReady)
 	{
 		//disable input to be sure to not change his state
-		inputEnabled(false);
+		ON_CC_THREAD(LmMenu::inputEnabled, this, false);
 
 		//send CompatibleToPlay user A & B as parameters TODO
 
@@ -583,24 +584,31 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 	//init user to compare
 	LmUser* l_pUserBuffer = l_oMsg.read<LmUser>();
 
+	CCLOG("user buffer = %s, user1 = %s", l_pUserBuffer->getUserSerialized().c_str(), m_pUser1->getUserSerialized().c_str());
 	//it's an answer from the guy we send UserIsReady
-	if (l_pUserBuffer == m_pUser1 && m_bReady)
+
+	if (l_pUserBuffer->getUserSerialized().compare(m_pUser1->getUserSerialized()) == 0 && m_bReady)
 	{
+		CCLOG("on compatible true");
 		//set second user
 		m_pUser2 = l_oMsg.read<LmUser>();
 
 		//send the msg
 		bytes msg(10);
-		msg << LmEvent::Play << true;
+		msg << LmEvent::Play;
+		msg.write(true);
 		WIFIFACADE->sendBytes(msg);
 
-		menuIsFinished();
+		ON_CC_THREAD(LmMenu::menuIsFinished, this);
+
 	}
 	else
 	{
+		CCLOG("on compatible false");
 		//send the msg
 		bytes msg(10);
-		msg << LmEvent::Play << false;
+		msg << LmEvent::Play;
+		msg.write(false);
 		WIFIFACADE->sendBytes(msg);
 	}
 
@@ -612,17 +620,24 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 
 	if (l_oMsg.readBool())
 	{
-		menuIsFinished();
+		ON_CC_THREAD(LmMenu::menuIsFinished, this);
 	}
 	else
 	{
 		//unblock input
-		inputEnabled(true);
+		ON_CC_THREAD(LmMenu::inputEnabled, this, true);
 	}
 }
 
 bool LmMenu::usersAreCompatible()
 {
+	if(((m_pUser2->isBParent() && !m_pUser1->isBParent())
+			|| (!m_pUser2->isBParent() && m_pUser1->isBParent())))
+	{
+		CCLOG("users are compatible");
+	}
+
+
 	return ((m_pUser2->isBParent() && !m_pUser1->isBParent())
 			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()));
 }

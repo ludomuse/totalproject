@@ -140,34 +140,11 @@ int LmUser::stringToInt(std::string string)
 
  void LmUser::readOn(bytes* msg)
  {
-	 CCLOG("reading on msg");
-	 setUser(msg->readString());
+	 CCLOG("reading on msg. Msg size = %d, msg free space = %d, msg len = %d, readCursor = %d", msg->getSize(), msg->getFreeCount(), msg->getLen(), msg->getReadCursor());
+	 std::string ser = msg->readString();
+	 CCLOG("string is = %s", ser.c_str());
+	 setUser(ser);
+	 CCLOG("sring read");
  }
 
-bool LmUser::operator==(const LmUser& other)const
-{
-
-	if(strcmp(other.m_pUserName.c_str(),this->m_pUserName.c_str()))
-	{
-		return false;
-	}
-	else if(strcmp(other.m_pUserTabletName.c_str(),this->m_pUserTabletName.c_str()))
-	{
-		return false;
-	}
-	else if(other.m_iScore!=this->m_iScore)
-	{
-		return false;
-	}
-	else if(other.m_bParent != this->m_bParent)
-	{
-		return false;
-	}
-	else if(other.m_bMale!=this->m_bMale)
-	{
-		return false;
-	}
-
-    return true;
-}
 
