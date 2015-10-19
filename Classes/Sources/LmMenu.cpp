@@ -293,7 +293,6 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 
 		m_pWifiDirectFacade->discoverPeers();
 
-
 		return true;
 
 	}
@@ -468,6 +467,7 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 
 	auto scheduler = Director::getInstance()->getScheduler();
 
+	//use to not generate conflict between thread
 	scheduler->performFunctionInCocosThread(
 			std::bind(&LmMenu::makeMenuItemUserTabletName, this, peers));
 
@@ -548,8 +548,8 @@ void LmMenu::onUserIsReadyEvent(std::string l_sMsg)
 	m_pUser2->setUser(l_sMsg);
 
 	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
-	if ((m_pUser2->isBParent() && !m_pUser1->isBParent())
-			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()) && !m_bReady)
+	if (((m_pUser2->isBParent() && !m_pUser1->isBParent())
+			|| (!m_pUser2->isBParent() && m_pUser1->isBParent())) && !m_bReady)
 	{
 		//disable input to be sure to not change his state
 		inputEnabled(false);
