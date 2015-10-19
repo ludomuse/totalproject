@@ -47,6 +47,8 @@ public:
 
 	virtual void onReceiving(std::string );
 
+	virtual void onReceivingMsg(bytes);
+
 private:
 
 	//ATTRIBUTES

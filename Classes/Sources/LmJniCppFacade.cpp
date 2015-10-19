@@ -85,3 +85,9 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingC
 	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(c));
 }
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setTabletName(
+		JNIEnv* env, jobject thiz, jstring name)
+{
+	WIFIFACADE->setTabletName(LmJniCppFacade::toCObject(name, env));
+}
+

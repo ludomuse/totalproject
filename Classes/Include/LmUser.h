@@ -12,12 +12,13 @@
 
 #include <string>
 #include <sstream>
+#include "LmBytesMessage.h"
 
 //for debug
 #include "cocos2d.h"
 
 
-class LmUser
+class LmUser : public LmSerializable
 {
 
 public:
@@ -79,13 +80,15 @@ public:
 
 	void setUser(std::string l_sUserSerialized);
 
+	virtual void writeOn(bytes*);
+	virtual void readOn(bytes*);
+
 	bool isBMale() const
 	{
 		return m_bMale;
 	}
 
 	bool operator==(const LmUser& )const;
-
 
 private:
 

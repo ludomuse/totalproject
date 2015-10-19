@@ -12,6 +12,7 @@
 #include <list>
 #include "../Include/LmHelpers.h"
 #include <string>
+#include "LmBytesMessage.h"
 
 class LmWifiObserver;
 
@@ -81,6 +82,12 @@ class LmWifiDirectFacade {
 
 		void group(int size, SEND_F* send_functions, void** params);
 
+		void askTabletName();
+
+		void setTabletName(std::string name);
+
+		std::string getTabletName();
+
 		int addObserver(LmWifiObserver* wo);
 
 		void removeObserver(int index);
@@ -91,6 +98,7 @@ class LmWifiDirectFacade {
 				const void** args);
 
 	private:
+		std::string _name;
 
 		std::list<LmWifiObserver*> _observers;
 };

@@ -49,6 +49,9 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingC
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingByte(
 		JNIEnv* env, jobject thiz, jbyte byte);
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setTabletName(
+		JNIEnv* env, jobject thiz, jstring name);
+
 }
 ;
 
@@ -89,11 +92,10 @@ public:
 	}
 
 	inline static bytes toCObject(jbyteArray byteArray, JNIEnv* env) {
-		bytes res;
 		jboolean isCopy;
-		res.data = (byte*) env->GetByteArrayElements(byteArray, &isCopy);
-		res.len = env->GetArrayLength(byteArray);
-		return res;
+		byte* data = (byte*) env->GetByteArrayElements(byteArray, &isCopy);
+		int len = env->GetArrayLength(byteArray);
+		return bytes(data, len);
 	}
 
 	inline static std::string toCObject(jstring jstr, JNIEnv* env) {

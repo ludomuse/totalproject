@@ -189,6 +189,7 @@ void LmWifiDirectFacade::sendByte(byte b)
 	LmJniJavaFacade::sendByte(b);
 }
 
+
 void LmWifiDirectFacade::sendBytes(bytes bytes)
 {
 	LmJniJavaFacade::sendBytes(bytes);
@@ -270,3 +271,19 @@ void LmWifiDirectFacade::sendEvent(event e, int size,
 	memcpy(params[1], args[0], size);
 	return group(size + 1, functions, params);
 }
+
+void LmWifiDirectFacade::askTabletName()
+{
+	LmJniJavaFacade::getTabletName();
+}
+
+void LmWifiDirectFacade::setTabletName(std::string name)
+{
+	_name = name;
+}
+
+std::string LmWifiDirectFacade::getTabletName()
+{
+	return _name;
+}
+

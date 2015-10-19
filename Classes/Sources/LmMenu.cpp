@@ -300,6 +300,9 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
+
+
+
 	if (!m_bReady)
 	{
 		//can't be ready if no role selected and no user 2 choose
@@ -316,6 +319,10 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 					LmWifiDirectFacade::SEND_STRING,&l_sBufferValue);
 			CCLOG("send msg {%s} to %s", l_sBufferValue.c_str(),
 					m_pUser2->getPUserTabletName().c_str());
+
+			bytes msg(10);
+			msg << LmEvent::UserIsReady << "test" << *m_pUser1;
+			WIFIFACADE->sendBytes(msg);
 		}
 	}
 	else
@@ -519,6 +526,18 @@ void LmMenu::inputEnabled(bool enabled)
 	m_pCheckBoxParent->setEnabled(enabled);
 
 	m_pReadyButton->setEnabled(enabled);
+}
+
+void LmMenu::onReceivingMsg(bytes msg)
+{
+	CCLOG("on receiving msg");
+	WIFIFACADE->askTabletName();
+	std::string str;
+	LmUser** user;
+	msg >> str >> user; // >> user;
+	CCLOG("event is %d", _event);
+	CCLOG("string received = %s", (*user)->getUserSerialized().c_str());
+	//CCLOG("we receive a bytes message: %s string size = %d; tabletname is %s; event is %d, user is : %s", str.c_str(), str.length(), WIFIFACADE->getTabletName().c_str(), _event, (*(*user)).getUserSerialized().c_str());
 }
 
 void LmMenu::onReceiving(std::string l_sMsg)
