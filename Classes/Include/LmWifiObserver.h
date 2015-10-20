@@ -101,11 +101,16 @@ private:
 		}
 		;
 
+		void clearLastMsg()
+		{
+			lastMsg = bytes();
+		}
+
 		void onReceiving(bytes msg)
 		{
 			if(lastMsg == msg)
 			{
-				CCLOG("Msg received two times. Not forwaded.");
+				CCLOG("Msg received two times (lastMsg = %s, msg = %s). Not forwaded.", lastMsg.toCharSequence(), msg.toCharSequence());
 				return;
 			}
 			lastMsg = msg;

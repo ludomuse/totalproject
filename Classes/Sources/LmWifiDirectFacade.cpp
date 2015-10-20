@@ -3,6 +3,14 @@
 #include "../Include/LmJniCppFacade.h"
 #include "../Include/LmJniJavaFacade.h"
 
+#define FORWARD(X) 	list<LmWifiObserver*>::const_iterator lit(_observers.begin());\
+					list<LmWifiObserver*>::const_iterator lend(_observers.end());\
+					for (; lit != lend; ++lit)\
+					{\
+						LmWifiObserver* tps = (*lit);\
+						tps->X;\
+					}
+
 using namespace std;
 
 LmWifiDirectFacade::LmWifiDirectFacade()
@@ -12,123 +20,57 @@ LmWifiDirectFacade::LmWifiDirectFacade()
 
 void LmWifiDirectFacade::onGettingPeers(vector<string> peers)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onGettingPeers(peers);
-	}
+	FORWARD(onGettingPeers(peers));
 }
 
 void LmWifiDirectFacade::onReceiving(string s)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(s);
-	}
+	FORWARD(onReceiving(s));
 }
 
 void LmWifiDirectFacade::onReceiving(int i)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(i);
-	}
+	FORWARD(onReceiving(i));
 }
 
 void LmWifiDirectFacade::onReceiving(bool b)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(b);
-	}
+	FORWARD(onReceiving(b));
 }
 
 void LmWifiDirectFacade::onReceiving(long l)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(l);
-	}
+	FORWARD(onReceiving(l));
 }
 
 void LmWifiDirectFacade::onReceivingFile(string path)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceivingFile(path);
-	}
+	FORWARD(onReceivingFile(path));
 }
 
 void LmWifiDirectFacade::onReceiving(double d)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(d);
-	}
+	FORWARD(onReceiving(d));
 }
 
 void LmWifiDirectFacade::onReceiving(float f)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(f);
-	}
+	FORWARD(onReceiving(f));
 }
 
 void LmWifiDirectFacade::onReceiving(char c)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(c);
-	}
+	FORWARD(onReceiving(c));
 }
 
 void LmWifiDirectFacade::onReceivingByte(byte b)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceivingByte(b);
-	}
+	FORWARD(onReceivingByte(b));
 }
 
 void LmWifiDirectFacade::onReceiving(bytes byteArray)
 {
-	list<LmWifiObserver*>::const_iterator lit(_observers.begin());
-	list<LmWifiObserver*>::const_iterator lend(_observers.end());
-	for (; lit != lend; ++lit)
-	{
-		LmWifiObserver* tps = (*lit);
-		tps->onReceiving(byteArray);
-	}
+	FORWARD(onReceiving(byteArray));
 }
 
 void LmWifiDirectFacade::discoverPeers()
@@ -186,6 +128,7 @@ void LmWifiDirectFacade::send(char c)
 void LmWifiDirectFacade::sendByte(byte b)
 {
 	CCLOG("sending byte");
+	FORWARD(clearLastMsg());
 	LmJniJavaFacade::sendByte(b);
 }
 

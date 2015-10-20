@@ -281,6 +281,16 @@ class bytes {
 			return data;
 		}
 
+		std::string toString()
+		{
+			return std::string(data, getLen());
+		}
+
+		const char* toCharSequence()
+		{
+			return toString().c_str();
+		}
+
 		OP_IN(long)
 
 		OP_IN(int)
