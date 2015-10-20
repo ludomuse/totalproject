@@ -20,6 +20,8 @@ class LmWifiObserver {
 private:
 	int _observerIndex;
 
+	bytes lastMsg;
+
 	protected:
 	event _event;
 		LmWifiDirectFacade* _wifiFacade;
@@ -101,6 +103,12 @@ private:
 
 		void onReceiving(bytes msg)
 		{
+			if(lastMsg == msg)
+			{
+				CCLOG("Msg received two times. Not forwaded.");
+				return;
+			}
+			lastMsg = msg;
 			onReceivingByte(msg.readByte());
 			if(msg.getLen() > 1)
 				onReceivingMsg(msg);

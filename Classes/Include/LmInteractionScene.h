@@ -88,7 +88,10 @@ public:
 		m_sDescription = sDescription;
 	}
 
-	virtual void onReceivingMsg(bytes );
+	virtual void onReceivingMsg(bytes )
+	{
+
+	}
 
 protected:
 

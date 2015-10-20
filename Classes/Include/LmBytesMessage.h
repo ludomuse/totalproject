@@ -96,6 +96,11 @@ class bytes {
 
 	public:
 
+		void rewind()
+		{
+			readCursor = 0;
+		}
+
 		bool isThereError()
 		{
 			return error;
@@ -212,7 +217,7 @@ class bytes {
 		byte* readBytes(int size)
 		{
 			clearError();
-			if(getSize() == 0 || readCursor + size > getSize())
+			if (getSize() == 0 || readCursor + size > getSize())
 			{
 				setError();
 				return 0;
@@ -226,7 +231,7 @@ class bytes {
 		byte readByte()
 		{
 			clearError();
-			if(getSize() == 0 || readCursor > getSize())
+			if (getSize() == 0 || readCursor > getSize())
 			{
 				setError();
 				return 0;
@@ -335,10 +340,25 @@ class bytes {
 			return *this;
 		}
 
-		/*~bytes()
+		//inline bool operator == (const PlMessageHeader &b) const
+		bool operator==(bytes & other)
 		{
-			delete [] data;
-		}*/
+			int len = getLen();
+			int lenOther = other.getLen();
+			if(len != lenOther)
+				return false;
+			for(int i = 0; i < len; i++)
+			{
+				if(data[i] != other.data[i])
+					return false;
+			}
+			return true;
+		}
+
+		/*~bytes()
+		 {
+		 delete [] data;
+		 }*/
 
 };
 
