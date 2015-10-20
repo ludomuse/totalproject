@@ -73,9 +73,6 @@ LmInteractionScene::~LmInteractionScene()
 bool LmInteractionScene::init(LmUser* l_pUser)
 {
 
-	//to get notigy by event
-	listenWifiFacade();
-
 	//init user
 	m_pUser = l_pUser;
 
@@ -215,6 +212,8 @@ void LmInteractionScene::nextSetPointLayer()
 			m_pNextButton->setVisible(false);
 			m_pPreviousButton->setVisible(false);
 
+			//to get notigy by event
+			listenWifiFacade();
 			runGame();
 		}
 		else

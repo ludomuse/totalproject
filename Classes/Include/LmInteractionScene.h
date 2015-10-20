@@ -90,17 +90,16 @@ public:
 
 	virtual void onReceivingMsg(bytes )
 	{
-
 	}
+
 
 protected:
 
 	//ATTRIBUTES
 
+
 	//text to display in the dashboard to describe the scene
 	std::string m_sDescription;
-
-	event _event;
 
 	//use to sync movement
 	bool m_bUserIsTouchingScreen;

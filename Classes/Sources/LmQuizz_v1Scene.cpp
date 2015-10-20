@@ -144,17 +144,6 @@ bool LmQuizz_v1Scene::initGame()
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
-	//add the layer game
-	if (m_pUser->isBParent())
-	{
-		m_pInGameScreenParent->init();
-		this->addChild(m_pInGameScreenParent, 0);
-	}
-	else
-	{
-		this->addChild(m_pLayerGame, 0);
-	}
-
 	//init the background
 	m_pSpriteBackground = Sprite::create(m_sFilenameSpriteBackground);
 	m_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
@@ -296,6 +285,26 @@ bool LmQuizz_v1Scene::initGame()
 
 	m_iIndexQuestion = -1;	//so when we init the next question index = 0
 	beginQuestion();
+
+	//add the layer game to the scene
+	if (m_pUser->isBParent())
+	{
+		m_pInGameScreenParent->init();
+		this->addChild(m_pInGameScreenParent, 0);
+
+		m_pLayerGame->removeChild(m_pNextQuestionButton);
+		m_pLayerGame->removeChild(m_pReplayButton);
+
+		m_pInGameScreenParent->addChild(m_pNextQuestionButton);
+		m_pInGameScreenParent->addChild(m_pReplayButton);
+
+		m_pNextQuestionButton->setVisible(false);
+		m_pReplayButton->setVisible(false);
+	}
+	else
+	{
+		this->addChild(m_pLayerGame, 0);
+	}
 
 	return true;
 
@@ -566,8 +575,11 @@ void LmQuizz_v1Scene::checkBoxTouchEnabled(bool enabled)
 
 void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
 {
-	CCLOG("_event is %d", _event);
-	switch (_event)
+
+	LmInteractionScene::onReceivingMsg(l_oMsg);
+
+	CCLOG("lmquizzscene _event is %d", LmWifiObserver::_event);
+	switch (LmWifiObserver::_event)
 	{
 	case LmEvent::GoodAnswer:
 		CCLOG("GoodAnswer");
@@ -588,7 +600,10 @@ void LmQuizz_v1Scene::onGoodAnswerEvent(bytes l_oMsg)
 {
 	//parent receive msg
 
-	ON_CC_THREAD(LmQuizz_v1Scene::goodAnswerFromChild, this, l_oMsg.readBool());
+	bool buffer = l_oMsg.readBool();
+
+	ON_CC_THREAD(LmQuizz_v1Scene::goodAnswerFromChild, this, buffer);
+
 
 }
 
@@ -606,6 +621,8 @@ void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 	}
 	else
 	{
+		CCLOG("bad ansswer");
+
 		//can go to the next
 		m_pNextQuestionButton->setVisible(true);
 		m_pNextQuestionButton->setTouchEnabled(false);

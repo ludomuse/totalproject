@@ -526,7 +526,7 @@ void LmMenu::inputEnabled(bool enabled)
 
 void LmMenu::onReceivingMsg(bytes l_oMsg)
 {
-	CCLOG("_event is %d", _event);
+	CCLOG("lm menu_event is %d", _event);
 	switch (_event)
 	{
 	case LmEvent::UserIsReady:

@@ -9,9 +9,9 @@
 #include "LmServerManager.h"
 #include "LmUser.h"
 #include "LmInteractionScene.h"
-#include "../Include/LmWifiDirectFacade.h"
-#include "../Include/LmJniCppFacade.h"
-#include "../Include/LmWifiObserver.h"
+#include "LmWifiDirectFacade.h"
+#include "LmJniCppFacade.h"
+#include "LmWifiObserver.h"
 
 static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;

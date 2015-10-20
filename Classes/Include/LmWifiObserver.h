@@ -110,7 +110,11 @@ private:
 		{
 			if(lastMsg == msg)
 			{
-				CCLOG("Msg received two times (lastMsg = %s, msg = %s). Not forwaded.", lastMsg.toCharSequence(), msg.toCharSequence());
+				lastMsg.rewind();
+				event lastEvent = lastMsg.readByte();
+				event currEvent = msg.readByte();
+				CCLOG("Msg received two times (lastMsg = %s, msg = %s). Not forwaded.", lastEvent, currEvent);
+				msg.rewind();
 				return;
 			}
 			lastMsg = msg;

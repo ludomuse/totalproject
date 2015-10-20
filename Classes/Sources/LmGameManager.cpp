@@ -125,6 +125,8 @@ bool LmGameManager::init()
 		//reset sync for ready for next interaction
 			m_bUser1IsReadyForNextInteraction=false;
 			m_bUser2IsReadyForNextInteraction=false;
+
+			CCLOG("reset m_bReadyForNextInteractionReceived = %b",m_bReadyForNextInteractionReceived);
 			m_bReadyForNextInteractionReceived=false;
 
 		};
@@ -628,9 +630,15 @@ void LmGameManager::runNextInteraction()
 
 		}
 
+
 		if (m_bUser1IsReadyForNextInteraction
 				&& m_bUser2IsReadyForNextInteraction)
 		{
+			CCLOG("run interaction when button clicked");
+
+			//if m_bUser2IsReadyForNextInteraction = true we received this event
+			m_bReadyForNextInteractionReceived=true;
+
 			runInteraction(m_iIndexInteractionScene);
 		}
 
@@ -847,12 +855,12 @@ int LmGameManager::interactionTouched(cocos2d::Touch* touch)
 
 void LmGameManager::onReceivingMsg(bytes l_oMsg)
 {
-	CCLOG("_event is %d", _event);
+	CCLOG("lmgamemanager _event is %d", _event);
 	switch (_event)
 	{
 	case LmEvent::ReadyForNextInteraction:
 		CCLOG("ReadyForNextInteraction");
-		onReadyForNextInteractionEvent(l_oMsg);
+		ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this, l_oMsg);
 		break;
 	default:
 		break;
@@ -864,10 +872,15 @@ void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 {
 	m_bUser2IsReadyForNextInteraction = true;
 
+	CCLOG("before if m_bReadyForNextInteractionReceived = %d",m_bReadyForNextInteractionReceived);
+
 	if (m_bUser1IsReadyForNextInteraction
 			&& !m_bReadyForNextInteractionReceived)
 	{
+
 		m_bReadyForNextInteractionReceived = true;
+
+		CCLOG("after if m_bReadyForNextInteractionReceived = %d",m_bReadyForNextInteractionReceived);
 
 		runInteraction(m_iIndexInteractionScene);
 
