@@ -113,7 +113,7 @@ private:
 				lastMsg.rewind();
 				event lastEvent = lastMsg.readByte();
 				event currEvent = msg.readByte();
-				CCLOG("Msg received two times (lastMsg = %s, msg = %s). Not forwaded.", lastEvent, currEvent);
+				CCLOG("Msg received two times (lastMsg = %d, msg = %d). Not forwaded.", lastEvent, currEvent);
 				msg.rewind();
 				return;
 			}

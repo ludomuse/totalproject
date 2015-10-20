@@ -126,7 +126,7 @@ bool LmGameManager::init()
 			m_bUser1IsReadyForNextInteraction=false;
 			m_bUser2IsReadyForNextInteraction=false;
 
-			CCLOG("reset m_bReadyForNextInteractionReceived = %b",m_bReadyForNextInteractionReceived);
+			CCLOG("reset m_bReadyForNextInteractionReceived = %d",m_bReadyForNextInteractionReceived);
 			m_bReadyForNextInteractionReceived=false;
 
 		};

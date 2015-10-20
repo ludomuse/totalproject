@@ -19,6 +19,7 @@
 							byte* rep = new byte[sizeof(X)];\
 							memcpy(rep, &v, sizeof(X));\
 							write(rep, sizeof(X));\
+							del(rep, sizeof(X));\
 						}
 
 #define RD_PRIM(X, Y) 	X Y()\
@@ -64,11 +65,12 @@ class bytes {
 		{
 			if (this->size >= size || size == 0)
 				return;
-			this->size = size;
 			byte* newBytes = new byte[size];
 			if (data != 0)
 				memcpy(newBytes, data, getLen());
+			del(data, size);
 			data = newBytes;
+			this->size = size;
 		}
 
 		void increase(int size)
@@ -92,6 +94,14 @@ class bytes {
 		void setError()
 		{
 			error = true;
+		}
+
+		void del(byte* data, int len)
+		{
+			for(int i = 0; i < len; i++)
+			{
+				delete &data[i];
+			}
 		}
 
 	public:
@@ -365,10 +375,10 @@ class bytes {
 			return true;
 		}
 
-		/*~bytes()
+		~bytes()
 		 {
-		 delete [] data;
-		 }*/
+			del(data, size);
+		 }
 
 };
 
