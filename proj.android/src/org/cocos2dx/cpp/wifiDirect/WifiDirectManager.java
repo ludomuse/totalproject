@@ -919,11 +919,7 @@ public class WifiDirectManager {
 		}
 	}
 
-	public void keepAlive()
-	{
-		discoverAndConnect();
-		socket.keepAlive();
-	}
+
 
 	public void send(final File f)
 	{

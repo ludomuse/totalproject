@@ -77,6 +77,8 @@ public class MailBox {
 		post(methodName, new Object[] { arg }, new Class<?>[] { argType }, position);
 	}
 
+
+	
 	public static int timeBeforeConsideringMessageLost = 5000;
 	Handler timeout = new Handler();
 	Runnable worker = new Runnable()
@@ -114,9 +116,14 @@ public class MailBox {
 		}
 	}
 	
+	public boolean isEmpty()
+	{
+		return messages.size() == 0;
+	}
+	
 	public void sendNext()
 	{
-		if(messages.size() > 0)
+		if(!isEmpty())
 			messages.remove(0);
 		ClientSocketHandler.generateId();
 		send();

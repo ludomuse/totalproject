@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.cocos2dx.cpp.DebugManager;
+import org.cocos2dx.cpp.LudoMuseThread;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.os.Handler;
@@ -35,7 +36,7 @@ class ConnectTask2 implements Runnable {
 
 	public void execute()
 	{
-		Thread t = new Thread(this).start();
+		LudoMuseThread.start(this);
 	}
 
 	public void run()
@@ -79,7 +80,7 @@ public class ClientSocketHandler {
 
 	private byte[] buf;
 
-	private static long id = 0;
+	private static long id = 1;
 	
 	public static long getId()
 	{
@@ -364,7 +365,9 @@ public class ClientSocketHandler {
 	{
 		DebugManager.print(ClientSocketHandler.GetTag() + "Sending alive packet...",
 				WifiDirectManager.DEBUGGER_CHANNEL);
-		send(new byte[] {}, PACKET_TYPE.KEEP_ALIVE);
+		
+		send(new byte[]{}, PACKET_TYPE.KEEP_ALIVE);
+
 	}
 
 	public String getClientIpAddress()
@@ -376,6 +379,10 @@ public class ClientSocketHandler {
 	{
 		send(new ByteArrayInputStream(bytes), type);
 	}
+	
+	public boolean concatAccuseInNextSend = false;
+
+	public long accuseId;
 	
 	private void send(final InputStream inputStream, final PACKET_TYPE type)
 	{
@@ -391,8 +398,22 @@ public class ClientSocketHandler {
 					OutputStream outputStream = openOutputStream();
 					// InputStream inputStream = new
 					// ByteArrayInputStream(bytes);
+					if(concatAccuseInNextSend)
+					{
+						outputStream.write(PACKET_TYPE.ACCUSE.toInt());
+						outputStream.write(toByte(accuseId));
+						concatAccuseInNextSend = false;
+					}
 					outputStream.write(type.toInt());
-					outputStream.write(useGivenId ? givenId : generateId());
+					if(useGivenId)
+					{
+						outputStream.write(givenId);
+						useGivenId = false;
+					}
+					else
+					{
+						outputStream.write(generateId());
+					}
 					int len;
 					while ((len = inputStream.read(buf)) != -1)
 					{

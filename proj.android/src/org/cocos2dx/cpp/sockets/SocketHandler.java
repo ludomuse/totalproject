@@ -126,15 +126,22 @@ public class SocketHandler {
 		mailBox.post("sendIP", listenningPort, int.class, 0);
 	}
 
-	public void sendAccuse()
+	public void sendAccuse(long idReceived)
 	{
-		client.sendAccuse();
+		
+		if(mailBox.isEmpty())
+		{
+			ClientSocketHandler.setId(-idReceived);
+			client.notifyServer();
+		}
+		else
+		{
+			client.concatAccuseInNextSend = true;
+			client.accuseId = -idReceived;
+		}
 	}
 
-	public void keepAlive()
-	{
-		client.notifyServer();
-	}
+	
 
 	public static String getThisDeviceIpAddress()
 	{

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.cocos2dx.cpp.DebugManager;
+import org.cocos2dx.cpp.LudoMuseThread;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.os.AsyncTask;
@@ -258,7 +259,7 @@ class Communication implements Runnable {
 		{
 			onReceiveIPCallBack.Do();
 		}
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -277,7 +278,7 @@ class Communication implements Runnable {
 		if (onReceiveString != null)
 			onReceiveString.Do(res);
 		// send accuse to client
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -307,7 +308,7 @@ class Communication implements Runnable {
 		if (onReceiveBool != null)
 			onReceiveBool.Do(res);
 		// send accuse to client
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -325,7 +326,7 @@ class Communication implements Runnable {
 		if (onReceiveInt != null)
 			onReceiveInt.Do(res);
 		// send accuse to client
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -340,7 +341,7 @@ class Communication implements Runnable {
 				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveByte != null)
 			onReceiveByte.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -355,7 +356,7 @@ class Communication implements Runnable {
 				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveChar != null)
 			onReceiveChar.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -370,7 +371,7 @@ class Communication implements Runnable {
 				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveFloat != null)
 			onReceiveFloat.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -386,7 +387,7 @@ class Communication implements Runnable {
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveDouble != null)
 			onReceiveDouble.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -401,7 +402,7 @@ class Communication implements Runnable {
 				+ res, WifiDirectManager.DEBUGGER_CHANNEL);
 		if (onReceiveLong != null)
 			onReceiveLong.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -424,7 +425,7 @@ class Communication implements Runnable {
 		/* end debug */
 		if (onReceiveByteArray != null)
 			onReceiveByteArray.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -441,7 +442,7 @@ class Communication implements Runnable {
 		/* end debug */
 		if (onReceiveFile != null)
 			onReceiveFile.Do(res);
-		master.sendAccuse();
+		master.sendAccuse(id);
 	}
 
 	/**
@@ -498,11 +499,11 @@ class Communication implements Runnable {
 
 	private static ArrayList<Long> alreadyTreated = new ArrayList<Long>();
 
+	long id;
 	private boolean isMessageAlreadyReceived(InputStream is)
 	{
-		long id = getLongFromInputStream(is);
-		DebugManager.print(ServerSocketHandler.GetTag()
-				+ "message id = " + id,
+		id = getLongFromInputStream(is);
+		DebugManager.print(ServerSocketHandler.GetTag() + "message id = " + id,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		if (alreadyTreated.contains(id))
 		{
@@ -522,15 +523,31 @@ class Communication implements Runnable {
 
 		PACKET_TYPE type = getPacketType(is);
 
-		if (!isMessageAlreadyReceived(is))
+		if(type == PACKET_TYPE.ACCUSE)//Accuse always come concatenated with other message
+		{
+			if(!isMessageAlreadyReceived(is))
+				receiveAccuse();
+			type = getPacketType(is);
+		}
+		
+		boolean msgAlreadyReceived = isMessageAlreadyReceived(is);
+		
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "We received a packet of type " + type + ". was already received ? " + msgAlreadyReceived,
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		
+
+		
+		if (!msgAlreadyReceived)
 		{
 
 			switch (type)
 			{
-				case KEEP_ALIVE:
+				case KEEP_ALIVE://KEEP_ALIVE is aynchrone accuse
 					DebugManager.print(ServerSocketHandler.GetTag()
 							+ "Client is alive !",
 							WifiDirectManager.DEBUGGER_CHANNEL);
+					receiveAccuse();
 					break;
 				case DEFAULT:
 					break;
@@ -568,18 +585,18 @@ class Communication implements Runnable {
 					receiveString(is);
 					break;
 				case ACCUSE:
-					receiveAccuse();
+//					receiveAccuse(); // already treated
 					break;
-			// default:
-			// break;
+				default:
+					break;
 			}
-
 		}
 		else
 		{
-			master.sendAccuse();
+			if (type != PACKET_TYPE.KEEP_ALIVE)
+				master.sendAccuse(id);//remote pair should not have receive accuse, so it keeps sending it -> so we send the accuse again
 		}
-		
+
 		closeInputStream(is);
 
 		DebugManager.print(
@@ -764,7 +781,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	@Override
 	protected Void doInBackground(Void... params)
 	{
-
+		Thread.currentThread().setName("LudoMuseThread");
 		openServerSocket();
 
 		while (isRunning())
@@ -776,7 +793,8 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 			DebugManager.print(ServerSocketHandler.GetTag()
 					+ "new client request...",
 					WifiDirectManager.DEBUGGER_CHANNEL);
-			new Thread(new Communication(client, master)).start();
+			LudoMuseThread.start(new Communication(client, master));
+			//LudoMuseThread.stopAllLudoMuseThread();
 		}
 
 		closeServerSocket();

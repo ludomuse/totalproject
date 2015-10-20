@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.cocos2dx.cpp.DebugManager;
+import org.cocos2dx.cpp.LudoMuseThread;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
@@ -122,6 +123,7 @@ public class WifiDirectFacade {
 		_manager.initialize();
 		//should be done in the exit method of the application
 		_manager.clear();
+		LudoMuseThread.stopAllLudoMuseThread();
 		
 		DebugManager.print("WifiDirectFacade is created !",
 				WifiDirectManager.DEBUGGER_CHANNEL);
