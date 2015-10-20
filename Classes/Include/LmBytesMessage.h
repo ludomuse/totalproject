@@ -19,6 +19,7 @@
 							byte* rep = new byte[sizeof(X)];\
 							memcpy(rep, &v, sizeof(X));\
 							write(rep, sizeof(X));\
+							del(rep, sizeof(X));\
 						}
 
 #define RD_PRIM(X, Y) 	X Y()\
@@ -64,11 +65,12 @@ class bytes {
 		{
 			if (this->size >= size || size == 0)
 				return;
-			this->size = size;
 			byte* newBytes = new byte[size];
 			if (data != 0)
 				memcpy(newBytes, data, getLen());
+			del(data, size);
 			data = newBytes;
+			this->size = size;
 		}
 
 		void increase(int size)
@@ -94,6 +96,14 @@ class bytes {
 			error = true;
 		}
 
+		void del(byte* data, int len)
+		{
+			for (int i = 0; i < len; i++)
+			{
+				delete &data[i];
+			}
+		}
+
 	public:
 
 		void rewind()
@@ -111,6 +121,28 @@ class bytes {
 			init();
 		}
 
+		bytes(const bytes& other)
+		{
+			copy(other);
+		}
+
+		bytes& operator=(const bytes& other)
+		{
+			copy(other);
+			return *this;
+		}
+
+		void copy(const bytes & other)
+		{
+			size = other.size;
+			readCursor = other.readCursor;
+			writeCursor = other.writeCursor;
+			del(data, size);
+			data = new byte[size];
+			memcpy(data, other.data, size);
+			error = other.error;
+		}
+
 		bytes(int size)
 		{
 			init();
@@ -119,9 +151,14 @@ class bytes {
 
 		bytes(bytes* dataBytes)
 		{
-			init();
 			if (dataBytes != 0)
-				write(*dataBytes);
+			{
+				copy(*dataBytes);
+			}
+			else
+			{
+				init();
+			}
 		}
 
 		bytes(byte* dataBytes, int len)
@@ -363,20 +400,20 @@ class bytes {
 		{
 			int len = getLen();
 			int lenOther = other.getLen();
-			if(len != lenOther)
+			if (len != lenOther)
 				return false;
-			for(int i = 0; i < len; i++)
+			for (int i = 0; i < len; i++)
 			{
-				if(data[i] != other.data[i])
+				if (data[i] != other.data[i])
 					return false;
 			}
 			return true;
 		}
 
-		/*~bytes()
-		 {
-		 delete [] data;
-		 }*/
+		~bytes()
+		{
+			del(data, size);
+		}
 
 };
 

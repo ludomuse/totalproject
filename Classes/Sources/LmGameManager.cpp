@@ -126,8 +126,6 @@ bool LmGameManager::init()
 			m_bUser1IsReadyForNextInteraction=false;
 			m_bUser2IsReadyForNextInteraction=false;
 
-			m_bReadyForNextInteractionReceived=false;
-
 		};
 
 	auto BackToDashboard = [=](EventCustom * event)

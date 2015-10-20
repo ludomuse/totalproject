@@ -24,7 +24,7 @@ class ConnectTask2 implements Runnable {
 	private int port;
 	private Socket socket;
 	private CallBackMethod cm;
-
+	
 	public ConnectTask2(String host, int port, Socket socket, CallBackMethod cm)
 	{
 		this.host = host;
@@ -79,6 +79,13 @@ public class ClientSocketHandler {
 
 	private byte[] buf;
 
+	private static long id = 0;
+	
+	private byte[] getAnId()
+	{
+		return toByte(id++);
+	}
+	
 	public ClientSocketHandler(int len)
 	{
 		super();
@@ -372,6 +379,7 @@ public class ClientSocketHandler {
 					// InputStream inputStream = new
 					// ByteArrayInputStream(bytes);
 					outputStream.write(type.toInt());
+					outputStream.write(getAnId());
 					int len;
 					while ((len = inputStream.read(buf)) != -1)
 					{

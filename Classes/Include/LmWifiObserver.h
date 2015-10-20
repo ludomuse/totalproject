@@ -108,15 +108,15 @@ private:
 
 		void onReceiving(bytes msg)
 		{
-			lastMsg.rewind();
-			event lastEvent = lastMsg.readByte();
-			event currEvent = msg.readByte();
-			CCLOG("(lastMsg = %d, msg = %d).", lastEvent, currEvent);
-			msg.rewind();
 
-			if(lastMsg == msg /*|| msg.getLen() == 0*/)
+			CCLOG("msg len = %d", msg.getLen());
+			if(lastMsg == msg || msg.getLen() == 0)
 			{
-				CCLOG("msg received two times or msg null");
+				lastMsg.rewind();
+				event lastEvent = lastMsg.readByte();
+				event currEvent = msg.readByte();
+				CCLOG("Msg received two times (lastMsg = %d, msg = %d). Not forwaded.", lastEvent, currEvent);
+				msg.rewind();
 				return;
 			}
 			lastMsg = msg;
