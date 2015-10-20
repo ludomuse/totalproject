@@ -53,6 +53,7 @@ private:
 
 	int m_iIdWifiObserver;
 
+	bool m_bMenuIsFinished;
 
 
 	//the scene of the menu (log + wifi)

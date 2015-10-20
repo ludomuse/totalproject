@@ -44,6 +44,7 @@ LmMenu::LmMenu()
 	m_bRoleSelected = false;
 	m_bConnected = false;
 	m_bReady = false;
+	m_bMenuIsFinished = false;
 
 }
 
@@ -311,12 +312,10 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 			m_pSpriteReadyIndicator->setTexture(
 					"Ludomuse/GUIElements/nextButtonNormal.png");
 
-
 			//send the msg
 			bytes msg(50);
 			msg << LmEvent::UserIsReady << *m_pUser1;
 			WIFIFACADE->sendBytes(msg);
-
 
 		}
 	}
@@ -334,9 +333,15 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 void LmMenu::menuIsFinished()
 {
 
-	stopListenWifiFacade();
-	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
-			"MenuFinished");
+	if (!m_bMenuIsFinished)
+	{
+		CCLOG("menu is finished");
+
+		m_bMenuIsFinished = true;
+		stopListenWifiFacade();
+		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+				"MenuFinished");
+	}
 
 }
 
@@ -500,7 +505,6 @@ std::string LmMenu::getUser1TabletName()
 {
 	WIFIFACADE->askTabletName();
 
-
 	return WIFIFACADE->getTabletName();
 }
 
@@ -550,46 +554,59 @@ void LmMenu::onReceivingMsg(bytes l_oMsg)
 void LmMenu::onUserIsReadyEvent(bytes l_oMsg)
 {
 	m_pUser2 = l_oMsg.read<LmUser>();
-	CCLOG("onUserIsReadyEvent user receive = %s",m_pUser2->getUserSerialized().c_str());
+	CCLOG("onUserIsReadyEvent user receive = %s",
+			m_pUser2->getUserSerialized().c_str());
 
-	//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
-	if (usersAreCompatible() && m_bReady)
+	if (m_pUser2)
 	{
-		//disable input to be sure to not change his state
-		ON_CC_THREAD(LmMenu::inputEnabled, this, false);
+		//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
+		if (usersAreCompatible() && m_bReady)
+		{
+			//disable input to be sure to not change his state
+			ON_CC_THREAD(LmMenu::inputEnabled, this, false);
 
-		//send CompatibleToPlay user A & B as parameters TODO
+			//send CompatibleToPlay user A & B as parameters TODO
 
-		CCLOG("send CompatibleToPlay {%s;%s} to %s",
-				m_pUser1->getUserSerialized().c_str(),
-				m_pUser2->getUserSerialized().c_str(),
-				m_pUser2->getPUserTabletName().c_str());
+			CCLOG("send CompatibleToPlay {%s;%s} to %s",
+					m_pUser1->getUserSerialized().c_str(),
+					m_pUser2->getUserSerialized().c_str(),
+					m_pUser2->getPUserTabletName().c_str());
 
-		//send the msg
-		bytes msg(100);
-		msg << LmEvent::CompatibleToPlay << *m_pUser2<<*m_pUser1;
-		WIFIFACADE->sendBytes(msg);
+			//send the msg
+			bytes msg(100);
+			msg << LmEvent::CompatibleToPlay << *m_pUser2 << *m_pUser1;
+			WIFIFACADE->sendBytes(msg);
 
-
+		}
+		else
+		{
+			CCLOG("user not compatible or user1 not ready");
+		}
 	}
 	else
 	{
-		CCLOG("user not compatible or user1 not ready");
+		CCLOG("no user in the msg OnUserIsReady");
 	}
+
 }
 
 void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 {
 	//init user to compare
+
 	LmUser* l_pUserBuffer = l_oMsg.read<LmUser>();
 
-	CCLOG("user buffer = %s, user1 = %s", l_pUserBuffer->getUserSerialized().c_str(), m_pUser1->getUserSerialized().c_str());
+	CCLOG("user buffer = %s, user1 = %s",
+			l_pUserBuffer->getUserSerialized().c_str(),
+			m_pUser1->getUserSerialized().c_str());
 	//it's an answer from the guy we send UserIsReady
 
-	if (l_pUserBuffer->getUserSerialized().compare(m_pUser1->getUserSerialized()) == 0 && m_bReady)
+	if (l_pUserBuffer->getUserSerialized().compare(
+			m_pUser1->getUserSerialized()) == 0 && m_bReady)
 	{
 		CCLOG("on compatible true");
 		//set second user
+		delete m_pUser2;
 		m_pUser2 = l_oMsg.read<LmUser>();
 
 		//send the msg
@@ -612,6 +629,7 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 	}
 
 	delete l_pUserBuffer;
+	CCLOG("end oncompatible event");
 }
 
 void LmMenu::onPlayEvent(bytes l_oMsg)
@@ -620,6 +638,7 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 	if (l_oMsg.readBool())
 	{
 		ON_CC_THREAD(LmMenu::menuIsFinished, this);
+
 	}
 	else
 	{
@@ -630,12 +649,11 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 
 bool LmMenu::usersAreCompatible()
 {
-	if(((m_pUser2->isBParent() && !m_pUser1->isBParent())
+	if (((m_pUser2->isBParent() && !m_pUser1->isBParent())
 			|| (!m_pUser2->isBParent() && m_pUser1->isBParent())))
 	{
 		CCLOG("users are compatible");
 	}
-
 
 	return ((m_pUser2->isBParent() && !m_pUser1->isBParent())
 			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()));

@@ -126,7 +126,6 @@ bool LmGameManager::init()
 			m_bUser1IsReadyForNextInteraction=false;
 			m_bUser2IsReadyForNextInteraction=false;
 
-			CCLOG("reset m_bReadyForNextInteractionReceived = %b",m_bReadyForNextInteractionReceived);
 			m_bReadyForNextInteractionReceived=false;
 
 		};
@@ -146,6 +145,8 @@ bool LmGameManager::init()
 			"InteractionSceneFinished", InteractionSceneFinished);
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"BackToDashboard", BackToDashboard);
+
+
 
 	return true;
 }
@@ -398,9 +399,13 @@ void LmGameManager::runGame()
 	//Init of the GameManager
 	init();
 
+	CCLOG("after init gamemanager");
+
 	//replace the menu scene with the first one of the game
 	Director::getInstance()->replaceScene(
 			TransitionFade::create(s_fTimeBetweenLmLayer, m_pGameManagerScene));
+
+	CCLOG("end run game");
 }
 
 void LmGameManager::compare()
@@ -622,7 +627,7 @@ void LmGameManager::runNextInteraction()
 			}
 
 			//send the msg
-			bytes msg(10);
+			bytes msg(20);
 			msg << LmEvent::ReadyForNextInteraction << m_iIndexInteractionScene;
 			WIFIFACADE->sendBytes(msg);
 
@@ -872,7 +877,6 @@ void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 {
 	m_bUser2IsReadyForNextInteraction = true;
 
-	CCLOG("before if m_bReadyForNextInteractionReceived = %d",m_bReadyForNextInteractionReceived);
 
 	if (m_bUser1IsReadyForNextInteraction
 			&& !m_bReadyForNextInteractionReceived)
@@ -880,7 +884,7 @@ void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 
 		m_bReadyForNextInteractionReceived = true;
 
-		CCLOG("after if m_bReadyForNextInteractionReceived = %d",m_bReadyForNextInteractionReceived);
+		CCLOG("ReadyForNextInteraction first time");
 
 		runInteraction(m_iIndexInteractionScene);
 

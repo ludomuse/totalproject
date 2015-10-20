@@ -108,19 +108,20 @@ private:
 
 		void onReceiving(bytes msg)
 		{
-			if(lastMsg == msg)
+			lastMsg.rewind();
+			event lastEvent = lastMsg.readByte();
+			event currEvent = msg.readByte();
+			CCLOG("(lastMsg = %d, msg = %d).", lastEvent, currEvent);
+			msg.rewind();
+
+			if(lastMsg == msg /*|| msg.getLen() == 0*/)
 			{
-				lastMsg.rewind();
-				event lastEvent = lastMsg.readByte();
-				event currEvent = msg.readByte();
-				CCLOG("Msg received two times (lastMsg = %s, msg = %s). Not forwaded.", lastEvent, currEvent);
-				msg.rewind();
+				CCLOG("msg received two times or msg null");
 				return;
 			}
 			lastMsg = msg;
 			onReceivingByte(msg.readByte());
-			if(msg.getLen() > 1)
-				onReceivingMsg(msg);
+			onReceivingMsg(msg);
 		}
 		;
 

@@ -45,6 +45,8 @@ LmInteractionScene::LmInteractionScene()
 
 LmInteractionScene::~LmInteractionScene()
 {
+	m_pReplayButton->release();
+
 	//if this scene own a reward delete it
 	if (m_pLmReward)
 	{
@@ -169,7 +171,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pReplayButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::resetScene, this));
 	m_pReplayButton->setVisible(false);
-	m_pLayerGame->addChild(m_pReplayButton, 1);
+	m_pReplayButton->retain();
 
 	return true;
 }
@@ -213,6 +215,7 @@ void LmInteractionScene::nextSetPointLayer()
 			m_pPreviousButton->setVisible(false);
 
 			//to get notigy by event
+			CCLOG("run game");
 			listenWifiFacade();
 			runGame();
 		}

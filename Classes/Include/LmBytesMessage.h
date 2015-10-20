@@ -269,6 +269,14 @@ class bytes {
 		RD_PRIM(float, readFloat)
 
 		template<typename Serializable>
+		void read(Serializable* res)
+		{
+
+			res->readOn(this);
+
+		}
+
+		template<typename Serializable>
 		Serializable* read()
 		{
 			Serializable* res = new Serializable();

@@ -105,7 +105,6 @@ private:
 
 	//to go to the next question
 	cocos2d::ui::Button* m_pNextQuestionButton;
-	bool m_bNextQuestionButtonCanBePress;
 
 	//buffer to know how attempt remain
 	int m_iNumberOfAttempt;

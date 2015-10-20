@@ -52,7 +52,6 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed) :
 	m_fHeight = 0;
 	m_iIndexQuestion = -1;
 	m_iNumberOfAttempt = m_iAttemptByQuestion;
-	m_bNextQuestionButtonCanBePress = true;
 	m_bQuestionFinished = false;
 }
 
@@ -123,12 +122,14 @@ void LmQuizz_v1Scene::resetScene()
 		m_pNextButton->setTouchEnabled(true);
 		m_bQuestionFinished = false;
 
-		m_bReplayButtonSync = true;
-
 		//if it's the parent that clicked
 		if (m_pUser->isBParent())
 		{
 			//send the msg
+			bytes msgOK(10);
+			msgOK << LmEvent::OK;
+			WIFIFACADE->sendBytes(msgOK);
+
 			bytes msg(10);
 			msg << LmEvent::Replay;
 			WIFIFACADE->sendBytes(msg);
@@ -149,6 +150,18 @@ bool LmQuizz_v1Scene::initGame()
 	m_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
 			l_oVisibleSize.height * 0.5f + l_oOrigin.y);
 	m_pLayerGame->addChild(m_pSpriteBackground);
+
+	//add the layer game to the scene
+	if (m_pUser->isBParent())
+	{
+		m_pInGameScreenParent->init();
+		this->addChild(m_pInGameScreenParent, 0);
+
+	}
+	else
+	{
+		this->addChild(m_pLayerGame, 0);
+	}
 
 	//init timer
 	m_pTimer = LoadingBar::create();
@@ -227,7 +240,7 @@ bool LmQuizz_v1Scene::initGame()
 			Vec2(m_pBandTopSprite->getContentSize().width * 0.5,
 					m_pBandTopSprite->getContentSize().height * 0.5));
 	m_pQuestionLabel->setColor(Color3B::BLACK);
-	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.75);
+	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.65);
 
 	//init label answer and add them to their menuitemiamge
 	//1
@@ -281,30 +294,21 @@ bool LmQuizz_v1Scene::initGame()
 	m_pNextQuestionButton->addTouchEventListener(
 			CC_CALLBACK_0(LmQuizz_v1Scene::beginQuestion, this));
 	m_pNextQuestionButton->setVisible(false);
-	m_pLayerGame->addChild(m_pNextQuestionButton);
 
-	m_iIndexQuestion = -1;	//so when we init the next question index = 0
-	beginQuestion();
-
-	//add the layer game to the scene
 	if (m_pUser->isBParent())
 	{
-		m_pInGameScreenParent->init();
-		this->addChild(m_pInGameScreenParent, 0);
-
-		m_pLayerGame->removeChild(m_pNextQuestionButton);
-		m_pLayerGame->removeChild(m_pReplayButton);
-
 		m_pInGameScreenParent->addChild(m_pNextQuestionButton);
 		m_pInGameScreenParent->addChild(m_pReplayButton);
 
-		m_pNextQuestionButton->setVisible(false);
-		m_pReplayButton->setVisible(false);
 	}
 	else
 	{
-		this->addChild(m_pLayerGame, 0);
+		m_pLayerGame->addChild(m_pNextQuestionButton);
+
 	}
+
+	m_iIndexQuestion = -1;	//so when we init the next question index = 0
+	beginQuestion();
 
 	return true;
 
@@ -329,56 +333,54 @@ void LmQuizz_v1Scene::timerEnd(float dt)
 
 void LmQuizz_v1Scene::beginQuestion()
 {
-	if (m_bNextQuestionButtonCanBePress)
+	CCLOG("begin question ");
+
+	m_pNextQuestionButton->setEnabled(false);
+	m_pNextQuestionButton->setVisible(false);
+
+	m_bQuestionFinished = false;
+
+	//no more layers end of the game
+	if ((int) m_iIndexQuestion >= (int) (m_aQuestions.size() - 1))
 	{
-		m_bNextQuestionButtonCanBePress = false;
-		m_pNextQuestionButton->setVisible(false);
+		m_pFinishGameButton->setVisible(true);
+		m_pLmReward->playRewardSound();
+	}
+	else
+	{
+		//reset checkbox
+		m_pCheckBoxAnswer[0]->setSelected(false);
+		m_pCheckBoxAnswer[1]->setSelected(false);
+		m_pCheckBoxAnswer[2]->setSelected(false);
+		m_pCheckBoxAnswer[3]->setSelected(false);
 
-		m_bQuestionFinished = false;
+		m_iNumberOfAttempt = m_iAttemptByQuestion;
 
-		//no more layers end of the game
-		if ((int) m_iIndexQuestion >= (int) (m_aQuestions.size() - 1))
+		if (m_bTimerEnbaled)
 		{
-			m_pFinishGameButton->setVisible(true);
-			m_pLmReward->playRewardSound();
-		}
-		else
-		{
-			//reset checkbox
-			m_pCheckBoxAnswer[0]->setSelected(false);
-			m_pCheckBoxAnswer[1]->setSelected(false);
-			m_pCheckBoxAnswer[2]->setSelected(false);
-			m_pCheckBoxAnswer[3]->setSelected(false);
-
-			m_iNumberOfAttempt = m_iAttemptByQuestion;
-
-			if (m_bTimerEnbaled)
-			{
-				//reset timer
-				m_pTimer->setPercent(0);
-				m_iCounter = 0;
-				schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
-						m_fTimerDuration);
-			}
-
-			//disable answer selected
-			m_iAnswerSelected = -1;
-
-			//next layer
-			initNextQuestion();
+			//reset timer
+			m_pTimer->setPercent(0);
+			m_iCounter = 0;
+			schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
+					m_fTimerDuration);
 		}
 
+		//disable answer selected
+		m_iAnswerSelected = -1;
+
+		//next layer
+		initNextQuestion();
 	}
 
 }
 
 void LmQuizz_v1Scene::initNextQuestion()
 {
-	//increment index
+//increment index
 	m_iIndexQuestion++;
 	auto l_pQuestion = m_aQuestions.at(m_iIndexQuestion);
 
-	//set label string
+//set label string
 	m_pQuestionLabel->setString(l_pQuestion->getSQuestion());
 	m_pAnswerLabel[0]->setString(l_pQuestion->getSAnswer1());
 	m_pAnswerLabel[1]->setString(l_pQuestion->getSAnswer2());
@@ -389,7 +391,7 @@ void LmQuizz_v1Scene::initNextQuestion()
 
 void LmQuizz_v1Scene::checkAnswer()
 {
-	//good answer
+//good answer
 	if (m_aQuestions.at(m_iIndexQuestion)->getINumberGoodAnswer()
 			== m_iAnswerSelected)
 	{
@@ -492,7 +494,7 @@ void LmQuizz_v1Scene::answerSelected(Ref* pSender, CheckBox::EventType type)
 void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 {
 	m_bQuestionFinished = true;
-	//disable touch on checkbox
+//disable touch on checkbox
 	if (m_bTimerEnbaled)
 	{
 		//stop timer
@@ -502,9 +504,15 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 	if (goodAnswer)
 	{
 		m_pNextQuestionButton->setVisible(true);
-		m_bNextQuestionButtonCanBePress = true;
+		m_pNextQuestionButton->setEnabled(true);
 
 		//send to parent that was a good answer
+
+		//send the msg  ok
+		bytes msgOK(10);
+		msgOK << LmEvent::OK;
+		WIFIFACADE->sendBytes(msgOK);
+
 		//send the msg
 		bytes msg(10);
 		msg << LmEvent::GoodAnswer;
@@ -515,6 +523,10 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 	{
 		//send to parent that was a bad answer
 		//send the msg
+		bytes msgOK(10);
+		msgOK << LmEvent::OK;
+		WIFIFACADE->sendBytes(msgOK);
+
 		bytes msg(10);
 		msg << LmEvent::GoodAnswer;
 		msg.write(false);
@@ -576,19 +588,19 @@ void LmQuizz_v1Scene::checkBoxTouchEnabled(bool enabled)
 void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
 {
 
-	LmInteractionScene::onReceivingMsg(l_oMsg);
-
 	CCLOG("lmquizzscene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{
 	case LmEvent::GoodAnswer:
 		CCLOG("GoodAnswer");
-		onGoodAnswerEvent(l_oMsg);
+		ON_CC_THREAD(LmQuizz_v1Scene::onGoodAnswerEvent, this, l_oMsg)
+		;
 		break;
 	case LmEvent::Replay:
 		CCLOG("Replay");
 		m_bReplayButtonSync = true;
-		resetScene();
+		ON_CC_THREAD(LmQuizz_v1Scene::resetScene, this)
+		;
 		break;
 	default:
 		break;
@@ -599,11 +611,10 @@ void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
 void LmQuizz_v1Scene::onGoodAnswerEvent(bytes l_oMsg)
 {
 	//parent receive msg
+	m_bReplayButtonSync = true;
 
 	bool buffer = l_oMsg.readBool();
-
-	ON_CC_THREAD(LmQuizz_v1Scene::goodAnswerFromChild, this, buffer);
-
+	goodAnswerFromChild(buffer);
 
 }
 
@@ -611,6 +622,8 @@ void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 {
 	if (good)
 	{
+		CCLOG("good answer");
+
 		//can go to the next
 		m_pNextQuestionButton->setTouchEnabled(true);
 		m_pNextQuestionButton->setVisible(true);

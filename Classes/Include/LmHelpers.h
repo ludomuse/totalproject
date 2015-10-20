@@ -50,6 +50,11 @@ struct LmEvent
 	static const event Replay = 5;
 
 	/*
+	 * accuse to separate same event msg
+	 */
+	static const event OK = 6;
+
+	/*
 	 *
 	 */
 	static const event E1 = 89;
