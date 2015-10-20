@@ -11,6 +11,7 @@
 #include "LmInteractionScene.h"
 #include "ui/CocosGUI.h"
 #include "LmQuestion.h"
+#include "LmHelpers.h"
 
 struct LmQuizz_v1SceneSeed
 {
@@ -19,7 +20,8 @@ struct LmQuizz_v1SceneSeed
 	std::string FilenameSpriteBandTop;
 	std::string FilenameSpriteAnswerBackground;
 	std::string FilenameSpriteAnswerCross;
-	std::string FilenameSpriteGoodAnswerButton;
+	std::string FilenameSpriteGoodAnswerButtonChild;
+	std::string FilenameSpriteGoodAnswerButtonParent;
 	std::string FilenameSpriteBadAnswerButton;
 	std::string FilenameAudioAnswerSelected;
 	LmLayer* InGameScreenParent;
@@ -59,7 +61,8 @@ private:
 	std::string m_sFilenameSpriteBandTop;
 	std::string m_sFilenameSpriteAnswerBackground;
 	std::string m_sFilenameSpriteAnswerCross;
-	std::string m_sFilenameSpriteGoodAnswerButton;
+	std::string m_sFilenameSpriteGoodAnswerButtonChild;
+	std::string m_sFilenameSpriteGoodAnswerButtonParent;
 	std::string m_sFilenameSpriteBadAnswerButton;
 	std::string m_sFilenameAudioAnswerSelected;
 	LmLayer* m_pInGameScreenParent;
@@ -138,6 +141,9 @@ private:
 
 	//enbaled touch checkbox question
 	void checkBoxTouchEnabled(bool);
+
+	//when parent receive a answer from child
+	void goodAnswerFromChild(bool );
 
 	//callback event wifi
 	void onGoodAnswerEvent(bytes);

@@ -45,6 +45,11 @@ struct LmEvent
 	static const event GoodAnswer = 4;
 
 	/*
+	 * to indicate the other user to replay the scene
+	 */
+	static const event Replay = 5;
+
+	/*
 	 *
 	 */
 	static const event E1 = 89;

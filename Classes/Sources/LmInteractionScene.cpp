@@ -167,9 +167,8 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 			"Ludomuse/GUIElements/playPressed.png");
 
 	m_pReplayButton->setTouchEnabled(true);
-	m_pReplayButton->setPosition(
-			Vect(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-					l_oVisibleSize.height * 0.3 + l_oOrigin.y));
+	m_pReplayButton->setAnchorPoint(Vec2(0, 0.5));
+	m_pReplayButton->setPosition(Vect(0, l_oVisibleSize.height * 0.2));
 	m_pReplayButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::resetScene, this));
 	m_pReplayButton->setVisible(false);

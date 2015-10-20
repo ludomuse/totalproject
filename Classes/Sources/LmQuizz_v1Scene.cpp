@@ -10,7 +10,8 @@
 using namespace cocos2d;
 using namespace cocos2d::ui;
 
-LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed ) : LmInteractionScene()
+LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed) :
+		LmInteractionScene()
 {
 
 	//json
@@ -22,7 +23,10 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed ) : LmInterac
 	m_iAttemptByQuestion = l_Seed.AttemptByQuestion;
 	m_fTimerDuration = l_Seed.TimerDuration;
 	m_bTimerEnbaled = l_Seed.TimerEnbaled;
-	m_sFilenameSpriteGoodAnswerButton = l_Seed.FilenameSpriteGoodAnswerButton;
+	m_sFilenameSpriteGoodAnswerButtonChild =
+			l_Seed.FilenameSpriteGoodAnswerButtonChild;
+	m_sFilenameSpriteGoodAnswerButtonParent =
+			l_Seed.FilenameSpriteGoodAnswerButtonParent;
 	m_sFilenameSpriteBadAnswerButton = l_Seed.FilenameSpriteBadAnswerButton;
 	m_sFilenameAudioAnswerSelected = l_Seed.FilenameAudioAnswerSelected;
 	m_pInGameScreenParent = l_Seed.InGameScreenParent;
@@ -69,7 +73,8 @@ void LmQuizz_v1Scene::runGame()
 	}
 
 	//we preload the sound
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(m_sFilenameAudioAnswerSelected.c_str());
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			m_sFilenameAudioAnswerSelected.c_str());
 }
 
 void LmQuizz_v1Scene::restart()
@@ -84,6 +89,7 @@ void LmQuizz_v1Scene::restart()
 
 void LmQuizz_v1Scene::resetScene()
 {
+
 	if (m_bReplayButtonSync)
 	{
 		m_bReplayButtonSync = false;
@@ -115,9 +121,18 @@ void LmQuizz_v1Scene::resetScene()
 		m_pReplayButton->setVisible(false);
 		m_pNextQuestionButton->setVisible(false);
 		m_pNextButton->setTouchEnabled(true);
-		m_bQuestionFinished=false;
+		m_bQuestionFinished = false;
 
 		m_bReplayButtonSync = true;
+
+		//if it's the parent that clicked
+		if (m_pUser->isBParent())
+		{
+			//send the msg
+			bytes msg(10);
+			msg << LmEvent::Replay;
+			WIFIFACADE->sendBytes(msg);
+		}
 
 	}
 }
@@ -130,7 +145,7 @@ bool LmQuizz_v1Scene::initGame()
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
 	//add the layer game
-	if(m_pUser->isBParent())
+	if (m_pUser->isBParent())
 	{
 		m_pInGameScreenParent->init();
 		this->addChild(m_pInGameScreenParent, 0);
@@ -223,12 +238,12 @@ bool LmQuizz_v1Scene::initGame()
 			Vec2(m_pBandTopSprite->getContentSize().width * 0.5,
 					m_pBandTopSprite->getContentSize().height * 0.5));
 	m_pQuestionLabel->setColor(Color3B::BLACK);
-	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.9);
+	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.75);
 
 	//init label answer and add them to their menuitemiamge
 	//1
-	m_pAnswerLabel[0] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.04);
+	m_pAnswerLabel[0] = Label::createWithTTF("",
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[0]->addChild(m_pAnswerLabel[0]);
 	m_pAnswerLabel[0]->setPosition(
 			Vec2(m_pCheckBoxAnswer[0]->getContentSize().width * 0.5,
@@ -237,8 +252,8 @@ bool LmQuizz_v1Scene::initGame()
 	m_pAnswerLabel[0]->setMaxLineWidth(
 			m_pCheckBoxAnswer[0]->getContentSize().width * 0.9);
 	//2
-	m_pAnswerLabel[1] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.04);
+	m_pAnswerLabel[1] = Label::createWithTTF("",
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[1]->addChild(m_pAnswerLabel[1]);
 	m_pAnswerLabel[1]->setPosition(
 			Vec2(m_pCheckBoxAnswer[1]->getContentSize().width * 0.5,
@@ -247,8 +262,8 @@ bool LmQuizz_v1Scene::initGame()
 	m_pAnswerLabel[1]->setMaxLineWidth(
 			m_pCheckBoxAnswer[1]->getContentSize().width * 0.9);
 	//3
-	m_pAnswerLabel[2] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.04);
+	m_pAnswerLabel[2] = Label::createWithTTF("",
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[2]->addChild(m_pAnswerLabel[2]);
 	m_pAnswerLabel[2]->setPosition(
 			Vec2(m_pCheckBoxAnswer[2]->getContentSize().width * 0.5,
@@ -257,8 +272,8 @@ bool LmQuizz_v1Scene::initGame()
 	m_pAnswerLabel[2]->setMaxLineWidth(
 			m_pCheckBoxAnswer[2]->getContentSize().width * 0.9);
 	//4
-	m_pAnswerLabel[3] = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.04);
+	m_pAnswerLabel[3] = Label::createWithTTF("",
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pCheckBoxAnswer[3]->addChild(m_pAnswerLabel[3]);
 	m_pAnswerLabel[3]->setPosition(
 			Vec2(m_pCheckBoxAnswer[3]->getContentSize().width * 0.5,
@@ -268,7 +283,8 @@ bool LmQuizz_v1Scene::initGame()
 			m_pCheckBoxAnswer[3]->getContentSize().width * 0.9);
 
 	//init next question button
-	m_pNextQuestionButton = ui::Button::create("Ludomuse/GUIElements/nextButtonNormal.png",
+	m_pNextQuestionButton = ui::Button::create(
+			"Ludomuse/GUIElements/nextButtonNormal.png",
 			"Ludomuse/GUIElements/nextButtonPressed.png");
 	m_pNextQuestionButton->setTouchEnabled(true);
 	m_pNextQuestionButton->setPosition(
@@ -370,20 +386,13 @@ void LmQuizz_v1Scene::checkAnswer()
 	{
 		//load good texture for next button to indicate win
 		m_pNextQuestionButton->loadTextureNormal(
-				m_sFilenameSpriteGoodAnswerButton);
+				m_sFilenameSpriteGoodAnswerButtonChild);
 		m_pNextQuestionButton->loadTexturePressed(
-				m_sFilenameSpriteGoodAnswerButton);
+				m_sFilenameSpriteGoodAnswerButtonChild);
 		questionFinish(true);
-
-		//send the msg
-		bytes msg(10);
-		msg << LmEvent::GoodAnswer;
-		msg.write(true);
-		WIFIFACADE->sendBytes(msg);
 	}
 	else
 	{
-
 
 		//still have attempt
 		if (m_iNumberOfAttempt > 1)
@@ -454,7 +463,8 @@ void LmQuizz_v1Scene::answerSelected(Ref* pSender, CheckBox::EventType type)
 		{
 		case CheckBox::EventType::SELECTED:
 			//play a sound from the json
-			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(m_sFilenameAudioAnswerSelected.c_str(),false);
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+					m_sFilenameAudioAnswerSelected.c_str(), false);
 			select(l_iIdCheckBox, true);
 			break;
 
@@ -480,17 +490,26 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 		unschedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar));
 	}
 
-	//make appear the next question button
-	m_pNextQuestionButton->setVisible(true);
-
-	if(goodAnswer)
+	if (goodAnswer)
 	{
+		m_pNextQuestionButton->setVisible(true);
 		m_bNextQuestionButtonCanBePress = true;
+
+		//send to parent that was a good answer
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::GoodAnswer;
+		msg.write(true);
+		WIFIFACADE->sendBytes(msg);
 	}
 	else
 	{
-		m_pNextButton->setTouchEnabled(false);
-		m_pReplayButton->setVisible(true);
+		//send to parent that was a bad answer
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::GoodAnswer;
+		msg.write(false);
+		WIFIFACADE->sendBytes(msg);
 	}
 
 }
@@ -554,6 +573,11 @@ void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
 		CCLOG("GoodAnswer");
 		onGoodAnswerEvent(l_oMsg);
 		break;
+	case LmEvent::Replay:
+		CCLOG("Replay");
+		m_bReplayButtonSync = true;
+		resetScene();
+		break;
 	default:
 		break;
 	}
@@ -562,9 +586,34 @@ void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
 
 void LmQuizz_v1Scene::onGoodAnswerEvent(bytes l_oMsg)
 {
-	CCLOG("GOOD ANSWER");
+	//parent receive msg
+
+	ON_CC_THREAD(LmQuizz_v1Scene::goodAnswerFromChild, this, l_oMsg.readBool());
+
 }
 
+void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
+{
+	if (good)
+	{
+		//can go to the next
+		m_pNextQuestionButton->setTouchEnabled(true);
+		m_pNextQuestionButton->setVisible(true);
+		m_pNextQuestionButton->loadTextureNormal(
+				m_sFilenameSpriteGoodAnswerButtonParent);
+		m_pNextQuestionButton->loadTexturePressed(
+				m_sFilenameSpriteGoodAnswerButtonParent);
+	}
+	else
+	{
+		//can go to the next
+		m_pNextQuestionButton->setVisible(true);
+		m_pNextQuestionButton->setTouchEnabled(false);
+		m_pNextQuestionButton->loadTextureNormal(
+				m_sFilenameSpriteBadAnswerButton);
+		m_pNextQuestionButton->loadTexturePressed(
+				m_sFilenameSpriteBadAnswerButton);
 
-
-
+		m_pReplayButton->setVisible(true);
+	}
+}

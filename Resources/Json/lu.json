@@ -136,7 +136,8 @@
         "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
         "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackground.png",
         "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
-        "FilenameSpriteGoodAnswerButton": "Game/GUIElements/youwin.png",
+        "FilenameSpriteGoodAnswerButtonChild": "Game/GUIElements/background3.png",
+        "FilenameSpriteGoodAnswerButtonParent": "Game/GUIElements/youwin.png",
         "FilenameSpriteBadAnswerButton": "Game/Background/background2.png",
         "FilenameAudioAnswerSelected": "Audio/Game/son.mp3",
         "InGameScreen": {
