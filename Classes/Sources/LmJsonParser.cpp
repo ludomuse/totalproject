@@ -422,10 +422,16 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 	l_SeedBuffer.FilenameSpriteAnswerCross = l_sBufferString.c_str();
 
 	assert(
-			l_oScene["FilenameSpriteGoodAnswerButton"].IsString()
-					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButton"));
-	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButton"].GetString();
-	l_SeedBuffer.FilenameSpriteGoodAnswerButton = l_sBufferString.c_str();
+			l_oScene["FilenameSpriteGoodAnswerButtonChild"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButtonChild"));
+	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButtonChild"].GetString();
+	l_SeedBuffer.FilenameSpriteGoodAnswerButtonChild = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameSpriteGoodAnswerButtonParent"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButtonParent"));
+	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButtonParent"].GetString();
+	l_SeedBuffer.FilenameSpriteGoodAnswerButtonParent = l_sBufferString.c_str();
 
 	assert(
 			l_oScene["FilenameSpriteBadAnswerButton"].IsString()
