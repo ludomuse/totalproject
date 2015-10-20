@@ -73,6 +73,9 @@ LmInteractionScene::~LmInteractionScene()
 bool LmInteractionScene::init(LmUser* l_pUser)
 {
 
+	//to get notigy by event
+	listenWifiFacade();
+
 	//init user
 	m_pUser = l_pUser;
 
@@ -415,6 +418,10 @@ void LmInteractionScene::endGame()
 {
 	if (m_bFinishGameButtonSync)
 	{
+
+		//stop send event async till the next inetraction
+		stopListenWifiFacade();
+
 		m_bFinishGameButtonSync = false;
 
 		//if there is a reward we add score reward to the score of the user
@@ -446,11 +453,6 @@ void LmInteractionScene::endGame()
 		}
 
 	}
-}
-
-void LmInteractionScene::send(int msg)
-{
-	WIFIFACADE->send(msg);
 }
 
 void LmInteractionScene::restart()

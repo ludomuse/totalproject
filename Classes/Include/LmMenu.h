@@ -27,7 +27,7 @@ class LmMenu : public LmWifiObserver
 {
 public:
 
-	LmMenu(LmWifiDirectFacade* a_wifiFacade);
+	LmMenu();
 	~LmMenu();
 
 	//display a sprite during s_fSplashScreenDuration then call logscreen method cll from AppDelegate
@@ -54,7 +54,6 @@ private:
 	int m_iIdWifiObserver;
 
 
-	LmWifiDirectFacade* m_pWifiDirectFacade;
 
 	//the scene of the menu (log + wifi)
 	cocos2d::Scene* m_pLmMenuScene;

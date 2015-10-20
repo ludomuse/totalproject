@@ -12,7 +12,10 @@
 #include "LmSprite.h"
 #include "LmReward.h"
 
-#include "../Include/LmJniCppFacade.h"
+#include "LmJniCppFacade.h"
+#include "LmWifiObserver.h"
+#include "LmHelpers.h"
+
 
 typedef std::map<int, LmGameComponent*>::iterator it_type;
 
@@ -24,7 +27,7 @@ static const float s_fMarginBot = 20.0f;
 //margin between image when images has to be display
 static const float s_fMarginBetweenImage = 20.0f;
 
-class LmInteractionScene: public cocos2d::Scene
+class LmInteractionScene: public cocos2d::Scene , public LmWifiObserver
 {
 
 public:
@@ -85,12 +88,16 @@ public:
 		m_sDescription = sDescription;
 	}
 
+	virtual void onReceivingMsg(bytes );
+
 protected:
 
 	//ATTRIBUTES
 
 	//text to display in the dashboard to describe the scene
 	std::string m_sDescription;
+
+	event _event;
 
 	//use to sync movement
 	bool m_bUserIsTouchingScreen;
@@ -181,7 +188,7 @@ protected:
 	//call when the finishgamebutton is pressed
 	void endGame();
 
-	void send(int);
+
 
 };
 

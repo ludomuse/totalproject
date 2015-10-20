@@ -17,6 +17,9 @@
 
 class LmWifiObserver {
 
+private:
+	int _observerIndex;
+
 	protected:
 	event _event;
 		LmWifiDirectFacade* _wifiFacade;
@@ -79,6 +82,16 @@ class LmWifiObserver {
 		{
 			_event = byte;
 			onReceivingEvent();
+		}
+
+		void listenWifiFacade()
+		{
+			_observerIndex = _wifiFacade->addObserver(this);
+		}
+
+		void stopListenWifiFacade()
+		{
+			_wifiFacade->removeObserver(_observerIndex);
 		}
 
 		virtual void onReceivingEvent()

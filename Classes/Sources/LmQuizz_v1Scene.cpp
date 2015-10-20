@@ -374,11 +374,16 @@ void LmQuizz_v1Scene::checkAnswer()
 		m_pNextQuestionButton->loadTexturePressed(
 				m_sFilenameSpriteGoodAnswerButton);
 		questionFinish(true);
+
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::GoodAnswer;
+		msg.write(true);
+		WIFIFACADE->sendBytes(msg);
 	}
 	else
 	{
 
-		CCLOG("bad answer");
 
 		//still have attempt
 		if (m_iNumberOfAttempt > 1)
@@ -539,4 +544,27 @@ void LmQuizz_v1Scene::checkBoxTouchEnabled(bool enabled)
 	m_pCheckBoxAnswer[2]->setEnabled(enabled);
 	m_pCheckBoxAnswer[3]->setEnabled(enabled);
 }
+
+void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
+{
+	CCLOG("_event is %d", _event);
+	switch (_event)
+	{
+	case LmEvent::GoodAnswer:
+		CCLOG("GoodAnswer");
+		onGoodAnswerEvent(l_oMsg);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void LmQuizz_v1Scene::onGoodAnswerEvent(bytes l_oMsg)
+{
+	CCLOG("GOOD ANSWER");
+}
+
+
+
 

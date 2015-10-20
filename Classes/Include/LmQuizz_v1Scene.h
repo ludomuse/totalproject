@@ -46,6 +46,10 @@ public:
 	//to reset the game
 	void resetScene();
 
+	//dispatcher
+	virtual void onReceivingMsg(bytes );
+
+
 private:
 
 	//ATTRIBUTES
@@ -134,6 +138,10 @@ private:
 
 	//enbaled touch checkbox question
 	void checkBoxTouchEnabled(bool);
+
+	//callback event wifi
+	void onGoodAnswerEvent(bytes);
+
 
 };
 

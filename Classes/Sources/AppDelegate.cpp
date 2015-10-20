@@ -13,9 +13,9 @@ AppDelegate::AppDelegate()
 	//trough this the jni facade class)
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
 
-	m_pLmGameManager = new LmGameManager(m_pwifiFacade); //need to be delete
+	m_pLmGameManager = new LmGameManager; //need to be delete
 
-	m_pLmMenu = new LmMenu(m_pwifiFacade); //need to be delete
+	m_pLmMenu = new LmMenu; //need to be delete
 
 
 }

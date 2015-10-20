@@ -22,7 +22,7 @@ class LmGameManager : public LmWifiObserver
 
 public:
 
-	LmGameManager(LmWifiDirectFacade* a_wifiFacade);
+	LmGameManager();
 	~LmGameManager();
 
 	//call different method of gamemanager, init launch scene and handle layers of interactions
@@ -38,20 +38,20 @@ public:
 		m_pUser2 = pUser2;
 	}
 
-	inline void send(bool b)
-	{
-		m_pWifiDirectFacade->send(b);
-	}
+	virtual void onReceivingMsg(bytes );
 
-	virtual void onReceiving(int);
-
-	virtual void onReceivingAccuse();
 
 private:
 
 	//ATTRIBUTES
 
-	LmWifiDirectFacade* m_pWifiDirectFacade;
+	//to sync the begining of an inetacrtion
+	bool m_bUser1IsReadyForNextInteraction;
+	bool m_bUser2IsReadyForNextInteraction;
+	bool m_bReadyForNextInteractionReceived;
+
+
+
 
 	//layer splash
 	cocos2d::Layer* m_pSplashSreenLayer;
@@ -173,6 +173,13 @@ private:
 
 	//update position of chack and the star
 	void updateSpriteToLabel(cocos2d::Sprite* ,cocos2d::Label* );
+
+	//list of callback event
+	void onReadyForNextInteractionEvent(bytes );
+
+	//push the index scene interaction
+	void runInteraction(int);
+
 
 
 };

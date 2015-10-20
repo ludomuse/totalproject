@@ -15,7 +15,6 @@
 
 #include "LmBytesMessage.h"
 
-
 typedef byte event;
 
 struct LmEvent
@@ -35,6 +34,15 @@ struct LmEvent
 	 */
 	static const event Play = 2;
 
+	/*
+	 * parameter integer = index of next interaction ; to indicate the other tablet that we are ready for the ieme interaction
+	 */
+	static const event ReadyForNextInteraction = 3;
+
+	/*
+	 * parameter integer = index of next interaction ; to indicate the other tablet that we are ready for the ieme interaction
+	 */
+	static const event GoodAnswer = 4;
 
 	/*
 	 *
@@ -47,11 +55,11 @@ struct LmEvent
 typedef struct LmEvent LmEvent;
 
 /*struct bytes
-{
-	byte* data;
-	int len;
-};
+ {
+ byte* data;
+ int len;
+ };
 
-typedef struct bytes bytes;*/
+ typedef struct bytes bytes;*/
 
 #endif /* HELPERS_H_ */

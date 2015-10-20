@@ -5,12 +5,10 @@
 
 USING_NS_CC;
 
-LmGameManager::LmGameManager(LmWifiDirectFacade* a_wifiFacade)
+LmGameManager::LmGameManager()
 {
 
-	//register to direct wifi
-	m_pWifiDirectFacade = a_wifiFacade;
-	m_pWifiDirectFacade->addObserver(this);
+	listenWifiFacade();
 
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
@@ -20,6 +18,9 @@ LmGameManager::LmGameManager(LmWifiDirectFacade* a_wifiFacade)
 	m_iInteractionDone = 0;
 	m_bBackToDashboard = false;
 	m_bActionIsDone = true;
+	m_bUser1IsReadyForNextInteraction = false;
+	m_bUser2IsReadyForNextInteraction = false;
+	m_bReadyForNextInteractionReceived = false;
 
 	//pointer
 	m_pLabelInteractionDone = nullptr;
@@ -120,6 +121,11 @@ bool LmGameManager::init()
 
 		//reset touch enable
 			removeListeners(false);
+
+		//reset sync for ready for next interaction
+			m_bUser1IsReadyForNextInteraction=false;
+			m_bUser2IsReadyForNextInteraction=false;
+			m_bReadyForNextInteractionReceived=false;
 
 		};
 
@@ -434,7 +440,7 @@ void LmGameManager::compareDone()
 	m_pLabelScoreUser2->setPosition(
 			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
 			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.3f);
-	updateSpriteToLabel(m_pStarUser2Sprite,m_pLabelScoreUser2);
+	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
 }
 
@@ -474,7 +480,7 @@ void LmGameManager::backDone()
 	m_pLabelScoreUser2->setPosition(
 			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
 			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.7f);
-	updateSpriteToLabel(m_pStarUser2Sprite,m_pLabelScoreUser2);
+	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
 }
 
@@ -604,7 +610,7 @@ void LmGameManager::runNextInteraction()
 	{
 
 		//if yes we need to init the scene
-		if (!m_bBackToDashboard)
+		if (!m_bBackToDashboard && !m_bUser1IsReadyForNextInteraction)
 		{
 			//we pass the local user
 			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
@@ -613,23 +619,19 @@ void LmGameManager::runNextInteraction()
 				CCLOG("Interaction scene init failed");
 			}
 
+			//send the msg
+			bytes msg(10);
+			msg << LmEvent::ReadyForNextInteraction << m_iIndexInteractionScene;
+			WIFIFACADE->sendBytes(msg);
+
+			m_bUser1IsReadyForNextInteraction = true;
+
 		}
 
-		//enable the back button of the interaction because it was disable before the back action (LmInteractionScene::backToDashboard)
-		m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->setBBackPressed(
-				false);
-
-		CCLOG("pushscene");
-		removeListeners(true);
-		Director::getInstance()->pushScene(
-				TransitionFade::create(s_fTimeBetweenLmLayer,
-						m_aInteractionSceneOfTheGame.at(
-								m_iIndexInteractionScene)));
-
-		//it was a back
-		if (m_bBackToDashboard)
+		if (m_bUser1IsReadyForNextInteraction
+				&& m_bUser2IsReadyForNextInteraction)
 		{
-			m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->restart();
+			runInteraction(m_iIndexInteractionScene);
 		}
 
 	}
@@ -696,16 +698,6 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 	return true;
 }
 
-void LmGameManager::onReceiving(int b)
-{
-	CCLOG("I received int. Value is: %d and Event is %d", b, _event);
-}
-
-void LmGameManager::onReceivingAccuse()
-{
-	CCLOG("I received an accuse");
-}
-
 Sprite* LmGameManager::makeUserAvatarSprite(LmUser* l_pUser)
 {
 	auto result = Sprite::create();
@@ -758,7 +750,7 @@ void LmGameManager::updateDashboard()
 	m_pLabelInteractionDone->setString(l_aInteractionDoneString);
 
 	//update sprite associated user1 inetraction done
-	updateSpriteToLabel(m_pCheckSpriteUser1,m_pLabelInteractionDone);
+	updateSpriteToLabel(m_pCheckSpriteUser1, m_pLabelInteractionDone);
 
 	//update score user1
 	char l_aScoreString[10];
@@ -766,7 +758,7 @@ void LmGameManager::updateDashboard()
 	m_pLabelScore->setString(l_aScoreString);
 
 	//update sprite associated user1 score
-	updateSpriteToLabel(m_pStarUser1Sprite,m_pLabelScore);
+	updateSpriteToLabel(m_pStarUser1Sprite, m_pLabelScore);
 
 	/*
 	 * USER 2
@@ -774,13 +766,13 @@ void LmGameManager::updateDashboard()
 
 }
 
-void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,cocos2d::Label* label)
+void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,
+		cocos2d::Label* label)
 {
 	//the label must have an anchor point 0.5;0.5
 	auto position = label->getPosition();
 	auto labelSize = label->getContentSize();
-	sprite->setPosition(
-			Vec2(position.x - labelSize.width * 0.5, position.y));
+	sprite->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
 }
 
 bool LmGameManager::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
@@ -852,3 +844,56 @@ int LmGameManager::interactionTouched(cocos2d::Touch* touch)
 	}
 	return -1;
 }
+
+void LmGameManager::onReceivingMsg(bytes l_oMsg)
+{
+	CCLOG("_event is %d", _event);
+	switch (_event)
+	{
+	case LmEvent::ReadyForNextInteraction:
+		CCLOG("ReadyForNextInteraction");
+		onReadyForNextInteractionEvent(l_oMsg);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
+{
+	m_bUser2IsReadyForNextInteraction = true;
+
+	if (m_bUser1IsReadyForNextInteraction
+			&& !m_bReadyForNextInteractionReceived)
+	{
+		m_bReadyForNextInteractionReceived = true;
+
+		runInteraction(m_iIndexInteractionScene);
+
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::ReadyForNextInteraction << m_iIndexInteractionScene;
+		WIFIFACADE->sendBytes(msg);
+
+	}
+}
+
+void LmGameManager::runInteraction(int index)
+{
+	//enable the back button of the interaction because it was disable before the back action (LmInteractionScene::backToDashboard)
+	m_aInteractionSceneOfTheGame.at(index)->setBBackPressed(false);
+
+	CCLOG("pushscene");
+	removeListeners(true);
+	Director::getInstance()->pushScene(
+			TransitionFade::create(s_fTimeBetweenLmLayer,
+					m_aInteractionSceneOfTheGame.at(index)));
+
+	//it was a back
+	if (m_bBackToDashboard)
+	{
+		m_aInteractionSceneOfTheGame.at(index)->restart();
+	}
+}
+

@@ -13,12 +13,11 @@
 USING_NS_CC;
 using namespace cocos2d::ui;
 
-LmMenu::LmMenu(LmWifiDirectFacade* a_wifiFacade)
+LmMenu::LmMenu()
 {
 
 	//register to direct wifi
-	m_pWifiDirectFacade = a_wifiFacade;
-	m_iIdWifiObserver = m_pWifiDirectFacade->addObserver(this);
+	listenWifiFacade();
 
 	//object
 	m_pUser1 = new LmUser; //delete in LmGameManager
@@ -291,7 +290,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pUser1->setPUserName(m_pLogEditBox->getText());
 		m_pUser1->setPUserTabletName(getUser1TabletName());
 
-		m_pWifiDirectFacade->discoverPeers();
+		_wifiFacade->discoverPeers();
 
 		return true;
 
@@ -335,7 +334,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 void LmMenu::menuIsFinished()
 {
 
-	m_pWifiDirectFacade->removeObserver(m_iIdWifiObserver);
+	stopListenWifiFacade();
 	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 			"MenuFinished");
 
@@ -403,7 +402,7 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
 	CCLOG("scan");
-	m_pWifiDirectFacade->discoverPeers();
+	_wifiFacade->discoverPeers();
 }
 
 void LmMenu::makeMenuItemUserTabletName(
@@ -485,7 +484,7 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender)
 		m_pUser2->setPUserTabletName(l_sDeviceName);
 
 		CCLOG("connect to  %s", m_pUser2->getPUserTabletName().c_str());
-		m_pWifiDirectFacade->connectTo(m_pUser2->getPUserTabletName());
+		_wifiFacade->connectTo(m_pUser2->getPUserTabletName());
 
 		m_bConnected = true;
 
