@@ -98,7 +98,7 @@ class bytes {
 
 		void del(byte* data, int len)
 		{
-			for(int i = 0; i < len; i++)
+			for (int i = 0; i < len; i++)
 			{
 				delete &data[i];
 			}
@@ -121,6 +121,28 @@ class bytes {
 			init();
 		}
 
+		bytes(const bytes& other)
+		{
+			copy(other);
+		}
+
+		bytes& operator=(const bytes& other)
+		{
+			copy(other);
+			return *this;
+		}
+
+		void copy(const bytes & other)
+		{
+			size = other.size;
+			readCursor = other.readCursor;
+			writeCursor = other.writeCursor;
+			del(data, size);
+			data = new byte[size];
+			memcpy(data, other.data, size);
+			error = other.error;
+		}
+
 		bytes(int size)
 		{
 			init();
@@ -129,9 +151,14 @@ class bytes {
 
 		bytes(bytes* dataBytes)
 		{
-			init();
 			if (dataBytes != 0)
-				write(*dataBytes);
+			{
+				copy(*dataBytes);
+			}
+			else
+			{
+				init();
+			}
 		}
 
 		bytes(byte* dataBytes, int len)
@@ -365,20 +392,20 @@ class bytes {
 		{
 			int len = getLen();
 			int lenOther = other.getLen();
-			if(len != lenOther)
+			if (len != lenOther)
 				return false;
-			for(int i = 0; i < len; i++)
+			for (int i = 0; i < len; i++)
 			{
-				if(data[i] != other.data[i])
+				if (data[i] != other.data[i])
 					return false;
 			}
 			return true;
 		}
 
 		~bytes()
-		 {
+		{
 			del(data, size);
-		 }
+		}
 
 };
 

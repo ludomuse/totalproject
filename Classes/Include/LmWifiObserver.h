@@ -108,7 +108,8 @@ private:
 
 		void onReceiving(bytes msg)
 		{
-			if(lastMsg == msg)
+			CCLOG("msg len = %d", msg.getLen());
+			if(lastMsg == msg || msg.getLen() == 0)
 			{
 				lastMsg.rewind();
 				event lastEvent = lastMsg.readByte();
@@ -119,8 +120,7 @@ private:
 			}
 			lastMsg = msg;
 			onReceivingByte(msg.readByte());
-			if(msg.getLen() > 1)
-				onReceivingMsg(msg);
+			onReceivingMsg(msg);
 		}
 		;
 

@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.cocos2dx.cpp.DebugManager;
@@ -200,6 +201,11 @@ class Communication implements Runnable {
 		return is;
 	}
 
+	/**
+	 * close the inputstream is (handle exception for you)
+	 * 
+	 * @param is
+	 */
 	private void closeInputStream(InputStream is)
 	{
 		try
@@ -247,7 +253,7 @@ class Communication implements Runnable {
 		// send an accuse message with the client newly created and
 		// connected
 		// to the remost server.
-		
+
 		if (onReceiveIPCallBack != null)
 		{
 			onReceiveIPCallBack.Do();
@@ -281,8 +287,7 @@ class Communication implements Runnable {
 	 */
 	private void receiveAccuse()
 	{
-		DebugManager.print(ServerSocketHandler.GetTag()
-				+ "Accuse received !",
+		DebugManager.print(ServerSocketHandler.GetTag() + "Accuse received !",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		master.sendNext();
 	}
@@ -491,6 +496,22 @@ class Communication implements Runnable {
 		}
 	}
 
+	private static ArrayList<Long> alreadyTreated = new ArrayList<Long>();
+
+	private boolean isMessageAlreadyReceived(InputStream is)
+	{
+		long id = getLongFromInputStream(is);
+		if (alreadyTreated.contains(id))
+		{
+			return true;
+		}
+		else
+		{
+			alreadyTreated.add(id);
+			return true;
+		}
+	}
+
 	@Override
 	public void run()
 	{
@@ -498,56 +519,60 @@ class Communication implements Runnable {
 
 		PACKET_TYPE type = getPacketType(is);
 
-		switch (type)
+		if (!isMessageAlreadyReceived(is))
 		{
-			case KEEP_ALIVE:
-				DebugManager.print(ServerSocketHandler.GetTag()
-						+ "Client is alive !",
-						WifiDirectManager.DEBUGGER_CHANNEL);
-				break;
-			case DEFAULT:
-				break;
-			case BOOL:
-				receiveBool(is);
-				break;
-			case BYTE:
-				receiveByte(is);
-				break;
-			case BYTE_ARRAY:
-				receiveBytes(is);
-				break;
-			case CHAR:
-				receiveChar(is);
-				break;
-			case DOUBLE:
-				receiveDouble(is);
-				break;
-			case FILE:
-				receiveFile(is);
-				break;
-			case FLOAT:
-				receiveFloat(is);
-				break;
-			case INT:
-				receiveInt(is);
-				break;
-			case IP:
-				receiveIP(is);
-				break;
-			case LONG:
-				receiveLong(is);
-				break;
-			case STRING:
-				receiveString(is);
-				break;
-			case ACCUSE:
-				receiveAccuse();
-				break;
-		// default:
-		// break;
+
+			switch (type)
+			{
+				case KEEP_ALIVE:
+					DebugManager.print(ServerSocketHandler.GetTag()
+							+ "Client is alive !",
+							WifiDirectManager.DEBUGGER_CHANNEL);
+					break;
+				case DEFAULT:
+					break;
+				case BOOL:
+					receiveBool(is);
+					break;
+				case BYTE:
+					receiveByte(is);
+					break;
+				case BYTE_ARRAY:
+					receiveBytes(is);
+					break;
+				case CHAR:
+					receiveChar(is);
+					break;
+				case DOUBLE:
+					receiveDouble(is);
+					break;
+				case FILE:
+					receiveFile(is);
+					break;
+				case FLOAT:
+					receiveFloat(is);
+					break;
+				case INT:
+					receiveInt(is);
+					break;
+				case IP:
+					receiveIP(is);
+					break;
+				case LONG:
+					receiveLong(is);
+					break;
+				case STRING:
+					receiveString(is);
+					break;
+				case ACCUSE:
+					receiveAccuse();
+					break;
+			// default:
+			// break;
+			}
+
 		}
-
-
+		
 		closeInputStream(is);
 
 		DebugManager.print(
@@ -561,7 +586,6 @@ class Communication implements Runnable {
 	{
 		onReceiveIPCallBack = cm;
 	}
-
 
 	private static CallBackMethod onReceiveString = null;
 	private static CallBackMethod onReceiveInt = null;
@@ -613,7 +637,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	public static String GetTag()
 	{
 		Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		return "[LUDOSERVER][" + sdf.format(cal.getTime()) + "]";
 	}
 
@@ -636,7 +660,6 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	{
 		execute();
 	}
-
 
 	public String getServerIpAddress()
 	{
@@ -766,10 +789,11 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 			CallBackMethod onReceiveFile, CallBackMethod onReceiveByteArray,
 			CallBackMethod onReceiveChar)
 	{
-		Communication.registerCallBackReceiver(onReceiveString, onReceiveInt,
-				onReceiveBool, onReceiveFloat, onReceiveDouble, onReceiveByte,
-				onReceiveLong, onReceiveFile, onReceiveByteArray,
-				onReceiveChar);
+		Communication
+				.registerCallBackReceiver(onReceiveString, onReceiveInt,
+						onReceiveBool, onReceiveFloat, onReceiveDouble,
+						onReceiveByte, onReceiveLong, onReceiveFile,
+						onReceiveByteArray, onReceiveChar);
 	}
 
 	public void stopHandlers()
