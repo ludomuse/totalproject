@@ -501,6 +501,9 @@ class Communication implements Runnable {
 	private boolean isMessageAlreadyReceived(InputStream is)
 	{
 		long id = getLongFromInputStream(is);
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "message id = " + id,
+				WifiDirectManager.DEBUGGER_CHANNEL);
 		if (alreadyTreated.contains(id))
 		{
 			return true;
@@ -508,7 +511,7 @@ class Communication implements Runnable {
 		else
 		{
 			alreadyTreated.add(id);
-			return true;
+			return false;
 		}
 	}
 
@@ -571,6 +574,10 @@ class Communication implements Runnable {
 			// break;
 			}
 
+		}
+		else
+		{
+			master.sendAccuse();
 		}
 		
 		closeInputStream(is);

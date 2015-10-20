@@ -29,6 +29,7 @@ class Message {
 	{
 		try
 		{
+			ClientSocketHandler.setId(ClientSocketHandler.getId());
 			ClientSocketHandler.class.getMethod(methodName, parameterTypes)
 					.invoke(client, args);
 		}
@@ -117,6 +118,7 @@ public class MailBox {
 	{
 		if(messages.size() > 0)
 			messages.remove(0);
+		ClientSocketHandler.generateId();
 		send();
 	}
 

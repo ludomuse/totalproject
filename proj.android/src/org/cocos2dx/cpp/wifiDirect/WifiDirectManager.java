@@ -998,6 +998,7 @@ public class WifiDirectManager {
 				onReceiveChar);
 	}
 
+	
 	private void onConnect()
 	{
 		DebugManager.print("device connected to network", DEBUGGER_CHANNEL);

@@ -98,10 +98,10 @@ class bytes {
 
 		void del(byte* data, int len)
 		{
-			for (int i = 0; i < len; i++)
+			/*for (int i = 0; i < len; i++)
 			{
 				delete &data[i];
-			}
+			}*/
 		}
 
 	public:

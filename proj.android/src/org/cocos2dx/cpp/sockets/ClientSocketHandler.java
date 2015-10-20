@@ -35,7 +35,7 @@ class ConnectTask2 implements Runnable {
 
 	public void execute()
 	{
-		new Thread(this).start();
+		Thread t = new Thread(this).start();
 	}
 
 	public void run()
@@ -81,9 +81,22 @@ public class ClientSocketHandler {
 
 	private static long id = 0;
 	
-	private byte[] getAnId()
+	public static long getId()
+	{
+		return id;
+	}
+	
+	public static byte[] generateId()
 	{
 		return toByte(id++);
+	}
+	
+	private static boolean useGivenId = false;
+	private static byte[] givenId;
+	public static void setId(long id)
+	{
+		givenId = toByte(id);
+		useGivenId = true;
 	}
 	
 	public ClientSocketHandler(int len)
@@ -180,7 +193,7 @@ public class ClientSocketHandler {
 					ConnectTask2 connectTask = new ConnectTask2(remoteIp,
 							remotePort, socket, null);
 					connectTask.execute();
-					handler.postDelayed(worker, 2000);
+				//	handler.postDelayed(worker, 2000);
 				}
 			}
 
@@ -232,7 +245,7 @@ public class ClientSocketHandler {
 		return ByteBuffer.allocate(4).putFloat(f).array();
 	}
 
-	private byte[] toByte(long l)
+	private static byte[] toByte(long l)
 	{
 		return ByteBuffer.allocate(Long.SIZE).putLong(l).array();
 	}
@@ -363,7 +376,7 @@ public class ClientSocketHandler {
 	{
 		send(new ByteArrayInputStream(bytes), type);
 	}
-
+	
 	private void send(final InputStream inputStream, final PACKET_TYPE type)
 	{
 		CallBackMethod cm = new CallBackMethod() {
@@ -379,7 +392,7 @@ public class ClientSocketHandler {
 					// InputStream inputStream = new
 					// ByteArrayInputStream(bytes);
 					outputStream.write(type.toInt());
-					outputStream.write(getAnId());
+					outputStream.write(useGivenId ? givenId : generateId());
 					int len;
 					while ((len = inputStream.read(buf)) != -1)
 					{
