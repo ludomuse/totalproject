@@ -850,14 +850,16 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 
 void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 {
+	int idInteractionScene = l_oMsg.readInt();
+
 	//when we received it mean the user 2 cklicked his button
-	m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->setBUser2IsReadyForNextInteraction(
+	m_aInteractionSceneOfTheGame.at(idInteractionScene)->setBUser2IsReadyForNextInteraction(
 			true);
 
 
-	if(!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->isBGameIsRunning())
+	if(!m_aInteractionSceneOfTheGame.at(idInteractionScene)->isBGameIsRunning())
 	{
-		m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->startGame();
+		m_aInteractionSceneOfTheGame.at(idInteractionScene)->startGame();
 	}
 
 }

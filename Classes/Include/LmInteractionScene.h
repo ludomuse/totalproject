@@ -111,9 +111,18 @@ public:
 		return m_bGameIsRunning;
 	}
 
+	int getIIdGame() const
+	{
+		return m_iIdGame;
+	}
+
 protected:
 
 	//ATTRIBUTES
+
+	static int s_iNumberOfInteraction;
+
+	int m_iIdGame;
 
 	//to sync users before launching a game
 	bool m_bUser1IsReadyForNextInteraction;

@@ -211,9 +211,6 @@ bool LmRightSpotScene::initGame()
 
 	Rect l_oRectStencil;
 
-	//test
-	int id;
-
 	//init vector of the right image
 	Point l_oPointToPlaceRightImage = Point(
 			l_oMiddleOfPlayableArea.x - l_fWidthRightImage * 0.5,
@@ -248,9 +245,6 @@ bool LmRightSpotScene::initGame()
 			{
 				//add this piece to the dynamic elements
 				m_aDynamicGameComponents.push_back(GameComponentCreated);
-
-				//test to have dynamic piece already in the layer child
-				id = GameComponentCreated->getIId();
 
 				//we add an hole to the image layer child
 				m_aHolesImageChild.push_back(
@@ -349,8 +343,6 @@ bool LmRightSpotScene::initGame()
 	{
 		//child view
 
-		layerChildReceive(id);
-
 		//set visible all the static element
 		for (std::vector<LmGameComponent*>::iterator it =
 				m_aStaticGameComponents.begin();
@@ -448,11 +440,22 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 		//if the move end on the sending area and it's not the sending area element
 		if (bufferCollideSendingArea() && !m_bSendingAreaElementTouched)
 		{
-			//we send the id to the other tablet test
-			CCLOG("we send the %d gamecomponent",
-					m_aIdTable.find(m_iBufferId)->first);
 
-			WIFIFACADE->sendEvent(m_iBufferId == 5 ? LmEvent::E1 : LmEvent::E2, LmWifiDirectFacade::SEND_F::SEND_INT, &m_iBufferId);
+			CCLOG("gamecomponent id = %d", m_aIdTable.find(m_iBufferId)->first);
+
+			//send the msg to indicate user 2 we are ready
+			bytes msg(10);
+			CCLOG("msg len %d", msg.getLen());
+
+			msg << LmEvent::Gamecomponent;
+
+			CCLOG("msg len %d", msg.getLen());
+
+			msg<< m_aIdTable.find(m_iBufferId)->first;
+
+			CCLOG("msg len %d", msg.getLen());
+
+			WIFIFACADE->sendBytes(msg);
 
 			//move gamecomponent
 			setPositionInSendingArea(m_iBufferId);
@@ -710,15 +713,19 @@ bool LmRightSpotScene::imageWellPlaced(int l_iIndexHole,
 
 void LmRightSpotScene::layerChildReceive(int l_iIdLmGameComponent)
 {
-
+	CCLOG("0");
 	//we get the gamecomponent with id
 	auto l_pGameComponentReceived =
 			m_aIdTable.find(l_iIdLmGameComponent)->second;
+	CCLOG("1");
 
 	//put it approximatly in the sending area(
 	setPositionInSendingArea(l_iIdLmGameComponent);
+	CCLOG("2");
+
 	m_pSendingAreaElement = l_pGameComponentReceived;
 	l_pGameComponentReceived->setVisible(true);
+	CCLOG("3");
 
 }
 
@@ -734,5 +741,43 @@ Rect LmRightSpotScene::holeOfThisDynamicElement(int l_iIdGamecomponent)
 
 	CCLOG("error no hole found");
 	return Rect::ZERO;
+}
+
+void LmRightSpotScene::onReceivingMsg(bytes l_oMsg)
+{
+
+	CCLOG(
+			"msg len %d, msg read cursor %d, msg free space %d, msg size %d, toString =%s",
+			l_oMsg.getLen(), l_oMsg.getReadCursor(), l_oMsg.getFreeCount(),
+			l_oMsg.getSize(), l_oMsg.toCharSequence());
+	CCLOG("lmrightsportscene _event is %d", LmWifiObserver::_event);
+	switch (LmWifiObserver::_event)
+	{
+	case LmEvent::Gamecomponent:
+		CCLOG("Gamecomponent");
+		ON_CC_THREAD(LmRightSpotScene::onGamecomponentEvent, this, l_oMsg)
+		;
+		break;
+	default:
+		break;
+	}
+
+}
+
+void LmRightSpotScene::onGamecomponentEvent(bytes l_oMsg)
+{
+	CCLOG("-1");
+
+	CCLOG(
+			"msg len %d, msg read cursor %d, msg free space %d, msg size %d, toString =%s",
+			l_oMsg.getLen(), l_oMsg.getReadCursor(), l_oMsg.getFreeCount(),
+			l_oMsg.getSize(), l_oMsg.toCharSequence());
+
+	//int idGameComponent = l_oMsg.readInt();
+	int idGameComponent;
+	l_oMsg >> idGameComponent;
+	CCLOG("we read int : %d", idGameComponent);
+
+	layerChildReceive(idGameComponent);
 }
 

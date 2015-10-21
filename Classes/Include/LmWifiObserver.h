@@ -109,7 +109,7 @@ private:
 		void onReceiving(bytes msg)
 		{
 
-			CCLOG("msg len = %d", msg.getLen());
+			CCLOG("msg len = %d, msg size = %d", msg.getLen(), msg.getSize());
 			if(lastMsg == msg || msg.getLen() == 0)
 			{
 				lastMsg.rewind();

@@ -55,6 +55,11 @@ struct LmEvent
 	static const event OK = 6;
 
 	/*
+	 * when we send a gamecomponent parameter is the id of the gamecomponent
+	 */
+	static const event Gamecomponent = 7;
+
+	/*
 	 *
 	 */
 	static const event E1 = 89;

@@ -11,7 +11,6 @@
 #include "LmInteractionScene.h"
 #include "ui/CocosGUI.h"
 #include "LmQuestion.h"
-#include "LmHelpers.h"
 
 struct LmQuizz_v1SceneSeed
 {

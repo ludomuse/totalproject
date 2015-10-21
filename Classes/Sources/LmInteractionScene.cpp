@@ -5,8 +5,12 @@
 
 USING_NS_CC;
 
+int LmInteractionScene::s_iNumberOfInteraction=0;
+
 LmInteractionScene::LmInteractionScene()
 {
+
+
 	//object ludomuse
 	m_pLmSetPointBegin = new LmSetPoint; //need to be delete
 	m_pLmSetPointEnd = new LmSetPoint; //need to be delete
@@ -28,6 +32,8 @@ LmInteractionScene::LmInteractionScene()
 	m_bUser1IsReadyForNextInteraction=false;
 	m_bUser2IsReadyForNextInteraction=false;
 	m_bGameIsRunning=false;
+	m_iIdGame = s_iNumberOfInteraction;
+	s_iNumberOfInteraction++;
 
 	//pointer
 	m_pBackDashboardButton = nullptr;
@@ -43,11 +49,13 @@ LmInteractionScene::LmInteractionScene()
 	m_pNextButton = nullptr;
 	m_pPreviousButton = nullptr;
 	m_pListener = nullptr;
+	m_pSpriteWaitingScreen=nullptr;
 
 }
 
 LmInteractionScene::~LmInteractionScene()
 {
+	s_iNumberOfInteraction--;
 
 	//if this scene own a reward delete it
 	if (m_pLmReward)
@@ -228,7 +236,7 @@ void LmInteractionScene::nextSetPointLayer()
 
 			//send the msg to indicate user 2 we are ready
 			bytes msg(10);
-			msg << LmEvent::ReadyForNextInteraction;
+			msg << LmEvent::ReadyForNextInteraction<<m_iIdGame;
 			WIFIFACADE->sendBytes(msg);
 
 			//add the layer of the game

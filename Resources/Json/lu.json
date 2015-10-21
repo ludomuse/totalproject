@@ -6,6 +6,151 @@
     },
     "SceneArray": [
       {
+        "Id": 0,
+        "Description": "test",
+        "RewardParent": {
+          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
+          "FilenameSpriteReward": "Game/Content/milk.png",
+          "FilenameSound": "Audio/Game/son.mp3",
+          "RewardScore": 51
+        },
+        "SetPointBeginParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          },
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndParent": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/GUIElements/cookie.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "img": [
+              {
+                "imgURL": "Game/Background/background3.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "sound": "Audio/Game/son.mp3",
+            "text": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteSendingArea": "Game/GUIElements/sendingArea.png",
+        "FilenameMainImage": "Game/Content/rightSpotImage.png",
+        "HoleOnX": 5,
+        "HoleOnY": 4,
+        "LocationOfHole": [
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          }
+        ]
+      },
+      {
         "Id": 1,
         "Description": "test",
         "RewardParent": {
@@ -171,151 +316,6 @@
         "AttemptByQuestion": 1,
         "TimerDuration": 0,
         "TimerEnbaled": false
-      },
-      {
-        "Id": 0,
-        "Description": "test",
-        "RewardParent": {
-          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "Game/Content/milk.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 51
-        },
-        "SetPointBeginParent": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          },
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso2left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          },
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "SetPointBeginChild": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "SetPointEndParent": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "SetPointEndChild": [
-          {
-            "img": [
-              {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1left.png",
-                "anchorPoint": 3
-              }
-            ],
-            "sound": "Audio/Game/son.mp3",
-            "text": ""
-          }
-        ],
-        "FilenameSpriteBackground": "Game/Background/background4.png",
-        "FilenameSpriteSendingArea": "Game/GUIElements/sendingArea.png",
-        "FilenameMainImage": "Game/Content/rightSpotImage.png",
-        "HoleOnX": 5,
-        "HoleOnY": 4,
-        "LocationOfHole": [
-          {
-            "x": 1,
-            "y": 2
-          },
-          {
-            "x": 0,
-            "y": 0
-          },
-          {
-            "x": 4,
-            "y": 2
-          },
-          {
-            "x": 3,
-            "y": 2
-          }
-        ]
       },
       {
         "Id": 3,

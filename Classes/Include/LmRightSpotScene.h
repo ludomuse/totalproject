@@ -52,6 +52,9 @@ public:
 	//to reset the game
 	void resetScene();
 
+	//dispatcher
+	virtual void onReceivingMsg(bytes );
+
 private:
 
 	//ATTRIBUTES
@@ -140,6 +143,10 @@ private:
 
 	//get the hole of this id dynamic element
 	cocos2d::Rect holeOfThisDynamicElement(int);
+
+	//callback function event
+	void onGamecomponentEvent(bytes );
+
 
 };
 
