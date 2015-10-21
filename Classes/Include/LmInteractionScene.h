@@ -92,10 +92,37 @@ public:
 	{
 	}
 
+	bool startGame();
+
+	void setBUser1IsReadyForNextInteraction(
+			bool bUser1IsReadyForNextInteraction)
+	{
+		m_bUser1IsReadyForNextInteraction = bUser1IsReadyForNextInteraction;
+	}
+
+	void setBUser2IsReadyForNextInteraction(
+			bool bUser2IsReadyForNextInteraction)
+	{
+		m_bUser2IsReadyForNextInteraction = bUser2IsReadyForNextInteraction;
+	}
+
+	bool isBGameIsRunning() const
+	{
+		return m_bGameIsRunning;
+	}
 
 protected:
 
 	//ATTRIBUTES
+
+	//to sync users before launching a game
+	bool m_bUser1IsReadyForNextInteraction;
+	bool m_bUser2IsReadyForNextInteraction;
+
+	//to know if game is running or not
+	bool m_bGameIsRunning;
+
+	cocos2d::Sprite* m_pSpriteWaitingScreen;
 
 
 	//text to display in the dashboard to describe the scene

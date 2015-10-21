@@ -18,9 +18,7 @@ LmGameManager::LmGameManager()
 	m_iInteractionDone = 0;
 	m_bBackToDashboard = false;
 	m_bActionIsDone = true;
-	m_bUser1IsReadyForNextInteraction = false;
-	m_bUser2IsReadyForNextInteraction = false;
-	m_bReadyForNextInteractionReceived = false;
+
 
 	//pointer
 	m_pLabelInteractionDone = nullptr;
@@ -122,10 +120,6 @@ bool LmGameManager::init()
 		//reset touch enable
 			removeListeners(false);
 
-		//reset sync for ready for next interaction
-			m_bUser1IsReadyForNextInteraction=false;
-			m_bUser2IsReadyForNextInteraction=false;
-
 		};
 
 	auto BackToDashboard = [=](EventCustom * event)
@@ -143,8 +137,6 @@ bool LmGameManager::init()
 			"InteractionSceneFinished", InteractionSceneFinished);
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"BackToDashboard", BackToDashboard);
-
-
 
 	return true;
 }
@@ -615,7 +607,7 @@ void LmGameManager::runNextInteraction()
 	{
 
 		//if yes we need to init the scene
-		if (!m_bBackToDashboard && !m_bUser1IsReadyForNextInteraction)
+		if (!m_bBackToDashboard )
 		{
 			//we pass the local user
 			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
@@ -624,26 +616,9 @@ void LmGameManager::runNextInteraction()
 				CCLOG("Interaction scene init failed");
 			}
 
-			//send the msg
-			bytes msg(20);
-			msg << LmEvent::ReadyForNextInteraction << m_iIndexInteractionScene;
-			WIFIFACADE->sendBytes(msg);
-
-			m_bUser1IsReadyForNextInteraction = true;
-
 		}
 
-
-		if (m_bUser1IsReadyForNextInteraction
-				&& m_bUser2IsReadyForNextInteraction)
-		{
-			CCLOG("run interaction when button clicked");
-
-			//if m_bUser2IsReadyForNextInteraction = true we received this event
-			m_bReadyForNextInteractionReceived=true;
-
-			runInteraction(m_iIndexInteractionScene);
-		}
+		runInteraction(m_iIndexInteractionScene);
 
 	}
 
@@ -863,7 +838,9 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 	{
 	case LmEvent::ReadyForNextInteraction:
 		CCLOG("ReadyForNextInteraction");
-		ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this, l_oMsg);
+		ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this,
+				l_oMsg)
+		;
 		break;
 	default:
 		break;
@@ -873,25 +850,16 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 
 void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 {
-	m_bUser2IsReadyForNextInteraction = true;
+	//when we received it mean the user 2 cklicked his button
+	m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->setBUser2IsReadyForNextInteraction(
+			true);
 
 
-	if (m_bUser1IsReadyForNextInteraction
-			&& !m_bReadyForNextInteractionReceived)
+	if(!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->isBGameIsRunning())
 	{
-
-		m_bReadyForNextInteractionReceived = true;
-
-		CCLOG("ReadyForNextInteraction first time");
-
-		runInteraction(m_iIndexInteractionScene);
-
-		//send the msg
-		bytes msg(10);
-		msg << LmEvent::ReadyForNextInteraction << m_iIndexInteractionScene;
-		WIFIFACADE->sendBytes(msg);
-
+		m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->startGame();
 	}
+
 }
 
 void LmGameManager::runInteraction(int index)

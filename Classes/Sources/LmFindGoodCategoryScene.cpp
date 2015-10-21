@@ -116,9 +116,6 @@ bool LmFindGoodCategoryScene::initGame()
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
-	//add the layer game
-	this->addChild(m_pLayerGame, 0);
-
 	//init the background
 	m_pSpriteBackground = Sprite::create(m_sFilenameSpriteBackground);
 	m_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f + l_oOrigin.x,

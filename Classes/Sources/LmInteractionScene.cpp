@@ -25,6 +25,9 @@ LmInteractionScene::LmInteractionScene()
 	m_bSetPointFinished = false;
 	m_bWin = false;
 	m_bUserIsTouchingScreen = false;
+	m_bUser1IsReadyForNextInteraction=false;
+	m_bUser2IsReadyForNextInteraction=false;
+	m_bGameIsRunning=false;
 
 	//pointer
 	m_pBackDashboardButton = nullptr;
@@ -170,7 +173,13 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pReplayButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::resetScene, this));
 	m_pReplayButton->setVisible(false);
-	m_pLayerGame->addChild(m_pReplayButton,1);
+	m_pLayerGame->addChild(m_pReplayButton, 1);
+
+	//waiting screen to wait his partner before each interaction
+	m_pSpriteWaitingScreen  = Sprite::create("Game/Background/background4.png");
+	m_pSpriteWaitingScreen->setPosition(Vec2(l_oVisibleSize.width*0.5,l_oVisibleSize.height*0.5));
+	m_pLayerGame->addChild(m_pSpriteWaitingScreen);
+	m_pSpriteWaitingScreen->setVisible(false);
 
 	return true;
 }
@@ -213,10 +222,24 @@ void LmInteractionScene::nextSetPointLayer()
 			m_pNextButton->setVisible(false);
 			m_pPreviousButton->setVisible(false);
 
-			//to get notigy by event
-			CCLOG("run game");
-			listenWifiFacade();
-			runGame();
+
+			//we are ready
+			m_bUser1IsReadyForNextInteraction=true;
+
+			//send the msg to indicate user 2 we are ready
+			bytes msg(10);
+			msg << LmEvent::ReadyForNextInteraction;
+			WIFIFACADE->sendBytes(msg);
+
+			//add the layer of the game
+			this->addChild(m_pLayerGame,0);
+
+			//if we can't start game because we are waiting for user 2
+			if(!startGame())
+			{
+				m_pSpriteWaitingScreen->setVisible(true);
+			}
+
 		}
 		else
 		{
@@ -419,6 +442,10 @@ void LmInteractionScene::endGame()
 	if (m_bFinishGameButtonSync)
 	{
 
+		//reset sync beetween player
+		m_bUser1IsReadyForNextInteraction=false;
+		m_bUser2IsReadyForNextInteraction=false;
+
 		//stop send event async till the next inetraction
 		stopListenWifiFacade();
 
@@ -446,6 +473,8 @@ void LmInteractionScene::endGame()
 		m_pNextButton->release();
 		m_pPreviousButton->release();
 
+		m_bGameIsRunning=false;
+
 		//init the end set point
 		if (!m_pLmSetPointEnd->init(this))
 		{
@@ -458,6 +487,27 @@ void LmInteractionScene::endGame()
 void LmInteractionScene::restart()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+
+}
+
+bool LmInteractionScene::startGame()
+{
+
+	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
+	{
+		m_bGameIsRunning=true;
+
+		//to get notigy by event
+		CCLOG("run game");
+		m_pSpriteWaitingScreen->setVisible(false);
+		listenWifiFacade();
+		runGame();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 
 }
 

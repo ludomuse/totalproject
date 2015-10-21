@@ -91,14 +91,10 @@ void LmQuizz_v1Scene::resetScene()
 
 	if (m_bReplayButtonSync)
 	{
-		CCLOG("0");
 
 		m_bReplayButtonSync = false;
 		m_iIndexQuestion = -1;	//so when we init the next question index = 0
 
-		//next layer
-
-		CCLOG("3");
 		//reset replay button
 		m_pReplayButton->setVisible(false);
 		m_pNextQuestionButton->setVisible(false);
@@ -109,9 +105,7 @@ void LmQuizz_v1Scene::resetScene()
 		{
 			m_iIndexQuestion++;
 
-			CCLOG("5");
 			m_pSpriteBuffer->setVisible(false);
-			CCLOG("4");
 			//send the msg
 			bytes msgOK(10);
 			msgOK << LmEvent::OK;
@@ -129,7 +123,6 @@ void LmQuizz_v1Scene::resetScene()
 			m_pCheckBoxAnswer[2]->setSelected(false);
 			m_pCheckBoxAnswer[3]->setSelected(false);
 
-			CCLOG("1");
 
 			m_iNumberOfAttempt = m_iAttemptByQuestion;
 
@@ -141,7 +134,6 @@ void LmQuizz_v1Scene::resetScene()
 				schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
 						m_fTimerDuration);
 			}
-			CCLOG("2");
 			//disable answer selected
 			m_iAnswerSelected = -1;
 			initNextQuestion();
@@ -162,9 +154,6 @@ bool LmQuizz_v1Scene::initGame()
 	m_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
 			l_oVisibleSize.height * 0.5f + l_oOrigin.y);
 	m_pLayerGame->addChild(m_pSpriteBackground);
-
-	//add the layer game to the scene
-	this->addChild(m_pLayerGame, 0);
 
 	if (m_pUser->isBParent())
 	{

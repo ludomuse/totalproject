@@ -137,8 +137,6 @@ bool LmQuizz_v2Scene::initGame()
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
-	//add the layer game
-	this->addChild(m_pLayerGame, 0);
 
 	//init the background
 	m_pSpriteBackground = Sprite::create(m_sFilenameSpriteBackground);

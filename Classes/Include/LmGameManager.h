@@ -45,14 +45,6 @@ private:
 
 	//ATTRIBUTES
 
-	//to sync the begining of an inetacrtion
-	bool m_bUser1IsReadyForNextInteraction;
-	bool m_bUser2IsReadyForNextInteraction;
-	bool m_bReadyForNextInteractionReceived;
-
-
-
-
 	//layer splash
 	cocos2d::Layer* m_pSplashSreenLayer;
 
