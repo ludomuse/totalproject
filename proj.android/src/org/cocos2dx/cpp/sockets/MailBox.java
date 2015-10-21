@@ -79,7 +79,7 @@ public class MailBox {
 
 
 	
-	public static int timeBeforeConsideringMessageLost = 5000;
+	public static int timeBeforeConsideringMessageLost = 1000;
 	Handler timeout = new Handler();
 	Runnable worker = new Runnable()
 	{

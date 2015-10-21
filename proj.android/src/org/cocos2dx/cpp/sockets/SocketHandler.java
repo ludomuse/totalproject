@@ -7,12 +7,10 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-
 public class SocketHandler {
 
 	private ClientSocketHandler client;
 	private ServerSocketHandler server;
-
 
 	private int listenningPort;
 	private MailBox mailBox;
@@ -36,7 +34,6 @@ public class SocketHandler {
 				onReceiveByte, onReceiveLong, onReceiveFile,
 				onReceiveByteArray, onReceiveChar);
 	}
-
 
 	public boolean isConnected()
 	{
@@ -75,22 +72,22 @@ public class SocketHandler {
 	{
 		mailBox.post("send", f, File.class);
 	}
-	
+
 	public void send(byte[] bytes)
 	{
 		mailBox.post("sendBytes", bytes, byte[].class);
 	}
-	
+
 	public void send(double d)
 	{
 		mailBox.post("send", d, double.class);
 	}
-	
+
 	public void send(long l)
 	{
 		mailBox.post("send", l, long.class);
 	}
-	
+
 	public void send(float f)
 	{
 		mailBox.post("send", f, float.class);
@@ -128,8 +125,8 @@ public class SocketHandler {
 
 	public void sendAccuse(long idReceived)
 	{
-		
-		if(mailBox.isEmpty())
+
+		if (mailBox.isEmpty())
 		{
 			ClientSocketHandler.setId(-idReceived);
 			client.notifyServer();
@@ -141,14 +138,13 @@ public class SocketHandler {
 		}
 	}
 
-	
-
 	public static String getThisDeviceIpAddress()
 	{
-		return getDottedDecimalIP(getLocalIPAddress());
+		return getStringLocalIPAddress();
+		//return getDottedDecimalIP(getLocalIPAddress());
 	}
 
-	private static byte[] getLocalIPAddress()
+	private static String getLocalIPAddress()
 	{
 		try
 		{
@@ -164,10 +160,12 @@ public class SocketHandler {
 					{
 						if (inetAddress instanceof Inet4Address)
 						{ // fix for Galaxy Nexus. IPv4 is easy to use :-)
-							return inetAddress.getAddress();
+							return getDottedDecimalIP(inetAddress.getAddress());
 						}
-						// return inetAddress.getHostAddress().toString(); //
-						// Galaxy Nexus returns IPv6
+						else
+						{
+							return inetAddress.getHostAddress().toString();
+						}
 					}
 				}
 			}
@@ -179,6 +177,32 @@ public class SocketHandler {
 		catch (NullPointerException ex)
 		{
 			// Log.e("AndroidNetworkAddressFactory", "getLocalIPAddress()", ex);
+		}
+		return null;
+	}
+
+	private static String getStringLocalIPAddress()
+	{
+		try
+		{
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();)
+			{
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf
+						.getInetAddresses(); enumIpAddr.hasMoreElements();)
+				{
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress())
+					{
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+
 		}
 		return null;
 	}
@@ -215,7 +239,7 @@ public class SocketHandler {
 		sendIP();
 		send();
 	}
-	
+
 	public void stopHandlers()
 	{
 		if (server != null)
@@ -229,7 +253,7 @@ public class SocketHandler {
 	{
 		mailBox.send();
 	}
-	
+
 	void sendNext()
 	{
 		mailBox.sendNext();
