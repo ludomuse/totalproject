@@ -136,7 +136,7 @@ void LmWifiDirectFacade::sendBytes(bytes bytes)
 {
 
 	//FORWARD(clearLastMsg());
-
+	CCLOG("message send");
 	LmJniJavaFacade::sendBytes(bytes);
 }
 

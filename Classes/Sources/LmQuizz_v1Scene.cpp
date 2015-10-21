@@ -52,7 +52,7 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed) :
 	m_fHeight = 0;
 	m_iIndexQuestion = -1;
 	m_iNumberOfAttempt = m_iAttemptByQuestion;
-	m_bQuestionFinished = false;
+	m_bQuestionFinished = true;
 }
 
 LmQuizz_v1Scene::~LmQuizz_v1Scene()
@@ -91,40 +91,27 @@ void LmQuizz_v1Scene::resetScene()
 
 	if (m_bReplayButtonSync)
 	{
+		CCLOG("0");
+
 		m_bReplayButtonSync = false;
 		m_iIndexQuestion = -1;	//so when we init the next question index = 0
-		//reset checkbox
-		m_pCheckBoxAnswer[0]->setSelected(false);
-		m_pCheckBoxAnswer[1]->setSelected(false);
-		m_pCheckBoxAnswer[2]->setSelected(false);
-		m_pCheckBoxAnswer[3]->setSelected(false);
-
-		m_iNumberOfAttempt = m_iAttemptByQuestion;
-
-		if (m_bTimerEnbaled)
-		{
-			//reset timer
-			m_pTimer->setPercent(0);
-			m_iCounter = 0;
-			schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
-					m_fTimerDuration);
-		}
-
-		//disable answer selected
-		m_iAnswerSelected = -1;
 
 		//next layer
-		initNextQuestion();
 
+		CCLOG("3");
 		//reset replay button
 		m_pReplayButton->setVisible(false);
 		m_pNextQuestionButton->setVisible(false);
-		m_pNextButton->setTouchEnabled(true);
 		m_bQuestionFinished = false;
 
 		//if it's the parent that clicked
 		if (m_pUser->isBParent())
 		{
+			m_iIndexQuestion++;
+
+			CCLOG("5");
+			m_pSpriteBuffer->setVisible(false);
+			CCLOG("4");
 			//send the msg
 			bytes msgOK(10);
 			msgOK << LmEvent::OK;
@@ -133,6 +120,31 @@ void LmQuizz_v1Scene::resetScene()
 			bytes msg(10);
 			msg << LmEvent::Replay;
 			WIFIFACADE->sendBytes(msg);
+		}
+		else
+		{
+			//reset checkbox
+			m_pCheckBoxAnswer[0]->setSelected(false);
+			m_pCheckBoxAnswer[1]->setSelected(false);
+			m_pCheckBoxAnswer[2]->setSelected(false);
+			m_pCheckBoxAnswer[3]->setSelected(false);
+
+			CCLOG("1");
+
+			m_iNumberOfAttempt = m_iAttemptByQuestion;
+
+			if (m_bTimerEnbaled)
+			{
+				//reset timer
+				m_pTimer->setPercent(0);
+				m_iCounter = 0;
+				schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
+						m_fTimerDuration);
+			}
+			CCLOG("2");
+			//disable answer selected
+			m_iAnswerSelected = -1;
+			initNextQuestion();
 		}
 
 	}
@@ -152,15 +164,12 @@ bool LmQuizz_v1Scene::initGame()
 	m_pLayerGame->addChild(m_pSpriteBackground);
 
 	//add the layer game to the scene
+	this->addChild(m_pLayerGame, 0);
+
 	if (m_pUser->isBParent())
 	{
 		m_pInGameScreenParent->init();
-		this->addChild(m_pInGameScreenParent, 0);
-
-	}
-	else
-	{
-		this->addChild(m_pLayerGame, 0);
+		m_pLayerGame->addChild(m_pInGameScreenParent);
 	}
 
 	//init timer
@@ -170,7 +179,7 @@ bool LmQuizz_v1Scene::initGame()
 	m_pTimer->setPosition(
 			Point(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
 					l_oVisibleSize.height * 0.05 + l_oOrigin.y));
-	if (m_bTimerEnbaled)
+	if (m_bTimerEnbaled && !m_pUser->isBParent())
 	{
 		m_pLayerGame->addChild(m_pTimer);
 	}
@@ -179,7 +188,11 @@ bool LmQuizz_v1Scene::initGame()
 	m_pBandTopSprite = Sprite::create(m_sFilenameSpriteBandTop);
 	m_pBandTopSprite->setAnchorPoint(Vec2(0, 1));
 	m_pBandTopSprite->setPosition(Vec2(0, l_oVisibleSize.height + l_oOrigin.y));
-	m_pLayerGame->addChild(m_pBandTopSprite);
+
+	if (!m_pUser->isBParent())
+	{
+		m_pLayerGame->addChild(m_pBandTopSprite);
+	}
 
 	//usefull height to scale
 	m_fHeight = l_oVisibleSize.height
@@ -197,7 +210,6 @@ bool LmQuizz_v1Scene::initGame()
 					m_fHeight * 0.75f + m_pTimer->getContentSize().height));
 	m_pCheckBoxAnswer[0]->addEventListener(
 			CC_CALLBACK_2(LmQuizz_v1Scene::answerSelected, this));
-	m_pLayerGame->addChild(m_pCheckBoxAnswer[0]);
 	//2
 	m_pCheckBoxAnswer[1] = CheckBox::create(m_sFilenameSpriteAnswerBackground,
 			m_sFilenameSpriteAnswerCross);
@@ -208,7 +220,6 @@ bool LmQuizz_v1Scene::initGame()
 					m_fHeight * 0.75f + m_pTimer->getContentSize().height));
 	m_pCheckBoxAnswer[1]->addEventListener(
 			CC_CALLBACK_2(LmQuizz_v1Scene::answerSelected, this));
-	m_pLayerGame->addChild(m_pCheckBoxAnswer[1]);
 	//3
 	m_pCheckBoxAnswer[2] = CheckBox::create(m_sFilenameSpriteAnswerBackground,
 			m_sFilenameSpriteAnswerCross);
@@ -219,7 +230,6 @@ bool LmQuizz_v1Scene::initGame()
 					m_fHeight * 0.25f + m_pTimer->getContentSize().height));
 	m_pCheckBoxAnswer[2]->addEventListener(
 			CC_CALLBACK_2(LmQuizz_v1Scene::answerSelected, this));
-	m_pLayerGame->addChild(m_pCheckBoxAnswer[2]);
 	//4
 	m_pCheckBoxAnswer[3] = CheckBox::create(m_sFilenameSpriteAnswerBackground,
 			m_sFilenameSpriteAnswerCross);
@@ -230,7 +240,14 @@ bool LmQuizz_v1Scene::initGame()
 					m_fHeight * 0.25f + m_pTimer->getContentSize().height));
 	m_pCheckBoxAnswer[3]->addEventListener(
 			CC_CALLBACK_2(LmQuizz_v1Scene::answerSelected, this));
-	m_pLayerGame->addChild(m_pCheckBoxAnswer[3]);
+
+	if (!m_pUser->isBParent())
+	{
+		m_pLayerGame->addChild(m_pCheckBoxAnswer[0]);
+		m_pLayerGame->addChild(m_pCheckBoxAnswer[1]);
+		m_pLayerGame->addChild(m_pCheckBoxAnswer[2]);
+		m_pLayerGame->addChild(m_pCheckBoxAnswer[3]);
+	}
 
 	//init label question
 	m_pQuestionLabel = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
@@ -294,18 +311,7 @@ bool LmQuizz_v1Scene::initGame()
 	m_pNextQuestionButton->addTouchEventListener(
 			CC_CALLBACK_0(LmQuizz_v1Scene::beginQuestion, this));
 	m_pNextQuestionButton->setVisible(false);
-
-	if (m_pUser->isBParent())
-	{
-		m_pInGameScreenParent->addChild(m_pNextQuestionButton);
-		m_pInGameScreenParent->addChild(m_pReplayButton);
-
-	}
-	else
-	{
-		m_pLayerGame->addChild(m_pNextQuestionButton);
-
-	}
+	m_pLayerGame->addChild(m_pNextQuestionButton);
 
 	m_iIndexQuestion = -1;	//so when we init the next question index = 0
 	beginQuestion();
@@ -333,43 +339,47 @@ void LmQuizz_v1Scene::timerEnd(float dt)
 
 void LmQuizz_v1Scene::beginQuestion()
 {
-	CCLOG("begin question ");
-
-	m_pNextQuestionButton->setEnabled(false);
-	m_pNextQuestionButton->setVisible(false);
-
-	m_bQuestionFinished = false;
-
-	//no more layers end of the game
-	if ((int) m_iIndexQuestion >= (int) (m_aQuestions.size() - 1))
+	if (m_bQuestionFinished)
 	{
-		m_pFinishGameButton->setVisible(true);
-		m_pLmReward->playRewardSound();
-	}
-	else
-	{
-		//reset checkbox
-		m_pCheckBoxAnswer[0]->setSelected(false);
-		m_pCheckBoxAnswer[1]->setSelected(false);
-		m_pCheckBoxAnswer[2]->setSelected(false);
-		m_pCheckBoxAnswer[3]->setSelected(false);
+		CCLOG("begin question ");
 
-		m_iNumberOfAttempt = m_iAttemptByQuestion;
+		m_pNextQuestionButton->setVisible(false);
 
-		if (m_bTimerEnbaled)
+		m_bQuestionFinished = false;
+
+		CCLOG("index %d", m_iIndexQuestion);
+
+		//no more layers end of the game
+		if ((int) m_iIndexQuestion >= (int) (m_aQuestions.size() - 1))
 		{
-			//reset timer
-			m_pTimer->setPercent(0);
-			m_iCounter = 0;
-			schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
-					m_fTimerDuration);
+			m_pFinishGameButton->setVisible(true);
+			m_pLmReward->playRewardSound();
 		}
+		else
+		{
+			//reset checkbox
+			m_pCheckBoxAnswer[0]->setSelected(false);
+			m_pCheckBoxAnswer[1]->setSelected(false);
+			m_pCheckBoxAnswer[2]->setSelected(false);
+			m_pCheckBoxAnswer[3]->setSelected(false);
 
-		//disable answer selected
-		m_iAnswerSelected = -1;
+			m_iNumberOfAttempt = m_iAttemptByQuestion;
 
-		//next layer
-		initNextQuestion();
+			if (m_bTimerEnbaled)
+			{
+				//reset timer
+				m_pTimer->setPercent(0);
+				m_iCounter = 0;
+				schedule(schedule_selector(LmQuizz_v1Scene::updateLoadingBar),
+						m_fTimerDuration);
+			}
+
+			//disable answer selected
+			m_iAnswerSelected = -1;
+
+			//next layer
+			initNextQuestion();
+		}
 	}
 
 }
@@ -620,13 +630,15 @@ void LmQuizz_v1Scene::onGoodAnswerEvent(bytes l_oMsg)
 
 void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 {
+	m_bQuestionFinished = true;
+
 	if (good)
 	{
 		CCLOG("good answer");
 
 		//can go to the next
-		m_pNextQuestionButton->setTouchEnabled(true);
 		m_pNextQuestionButton->setVisible(true);
+		m_pNextQuestionButton->setEnabled(true);
 		m_pNextQuestionButton->loadTextureNormal(
 				m_sFilenameSpriteGoodAnswerButtonParent);
 		m_pNextQuestionButton->loadTexturePressed(
@@ -634,16 +646,19 @@ void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 	}
 	else
 	{
+
 		CCLOG("bad ansswer");
 
-		//can go to the next
-		m_pNextQuestionButton->setVisible(true);
-		m_pNextQuestionButton->setTouchEnabled(false);
-		m_pNextQuestionButton->loadTextureNormal(
-				m_sFilenameSpriteBadAnswerButton);
-		m_pNextQuestionButton->loadTexturePressed(
-				m_sFilenameSpriteBadAnswerButton);
+		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 
+		m_pSpriteBuffer = Sprite::create(m_sFilenameSpriteBadAnswerButton);
+
+		m_pSpriteBuffer->setPosition(
+				Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
+		m_pSpriteBuffer->setVisible(true);
+
+		//can go to the next
+		m_pInGameScreenParent->addChild(m_pSpriteBuffer);
 		m_pReplayButton->setVisible(true);
 	}
 }

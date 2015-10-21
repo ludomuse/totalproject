@@ -25,11 +25,14 @@ public:
 	void playSound();
 	void pauseSound();
 
+
 private:
 
 	std::vector<std::pair<std::string, int>> m_aImagesURL;
 	std::string m_sSoundURL;
 	std::string m_sText;
+
+
 
 };
 

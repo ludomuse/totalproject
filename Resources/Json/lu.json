@@ -10,7 +10,7 @@
         "Description": "test",
         "RewardParent": {
           "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "",
+          "FilenameSpriteReward": "Game/Content/eggs.png",
           "FilenameSound": "Audio/Game/son.mp3",
           "RewardScore": 51
         },
@@ -138,7 +138,7 @@
         "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
         "FilenameSpriteGoodAnswerButtonChild": "Game/Background/background3.png",
         "FilenameSpriteGoodAnswerButtonParent": "Game/GUIElements/youwin.png",
-        "FilenameSpriteBadAnswerButton": "Game/Background/background2.png",
+        "FilenameSpriteBadAnswerButton": "Game/Background/splashScreenLu.png",
         "FilenameAudioAnswerSelected": "Audio/Game/son.mp3",
         "InGameScreen": {
           "img": [

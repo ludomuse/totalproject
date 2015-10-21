@@ -75,6 +75,8 @@ private:
 
 	//gui elements
 
+	cocos2d::Sprite* m_pSpriteBuffer;
+
 	//use to force checkbox to be checked when question finish
 	bool m_bQuestionFinished;
 
