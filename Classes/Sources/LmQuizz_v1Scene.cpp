@@ -107,8 +107,6 @@ void LmQuizz_v1Scene::resetScene()
 
 			m_pSpriteBuffer->setVisible(false);
 
-			sendOKMessage();
-
 			bytes msg(10);
 			msg << LmEvent::Replay;
 			WIFIFACADE->sendBytes(msg);
@@ -503,10 +501,6 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 		m_pNextQuestionButton->setEnabled(true);
 
 		//send to parent that was a good answer
-
-		sendOKMessage();
-
-		//send the msg
 		bytes msg(10);
 		msg << LmEvent::GoodAnswer;
 		msg.write(true);
@@ -515,9 +509,6 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 	else
 	{
 		//send to parent that was a bad answer
-
-		sendOKMessage();
-
 		bytes msg(10);
 		msg << LmEvent::GoodAnswer;
 		msg.write(false);

@@ -95,7 +95,7 @@ bool LmAudioHintScene::initGame()
 	// create menu, it's an autorelease object
 	auto l_oMenu = Menu::create();
 	l_oMenu->setPosition(Vec2::ZERO);
-	m_pLayerGame->addChild(l_oMenu, 1);
+	m_pLayerGame->addChild(l_oMenu);
 
 	//init labels gamecomponent
 	for (std::map<int, std::string>::iterator it =
@@ -318,6 +318,10 @@ void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 				{
 					//win
 					m_pFinishGameButton->setVisible(true);
+
+					bytes msg(10);
+					msg<<LmEvent::Win;
+					WIFIFACADE->sendBytes(msg);
 				}
 
 
@@ -387,4 +391,6 @@ int LmAudioHintScene::touchCollideHole(Touch* touch)
 
 	return -1;
 }
+
+
 

@@ -36,6 +36,7 @@ public:
 	//use to replay the game
 	void resetScene();
 
+
 private:
 
 	//ATTRIBUTES
@@ -95,6 +96,8 @@ private:
 	void moveBufferSprite(cocos2d::Touch* );
 
 	int touchCollideHole(cocos2d::Touch* );
+
+
 
 
 };
