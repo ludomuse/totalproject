@@ -128,15 +128,18 @@ public class ClientSocketHandler {
 	private String remoteIp = null;
 	private int remotePort = -1;
 
+	private SocketHandler master;
+	
 	public static void setId(long id)
 	{
 		givenId = toByte(id);
 		useGivenId = true;
 	}
 
-	public ClientSocketHandler(int len)
+	public ClientSocketHandler(int len, SocketHandler master)
 	{
 		super();
+		this.master = master;
 		buf = new byte[len];
 		// socket = new Socket();
 
@@ -440,7 +443,8 @@ public class ClientSocketHandler {
 
 	public String getClientIpAddress()
 	{
-		return SocketHandler.getThisDeviceIpAddress();
+		return master.getIP();
+//		return SocketHandler.getThisDeviceIpAddress();
 	}
 
 	private void send(byte[] bytes, PACKET_TYPE type)

@@ -1010,7 +1010,7 @@ public class WifiDirectManager {
 				if (!info.isGroupOwner)
 				{
 					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);
-					String myLocalAddress = SocketHandler.getThisDeviceIpAddress();
+					String myLocalAddress = SocketHandler.getAnIpAddresForThisDevice();
 					DebugManager.print("My IP Address is " + myLocalAddress, DEBUGGER_CHANNEL);
 					//create local server
 					socket.listen(LISTENNING_PORT, myLocalAddress);

@@ -23,7 +23,7 @@ public class SocketHandler {
 
 	public SocketHandler(int bufferLen, int listenningPort)
 	{
-		client = new ClientSocketHandler(bufferLen);
+		client = new ClientSocketHandler(bufferLen, this);
 		this.listenningPort = listenningPort;
 		mailBox = new MailBox(client);
 	}
@@ -155,6 +155,11 @@ public class SocketHandler {
 		mailBox.post("sendIP", listenningPort, int.class, 0);
 	}
 
+	public String getIP()
+	{
+		return server.getServerIpAddress();
+	}
+
 	public void sendAccuse(long idReceived)
 	{
 
@@ -193,7 +198,7 @@ public class SocketHandler {
 		}
 	}
 
-	public static String getThisDeviceIpAddress()
+	public static String getAnIpAddresForThisDevice()
 	{
 		return getStringLocalIPAddress();
 		// return getDottedDecimalIP(getLocalIPAddress());
