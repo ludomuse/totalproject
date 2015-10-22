@@ -274,6 +274,9 @@ bool LmRightSpotScene::initGame()
 		}
 	}
 
+	//so we know how many hole to fill
+	m_iNumberOfHole = m_aHolesImageChild.size();
+
 	//we check what type of user is playing to display good stuff
 	if (m_pUser->isBParent())
 	{
@@ -381,13 +384,13 @@ bool LmRightSpotScene::initGame()
 bool LmRightSpotScene::onTouchBeganParent(Touch* touch, Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if (m_bUserIsTouchingScreen)
+	if (m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen = true;
+		m_bTouchBeganDisabled = true;
 	}
 
 	m_iBufferId = idDynamicLmGameComponent(touch);
@@ -432,6 +435,9 @@ void LmRightSpotScene::onTouchMovedParent(Touch* touch, Event* event)
 
 void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 {
+
+	bool l_bThereIsElementInSendingArea = false;
+
 	if (m_bSpriteSelected)
 	{
 		//no sprite selected anymore
@@ -441,20 +447,12 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 		if (bufferCollideSendingArea() && !m_bSendingAreaElementTouched)
 		{
 
-			CCLOG("gamecomponent id = %d", m_aIdTable.find(m_iBufferId)->first);
+			sendOKMessage();
 
 			//send the msg to indicate user 2 we are ready
 			bytes msg(10);
-			CCLOG("msg len %d", msg.getLen());
-
 			msg << LmEvent::Gamecomponent;
-
-			CCLOG("msg len %d", msg.getLen());
-
-			msg<< m_aIdTable.find(m_iBufferId)->first;
-
-			CCLOG("msg len %d", msg.getLen());
-
+			msg.write(m_iBufferId);
 			WIFIFACADE->sendBytes(msg);
 
 			//move gamecomponent
@@ -476,18 +474,15 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 
 			m_pSendingAreaElement = m_aIdTable.find(m_iBufferId)->second;
 
+			//we block touch till we receive a response from the child
+			l_bThereIsElementInSendingArea = true;
+
 		}
 		else if (m_bSendingAreaElementTouched && !bufferCollideSendingArea())
 		{
 
-			//place to his last position
-			auto m_oHoleToFill = holeOfThisDynamicElement(m_iBufferId);
-			m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
-			m_pSendingAreaElement->setPosition(
-					Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
+			replaceSendingAreaElementToHisOriginalPlace();
 
-			//remove the element of the sending area
-			m_pSendingAreaElement = nullptr;
 		}
 
 		m_bSendingAreaElementTouched = false;
@@ -498,20 +493,23 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 		m_aIdTable.find(m_iBufferId)->second->setVisible(true);
 	}
 
-	m_bUserIsTouchingScreen = false;
+	if (!l_bThereIsElementInSendingArea)
+	{
+		m_bTouchBeganDisabled = false;
+	}
 
 }
 
 bool LmRightSpotScene::onTouchBeganChild(Touch* touch, Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if (m_bUserIsTouchingScreen)
+	if (m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen = true;
+		m_bTouchBeganDisabled = true;
 	}
 
 	m_iBufferId = idLmGameComponentTouchedInSendingArea(touch);
@@ -571,6 +569,9 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 		if (m_bBufferSpriteFillHole)
 		{
 
+			//we are going to send smthg => reset
+			sendOKMessage();
+
 			//check if its good position
 			if (imageWellPlaced(m_iHoleTouchedIndex, m_iBufferId))
 			{
@@ -585,28 +586,48 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 				//reset sendingelement
 				m_pSendingAreaElement = nullptr;
 
-				//test
-				m_pFinishGameButton->setVisible(true);
+				//indicate to parent that it's well placed
+				bytes msg(20);
+				msg << LmEvent::GamecomponentWellPlaced;
+				msg.write(m_iBufferId);
+				msg.write(true);
+				WIFIFACADE->sendBytes(msg);
+
+				//we put the gamecomponent visible again
+				m_aIdTable.find(m_iBufferId)->second->setVisible(true);
+
+				m_iNumberOfHole--;
+
+				//check win
+				if (m_iNumberOfHole == 0)
+				{
+					m_pFinishGameButton->setVisible(true);
+				}
 
 			}
 			else
 			{
 
 				//send back to the void
+				bytes msg(20);
+				msg << LmEvent::GamecomponentWellPlaced;
+				msg.write(m_iBufferId);
+				msg.write(false);
+				WIFIFACADE->sendBytes(msg);
 
-				CCLOG("send back to parent");
+				//make it disapear
+				m_aIdTable.find(m_iBufferId)->second->setVisible(false);
+
 			}
 
 		}
 
 		//put it invisible
 		m_pBufferSprite->setVisible(false);
-		//we put the gamecomponent visible again
-		m_aIdTable.find(m_iBufferId)->second->setVisible(true);
 
 	}
 
-	m_bUserIsTouchingScreen = false;
+	m_bTouchBeganDisabled = false;
 
 }
 
@@ -713,19 +734,14 @@ bool LmRightSpotScene::imageWellPlaced(int l_iIndexHole,
 
 void LmRightSpotScene::layerChildReceive(int l_iIdLmGameComponent)
 {
-	CCLOG("0");
 	//we get the gamecomponent with id
 	auto l_pGameComponentReceived =
 			m_aIdTable.find(l_iIdLmGameComponent)->second;
-	CCLOG("1");
 
 	//put it approximatly in the sending area(
 	setPositionInSendingArea(l_iIdLmGameComponent);
-	CCLOG("2");
-
 	m_pSendingAreaElement = l_pGameComponentReceived;
 	l_pGameComponentReceived->setVisible(true);
-	CCLOG("3");
 
 }
 
@@ -743,19 +759,33 @@ Rect LmRightSpotScene::holeOfThisDynamicElement(int l_iIdGamecomponent)
 	return Rect::ZERO;
 }
 
+void LmRightSpotScene::replaceSendingAreaElementToHisOriginalPlace()
+{
+	//place to his last position
+	auto m_oHoleToFill = holeOfThisDynamicElement(m_iBufferId);
+	m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
+	m_pSendingAreaElement->setPosition(
+			Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
+
+	//remove the element of the sending area
+	m_pSendingAreaElement = nullptr;
+}
+
 void LmRightSpotScene::onReceivingMsg(bytes l_oMsg)
 {
 
-	CCLOG(
-			"msg len %d, msg read cursor %d, msg free space %d, msg size %d, toString =%s",
-			l_oMsg.getLen(), l_oMsg.getReadCursor(), l_oMsg.getFreeCount(),
-			l_oMsg.getSize(), l_oMsg.toCharSequence());
 	CCLOG("lmrightsportscene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{
 	case LmEvent::Gamecomponent:
 		CCLOG("Gamecomponent");
 		ON_CC_THREAD(LmRightSpotScene::onGamecomponentEvent, this, l_oMsg)
+		;
+		break;
+	case LmEvent::GamecomponentWellPlaced:
+		CCLOG("GamecomponentWellPlaced");
+		ON_CC_THREAD(LmRightSpotScene::onGamecomponentWellPlacedEvent, this,
+				l_oMsg)
 		;
 		break;
 	default:
@@ -766,18 +796,37 @@ void LmRightSpotScene::onReceivingMsg(bytes l_oMsg)
 
 void LmRightSpotScene::onGamecomponentEvent(bytes l_oMsg)
 {
-	CCLOG("-1");
 
-	CCLOG(
-			"msg len %d, msg read cursor %d, msg free space %d, msg size %d, toString =%s",
-			l_oMsg.getLen(), l_oMsg.getReadCursor(), l_oMsg.getFreeCount(),
-			l_oMsg.getSize(), l_oMsg.toCharSequence());
-
-	//int idGameComponent = l_oMsg.readInt();
-	int idGameComponent;
-	l_oMsg >> idGameComponent;
-	CCLOG("we read int : %d", idGameComponent);
+	int idGameComponent = l_oMsg.readInt();
 
 	layerChildReceive(idGameComponent);
+}
+
+void LmRightSpotScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
+{
+	int l_iIdGameComponent = l_oMsg.readInt();
+	bool l_bWellPlaced = l_oMsg.readBool();
+
+	if (l_bWellPlaced)
+	{
+		m_iNumberOfHole--;
+
+		//make disapear this element
+		m_aIdTable.find(l_iIdGameComponent)->second->setVisible(false);
+
+		//check win
+		if (m_iNumberOfHole == 0)
+		{
+			m_pFinishGameButton->setVisible(true);
+		}
+	}
+	else
+	{
+		//replace this element in the list
+		replaceSendingAreaElementToHisOriginalPlace();
+	}
+
+	m_bTouchBeganDisabled = false;
+
 }
 

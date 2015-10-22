@@ -219,13 +219,13 @@ bool LmAudioHintScene::onTouchBeganParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if (m_bUserIsTouchingScreen)
+	if (m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen = true;
+		m_bTouchBeganDisabled = true;
 	}
 	//get id label
 	m_iBufferId = idLabel(touch);
@@ -331,7 +331,7 @@ void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 		m_aLabelsGameComponent.find(m_iBufferId)->second->setVisible(true);
 
 	}
-	m_bUserIsTouchingScreen = false;
+	m_bTouchBeganDisabled = false;
 }
 
 int LmAudioHintScene::idLabel(cocos2d::Touch* touch)

@@ -138,7 +138,7 @@ protected:
 	std::string m_sDescription;
 
 	//use to sync movement
-	bool m_bUserIsTouchingScreen;
+	bool m_bTouchBeganDisabled;
 
 	//to know if this has been win
 	bool m_bWin;
@@ -225,6 +225,15 @@ protected:
 
 	//call when the finishgamebutton is pressed
 	void endGame();
+
+	//to reset the last message of the receiver
+	void sendOKMessage()
+	{
+		//send the msg  ok
+		bytes msgOK(10);
+		msgOK << LmEvent::OK;
+		WIFIFACADE->sendBytes(msgOK);
+	}
 
 
 

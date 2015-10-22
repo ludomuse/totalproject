@@ -322,13 +322,13 @@ bool LmFindGoodCategoryScene::onTouchBeganParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if(m_bUserIsTouchingScreen)
+	if(m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen=true;
+		m_bTouchBeganDisabled=true;
 	}
 
 	m_iBufferId = idImage(touch);
@@ -428,20 +428,20 @@ void LmFindGoodCategoryScene::onTouchEndedParent(cocos2d::Touch* touch,
 
 
 	}
-	m_bUserIsTouchingScreen=false;
+	m_bTouchBeganDisabled=false;
 }
 
 bool LmFindGoodCategoryScene::onTouchBeganChild(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if(m_bUserIsTouchingScreen)
+	if(m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bUserIsTouchingScreen=true;
+		m_bTouchBeganDisabled=true;
 	}
 
 
@@ -506,7 +506,7 @@ void LmFindGoodCategoryScene::onTouchEndedChild(cocos2d::Touch* touch,
 
 	}
 
-	m_bUserIsTouchingScreen=false;
+	m_bTouchBeganDisabled=false;
 
 }
 

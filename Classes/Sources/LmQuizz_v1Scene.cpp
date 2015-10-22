@@ -106,10 +106,8 @@ void LmQuizz_v1Scene::resetScene()
 			m_iIndexQuestion++;
 
 			m_pSpriteBuffer->setVisible(false);
-			//send the msg
-			bytes msgOK(10);
-			msgOK << LmEvent::OK;
-			WIFIFACADE->sendBytes(msgOK);
+
+			sendOKMessage();
 
 			bytes msg(10);
 			msg << LmEvent::Replay;
@@ -122,7 +120,6 @@ void LmQuizz_v1Scene::resetScene()
 			m_pCheckBoxAnswer[1]->setSelected(false);
 			m_pCheckBoxAnswer[2]->setSelected(false);
 			m_pCheckBoxAnswer[3]->setSelected(false);
-
 
 			m_iNumberOfAttempt = m_iAttemptByQuestion;
 
@@ -507,10 +504,7 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 
 		//send to parent that was a good answer
 
-		//send the msg  ok
-		bytes msgOK(10);
-		msgOK << LmEvent::OK;
-		WIFIFACADE->sendBytes(msgOK);
+		sendOKMessage();
 
 		//send the msg
 		bytes msg(10);
@@ -521,10 +515,8 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 	else
 	{
 		//send to parent that was a bad answer
-		//send the msg
-		bytes msgOK(10);
-		msgOK << LmEvent::OK;
-		WIFIFACADE->sendBytes(msgOK);
+
+		sendOKMessage();
 
 		bytes msg(10);
 		msg << LmEvent::GoodAnswer;
