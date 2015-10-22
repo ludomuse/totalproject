@@ -50,7 +50,7 @@ struct LmEvent
 	static const event Replay = 5;
 
 	/*
-	 * accuse to separate same event msg
+	 * accuse to separate same event msg in interactionScene
 	 */
 	static const event OK = 6;
 
@@ -58,6 +58,11 @@ struct LmEvent
 	 * when we send a gamecomponent parameter is the id of the gamecomponent
 	 */
 	static const event Gamecomponent = 7;
+
+	/*
+	 * parameter : int idGamecomponent, bool well placed
+	 */
+	static const event GamecomponentWellPlaced = 8;
 
 	/*
 	 *

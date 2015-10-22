@@ -28,7 +28,7 @@ LmInteractionScene::LmInteractionScene()
 	m_bSetPointBegin = true;
 	m_bSetPointFinished = false;
 	m_bWin = false;
-	m_bUserIsTouchingScreen = false;
+	m_bTouchBeganDisabled = false;
 	m_bUser1IsReadyForNextInteraction=false;
 	m_bUser2IsReadyForNextInteraction=false;
 	m_bGameIsRunning=false;
@@ -236,7 +236,8 @@ void LmInteractionScene::nextSetPointLayer()
 
 			//send the msg to indicate user 2 we are ready
 			bytes msg(10);
-			msg << LmEvent::ReadyForNextInteraction<<m_iIdGame;
+			msg << LmEvent::ReadyForNextInteraction;
+			msg.write(m_iIdGame);
 			WIFIFACADE->sendBytes(msg);
 
 			//add the layer of the game

@@ -110,7 +110,7 @@ private:
 		{
 
 			CCLOG("msg len = %d, msg size = %d", msg.getLen(), msg.getSize());
-			if(lastMsg == msg || msg.getLen() == 0)
+			/*if(lastMsg == msg || msg.getLen() == 0)
 			{
 				lastMsg.rewind();
 				event lastEvent = lastMsg.readByte();
@@ -119,7 +119,7 @@ private:
 				msg.rewind();
 				return;
 			}
-			lastMsg = msg;
+			lastMsg = msg;*/
 			onReceivingByte(msg.readByte());
 			onReceivingMsg(msg);
 		}

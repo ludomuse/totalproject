@@ -43,9 +43,6 @@ public:
 	LmRightSpotScene(const LmRightSpotSceneSeed&);
 	~LmRightSpotScene();
 
-	//methods to call from gamemanager to indicate that a gameobject appear in the sending area
-	void layerChildReceive(int);
-
 	//restart
 	void restart();
 
@@ -53,7 +50,7 @@ public:
 	void resetScene();
 
 	//dispatcher
-	virtual void onReceivingMsg(bytes );
+	virtual void onReceivingMsg(bytes);
 
 private:
 
@@ -101,6 +98,9 @@ private:
 	//to know if the buffer fill an hole
 	bool m_bBufferSpriteFillHole;
 
+	//to check win
+	int m_iNumberOfHole;
+
 	//METHODS
 
 	//inherit method main of the scene
@@ -132,9 +132,6 @@ private:
 	//use to know what hole need to be fill with the buffer img
 	int touchCollideHoleInRightImage(cocos2d::Touch*);
 
-	//check if the right image is complete
-	bool win();
-
 	//set position of the gamecomponent id in the  sending area
 	void setPositionInSendingArea(int);
 
@@ -144,9 +141,15 @@ private:
 	//get the hole of this id dynamic element
 	cocos2d::Rect holeOfThisDynamicElement(int);
 
-	//callback function event
-	void onGamecomponentEvent(bytes );
+	//replace to his place
+	void replaceSendingAreaElementToHisOriginalPlace();
 
+	//when child receive an element
+	void layerChildReceive(int);
+
+	//callback function event
+	void onGamecomponentEvent(bytes);
+	void onGamecomponentWellPlacedEvent(bytes);
 
 };
 
