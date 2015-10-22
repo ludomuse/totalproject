@@ -1,0 +1,13 @@
+--packageName--
+com.IHMTEK.LudoMuse
+--apkPath--
+C:/Users/Gregoire/Documents/Cocos/Game/~/IHMTEK/LudoMuse/proj.android/bin/LudoMuse-debug.apk
+--projectPath--
+C:/Users/Gregoire/Documents/Cocos/Game/~/IHMTEK/LudoMuse/
+--tags--
+debug
+LUDOSERVER
+LUDOCLIENT
+LudoMuse
+
+d
