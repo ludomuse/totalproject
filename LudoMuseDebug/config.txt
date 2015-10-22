@@ -9,5 +9,3 @@ debug
 LUDOSERVER
 LUDOCLIENT
 LudoMuse
-
-d
