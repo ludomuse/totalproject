@@ -62,9 +62,9 @@ public class SocketHandler {
 		dettachFromRemoteHost();
 	}
 
-	public void listen(int port)
+	public void listen(int port, String address)
 	{
-		server = new ServerSocketHandler(port, this);
+		server = new ServerSocketHandler(port, address, this);
 		server.listen();
 	}
 

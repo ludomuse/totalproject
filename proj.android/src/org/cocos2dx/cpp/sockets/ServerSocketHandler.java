@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -656,6 +657,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 	private int port;
 	private SocketHandler master;
+	private String address;
 
 	public static String GetTag()
 	{
@@ -664,10 +666,11 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		return "[LUDOSERVER][" + sdf.format(cal.getTime()) + "]";
 	}
 
-	public ServerSocketHandler(int port, SocketHandler master)
+	public ServerSocketHandler(int port, String address, SocketHandler master)
 	{
 		this.port = port;
 		this.master = master;
+		this.address = address;
 
 	}
 
@@ -698,7 +701,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 		try
 		{
-			serverSocket = new ServerSocket(port);
+			serverSocket = new ServerSocket(port, 0, InetAddress.getByName(address));
 		}
 		catch (Exception e)
 		{

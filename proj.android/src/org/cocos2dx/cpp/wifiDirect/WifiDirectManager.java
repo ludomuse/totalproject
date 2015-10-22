@@ -998,21 +998,33 @@ public class WifiDirectManager {
 	private void onConnect()
 	{
 		DebugManager.print("device connected to network", DEBUGGER_CHANNEL);
-		socket.listen(LISTENNING_PORT);
+		
 		// socket.setOnReceiveIPCallBack(_cmPeerConnected);
 		// setCallBacks();
 		_manager.requestConnectionInfo(_channel, new ConnectionInfoListener() {
 			@Override
 			public void onConnectionInfoAvailable(WifiP2pInfo info)
 			{
+				String ownerAddress = info.groupOwnerAddress.getHostAddress();
+				
 				if (!info.isGroupOwner)
 				{
 					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);
-					socket.connectTo(info.groupOwnerAddress.getHostAddress());
+					String myLocalAddress = SocketHandler.getThisDeviceIpAddress();
+					DebugManager.print("My IP Address is " + myLocalAddress, DEBUGGER_CHANNEL);
+					//create local server
+					socket.listen(LISTENNING_PORT, myLocalAddress);
+					//connect to owner to give your server's ip
+					socket.connectTo(ownerAddress);
 
 				}
 				else
 				{
+					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
+					DebugManager.print("My IP Address is " + ownerAddress, DEBUGGER_CHANNEL);
+					//create local server
+					socket.listen(LISTENNING_PORT, ownerAddress);
+					//and wait for receiving pair'ip address
 					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
 				}
 
