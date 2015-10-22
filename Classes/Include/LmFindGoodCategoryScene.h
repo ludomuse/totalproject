@@ -14,8 +14,8 @@ struct LmFindGoodCategorySceneSeed
 {
 	std::string FilenameSpriteBackground;
 	std::string FilenameSpriteSendingArea;
-	std::vector<std::pair<int,std::string>> Images;
-	std::vector<std::pair<int,std::string>> Categories;
+	std::vector<std::pair<int, std::string>> Images;
+	std::vector<std::pair<int, std::string>> Categories;
 };
 
 class LmFindGoodCategoryScene: public LmInteractionScene
@@ -33,6 +33,9 @@ public:
 	//use to replay the game
 	void resetScene();
 
+	//dispatcher
+	virtual void onReceivingMsg(bytes);
+
 private:
 
 	//ATTRIBUTES
@@ -40,9 +43,10 @@ private:
 	//json
 	std::string m_sFilenameSpriteBackground;
 	std::string m_sFilenameSpriteSendingArea;
-	std::vector<std::pair<int,std::string>> m_aImages;
-	std::vector<std::pair<int,std::string>> m_aCategories;
+	std::vector<std::pair<int, std::string>> m_aImages;
+	std::vector<std::pair<int, std::string>> m_aCategories;
 
+	int m_iNumberOfImages;
 
 	//gui elements
 
@@ -68,16 +72,14 @@ private:
 	//to know if we touched the sending area element
 	bool m_bSendingAreaElementTouched;
 
-
 	//square diemnsion
 	float m_fSquareDimension;
 
 	//vector of lm gamecomponent categories key=id categorie
-	std::map<int,LmGameComponent*> m_aCategoriesElement;
+	std::map<int, LmGameComponent*> m_aCategoriesElement;
 
 	//stock what images to what categorie
-	std::map<int,int> m_aIdGamecomponentToIdCategory;
-
+	std::map<int, int> m_aIdGamecomponentToIdCategory;
 
 	//METHODS
 
@@ -99,8 +101,11 @@ private:
 	//return the id of the gameobject touched -1 otherwise
 	int idImage(cocos2d::Touch*);
 
+	int idLmGameComponentTouchedInSendingArea(cocos2d::Touch* );
+
+
 	//move buffer sprite with touch
-	void moveBufferSprite(cocos2d::Touch* );
+	void moveBufferSprite(cocos2d::Touch*);
 
 	//init the buffer sprite to begin a movement with an image according the id of the gamecomponent
 	void initBufferSprite(int);
@@ -115,10 +120,14 @@ private:
 	bool bufferCollideSendingArea();
 
 	//return the id of a categorie otherwise -1
-	int touchCollideCategory(cocos2d::Touch*);
+	int touchCollideCategory();
 
+	//replace to his place
+	void replaceSendingAreaElementToHisOriginalPlace();
 
-
+	//callback function event
+	void onGamecomponentEvent(bytes);
+	void onGamecomponentWellPlacedEvent(bytes);
 
 };
 

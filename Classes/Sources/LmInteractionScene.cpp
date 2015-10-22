@@ -450,6 +450,7 @@ void LmInteractionScene::endGame()
 {
 	if (m_bFinishGameButtonSync)
 	{
+		m_bFinishGameButtonSync = false;
 
 		//reset sync beetween player
 		m_bUser1IsReadyForNextInteraction=false;
@@ -458,11 +459,11 @@ void LmInteractionScene::endGame()
 		//stop send event async till the next inetraction
 		stopListenWifiFacade();
 
-		m_bFinishGameButtonSync = false;
 
 		//if there is a reward we add score reward to the score of the user
 		if (m_pLmReward && m_bWin)
 		{
+			//add reward to the user
 			m_pUser->addToScore(m_pLmReward->getIRewardScore());
 		}
 
@@ -520,3 +521,22 @@ bool LmInteractionScene::startGame()
 
 }
 
+void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
+{
+	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
+	switch (LmWifiObserver::_event)
+	{
+	case LmEvent::Win:
+		CCLOG("Win");
+		ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
+		;
+		break;
+	default:
+		break;
+	}
+}
+
+void LmInteractionScene::onWinEvent(bytes l_oMsg)
+{
+	m_pFinishGameButton->setVisible(true);
+}

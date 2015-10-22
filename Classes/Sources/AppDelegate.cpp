@@ -7,6 +7,8 @@ USING_NS_CC;
 
 AppDelegate::AppDelegate()
 {
+	CCLOG("AppDelegate constructor");
+
 	//object
 	m_pwifiFacade = new LmWifiDirectFacade();//Create the wifi direct
 	//and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi

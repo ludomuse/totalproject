@@ -24,6 +24,7 @@ LmFindGoodCategoryScene::LmFindGoodCategoryScene(
 	m_iBufferId = -1;
 	m_fSquareDimension = 0;
 	m_iCategoryTouchedIndex = -1;
+	m_iNumberOfImages = m_aImages.size();
 
 	//pointer
 	m_pSpriteBackground = nullptr;
@@ -50,7 +51,9 @@ void LmFindGoodCategoryScene::resetScene()
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
-	for(std::vector<LmGameComponent*>::iterator it=m_aGameComponentImages.begin();it!=m_aGameComponentImages.end();++it)
+	for (std::vector<LmGameComponent*>::iterator it =
+			m_aGameComponentImages.begin(); it != m_aGameComponentImages.end();
+			++it)
 	{
 		(*it)->setVisible(false);
 	}
@@ -134,7 +137,7 @@ bool LmFindGoodCategoryScene::initGame()
 
 	//init buffer sprite
 	m_pBufferSprite = Sprite::create();
-	m_pLayerGame->addChild(m_pBufferSprite,1);
+	m_pLayerGame->addChild(m_pBufferSprite, 1);
 
 	//usefull variable
 	Size l_oPlayableScreenSize = Size(
@@ -144,9 +147,6 @@ bool LmFindGoodCategoryScene::initGame()
 			l_oVisibleSize.height);
 
 	LmGameComponent* l_pBufferGameComponent;
-
-	//test
-	int id;
 
 	//create images of the game
 	for (std::vector<std::pair<int, std::string>>::iterator it =
@@ -164,8 +164,6 @@ bool LmFindGoodCategoryScene::initGame()
 		l_pBufferGameComponent->setVisible(false);
 		l_pBufferGameComponent->addTo(m_pLayerGame);
 
-		//test
-		id = l_pBufferGameComponent->getIId();
 	}
 
 	//create categories of the game
@@ -259,9 +257,6 @@ bool LmFindGoodCategoryScene::initGame()
 	{
 		//child view
 
-		//test
-		layerChildReceive(id);
-
 		//init categories element
 		for (std::map<int, LmGameComponent*>::iterator it =
 				m_aCategoriesElement.begin(); it != m_aCategoriesElement.end();
@@ -322,13 +317,13 @@ bool LmFindGoodCategoryScene::onTouchBeganParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if(m_bTouchBeganDisabled)
+	if (m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bTouchBeganDisabled=true;
+		m_bTouchBeganDisabled = true;
 	}
 
 	m_iBufferId = idImage(touch);
@@ -373,6 +368,9 @@ void LmFindGoodCategoryScene::onTouchMovedParent(cocos2d::Touch* touch,
 void LmFindGoodCategoryScene::onTouchEndedParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
+
+	bool l_bThereIsElementInSendingArea = false;
+
 	if (m_bSpriteSelected)
 	{
 		//no sprite selected anymore
@@ -381,9 +379,12 @@ void LmFindGoodCategoryScene::onTouchEndedParent(cocos2d::Touch* touch,
 		//if the move end on the sending area and it's not the sending area element
 		if (bufferCollideSendingArea() && !m_bSendingAreaElementTouched)
 		{
-			//we send the id to the other tablet test
-			CCLOG("we send the %d gamecomponent",
-					m_aIdTable.find(m_iBufferId)->first);
+
+			CCLOG("we are sending %d", m_iBufferId);
+			bytes msg(20);
+			msg << LmEvent::Gamecomponent;
+			msg.write(m_iBufferId);
+			WIFIFACADE->sendBytes(msg);
 
 			//move gamecomponent
 			setPositionInSendingArea(m_iBufferId);
@@ -391,31 +392,20 @@ void LmFindGoodCategoryScene::onTouchEndedParent(cocos2d::Touch* touch,
 			//if there was already an element in the sending area
 			if (m_pSendingAreaElement)
 			{
-				//place to his last position the current m_psending area element
-				auto m_oHoleToFill = holeOfThisImage(
-						m_pSendingAreaElement->getIId());
-				m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
-				m_pSendingAreaElement->setPosition(
-						Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
-
-				//remove the element of the sending area
-				m_pSendingAreaElement = nullptr;
+				replaceSendingAreaElementToHisOriginalPlace();
 			}
 
 			m_pSendingAreaElement = m_aIdTable.find(m_iBufferId)->second;
+
+			//we block touch till we receive a response from the child
+			l_bThereIsElementInSendingArea = true;
 
 		}
 		else if (m_bSendingAreaElementTouched && !bufferCollideSendingArea())
 		{
 
-			//place to his last position
-			auto m_oHoleToFill = holeOfThisImage(m_iBufferId);
-			m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
-			m_pSendingAreaElement->setPosition(
-					Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
-
-			//remove the element of the sending area
-			m_pSendingAreaElement = nullptr;
+			//we can't touch the sending area element
+			replaceSendingAreaElementToHisOriginalPlace();
 		}
 
 		m_bSendingAreaElementTouched = false;
@@ -426,26 +416,28 @@ void LmFindGoodCategoryScene::onTouchEndedParent(cocos2d::Touch* touch,
 		//we put the gamecomponent visible again
 		m_aIdTable.find(m_iBufferId)->second->setVisible(true);
 
-
 	}
-	m_bTouchBeganDisabled=false;
+
+	if (!l_bThereIsElementInSendingArea)
+	{
+		m_bTouchBeganDisabled = false;
+	}
 }
 
 bool LmFindGoodCategoryScene::onTouchBeganChild(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
-	if(m_bTouchBeganDisabled)
+	if (m_bTouchBeganDisabled)
 	{
 		return false;
 	}
 	else
 	{
-		m_bTouchBeganDisabled=true;
+		m_bTouchBeganDisabled = true;
 	}
 
-
-	m_iBufferId = idImage(touch);
+	m_iBufferId = idLmGameComponentTouchedInSendingArea(touch);
 
 	//if something is touched
 	if (m_iBufferId >= 0)
@@ -470,7 +462,7 @@ void LmFindGoodCategoryScene::onTouchMovedChild(cocos2d::Touch* touch,
 		moveBufferSprite(touch);
 
 		//get the id of the category touched
-		m_iCategoryTouchedIndex = touchCollideCategory(touch);
+		m_iCategoryTouchedIndex = touchCollideCategory();
 
 	}
 }
@@ -487,26 +479,50 @@ void LmFindGoodCategoryScene::onTouchEndedChild(cocos2d::Touch* touch,
 		if (m_iCategoryTouchedIndex
 				== m_aIdGamecomponentToIdCategory.find(m_iBufferId)->second)
 		{
-			//free sending area
-			m_pSendingArea = nullptr;
-			//it disapear
-			m_aIdTable.find(m_iBufferId)->second->setVisible(false);
 
-			m_pFinishGameButton->setVisible(true);
+			//indicate to parent that it's well placed
+			bytes msg(20);
+			msg << LmEvent::GamecomponentWellPlaced;
+			msg.write(m_iBufferId);
+			msg.write(true);
+			WIFIFACADE->sendBytes(msg);
+
+			CCLOG("well placed");
+
+			m_iNumberOfImages--;
+
+			//check win
+			if (m_iNumberOfImages == 0)
+			{
+				m_pFinishGameButton->setVisible(true);
+			}
+
 		}
 		else
 		{
 
-			//we put the gamecomponent visible again (try again)
-			m_aIdTable.find(m_iBufferId)->second->setVisible(true);
+			//send back to the void
+			bytes msg(20);
+			msg << LmEvent::GamecomponentWellPlaced;
+			msg.write(m_iBufferId);
+			msg.write(false);
+			WIFIFACADE->sendBytes(msg);
+
+			CCLOG("bad placed");
 		}
+
+		//make it disapear
+		m_pSendingAreaElement->setVisible(false);
+
+		//free sending area
+		m_pSendingAreaElement = nullptr;
 
 		//put it invisible
 		m_pBufferSprite->setVisible(false);
 
 	}
 
-	m_bTouchBeganDisabled=false;
+	m_bTouchBeganDisabled = false;
 
 }
 
@@ -528,13 +544,34 @@ int LmFindGoodCategoryScene::idImage(cocos2d::Touch* touch)
 	return -1;
 }
 
+int LmFindGoodCategoryScene::idLmGameComponentTouchedInSendingArea(Touch* touch)
+{
+	if (m_pSendingAreaElement)
+	{
+		auto l_oTouchLocation = touch->getLocation();
+
+		if (m_pSendingAreaElement->getPSpriteComponent()->getBoundingBox().containsPoint(
+				l_oTouchLocation))
+		{
+			return m_pSendingAreaElement->getIId();
+		}
+	}
+	else
+	{
+		CCLOG("sending area empty");
+	}
+
+	return -1;
+}
+
 void LmFindGoodCategoryScene::initBufferSprite(int l_iIdGameComponent)
 {
 	//the sprite is selected
 	m_bSpriteSelected = true;
 	//the gamecomponent selected is copy in the buffer
 
-	m_pBufferSprite->setSpriteFrame(m_aIdTable.find(l_iIdGameComponent)->second->getPSpriteComponent()->getSpriteFrame());
+	m_pBufferSprite->setSpriteFrame(
+			m_aIdTable.find(l_iIdGameComponent)->second->getPSpriteComponent()->getSpriteFrame());
 	m_pBufferSprite->setAnchorPoint(Vec2(0.5, 0.5));
 	m_pBufferSprite->setPosition(
 			m_aIdTable.find(l_iIdGameComponent)->second->getPosition());
@@ -554,19 +591,34 @@ bool LmFindGoodCategoryScene::bufferCollideSendingArea()
 			m_pSendingArea->getPSpriteComponent()->getBoundingBox());
 }
 
+void LmFindGoodCategoryScene::layerChildReceive(int l_iIdLmGameComponent)
+{
+	//we get the gamecomponent with id
+	auto l_pGameComponentReceived =
+			m_aIdTable.find(l_iIdLmGameComponent)->second;
+
+	//put it approximatly in the sending area(
+	setPositionInSendingArea(l_iIdLmGameComponent);
+	m_pSendingAreaElement = l_pGameComponentReceived;
+	l_pGameComponentReceived->setVisible(true);
+
+}
+
 void LmFindGoodCategoryScene::setPositionInSendingArea(int id)
 {
-//use to place elements
+
+	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
-
 	m_aIdTable.find(id)->second->setAnchorPoint(Vec2(0, 0.5));
+
 	m_aIdTable.find(id)->second->setPosition(
 			Vec2(
 					l_oVisibleSize.width
 							- (m_fSquareDimension
 									+ m_pSendingArea->getContentSize().width)
 									* 0.5, l_oVisibleSize.height * 0.5));
+
 }
 
 Rect LmFindGoodCategoryScene::holeOfThisImage(int l_iIdGamecomponent)
@@ -583,19 +635,8 @@ Rect LmFindGoodCategoryScene::holeOfThisImage(int l_iIdGamecomponent)
 	return Rect::ZERO;
 }
 
-void LmFindGoodCategoryScene::layerChildReceive(int l_iIdLmGameComponent)
+int LmFindGoodCategoryScene::touchCollideCategory()
 {
-
-	//we get the gamecomponent with id
-	setPositionInSendingArea(l_iIdLmGameComponent);
-	m_pSendingAreaElement = m_aIdTable.find(l_iIdLmGameComponent)->second;
-	m_pSendingAreaElement->setVisible(true);
-
-}
-
-int LmFindGoodCategoryScene::touchCollideCategory(Touch* touch)
-{
-	auto l_oTouchLocation = touch->getLocation();
 
 	for (std::map<int, LmGameComponent*>::iterator it =
 			m_aCategoriesElement.begin(); it != m_aCategoriesElement.end();
@@ -612,3 +653,80 @@ int LmFindGoodCategoryScene::touchCollideCategory(Touch* touch)
 	return -1;
 
 }
+
+void LmFindGoodCategoryScene::replaceSendingAreaElementToHisOriginalPlace()
+{
+
+	//place to his last position
+	auto m_oHoleToFill = holeOfThisImage(m_iBufferId);
+	m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
+	m_pSendingAreaElement->setPosition(
+			Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
+
+	//remove the element of the sending area
+	m_pSendingAreaElement = nullptr;
+}
+
+void LmFindGoodCategoryScene::onReceivingMsg(bytes l_oMsg)
+{
+
+	CCLOG("LmFindGoodCategoryScene _event is %d", LmWifiObserver::_event);
+	switch (LmWifiObserver::_event)
+	{
+	case LmEvent::Gamecomponent:
+		CCLOG("Gamecomponent");
+		ON_CC_THREAD(LmFindGoodCategoryScene::onGamecomponentEvent, this,
+				l_oMsg)
+		;
+		break;
+	case LmEvent::GamecomponentWellPlaced:
+		CCLOG("GamecomponentWellPlaced");
+		ON_CC_THREAD(LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent,
+				this, l_oMsg)
+		;
+		break;
+	default:
+		break;
+	}
+
+}
+
+void LmFindGoodCategoryScene::onGamecomponentEvent(bytes l_oMsg)
+{
+
+	int idGameComponent = l_oMsg.readInt();
+	layerChildReceive(idGameComponent);
+}
+
+void LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
+{
+	int l_iIdGameComponent = l_oMsg.readInt();
+	bool l_bWellPlaced = l_oMsg.readBool();
+
+	if (l_bWellPlaced)
+	{
+
+		//make disapear this element
+		m_aIdTable.find(l_iIdGameComponent)->second->setVisible(false);
+
+		m_pSendingAreaElement = nullptr;
+
+		m_iNumberOfImages--;
+
+		//check win
+		if (m_iNumberOfImages == 0)
+		{
+			m_pFinishGameButton->setVisible(true);
+		}
+
+	}
+	else
+	{
+		//replace this element in the list
+		replaceSendingAreaElementToHisOriginalPlace();
+	}
+
+	m_bTouchBeganDisabled = false;
+
+}
+

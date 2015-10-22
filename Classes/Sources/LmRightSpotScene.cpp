@@ -447,8 +447,6 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 		if (bufferCollideSendingArea() && !m_bSendingAreaElementTouched)
 		{
 
-			sendOKMessage();
-
 			//send the msg to indicate user 2 we are ready
 			bytes msg(10);
 			msg << LmEvent::Gamecomponent;
@@ -461,15 +459,7 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 			//if there was already an element in the sending area
 			if (m_pSendingAreaElement)
 			{
-				//place to his last position the current m_psending area element
-				auto m_oHoleToFill = holeOfThisDynamicElement(
-						m_pSendingAreaElement->getIId());
-				m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
-				m_pSendingAreaElement->setPosition(
-						Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
-
-				//remove the element of the sending area
-				m_pSendingAreaElement = nullptr;
+				replaceSendingAreaElementToHisOriginalPlace();
 			}
 
 			m_pSendingAreaElement = m_aIdTable.find(m_iBufferId)->second;
@@ -569,8 +559,6 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 		if (m_bBufferSpriteFillHole)
 		{
 
-			//we are going to send smthg => reset
-			sendOKMessage();
 
 			//check if its good position
 			if (imageWellPlaced(m_iHoleTouchedIndex, m_iBufferId))

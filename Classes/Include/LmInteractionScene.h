@@ -88,9 +88,7 @@ public:
 		m_sDescription = sDescription;
 	}
 
-	virtual void onReceivingMsg(bytes )
-	{
-	}
+	virtual void onReceivingMsg(bytes );
 
 	bool startGame();
 
@@ -226,14 +224,8 @@ protected:
 	//call when the finishgamebutton is pressed
 	void endGame();
 
-	//to reset the last message of the receiver
-	void sendOKMessage()
-	{
-		//send the msg  ok
-		bytes msgOK(10);
-		msgOK << LmEvent::OK;
-		WIFIFACADE->sendBytes(msgOK);
-	}
+	//callback event wifi
+	void onWinEvent(bytes );
 
 
 
