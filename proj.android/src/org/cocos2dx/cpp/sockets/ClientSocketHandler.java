@@ -24,7 +24,7 @@ class ConnectTask2 implements Runnable {
 	private int port;
 	private Socket socket;
 	private CallBackMethod cm;
-	
+
 	public ConnectTask2(String host, int port, Socket socket, CallBackMethod cm)
 	{
 		this.host = host;
@@ -44,7 +44,8 @@ class ConnectTask2 implements Runnable {
 		try
 		{
 			socket.bind(null);
-			DebugManager.print(ClientSocketHandler.GetTag() + "Trying to reach address " + host + ":" + port,
+			DebugManager.print(ClientSocketHandler.GetTag()
+					+ "Trying to reach address " + host + ":" + port,
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			socket.connect(new InetSocketAddress(host, port), 500);
 			// socket.connect((new InetSocketAddress(host, port)), 500);
@@ -56,49 +57,83 @@ class ConnectTask2 implements Runnable {
 		catch (IllegalArgumentException e)
 		{
 			// Log.d("A", e.getMessage() + "");
-			DebugManager.print(ClientSocketHandler.GetTag() + 
-					"argument exception occure during connection to server at "
+			DebugManager
+					.print(ClientSocketHandler.GetTag()
+							+ "argument exception occure during connection to server at "
 							+ host + ":" + port,
-					WifiDirectManager.DEBUGGER_CHANNEL);
+							WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 		catch (IOException e)
 		{
 			// Log.d("A", e.getMessage() + "");
-			DebugManager.print(ClientSocketHandler.GetTag() + 
-					"IO Exception occure during connection to server at "
+			DebugManager
+					.print(ClientSocketHandler.GetTag()
+							+ "IO Exception occure during connection to server at "
 							+ host + ":" + port + ". Error: "
 							+ e.getLocalizedMessage(),
-					WifiDirectManager.DEBUGGER_CHANNEL);
+							WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 	}
 }
 
+/**
+ * This class manage all demands you want to ask to the remot host
+ * 
+ * @author Gregoire, IHMTEK
+ * 
+ */
 public class ClientSocketHandler {
 
 	private Socket socket;
 
 	private byte[] buf;
 
+	/*
+	 * Id of the current message. Positif id are for message. Negative id are
+	 * for accuse (exacly there are the opposite of the id from received
+	 * message). so id can only be > 1. If not accuse and message can share same
+	 * id (0)
+	 * 
+	 * @see SocketHandler.sendAccuse() method for more details
+	 */
 	private static long id = 1;
-	
+
+	/*
+	 * if true, we are trying to send a synchrone accuse (@see sendAccuse method
+	 * in SocketHandler class) and an accuse packet will be concatenated with
+	 * the next message to be send
+	 */
+	public boolean concatAccuseInNextSend = false;
+
+	public long accuseId;
+
 	public static long getId()
 	{
 		return id;
 	}
-	
+
 	public static byte[] generateId()
 	{
 		return toByte(id++);
 	}
-	
+
+	// if true, there will be no generated id
 	private static boolean useGivenId = false;
 	private static byte[] givenId;
+
+	// Timer to connect again if connection fail
+	private Handler handler = new Handler();
+	private Runnable worker;
+
+	private String remoteIp = null;
+	private int remotePort = -1;
+
 	public static void setId(long id)
 	{
 		givenId = toByte(id);
 		useGivenId = true;
 	}
-	
+
 	public ClientSocketHandler(int len)
 	{
 		super();
@@ -106,24 +141,25 @@ public class ClientSocketHandler {
 		// socket = new Socket();
 
 	}
-	
+
+	/**
+	 * @return a debug identifier to print element relative to this classF
+	 */
 	public static String GetTag()
 	{
 		Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		return "[LUDOCLIENT][" + sdf.format(cal.getTime()) + "]";
 	}
 
+	/**
+	 * @return false if the socket is null or not connected or the remoteIp was
+	 *         not setf
+	 */
 	public boolean isConnected()
 	{
 		return socket != null && socket.isConnected() && remoteIp != null;
 	}
-
-	private Handler handler = new Handler();
-	private Runnable worker;
-
-	private String remoteIp = null;
-	private int remotePort = -1;
 
 	public void setRemoteHost(String ip, int port)
 	{
@@ -140,7 +176,8 @@ public class ClientSocketHandler {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print(ClientSocketHandler.GetTag() + "error while closing outputstream",
+			DebugManager.print(ClientSocketHandler.GetTag()
+					+ "error while closing outputstream",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 	}
@@ -150,16 +187,27 @@ public class ClientSocketHandler {
 		return remoteIp == null;
 	}
 
+	/**
+	 * Forbid client to try to connect again to the host
+	 */
 	public void dettachFromRemoteHost()
 	{
 		remoteIp = null;
 	}
 
+	/**
+	 * connect to the remote host, identified by the IP and port set by the
+	 * setRemoteHost method
+	 * 
+	 * @param cm
+	 */
 	private void connect(final CallBackMethod cm)
 	{
-		if (remoteIp == null)
+		// If there is not remote host set, stop connection
+		if (isDettachedFromRemoteHost())
 		{
-			DebugManager.print(ClientSocketHandler.GetTag() + "Not connected to host",
+			DebugManager.print(ClientSocketHandler.GetTag()
+					+ "Not connected to host",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 
 			return;
@@ -170,7 +218,8 @@ public class ClientSocketHandler {
 			@Override
 			public void run()
 			{
-				if (remoteIp == null)
+				// If there is not remote host set, stop connection and timer
+				if (isDettachedFromRemoteHost())
 				{
 					DebugManager
 							.print("Ip from remost host is null. Stoping connection now.",
@@ -180,20 +229,31 @@ public class ClientSocketHandler {
 				if (socket != null && socket.isConnected()
 						&& !socket.isClosed())
 				{
-					DebugManager.print(ClientSocketHandler.GetTag() + "Connected to server !",
+					// if socket is connected, call the given callback method
+					DebugManager.print(ClientSocketHandler.GetTag()
+							+ "Connected to server !",
 							WifiDirectManager.DEBUGGER_CHANNEL);
 					cm.Do();
 				}
 				else
 				{
-					DebugManager.print(ClientSocketHandler.GetTag() + 
-							"Connection to server fail. Trying again...",
+					// if no connection, try to connect by initiating a
+					// ConnectTask2
+
+					DebugManager.print(ClientSocketHandler.GetTag()
+							+ "Connection to server fail. Trying again...",
 							WifiDirectManager.DEBUGGER_CHANNEL);
 					socket = new Socket();
 					ConnectTask2 connectTask = new ConnectTask2(remoteIp,
 							remotePort, socket, null);
 					connectTask.execute();
-				//	handler.postDelayed(worker, 2000);
+					/*
+					 * uncomment to enable timer to work. But this is not a good
+					 * ideabecause MailBox will try to send again the message if
+					 * no accuse is received(and the send method will call this
+					 * method)
+					 */
+					// handler.postDelayed(worker, 2000);
 				}
 			}
 
@@ -201,6 +261,9 @@ public class ClientSocketHandler {
 		handler.post(worker);
 	}
 
+	/**
+	 * @return a stream to write on (communication with host must ready)
+	 */
 	public OutputStream openOutputStream()
 	{
 		try
@@ -209,8 +272,9 @@ public class ClientSocketHandler {
 		}
 		catch (IOException e)
 		{
-			DebugManager.print(ClientSocketHandler.GetTag() + 
-					"error while openning outputstream: "
+			DebugManager.print(
+					ClientSocketHandler.GetTag()
+							+ "error while openning outputstream: "
 							+ e.getLocalizedMessage(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			return null;
@@ -257,7 +321,8 @@ public class ClientSocketHandler {
 
 	public void send(File f)
 	{
-		DebugManager.print(ClientSocketHandler.GetTag() + "sending file " + f.getName(),
+		DebugManager.print(
+				ClientSocketHandler.GetTag() + "sending file " + f.getName(),
 				WifiDirectManager.DEBUGGER_CHANNEL);
 		try
 		{
@@ -266,7 +331,8 @@ public class ClientSocketHandler {
 		}
 		catch (FileNotFoundException e)
 		{
-			DebugManager.print(ClientSocketHandler.GetTag() + "error occured while sending file",
+			DebugManager.print(ClientSocketHandler.GetTag()
+					+ "error occured while sending file",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 
@@ -274,7 +340,8 @@ public class ClientSocketHandler {
 
 	public void send(double d)
 	{
-		DebugManager.print(ClientSocketHandler.GetTag() + "sending double " + d,
+		DebugManager.print(
+				ClientSocketHandler.GetTag() + "sending double " + d,
 				WifiDirectManager.DEBUGGER_CHANNEL);
 
 		send(toByte(d), PACKET_TYPE.DOUBLE);
@@ -290,8 +357,8 @@ public class ClientSocketHandler {
 			bytesStr += bytes[i] + "-";
 		}
 
-		DebugManager.print(ClientSocketHandler.GetTag() + "sending bytes " + bytesStr,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending bytes "
+				+ bytesStr, WifiDirectManager.DEBUGGER_CHANNEL);
 		/* end debug */
 
 		send(bytes, PACKET_TYPE.BYTE_ARRAY);
@@ -334,15 +401,15 @@ public class ClientSocketHandler {
 
 	public void send(boolean b)
 	{
-		DebugManager.print(ClientSocketHandler.GetTag() + "sending boolean " + b,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending boolean "
+				+ b, WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(b), PACKET_TYPE.BOOL);
 	}
 
 	public void send(String str)
 	{
-		DebugManager.print(ClientSocketHandler.GetTag() + "sending string " + str,
-				WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending string "
+				+ str, WifiDirectManager.DEBUGGER_CHANNEL);
 		send(toByte(str), PACKET_TYPE.STRING);
 	}
 
@@ -355,17 +422,19 @@ public class ClientSocketHandler {
 
 	public void sendIP(int clientListenningPort)
 	{
-		DebugManager.print(ClientSocketHandler.GetTag() + "sending IP...", WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print(ClientSocketHandler.GetTag() + "sending IP...",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 		String address = getClientIpAddress() + "!" + clientListenningPort;
 		send(toByte(address), PACKET_TYPE.IP);
 	}
 
-	public void notifyServer()
+	public void sendAsyncAccuse()
 	{
-		DebugManager.print(ClientSocketHandler.GetTag() + "Sending alive packet...",
-				WifiDirectManager.DEBUGGER_CHANNEL);
-		
-		send(new byte[]{}, PACKET_TYPE.KEEP_ALIVE);
+		DebugManager
+				.print(ClientSocketHandler.GetTag() + "Sending alive packet...",
+						WifiDirectManager.DEBUGGER_CHANNEL);
+
+		send(new byte[] {}, PACKET_TYPE.ASYNC_ACCUSE);
 
 	}
 
@@ -378,13 +447,20 @@ public class ClientSocketHandler {
 	{
 		send(new ByteArrayInputStream(bytes), type);
 	}
-	
-	public boolean concatAccuseInNextSend = false;
 
-	public long accuseId;
-	
+	/**
+	 * This message send an inputstream tagged with the PACKET_TYPE "type"
+	 * 
+	 * @param inputStream
+	 * @param type
+	 */
 	private void send(final InputStream inputStream, final PACKET_TYPE type)
 	{
+		/*
+		 * Create a callback method, that will be passed has parameter to the
+		 * connect method. When the connection will be established, this method
+		 * will be called.F
+		 */
 		CallBackMethod cm = new CallBackMethod() {
 
 			@Override
@@ -392,19 +468,29 @@ public class ClientSocketHandler {
 			{
 				try
 				{
-					// stopServerNotificator();
 
+					// open a new stream to communicate with remote server
 					OutputStream outputStream = openOutputStream();
-					// InputStream inputStream = new
-					// ByteArrayInputStream(bytes);
-					if(concatAccuseInNextSend)
+
+					// Check if we need to concatenate a message accuse to this
+					// message
+					// @see sendAccuse method from SocketHandler class for more
+					// details
+					if (concatAccuseInNextSend)
 					{
+						// Accuse is packet composed by the PACKET_TYPE
 						outputStream.write(PACKET_TYPE.ACCUSE.toInt());
+						// and an ID (that is the opposite of the id from the
+						// message it accused)
 						outputStream.write(toByte(accuseId));
 						concatAccuseInNextSend = false;
 					}
+
+					// Write message packet type to the stream
 					outputStream.write(type.toInt());
-					if(useGivenId)
+
+					// check if we need to generate and id, or use a given id
+					if (useGivenId)
 					{
 						outputStream.write(givenId);
 						useGivenId = false;
@@ -413,12 +499,15 @@ public class ClientSocketHandler {
 					{
 						outputStream.write(generateId());
 					}
+
+					// Write message itself to the outputstream
 					int len;
 					while ((len = inputStream.read(buf)) != -1)
 					{
 						outputStream.write(buf, 0, len);
 					}
-					// outputStream.close();
+
+					// close and clean connection
 					inputStream.close();
 					closeOutputStream(outputStream);
 					socket.close();
@@ -427,8 +516,10 @@ public class ClientSocketHandler {
 				}
 				catch (Exception e)
 				{
-					DebugManager.print(ClientSocketHandler.GetTag() + "error occure while sending stream : "
-							+ e.getLocalizedMessage(),
+					DebugManager.print(
+							ClientSocketHandler.GetTag()
+									+ "error occure while sending stream : "
+									+ e.getLocalizedMessage(),
 							WifiDirectManager.DEBUGGER_CHANNEL);
 				}
 			}

@@ -30,6 +30,23 @@ class Communication implements Runnable {
 	private Socket client;
 	private SocketHandler master;
 
+	// This array list contains the id of the message previously received
+	private static ArrayList<Long> alreadyTreated = new ArrayList<Long>();
+	// The id from the message being read
+	private long id;
+
+	// User can defien callback method that are called when receiving data
+	private static CallBackMethod onReceiveString = null;
+	private static CallBackMethod onReceiveInt = null;
+	private static CallBackMethod onReceiveBool = null;
+	private static CallBackMethod onReceiveFloat = null;
+	private static CallBackMethod onReceiveDouble = null;
+	private static CallBackMethod onReceiveByte = null;
+	private static CallBackMethod onReceiveLong = null;
+	private static CallBackMethod onReceiveFile = null;
+	private static CallBackMethod onReceiveByteArray = null;
+	private static CallBackMethod onReceiveChar = null;
+
 	public Communication(Socket client, SocketHandler master)
 	{
 		super();
@@ -241,9 +258,7 @@ class Communication implements Runnable {
 		String clientIP = getStringFromInputStream(stream);
 
 		DebugManager.print(ServerSocketHandler.GetTag()
-				+ "client address is : " + clientIP + ". i'm the host."
-				+ "onReceiveIpCallBack is null = "
-				+ (onReceiveIPCallBack == null),
+				+ "client address is : " + clientIP + ". i'm the host.",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 
 		// notify SocketHandler that this device client should
@@ -255,10 +270,6 @@ class Communication implements Runnable {
 		// connected
 		// to the remost server.
 
-		if (onReceiveIPCallBack != null)
-		{
-			onReceiveIPCallBack.Do();
-		}
 		master.sendAccuse(id);
 	}
 
@@ -282,7 +293,7 @@ class Communication implements Runnable {
 	}
 
 	/**
-	 * Called when the message is a "ACCUSE" message.
+	 * Called when the message is an "ACCUSE" (synchrone or asynchrone) message.
 	 * 
 	 * @param stream
 	 */
@@ -290,6 +301,9 @@ class Communication implements Runnable {
 	{
 		DebugManager.print(ServerSocketHandler.GetTag() + "Accuse received !",
 				WifiDirectManager.DEBUGGER_CHANNEL);
+		// Receiving an accuse means that previous message was received, so we
+		// can allow
+		// the client to send the next one
 		master.sendNext();
 	}
 
@@ -471,6 +485,12 @@ class Communication implements Runnable {
 		return -1;
 	}
 
+	/**
+	 * Read an int from the inputstream is and cast it to a PACKET_TYPE
+	 * 
+	 * @param is
+	 * @return the packet type tagging the inputstream
+	 */
 	private PACKET_TYPE getPacketType(InputStream is)
 	{
 		int value = -1;
@@ -497,9 +517,16 @@ class Communication implements Runnable {
 		}
 	}
 
-	private static ArrayList<Long> alreadyTreated = new ArrayList<Long>();
-
-	long id;
+	/**
+	 * Set the "id" attribute with the id read from the current message
+	 * represented by the inputstream "is". if the message was already received
+	 * ( = stored in the already treated attribute), the method return true, if
+	 * not, it return false and add the message to the list of the message
+	 * already treated.
+	 * 
+	 * @param is
+	 * @return true if the message was already received and false else.
+	 */
 	private boolean isMessageAlreadyReceived(InputStream is)
 	{
 		id = getLongFromInputStream(is);
@@ -519,35 +546,49 @@ class Communication implements Runnable {
 	@Override
 	public void run()
 	{
+		// Get the inputstream to receive the data from the client
 		InputStream is = getClientData(client);
 
+		// Get the packet type from the message
 		PACKET_TYPE type = getPacketType(is);
 
-		if(type == PACKET_TYPE.ACCUSE)//Accuse always come concatenated with other message
+		// If the packet type is ACCUSE, it means there is also an other message
+		// after the accuse
+		// because ACCUSE packet come always concatenated with other message.
+		// This is done to avoid sending accuse and message in the same time,
+		// but asynchronously so
+		// there is a risk that of them mask the other
+		if (type == PACKET_TYPE.ACCUSE)
 		{
-			if(!isMessageAlreadyReceived(is))
-				receiveAccuse();
-			type = getPacketType(is);
+			if (!isMessageAlreadyReceived(is))
+			{
+				receiveAccuse();// synchrone Accuse was not already received, so
+								// we treat it
+			}
+			type = getPacketType(is);// ...and then read the message
+										// concatenated with this accuse
 		}
-		
-		boolean msgAlreadyReceived = isMessageAlreadyReceived(is);
-		
-		DebugManager.print(ServerSocketHandler.GetTag()
-				+ "We received a packet of type " + type + ". was already received ? " + msgAlreadyReceived,
-				WifiDirectManager.DEBUGGER_CHANNEL);
-		
 
-		
+		boolean msgAlreadyReceived = isMessageAlreadyReceived(is);
+
+		DebugManager.print(ServerSocketHandler.GetTag()
+				+ "We received a packet of type " + type
+				+ ". was already received ? " + msgAlreadyReceived,
+				WifiDirectManager.DEBUGGER_CHANNEL);
+
+		// We want to ignore all messages received more than 1 time
 		if (!msgAlreadyReceived)
 		{
-
 			switch (type)
 			{
-				case KEEP_ALIVE://KEEP_ALIVE is aynchrone accuse
+			// ASYNC ACCUSE are sent when there is no message in instance to be
+			// sent
+				case ASYNC_ACCUSE:
 					DebugManager.print(ServerSocketHandler.GetTag()
 							+ "Client is alive !",
 							WifiDirectManager.DEBUGGER_CHANNEL);
-					receiveAccuse();
+					receiveAccuse(); // We treat them as synchrone accuse (=
+										// ACCUSE packet type)
 					break;
 				case DEFAULT:
 					break;
@@ -585,7 +626,7 @@ class Communication implements Runnable {
 					receiveString(is);
 					break;
 				case ACCUSE:
-//					receiveAccuse(); // already treated
+					// receiveAccuse(); // already treated
 					break;
 				default:
 					break;
@@ -593,8 +634,18 @@ class Communication implements Runnable {
 		}
 		else
 		{
-			if (type != PACKET_TYPE.KEEP_ALIVE)
-				master.sendAccuse(id);//remote pair should not have receive accuse, so it keeps sending it -> so we send the accuse again
+			// if the message was already receive, it means
+			// remote pair should not have receive
+			// accuse, so it keeps sending it -> so
+			// we send the accuse again
+			// (except if the message is an accuse, because if we do that
+			// both will keep sending accuse to answer the previously received
+			// accuse
+			// and the communication will be broken)
+			if (type != PACKET_TYPE.ASYNC_ACCUSE)
+			{
+				master.sendAccuse(id);
+			}
 		}
 
 		closeInputStream(is);
@@ -604,24 +655,20 @@ class Communication implements Runnable {
 				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
-	private static CallBackMethod onReceiveIPCallBack = null;
-
-	public static void setOnReceiveIPCallBack(CallBackMethod cm)
-	{
-		onReceiveIPCallBack = cm;
-	}
-
-	private static CallBackMethod onReceiveString = null;
-	private static CallBackMethod onReceiveInt = null;
-	private static CallBackMethod onReceiveBool = null;
-	private static CallBackMethod onReceiveFloat = null;
-	private static CallBackMethod onReceiveDouble = null;
-	private static CallBackMethod onReceiveByte = null;
-	private static CallBackMethod onReceiveLong = null;
-	private static CallBackMethod onReceiveFile = null;
-	private static CallBackMethod onReceiveByteArray = null;
-	private static CallBackMethod onReceiveChar = null;
-
+	/**
+	 * Set callback to be call when receiving data
+	 * 
+	 * @param onReceiveString
+	 * @param onReceiveInt
+	 * @param onReceiveBool
+	 * @param onReceiveFloat
+	 * @param onReceiveDouble
+	 * @param onReceiveByte
+	 * @param onReceiveLong
+	 * @param onReceiveFile
+	 * @param onReceiveByteArray
+	 * @param onReceiveChar
+	 */
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
 			CallBackMethod onReceiveInt, CallBackMethod onReceiveBool,
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,
@@ -658,7 +705,11 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	private int port;
 	private SocketHandler master;
 	private String address;
+	private boolean run = true;
 
+	/**
+	 * @return debug identifier when printing something relative to this class
+	 */
 	public static String GetTag()
 	{
 		Calendar cal = Calendar.getInstance();
@@ -666,6 +717,15 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		return "[LUDOSERVER][" + sdf.format(cal.getTime()) + "]";
 	}
 
+	/**
+	 * @param port
+	 *            the port you want to listen
+	 * @param address
+	 *            the address you want for your server
+	 * @param master
+	 *            the socket handler that know also the client of your local
+	 *            device
+	 */
 	public ServerSocketHandler(int port, String address, SocketHandler master)
 	{
 		this.port = port;
@@ -673,8 +733,6 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		this.address = address;
 
 	}
-
-	private boolean run = true;
 
 	public void stop()
 	{
@@ -687,9 +745,12 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		execute();
 	}
 
+	/**
+	 * @return the address specified in the constructor
+	 */
 	public String getServerIpAddress()
 	{
-		return SocketHandler.getThisDeviceIpAddress();
+		return address;
 	}
 
 	private void openServerSocket()
@@ -701,7 +762,8 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 		try
 		{
-			serverSocket = new ServerSocket(port, 0, InetAddress.getByName(address));
+			serverSocket = new ServerSocket(port, 0,
+					InetAddress.getByName(address));
 		}
 		catch (Exception e)
 		{
@@ -735,6 +797,12 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 	}
 
+	/**
+	 * return from this function when a client connect to this server at the
+	 * specified address and port
+	 * 
+	 * @return a newly connected client
+	 */
 	private Socket waitForClient()
 	{
 		Socket client = null;
@@ -778,12 +846,12 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		return run;
 	}
 
-	ServerSocket serverSocket;
+	private ServerSocket serverSocket;
 
 	@Override
 	protected Void doInBackground(Void... params)
 	{
-		Thread.currentThread().setName("LudoMuseThread");
+		// start listenning
 		openServerSocket();
 
 		while (isRunning())
@@ -791,23 +859,38 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 			DebugManager.print(ServerSocketHandler.GetTag()
 					+ "server is waiting for client...",
 					WifiDirectManager.DEBUGGER_CHANNEL);
+			// Wait for client...
 			Socket client = waitForClient();
 			DebugManager.print(ServerSocketHandler.GetTag()
 					+ "new client request...",
 					WifiDirectManager.DEBUGGER_CHANNEL);
+			// and then open another thread to communicate with him
+			// Treating communication in new thread allow to wait for other
+			// client
+			// - and then answer to other communication in the same time
 			new Thread(new Communication(client, master)).start();
 		}
 
+		// clean buffer after operations done
 		closeServerSocket();
 
 		return null;
 	}
 
-	public void setOnReceiveIPCallBack(CallBackMethod cm)
-	{
-		Communication.setOnReceiveIPCallBack(cm);
-	}
-
+	/**
+	 * Set a callback to be call when data are received
+	 * 
+	 * @param onReceiveString
+	 * @param onReceiveInt
+	 * @param onReceiveBool
+	 * @param onReceiveFloat
+	 * @param onReceiveDouble
+	 * @param onReceiveByte
+	 * @param onReceiveLong
+	 * @param onReceiveFile
+	 * @param onReceiveByteArray
+	 * @param onReceiveChar
+	 */
 	public static void registerCallBackReceiver(CallBackMethod onReceiveString,
 			CallBackMethod onReceiveInt, CallBackMethod onReceiveBool,
 			CallBackMethod onReceiveFloat, CallBackMethod onReceiveDouble,

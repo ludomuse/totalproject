@@ -2,6 +2,7 @@
 package org.cocos2dx.cpp;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
 import org.cocos2dx.lib.Cocos2dxActivity;
@@ -41,9 +42,10 @@ public class AppActivity extends Cocos2dxActivity {
 		
 		
 		//test to see if it fix this => https://github.com/cocos2d/cocos2d-x/issues/8305
-		if ((getIntent().getFlags() & getIntent().FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) 
+		if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) 
 		{
 		    finish();
+		    _wifiFacade.clear(); //TODO totest
 		    return;
 		}
 

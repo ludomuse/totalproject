@@ -2,7 +2,7 @@ package org.cocos2dx.cpp.sockets;
 
 public enum PACKET_TYPE {
 
-	DEFAULT, ACCUSE, STRING, INT, BOOL, LONG, FILE, DOUBLE, FLOAT, CHAR, IP, BYTE, BYTE_ARRAY, KEEP_ALIVE;
+	DEFAULT, ACCUSE, STRING, INT, BOOL, LONG, FILE, DOUBLE, FLOAT, CHAR, IP, BYTE, BYTE_ARRAY, ASYNC_ACCUSE;
 
 	/**
 	 * @return the integer representation of the enum, since enum is a special

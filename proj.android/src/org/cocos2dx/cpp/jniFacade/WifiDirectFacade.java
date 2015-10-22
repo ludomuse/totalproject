@@ -259,4 +259,9 @@ public class WifiDirectFacade {
 	{
 		_manager.resume();
 	}
+
+	public void clear()
+	{
+		_manager.clear();	
+	}
 }
