@@ -300,7 +300,10 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
-
+	bytes msg(10);
+	msg << (int) 2 << false << true << "test" << *m_pUser1;
+	//TOTEST : with m_puser1
+	CCLOG("msgRR = %s", msg.toCharSequence());
 	if (!m_bReady)
 	{
 		//can't be ready if no role selected and no user 2 choose

@@ -30,7 +30,7 @@
 							return res;\
 						}
 
-#define OP_IN(X) 		bytes& operator<<(X &value)\
+#define OP_IN(X) 		bytes& operator<<(X value)\
 						{\
 							write(value);\
 							return *this;\
@@ -328,7 +328,22 @@ class bytes {
 
 		std::string toString()
 		{
-			return std::string(data, getLen());
+			std::ostringstream convert;
+
+			int len = getLen();
+			for(int i = 0; i < len; i++)
+			{
+				int val = data[i];
+				if(i < len - 1)
+				{
+					convert << val << "-";
+				}
+				else
+				{
+					convert << val;
+				}
+			}
+			return convert.str();
 		}
 
 		const char* toCharSequence()
@@ -348,13 +363,13 @@ class bytes {
 
 		OP_IN(double)
 
-		OP_IN(bool)
+		OP_IN(byte)
 
-		bytes& operator<<(byte value)
+		/*bytes& operator<<(byte value)
 		{
 			write(value);
 			return *this;
-		}
+		}*/
 
 		bytes& operator<<(const char* value)
 		{
