@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.cocos2dx.cpp.DebugManager;
-import org.cocos2dx.cpp.LudoMuseThread;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.os.Handler;
@@ -36,7 +35,7 @@ class ConnectTask2 implements Runnable {
 
 	public void execute()
 	{
-		LudoMuseThread.start(this);
+		new Thread(this).start();
 	}
 
 	public void run()

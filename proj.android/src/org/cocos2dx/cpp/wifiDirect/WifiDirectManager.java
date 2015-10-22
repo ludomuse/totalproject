@@ -1007,13 +1007,13 @@ public class WifiDirectManager {
 			{
 				if (!info.isGroupOwner)
 				{
-
+					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);
 					socket.connectTo(info.groupOwnerAddress.getHostAddress());
 
 				}
 				else
 				{
-
+					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
 				}
 
 				_cmPeerConnected = null;

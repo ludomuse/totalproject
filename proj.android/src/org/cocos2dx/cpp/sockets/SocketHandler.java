@@ -195,7 +195,7 @@ public class SocketHandler {
 					InetAddress inetAddress = enumIpAddr.nextElement();
 					if (!inetAddress.isLoopbackAddress())
 					{
-						return inetAddress.getHostAddress().toString();
+						return inetAddress.getHostAddress();
 					}
 				}
 			}

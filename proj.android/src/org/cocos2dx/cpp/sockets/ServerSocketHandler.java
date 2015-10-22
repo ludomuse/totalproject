@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.cocos2dx.cpp.DebugManager;
-import org.cocos2dx.cpp.LudoMuseThread;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.os.AsyncTask;
@@ -793,8 +792,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 			DebugManager.print(ServerSocketHandler.GetTag()
 					+ "new client request...",
 					WifiDirectManager.DEBUGGER_CHANNEL);
-			LudoMuseThread.start(new Communication(client, master));
-			//LudoMuseThread.stopAllLudoMuseThread();
+			new Thread(new Communication(client, master)).start();
 		}
 
 		closeServerSocket();
