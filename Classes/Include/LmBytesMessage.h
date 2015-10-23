@@ -16,10 +16,10 @@
 
 #define WR_PRIM(X) 		void write(X v)\
 						{\
-							byte* rep = new byte[sizeof(X)];\
+							byte* rep = alloc(sizeof(X));\
 							memcpy(rep, &v, sizeof(X));\
 							write(rep, sizeof(X));\
-							del(rep, sizeof(X));\
+							del(rep);\
 						}
 
 #define RD_PRIM(X, Y) 	X Y()\
@@ -65,10 +65,10 @@ class bytes {
 		{
 			if (this->size >= size || size == 0)
 				return;
-			byte* newBytes = new byte[size];
+			byte* newBytes = alloc(size);
 			if (data != 0)
 				memcpy(newBytes, data, getLen());
-			del(data, size);
+			del(data);
 			data = newBytes;
 			this->size = size;
 		}
@@ -96,12 +96,14 @@ class bytes {
 			error = true;
 		}
 
-		void del(byte* data, int len)
+		void del(byte* data)
 		{
-			/*for (int i = 0; i < len; i++)
-			{
-				delete &data[i];
-			}*/
+			free(data);
+		}
+
+		byte* alloc(int size)
+		{
+			return (byte*) malloc(size * sizeof(byte));
 		}
 
 	public:
@@ -137,8 +139,8 @@ class bytes {
 			size = other.size;
 			readCursor = other.readCursor;
 			writeCursor = other.writeCursor;
-			del(data, size);
-			data = new byte[size];
+			del(data);
+			data = alloc(size);
 			memcpy(data, other.data, size);
 			error = other.error;
 		}
@@ -259,7 +261,7 @@ class bytes {
 				setError();
 				return 0;
 			}
-			byte* res = new byte[size];
+			byte* res = alloc(size);
 			memcpy(res, (void*) &(data[readCursor]), size);
 			readCursor += size;
 			return res;
@@ -427,7 +429,7 @@ class bytes {
 
 		~bytes()
 		{
-			del(data, size);
+			del(data);
 		}
 
 };
