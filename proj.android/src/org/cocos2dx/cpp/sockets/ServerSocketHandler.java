@@ -6,8 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -762,8 +764,10 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 		try
 		{
-			serverSocket = new ServerSocket(port, 0,
-					InetAddress.getByName(address));
+			serverSocket = new ServerSocket();
+			serverSocket.setReuseAddress(true);
+			SocketAddress sa = new InetSocketAddress(InetAddress.getByName(address), port);
+			serverSocket.bind(sa);
 		}
 		catch (Exception e)
 		{
