@@ -17,6 +17,7 @@ bool LmServerManager::init()
 {
 	bool l_bInit;
 
+
 	//filename json had to be write here for now
 	if (m_pLmJsonparser->initJsonDocument("Json/cernuschi.json"))
 	{

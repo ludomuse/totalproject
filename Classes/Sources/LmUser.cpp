@@ -10,7 +10,6 @@
 
 #include "../Include/LmUser.h"
 
-
 using namespace std;
 
 LmUser::LmUser()
@@ -27,12 +26,27 @@ LmUser::LmUser()
 
 LmUser::~LmUser()
 {
-
+	//destory reward here
+	for (std::vector<LmReward*>::iterator it = m_aRewards.begin();
+			it != m_aRewards.end(); ++it)
+	{
+		delete (*it);
+	}
 }
 
-void LmUser::addToScore(int points)
+void LmUser::winReward(LmReward* reward)
 {
-	m_iScore += points;
+	//clone reward and push it
+
+	m_aRewards.push_back(new LmReward(reward));
+
+	//update score
+	int sum=0;
+	for(int i=0;i<m_aRewards.size();i++)
+	{
+		sum+=m_aRewards.at(i)->getIRewardScore();
+	}
+	m_iScore = sum;
 }
 
 std::string LmUser::getUserSerialized()
@@ -70,7 +84,7 @@ void LmUser::setUser(std::string l_sUserSerialized)
 	std::stringstream ss(l_sUserSerialized);
 	std::string item;
 
-	int l_iCounter=0;
+	int l_iCounter = 0;
 
 	while (getline(ss, item, m_cSeparator))
 	{
@@ -133,18 +147,20 @@ int LmUser::stringToInt(std::string string)
 	return Result;
 }
 
- void LmUser::writeOn(bytes* msg)
- {
-	 msg->write(getUserSerialized());
- }
+void LmUser::writeOn(bytes* msg)
+{
+	msg->write(getUserSerialized());
+}
 
- void LmUser::readOn(bytes* msg)
- {
-	 CCLOG("reading on msg. Msg size = %d, msg free space = %d, msg len = %d, readCursor = %d", msg->getSize(), msg->getFreeCount(), msg->getLen(), msg->getReadCursor());
-	 std::string ser = msg->readString();
-	 CCLOG("string is = %s", ser.c_str());
-	 setUser(ser);
-	 CCLOG("sring read");
- }
-
+void LmUser::readOn(bytes* msg)
+{
+	CCLOG(
+			"reading on msg. Msg size = %d, msg free space = %d, msg len = %d, readCursor = %d",
+			msg->getSize(), msg->getFreeCount(), msg->getLen(),
+			msg->getReadCursor());
+	std::string ser = msg->readString();
+	CCLOG("string is = %s", ser.c_str());
+	setUser(ser);
+	CCLOG("sring read");
+}
 

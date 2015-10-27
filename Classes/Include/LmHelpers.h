@@ -50,7 +50,7 @@ struct LmEvent
 	static const event Replay = 5;
 
 	/*
-	 * parameter : int idGamecomponent, bool well placed
+	 * parameter : bool true = m_bwin = true;
 	 */
 	static const event Win = 6;
 
@@ -65,11 +65,11 @@ struct LmEvent
 	static const event GamecomponentWellPlaced = 8;
 
 	/*
-	 *
+	 * parameter : true when m_bwin false otherwise + int to know whhat game it is
 	 */
-	static const event E1 = 89;
+	static const event InteractionDone = 9;
 
-	static const event E2 = 66;
+
 };
 
 typedef struct LmEvent LmEvent;

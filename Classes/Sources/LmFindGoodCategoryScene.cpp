@@ -17,6 +17,9 @@ LmFindGoodCategoryScene::LmFindGoodCategoryScene(
 	m_sFilenameSpriteSendingArea = l_Seed.FilenameSpriteSendingArea;
 	m_aImages = l_Seed.Images;
 	m_aCategories = l_Seed.Categories;
+	m_iNumberOfGoodImages = l_Seed.NumberOfGoodImages;
+	m_sFilenameAudioGoodCategory = l_Seed.FilenameAudioGoodCategory;
+	m_sFilenameAudioBadCategory = l_Seed.FilenameAudioBadCategory;
 
 	//primitive type
 	m_bSpriteSelected = false;
@@ -24,7 +27,6 @@ LmFindGoodCategoryScene::LmFindGoodCategoryScene(
 	m_iBufferId = -1;
 	m_fSquareDimension = 0;
 	m_iCategoryTouchedIndex = -1;
-	m_iNumberOfImages = m_aImages.size();
 
 	//pointer
 	m_pSpriteBackground = nullptr;
@@ -111,6 +113,13 @@ void LmFindGoodCategoryScene::runGame()
 	{
 		CCLOG("initGame failed");
 	}
+
+	//we preload the sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			m_sFilenameAudioGoodCategory.c_str());
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			m_sFilenameAudioBadCategory.c_str());
 }
 
 bool LmFindGoodCategoryScene::initGame()
@@ -489,12 +498,16 @@ void LmFindGoodCategoryScene::onTouchEndedChild(cocos2d::Touch* touch,
 
 			CCLOG("well placed");
 
-			m_iNumberOfImages--;
+			m_iNumberOfGoodImages--;
+
+			//play a sound from the json
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+					m_sFilenameAudioGoodCategory.c_str(), false);
 
 			//check win
-			if (m_iNumberOfImages == 0)
+			if (m_iNumberOfGoodImages == 0)
 			{
-				m_pFinishGameButton->setVisible(true);
+				win(true);
 			}
 
 		}
@@ -509,6 +522,12 @@ void LmFindGoodCategoryScene::onTouchEndedChild(cocos2d::Touch* touch,
 			WIFIFACADE->sendBytes(msg);
 
 			CCLOG("bad placed");
+
+
+			//play a sound from the json
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+					m_sFilenameAudioBadCategory.c_str(), false);
+
 		}
 
 		//make it disapear
@@ -711,12 +730,12 @@ void LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 
 		m_pSendingAreaElement = nullptr;
 
-		m_iNumberOfImages--;
+		m_iNumberOfGoodImages--;
 
 		//check win
-		if (m_iNumberOfImages == 0)
+		if (m_iNumberOfGoodImages == 0)
 		{
-			m_pFinishGameButton->setVisible(true);
+			win(true);
 		}
 
 	}

@@ -78,7 +78,6 @@ void LmGameComponent::setPosition(cocos2d::Vec2 vector)
 {
 	if (m_pSpriteComponent)
 	{
-		CCLOG("there is a sprite component");
 		m_pSpriteComponent->setPosition(vector);
 	}
 

@@ -16,6 +16,16 @@
 #include "../Include/LmJniCppFacade.h"
 #include "../Include/LmWifiObserver.h"
 
+//message of the feedback label
+static const std::string s_sUserIsReady = "En attente de ton partenaire.";//ok
+static const std::string s_sDeviceNotConnected = "Tu dois choisir une tablette avec qui te connecter !";//ok
+static const std::string s_sRoleNotChoose = "Tu dois choisir un role.";//ok
+static const std::string s_sBegining = "Choisis un role et un partenaire.";//ok
+static const std::string s_sUserNotCompatible = "Message reçu, mais vos role doivent etre different !";
+static const std::string s_sYouAreNotReady = "Message reçu, mais tu n'es pas pret...";
+static const std::string s_sError = "Erreur lors de la synchronisation, veuillez recommencer.";
+
+
 static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;
 static const float s_fMarginLeftMenu = 70.0f;
@@ -50,6 +60,9 @@ public:
 private:
 
 	//ATTRIBUTES
+
+	//feedback user
+	cocos2d::Label* m_pLabelFeedback;
 
 	int m_iIdWifiObserver;
 

@@ -20,9 +20,8 @@ struct LmQuizz_v2SceneSeed
 	std::string FilenameSpriteBandTop;
 	std::string FilenameSpriteAnswerBackground;
 	std::string FilenameSpriteAnswerCross;
-	std::string FilenameSpriteGoodAnswerButton;
-	std::string FilenameSpriteBadAnswerButton;
-	std::string FilenameAudioAnswerSelected;
+	std::string FilenameAudioGoodAnswer;
+	std::string FilenameAudioBadAnswer;
 	std::vector<LmQuestion*> QuestionsChild;
 	std::vector<LmQuestion*> QuestionsParent;
 	int AttemptByQuestion;
@@ -58,7 +57,9 @@ private:
 	std::string m_sFilenameSpriteAnswerCross;
 	std::string m_sFilenameSpriteGoodAnswerButton;
 	std::string m_sFilenameSpriteBadAnswerButton;
-	std::string m_sFilenameAudioAnswerSelected;
+	std::string m_sFilenameAudioGoodAnswer;
+	std::string m_sFilenameAudioBadAnswer;
+
 
 	std::vector<LmQuestion*> m_aQuestionsChild;
 	std::vector<LmQuestion*> m_aQuestionsParent;

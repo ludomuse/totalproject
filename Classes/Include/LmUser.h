@@ -13,6 +13,7 @@
 #include <string>
 #include <sstream>
 #include "LmBytesMessage.h"
+#include "LmReward.h"
 
 //for debug
 #include "cocos2d.h"
@@ -24,7 +25,7 @@ class LmUser : public LmSerializable
 public:
 
 	LmUser();
-	~LmUser();
+	virtual ~LmUser();
 
 	//use for the serialization
 	const char m_cSeparator = '|';
@@ -69,7 +70,7 @@ public:
 		m_bParent = bParent;
 	}
 
-	void addToScore(int);
+	void winReward(LmReward* );
 
 	void setBMale(bool bMale)
 	{
@@ -96,6 +97,8 @@ private:
 	int m_iScore;
 	bool m_bParent;
 	bool m_bMale;
+
+	std::vector<LmReward*> m_aRewards;
 
 	//METHODS
 	inline std::string boolToString(bool b)

@@ -69,9 +69,23 @@ public:
 		m_pLmReward = pLmReward;
 	}
 
+	void setPLmRewardUser2(LmReward* pLmRewardUser2)
+	{
+		m_pLmRewardUser2 = pLmRewardUser2;
+	}
+
 	bool getReward() const
 	{
 		if (m_pLmReward)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool getRewardUser2() const
+	{
+		if (m_pLmRewardUser2)
 		{
 			return true;
 		}
@@ -114,6 +128,21 @@ public:
 		return m_iIdGame;
 	}
 
+	LmReward* getPLmReward() const
+	{
+		return m_pLmReward;
+	}
+
+	LmReward* getPLmRewardUser2() const
+	{
+		return m_pLmRewardUser2;
+	}
+
+	bool isBWin() const
+	{
+		return m_bWin;
+	}
+
 protected:
 
 	//ATTRIBUTES
@@ -141,8 +170,10 @@ protected:
 	//to know if this has been win
 	bool m_bWin;
 
-	//reward
+	//reward of user 1
 	LmReward* m_pLmReward;
+	//user 2 reward
+	LmReward* m_pLmRewardUser2;
 
 	//autorelease object it's the first layer of the scene
 	cocos2d::Layer* m_pLayerGame;
@@ -168,6 +199,8 @@ protected:
 	//buttons next and previous
 	cocos2d::ui::Button* m_pNextButton;
 	cocos2d::ui::Button* m_pPreviousButton;
+	cocos2d::ui::CheckBox* m_pPlayCheckBox;
+
 	//to know when a set point is finish
 	bool m_bSetPointFinished;
 	//to know if next button pass through the begion set point begin or other one
@@ -182,7 +215,7 @@ protected:
 
 	cocos2d::Label* m_pLabelUserName;
 	cocos2d::Label* m_pLabelScore;
-	cocos2d::ui::Button* m_pBackDashboardButton;
+	cocos2d::MenuItemImage* m_pBackDashboardButton;
 
 	bool m_bBackPressed;
 
@@ -216,7 +249,7 @@ protected:
 	void moveRightDone();
 	void moveLeftDone();
 
-	void backToDashboard();
+	void backToDashboard(cocos2d::Ref* );
 
 	//register the gamecomponent and return a pointer to it
 	LmGameComponent* makeGameComponent();
@@ -224,8 +257,16 @@ protected:
 	//call when the finishgamebutton is pressed
 	void endGame();
 
+	//when it's a win
+	void win(bool);
+
 	//callback event wifi
 	void onWinEvent(bytes );
+
+
+	void playCallback(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
+
+	void initFinishButtonTexture();
 
 
 

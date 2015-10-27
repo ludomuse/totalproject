@@ -765,6 +765,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		try
 		{
 			serverSocket = new ServerSocket();
+			System.setProperty("sun.net.useExclusiveBind","false");
 			serverSocket.setReuseAddress(true);
 			SocketAddress sa = new InetSocketAddress(InetAddress.getByName(address), port);
 			serverSocket.bind(sa);

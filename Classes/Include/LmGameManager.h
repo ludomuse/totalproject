@@ -100,12 +100,16 @@ private:
 
 	//vector interaction sprite
 	std::vector<cocos2d::Sprite*> m_aSpritesInteractions;
+	std::vector<cocos2d::Sprite*> m_aSpritesInteractionsUser2;
+
 
 	//to know how many interaction have been played
 	int m_iIndexInteractionScene;
 
 	//to know how many inetraction done
 	int m_iInteractionDone;
+	//to know how many inetraction done user2
+	int m_iInteractionDoneUser2;
 
 	//to know if it's a back to the dashboard or its interactionscenefinished
 	bool m_bBackToDashboard;
@@ -115,10 +119,14 @@ private:
 	cocos2d::Sprite* m_pDescriptionBox;
 	cocos2d::Label* m_pDescriptionLabel;
 
+	//bool to sync when compare button is pushed
+	bool m_bActionIsDone;
+
 	//METHODS
 
 	//call server manager and init m_vectorSceneOfTheGame
 	bool init();
+
 
 	//callback methods
 	void compare();
@@ -128,8 +136,6 @@ private:
 
 	void runNextInteraction();
 
-	//bool to sync when compare button is pushed
-	bool m_bActionIsDone;
 
 	//init the dashboard
 	bool initDashboard();
@@ -168,9 +174,15 @@ private:
 
 	//list of callback event
 	void onReadyForNextInteractionEvent(bytes );
+	void onInteractionDoneEvent(bytes );
+
 
 	//push the index scene interaction
 	void runInteraction(int);
+
+	//set visible lolipop user 2
+	void setSpritesInteractionsUser2Visible(bool );
+
 
 
 

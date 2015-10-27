@@ -30,6 +30,9 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed) :
 	m_sFilenameSpriteBadAnswerButton = l_Seed.FilenameSpriteBadAnswerButton;
 	m_sFilenameAudioAnswerSelected = l_Seed.FilenameAudioAnswerSelected;
 	m_pInGameScreenParent = l_Seed.InGameScreenParent;
+	m_pReplayScreen=l_Seed.ReplayScreen;
+	m_pWinChildScreen = l_Seed.WinChildScreen;
+	m_pWinParentScreen = l_Seed.WinParentScreen;
 
 	//pointer
 	m_pSpriteBackground = nullptr;
@@ -97,7 +100,6 @@ void LmQuizz_v1Scene::resetScene()
 
 		//reset replay button
 		m_pReplayButton->setVisible(false);
-		m_pNextQuestionButton->setVisible(false);
 		m_bQuestionFinished = false;
 
 		//if it's the parent that clicked
@@ -105,7 +107,7 @@ void LmQuizz_v1Scene::resetScene()
 		{
 			m_iIndexQuestion++;
 
-			m_pSpriteBuffer->setVisible(false);
+			m_pReplayScreen->setVisible(false);
 
 			bytes msg(10);
 			msg << LmEvent::Replay;
@@ -153,12 +155,27 @@ bool LmQuizz_v1Scene::initGame()
 	if (m_pUser->isBParent())
 	{
 		m_pInGameScreenParent->init();
+		m_pReplayScreen->init();
+		m_pWinParentScreen->init();
+
 		m_pLayerGame->addChild(m_pInGameScreenParent);
+		m_pLayerGame->addChild(m_pWinParentScreen,1);
+		m_pWinParentScreen->setVisible(false);
+		m_pLayerGame->addChild(m_pReplayScreen,1);
+		m_pReplayScreen->setVisible(false);
+
+	}
+	else
+	{
+		m_pWinChildScreen->init();
+		m_pLayerGame->addChild(m_pWinChildScreen,1);
+		m_pWinChildScreen->setVisible(false);
+
 	}
 
 	//init timer
 	m_pTimer = LoadingBar::create();
-	m_pTimer->loadTexture("Ludomuse/GUIElements/bandMid.png");
+	m_pTimer->loadTexture("Ludomuse/Content/timer.png");
 	m_pTimer->setPercent(0);
 	m_pTimer->setPosition(
 			Point(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
@@ -290,12 +307,13 @@ bool LmQuizz_v1Scene::initGame()
 			"Ludomuse/GUIElements/nextButtonNormal.png",
 			"Ludomuse/GUIElements/nextButtonPressed.png");
 	m_pNextQuestionButton->setTouchEnabled(true);
+	m_pNextQuestionButton->setAnchorPoint(Vec2(1,0.5));
 	m_pNextQuestionButton->setPosition(
-			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
+			Vec2(l_oVisibleSize.width , l_oVisibleSize.height * 0.1));
 	m_pNextQuestionButton->addTouchEventListener(
 			CC_CALLBACK_0(LmQuizz_v1Scene::beginQuestion, this));
 	m_pNextQuestionButton->setVisible(false);
-	m_pLayerGame->addChild(m_pNextQuestionButton);
+	m_pLayerGame->addChild(m_pNextQuestionButton,2);
 
 	m_iIndexQuestion = -1;	//so when we init the next question index = 0
 	beginQuestion();
@@ -389,11 +407,7 @@ void LmQuizz_v1Scene::checkAnswer()
 	if (m_aQuestions.at(m_iIndexQuestion)->getINumberGoodAnswer()
 			== m_iAnswerSelected)
 	{
-		//load good texture for next button to indicate win
-		m_pNextQuestionButton->loadTextureNormal(
-				m_sFilenameSpriteGoodAnswerButtonChild);
-		m_pNextQuestionButton->loadTexturePressed(
-				m_sFilenameSpriteGoodAnswerButtonChild);
+
 		questionFinish(true);
 	}
 	else
@@ -408,10 +422,6 @@ void LmQuizz_v1Scene::checkAnswer()
 		else
 		{
 			//load good texture for the next button to indicate loose
-			m_pNextQuestionButton->loadTextureNormal(
-					m_sFilenameSpriteBadAnswerButton);
-			m_pNextQuestionButton->loadTexturePressed(
-					m_sFilenameSpriteBadAnswerButton);
 			questionFinish(false);
 		}
 	}
@@ -497,6 +507,9 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 
 	if (goodAnswer)
 	{
+		//make appear win child
+		m_pWinChildScreen->setVisible(true);
+
 		m_pNextQuestionButton->setVisible(true);
 		m_pNextQuestionButton->setEnabled(true);
 
@@ -611,26 +624,17 @@ void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 		//can go to the next
 		m_pNextQuestionButton->setVisible(true);
 		m_pNextQuestionButton->setEnabled(true);
-		m_pNextQuestionButton->loadTextureNormal(
-				m_sFilenameSpriteGoodAnswerButtonParent);
-		m_pNextQuestionButton->loadTexturePressed(
-				m_sFilenameSpriteGoodAnswerButtonParent);
+
+		m_pWinParentScreen->setVisible(true);
+
 	}
 	else
 	{
 
 		CCLOG("bad ansswer");
 
-		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
-
-		m_pSpriteBuffer = Sprite::create(m_sFilenameSpriteBadAnswerButton);
-
-		m_pSpriteBuffer->setPosition(
-				Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
-		m_pSpriteBuffer->setVisible(true);
-
 		//can go to the next
-		m_pInGameScreenParent->addChild(m_pSpriteBuffer);
 		m_pReplayButton->setVisible(true);
+		m_pReplayScreen->setVisible(true);
 	}
 }

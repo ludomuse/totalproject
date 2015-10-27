@@ -16,11 +16,13 @@ LmGameManager::LmGameManager()
 	//primitive type
 	m_iIndexInteractionScene = 0;
 	m_iInteractionDone = 0;
+	m_iInteractionDoneUser2 = 0;
 	m_bBackToDashboard = false;
 	m_bActionIsDone = true;
 
-
 	//pointer
+	m_pUser1 = nullptr; //need to be delete
+	m_pUser2 = nullptr; //need to be delete
 	m_pLabelInteractionDone = nullptr;
 	m_pSpriteBackgroundBlue = nullptr;
 	m_pSpriteBackgroundBlueProfile = nullptr;
@@ -35,8 +37,7 @@ LmGameManager::LmGameManager()
 	m_pLabelScore = nullptr;
 	m_pLabelTitleApplication = nullptr;
 	m_pLabelUser1Name = nullptr;
-	m_pUser1 = nullptr; //need to be delete
-	m_pUser2 = nullptr; //need to be delete
+
 	m_pCompareButton = nullptr;
 	m_pScrollView = nullptr;
 	m_pPlayNextInteractionButton = nullptr;
@@ -50,6 +51,12 @@ LmGameManager::LmGameManager()
 	m_pLabelScoreUser2 = nullptr;
 	m_pDescriptionBox = nullptr;
 	m_pDescriptionLabel = nullptr;
+	m_pLabelInteractionDoneUser2 = nullptr;
+	m_pLayerScrollView = nullptr;
+	m_pStarUser1Sprite = nullptr;
+	m_pStarUser2Sprite = nullptr;
+	m_pCheckSpriteUser1 = nullptr;
+	m_pCheckSpriteUser2 = nullptr;
 
 }
 
@@ -103,27 +110,43 @@ bool LmGameManager::init()
 	auto InteractionSceneFinished = [=](EventCustom * event)
 	{
 
-		//TODO
-		//check if t's done and win etc and update sprite (for now its everytime done)
-			m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneNoReward.png");
+		//check if t's done and win etc and update sprite
+			if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward())
+			{
+				if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->isBWin())
+				{
+					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneRewardDone.png");
+				}
+				else
+				{
+					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneRewardNotDone.png");
+				}
+			}
+			else
+			{
+				m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneNoReward.png");
+			}
+
 			m_iInteractionDone++;
 
-		//update index
+			//update index
 			m_iIndexInteractionScene++;
 
-		//update label of dashboard
+			//update label of dashboard
 			updateDashboard();
 
-		//it's not a back to dashboard
+			//it's not a back to dashboard
 			m_bBackToDashboard=false;
 
-		//reset touch enable
+			//reset touch enable
 			removeListeners(false);
 
 		};
 
 	auto BackToDashboard = [=](EventCustom * event)
 	{
+
+		Director::getInstance()->popScene();
 
 		m_bBackToDashboard=true;
 
@@ -366,8 +389,7 @@ bool LmGameManager::initDashboard()
 					* 0.9);
 	m_pSpriteBandTop->addChild(m_pLabelTitleApplication);
 
-	//init interactions
-	initDashboardInteraction();
+
 
 	//play next interaction button
 	m_pPlayNextInteractionButton = ui::Button::create(
@@ -380,6 +402,9 @@ bool LmGameManager::initDashboard()
 	m_pPlayNextInteractionButton->addTouchEventListener(
 			CC_CALLBACK_0(LmGameManager::runNextInteraction, this));
 	m_pSpriteBandMid->addChild(m_pPlayNextInteractionButton, 2);
+
+	//init interactions
+	initDashboardInteraction();
 
 	return true;
 }
@@ -439,6 +464,8 @@ void LmGameManager::compareDone()
 			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.3f);
 	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
+	setSpritesInteractionsUser2Visible(true);
+
 }
 
 void LmGameManager::back()
@@ -479,6 +506,8 @@ void LmGameManager::backDone()
 			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.7f);
 	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
+	setSpritesInteractionsUser2Visible(false);
+
 }
 
 void LmGameManager::initDashboardInteraction()
@@ -511,8 +540,28 @@ void LmGameManager::initDashboardInteraction()
 		l_pSpriteBuffer->setPosition(
 				Vec2((l_iIndex) * s_fMarginBetweenInteraction,
 						m_pSpriteBandMid->getContentSize().height * 0.5));
-		l_iIndex++;
 		m_aSpritesInteractions.push_back(l_pSpriteBuffer);
+
+		//if the scene get a reward for the second user
+		if ((*it)->getPLmRewardUser2())
+		{
+			l_pSpriteBuffer =
+					Sprite::create(
+							"Ludomuse/GUIElements/interactionNotDoneRewardNotDoneUser2.png");
+		}
+		else
+		{
+			l_pSpriteBuffer = Sprite::create(
+					"Ludomuse/GUIElements/interactionNotDoneNoRewardUser2.png");
+		}
+
+		l_pSpriteBuffer->setAnchorPoint(Vec2(0, 1));
+		l_pSpriteBuffer->setPosition(
+				Vec2((l_iIndex) * s_fMarginBetweenInteraction,
+						m_pSpriteBandMid->getContentSize().height * 0.5));
+		m_aSpritesInteractionsUser2.push_back(l_pSpriteBuffer);
+
+		l_iIndex++;
 	}
 
 	//init the scroll view
@@ -546,9 +595,19 @@ void LmGameManager::initDashboardInteraction()
 	m_pLayerScrollView = Layer::create();
 	m_pScrollView->addChild(m_pLayerScrollView);
 
+	//user 1
 	for (std::vector<Sprite*>::iterator it = m_aSpritesInteractions.begin();
 			it != m_aSpritesInteractions.end(); ++it)
 	{
+		m_pLayerScrollView->addChild((*it));
+	}
+
+	//user 2
+	for (std::vector<Sprite*>::iterator it =
+			m_aSpritesInteractionsUser2.begin();
+			it != m_aSpritesInteractionsUser2.end(); ++it)
+	{
+		(*it)->setVisible(false);
 		m_pLayerScrollView->addChild((*it));
 	}
 
@@ -607,7 +666,7 @@ void LmGameManager::runNextInteraction()
 	{
 
 		//if yes we need to init the scene
-		if (!m_bBackToDashboard )
+		if (!m_bBackToDashboard)
 		{
 			//we pass the local user
 			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
@@ -725,7 +784,7 @@ Sprite* LmGameManager::addSpriteToLabel(Label* l_pLabel, std::string filename)
 void LmGameManager::updateDashboard()
 {
 	/*
-	 * USER 1
+	 * USER 1 LABEL
 	 */
 
 	//update interaction done user1
@@ -747,8 +806,23 @@ void LmGameManager::updateDashboard()
 	updateSpriteToLabel(m_pStarUser1Sprite, m_pLabelScore);
 
 	/*
-	 * USER 2
+	 * USER 2 LABEL
 	 */
+
+	//update interaction done user2
+	sprintf(l_aInteractionDoneString, "%d/%d", m_iInteractionDoneUser2,
+			m_aInteractionSceneOfTheGame.size());
+	m_pLabelInteractionDoneUser2->setString(l_aInteractionDoneString);
+
+	//update sprite associated user2 inetraction done
+	updateSpriteToLabel(m_pCheckSpriteUser2, m_pLabelInteractionDoneUser2);
+
+	//update score user2
+	sprintf(l_aScoreString, "%d pts", m_pUser2->getPScore());
+	m_pLabelScoreUser2->setString(l_aScoreString);
+
+	//update sprite associated user1 score
+	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
 }
 
@@ -842,6 +916,12 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 				l_oMsg)
 		;
 		break;
+
+	case LmEvent::InteractionDone:
+		CCLOG("InteractionDone");
+		ON_CC_THREAD(LmGameManager::onInteractionDoneEvent, this, l_oMsg)
+		;
+		break;
 	default:
 		break;
 	}
@@ -856,12 +936,46 @@ void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 	m_aInteractionSceneOfTheGame.at(idInteractionScene)->setBUser2IsReadyForNextInteraction(
 			true);
 
-
-	if(!m_aInteractionSceneOfTheGame.at(idInteractionScene)->isBGameIsRunning())
+	if (!m_aInteractionSceneOfTheGame.at(idInteractionScene)->isBGameIsRunning())
 	{
 		m_aInteractionSceneOfTheGame.at(idInteractionScene)->startGame();
 	}
 
+}
+
+void LmGameManager::onInteractionDoneEvent(bytes l_oMsg)
+{
+	int idInteractionScene = l_oMsg.readInt();
+	bool l_bWin = l_oMsg.readBool();
+
+	if (m_aInteractionSceneOfTheGame.at(idInteractionScene)->getRewardUser2())
+	{
+		if (l_bWin)
+		{
+			m_pUser2->winReward(
+					m_aInteractionSceneOfTheGame.at(idInteractionScene)->getPLmRewardUser2());
+			m_aSpritesInteractionsUser2.at(idInteractionScene)->setTexture(
+					"Ludomuse/GUIElements/interactionDoneRewardDoneUser2.png");
+
+		}
+		else
+		{
+			m_aSpritesInteractionsUser2.at(idInteractionScene)->setTexture(
+					"Ludomuse/GUIElements/interactionDoneRewardNotDoneUser2.png");
+
+		}
+
+	}
+	else
+	{
+		m_aSpritesInteractionsUser2.at(idInteractionScene)->setTexture(
+				"Ludomuse/GUIElements/interactionDoneNoRewardUser2.png");
+
+	}
+
+	m_iInteractionDoneUser2++;
+
+	updateDashboard();
 }
 
 void LmGameManager::runInteraction(int index)
@@ -879,6 +993,18 @@ void LmGameManager::runInteraction(int index)
 	if (m_bBackToDashboard)
 	{
 		m_aInteractionSceneOfTheGame.at(index)->restart();
+	}
+}
+
+void LmGameManager::setSpritesInteractionsUser2Visible(bool visible)
+{
+	m_pSpriteBackgroundPink->setVisible(!visible);
+
+	for (std::vector<Sprite*>::iterator it =
+			m_aSpritesInteractionsUser2.begin();
+			it != m_aSpritesInteractionsUser2.end(); ++it)
+	{
+		(*it)->setVisible(visible);
 	}
 }
 

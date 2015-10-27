@@ -72,7 +72,7 @@ private:
 	//METHODS
 
 	//init
-	void initInteractionSceneOfTheGame();
+	void initInteractionAttributesSceneOfTheGame();
 
 	//generic method to make all the setpoint 2nd precise which one to take
 	LmSetPoint* getLmSetPoint(const rapidjson::Value&, const char*);
@@ -82,7 +82,12 @@ private:
 	void initReward(const rapidjson::Value& , LmInteractionScene* );
 	void initDescription(const rapidjson::Value& , LmInteractionScene* );
 
-	void initInteraction(const rapidjson::Value& , LmInteractionScene*);
+	void initInteractionAttributes(const rapidjson::Value& , LmInteractionScene*);
+
+	//return a Lmlayer make according to the json value
+	LmLayer* makeLmLayer(const rapidjson::Value& );
+	LmReward* makeLmReward(const rapidjson::Value& );
+
 
 
 	//our function which make scene

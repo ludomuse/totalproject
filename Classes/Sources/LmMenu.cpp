@@ -38,6 +38,7 @@ LmMenu::LmMenu()
 	m_pSpriteReadyIndicator = nullptr;
 	m_pCheckBoxChild = nullptr;
 	m_pCheckBoxParent = nullptr;
+	m_pLabelFeedback = nullptr;
 
 	//primitive type
 	m_bNoGenderSelected = true;
@@ -138,7 +139,7 @@ bool LmMenu::logScreen()
 					(l_oVisibleSize.width
 							- l_pFormSprite->getContentSize().width * 0.5)
 							* 0.5, l_oVisibleSize.height * 0.5f));
-	m_pLogEditBox->setPlaceHolder("Name");
+	m_pLogEditBox->setPlaceHolder("Pseudo");
 	m_pLogEditBox->setFontSize(l_oVisibleSize.width * 0.03);
 	m_pLogEditBox->setFontName("Fonts/JosefinSans-Regular.ttf");
 	m_pLogEditBox->setFontColor(Color3B::BLACK);
@@ -148,12 +149,11 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
 	//test
-	m_pLogEditBox->setText("UserName");
+	//m_pLogEditBox->setText("UserName");
 
 	//init checkbox male
-	m_pCheckBoxMale = CheckBox::create(
-			"Ludomuse/GUIElements/maleUnselected.png",
-			"Ludomuse/GUIElements/maleSelected.png");
+	m_pCheckBoxMale = CheckBox::create("Ludomuse/GUIElements/checkoutmale2.png",
+			"Ludomuse/GUIElements/checkoutmalepress2.png");
 	m_pCheckBoxMale->setTouchEnabled(true);
 	m_pCheckBoxMale->setSwallowTouches(false);
 	m_pCheckBoxMale->setAnchorPoint(Vec2(1, 0.5));
@@ -169,8 +169,8 @@ bool LmMenu::logScreen()
 
 	//init checkbox female
 	m_pCheckBoxFemale = CheckBox::create(
-			"Ludomuse/GUIElements/femaleUnselected.png",
-			"Ludomuse/GUIElements/femaleSelected.png");
+			"Ludomuse/GUIElements/checkoutfemale2.png",
+			"Ludomuse/GUIElements/checkoutfemalepress2.png");
 	m_pCheckBoxFemale->setTouchEnabled(true);
 	m_pCheckBoxFemale->setSwallowTouches(false);
 	m_pCheckBoxFemale->setAnchorPoint(Vec2(0, 0.5));
@@ -216,36 +216,46 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				l_oVisibleSize.height / 2 + l_oOrigin.y);
 		m_pWifiLayer->addChild(m_pSpriteWifiBackground);
 
+		//feedback label init
+		m_pLabelFeedback = Label::createWithTTF("",
+				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.height * 0.05);
+		m_pLabelFeedback->setPosition(l_oVisibleSize.width * 0.5,
+				l_oVisibleSize.height * 0.15);
+		m_pLabelFeedback->setColor(Color3B::WHITE);
+		m_pLabelFeedback->setMaxLineWidth(l_oVisibleSize.width * 0.8);
+		m_pSpriteWifiBackground->addChild(m_pLabelFeedback);
+
+		m_pLabelFeedback->setString(s_sBegining);
+
 		//sprite to indicate if ready or not
 		m_pSpriteReadyIndicator = Sprite::create(
-				"Ludomuse/GUIElements/nextButtonPressed.png");
+				"Ludomuse/GUIElements/cross.png");
 		m_pSpriteReadyIndicator->setAnchorPoint(Vec2(1, 0.5));
 		m_pSpriteReadyIndicator->setPosition(
 				Vec2(l_oVisibleSize.width - s_fMarginLeftMenu,
-						l_oVisibleSize.height * 0.2f));
+						l_oVisibleSize.height * 0.25f));
 		m_pWifiLayer->addChild(m_pSpriteReadyIndicator);
 
 		//ready button
-		m_pReadyButton = MenuItemImage::create(
-				"Ludomuse/GUIElements/playNormal.png",
-				"Ludomuse/GUIElements/playPressed.png",
+		m_pReadyButton = MenuItemImage::create("Ludomuse/GUIElements/prete.png",
+				"Ludomuse/GUIElements/pretepress.png",
 				CC_CALLBACK_1(LmMenu::ready, this));
 		m_pReadyButton->setAnchorPoint(Point(1, 0.5));
 		m_pReadyButton->setPosition(
 				Vec2(
 						l_oVisibleSize.width - s_fMarginLeftMenu
 								- m_pSpriteReadyIndicator->getContentSize().width,
-						l_oVisibleSize.height * 0.2f));
+						l_oVisibleSize.height * 0.25f));
 
 		//refresh button
 		auto l_pRefreshButton = MenuItemImage::create(
-				"Ludomuse/GUIElements/logNormal.png",
-				"Ludomuse/GUIElements/logPressed.png",
+				"Ludomuse/GUIElements/refreshbutton.png",
+				"Ludomuse/GUIElements/refreshbuttonpress.png",
 				CC_CALLBACK_1(LmMenu::scan, this));
 		l_pRefreshButton->setAnchorPoint(Point(0.5, 0.5));
 		l_pRefreshButton->setPosition(
 				Vect(l_oVisibleSize.width * 0.5f,
-						l_oVisibleSize.height * 0.2f));
+						l_oVisibleSize.height * 0.25f));
 
 		// create menu
 		m_pMenu = Menu::create(m_pReadyButton, l_pRefreshButton, nullptr);
@@ -258,22 +268,39 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pWifiLayer->addChild(m_pMenuUserTabletName, 1);
 
 		//init checkbox parent
-		m_pCheckBoxParent = CheckBox::create(
-				"Ludomuse/GUIElements/logNormal.png",
-				"Ludomuse/GUIElements/logPressed.png");
+		if (m_pUser1->isBMale())
+		{
+			m_pCheckBoxParent = CheckBox::create(
+					"Ludomuse/GUIElements/parentcheckbutton.png",
+					"Ludomuse/GUIElements/parentpressbutton.png");
+
+			m_pCheckBoxChild = CheckBox::create(
+					"Ludomuse/GUIElements/childcheckbutton.png",
+					"Ludomuse/GUIElements/childpressbutton.png");
+
+		}
+		else
+		{
+			m_pCheckBoxParent = CheckBox::create(
+					"Ludomuse/GUIElements/momcheckbutton.png",
+					"Ludomuse/GUIElements/mompressbutton.png");
+
+			m_pCheckBoxChild = CheckBox::create(
+					"Ludomuse/GUIElements/daughtercheckbutton.png",
+					"Ludomuse/GUIElements/daughterpressbutton.png");
+		}
+
 		m_pCheckBoxParent->setTouchEnabled(true);
 		m_pCheckBoxParent->setSwallowTouches(false);
 		m_pCheckBoxParent->setAnchorPoint(Vec2(0, 0.5));
 		m_pCheckBoxParent->setPosition(
-				Vec2(s_fMarginLeftMenu, l_oVisibleSize.height * 0.2));
+				Vec2(s_fMarginLeftMenu, l_oVisibleSize.height * 0.25));
 		m_pCheckBoxParent->addEventListener(
 				CC_CALLBACK_2(LmMenu::parentSelected, this));
 		m_pWifiLayer->addChild(m_pCheckBoxParent);
 
 		//init checkbox child
-		m_pCheckBoxChild = CheckBox::create(
-				"Ludomuse/GUIElements/playNormal.png",
-				"Ludomuse/GUIElements/playPressed.png");
+
 		m_pCheckBoxChild->setTouchEnabled(true);
 		m_pCheckBoxChild->setSwallowTouches(false);
 		m_pCheckBoxChild->setAnchorPoint(Vec2(0, 0.5));
@@ -281,7 +308,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 				Vec2(
 						s_fMarginLeftMenu
 								+ m_pCheckBoxParent->getCustomSize().width,
-						l_oVisibleSize.height * 0.2));
+						l_oVisibleSize.height * 0.25));
 		m_pCheckBoxChild->addEventListener(
 				CC_CALLBACK_2(LmMenu::childSelected, this));
 		m_pWifiLayer->addChild(m_pCheckBoxChild);
@@ -300,35 +327,58 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
-	bytes msg(10);
-	msg << (int) 2 << false << true << "test" << *m_pUser1;
-	//TOTEST : with m_puser1
-	CCLOG("msgRR = %s", msg.toCharSequence());
+
+	//test
+	//menuIsFinished();
+
+	/*bytes msg(10);
+	 msg << (int) 2 << false << true << "test" << *m_pUser1;
+	 //TOTEST : with m_puser1
+	 CCLOG("msgRR = %s", msg.toCharSequence());*/
+
 	if (!m_bReady)
 	{
 		//can't be ready if no role selected and no user 2 choose
-		if (m_bRoleSelected && m_bConnected)
+		if (m_bRoleSelected)
 		{
-			//wer are ready
-			m_bReady = true;
+			if (m_bConnected)
+			{
+				//wer are ready
+				m_bReady = true;
 
-			m_pSpriteReadyIndicator->setTexture(
-					"Ludomuse/GUIElements/nextButtonNormal.png");
+				m_pSpriteReadyIndicator->setTexture(
+						"Ludomuse/GUIElements/check.png");
 
-			//send the msg
-			bytes msg(50);
-			msg << LmEvent::UserIsReady << *m_pUser1;
-			WIFIFACADE->sendBytes(msg);
+				//send the msg
+				bytes msg(50);
+				msg << LmEvent::UserIsReady << *m_pUser1;
+				WIFIFACADE->sendBytes(msg);
+
+				m_pLabelFeedback->setString(s_sUserIsReady);
+
+			}
+			else
+			{
+				m_pLabelFeedback->setString(s_sDeviceNotConnected);
+
+			}
 
 		}
+		else
+		{
+			m_pLabelFeedback->setString(s_sRoleNotChoose);
+		}
+
 	}
 	else
 	{
 		//not ready anymore
 		m_bReady = false;
 
-		m_pSpriteReadyIndicator->setTexture(
-				"Ludomuse/GUIElements/nextButtonPressed.png");
+		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/cross.png");
+
+		m_pLabelFeedback->setString(s_sBegining);
+
 	}
 
 }
@@ -434,12 +484,12 @@ void LmMenu::makeMenuItemUserTabletName(
 	{
 		//init label and menuitem associated
 		auto l_pLabel = Label::createWithTTF((*it),
-				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
+				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.02);
 		l_pLabel->setColor(Color3B::BLACK);
 
 		auto l_pMenuItemImage = MenuItemImage::create(
-				"Ludomuse/GUIElements/playNormal.png",
-				"Ludomuse/GUIElements/playPressed.png",
+				"Ludomuse/GUIElements/backgroundDevice.png",
+				"Ludomuse/GUIElements/backgroundDevicePressed.png",
 				CC_CALLBACK_1(LmMenu::updateUser2NameTablet, this));
 
 		float l_fWidthButton = l_pMenuItemImage->getContentSize().width;
@@ -449,7 +499,8 @@ void LmMenu::makeMenuItemUserTabletName(
 		l_pLabel->setPosition(
 				Vec2(l_pMenuItemImage->getContentSize().width * 0.5,
 						l_pMenuItemImage->getContentSize().height * 0.5));
-		l_pLabel->setMaxLineWidth(l_fWidthButton);
+		l_pLabel->setColor(Color3B::WHITE);
+		l_pLabel->setMaxLineWidth(l_fWidthButton * 0.9);
 		l_pMenuItemImage->addChild(l_pLabel);
 		m_aMenuItemUserTabletName.insert(
 		{ l_pMenuItemImage, l_pLabel });
@@ -464,7 +515,7 @@ void LmMenu::makeMenuItemUserTabletName(
 		}
 		l_pMenuItemImage->setPosition(
 				Vec2(s_fMarginLeftMenu + (l_fWidthButton * l_iIndex),
-						l_oVisibleSize.height * 0.9
+						l_oVisibleSize.height * 0.8
 								- (l_iLine * l_fHeightButton)));
 		m_pMenuUserTabletName->addChild(l_pMenuItemImage);
 		l_iIndex++;
@@ -563,27 +614,36 @@ void LmMenu::onUserIsReadyEvent(bytes l_oMsg)
 	if (m_pUser2)
 	{
 		//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
-		if (usersAreCompatible() && m_bReady)
+		if (m_bReady)
 		{
-			//disable input to be sure to not change his state
-			ON_CC_THREAD(LmMenu::inputEnabled, this, false);
+			if (usersAreCompatible())
+			{
+				//disable input to be sure to not change his state
+				ON_CC_THREAD(LmMenu::inputEnabled, this, false);
 
-			//send CompatibleToPlay user A & B as parameters TODO
+				//send CompatibleToPlay user A & B as parameters TODO
 
-			CCLOG("send CompatibleToPlay {%s;%s} to %s",
-					m_pUser1->getUserSerialized().c_str(),
-					m_pUser2->getUserSerialized().c_str(),
-					m_pUser2->getPUserTabletName().c_str());
+				CCLOG("send CompatibleToPlay {%s;%s} to %s",
+						m_pUser1->getUserSerialized().c_str(),
+						m_pUser2->getUserSerialized().c_str(),
+						m_pUser2->getPUserTabletName().c_str());
 
-			//send the msg
-			bytes msg(100);
-			msg << LmEvent::CompatibleToPlay << *m_pUser2 << *m_pUser1;
-			WIFIFACADE->sendBytes(msg);
+				//send the msg
+				bytes msg(100);
+				msg << LmEvent::CompatibleToPlay << *m_pUser2 << *m_pUser1;
+				WIFIFACADE->sendBytes(msg);
+			}
+			else
+			{
+				m_pLabelFeedback->setString(s_sUserNotCompatible);
+
+			}
 
 		}
 		else
 		{
-			CCLOG("user not compatible or user1 not ready");
+			m_pLabelFeedback->setString(s_sYouAreNotReady);
+
 		}
 	}
 	else
@@ -604,31 +664,40 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 			m_pUser1->getUserSerialized().c_str());
 	//it's an answer from the guy we send UserIsReady
 
-	if (l_pUserBuffer->getUserSerialized().compare(
-			m_pUser1->getUserSerialized()) == 0 && m_bReady)
+	if (m_bReady)
 	{
-		CCLOG("on compatible true");
-		//set second user
-		delete m_pUser2;
-		m_pUser2 = l_oMsg.read<LmUser>();
+		if (l_pUserBuffer->getUserSerialized().compare(
+				m_pUser1->getUserSerialized()) == 0)
+		{
+			CCLOG("on compatible true");
+			//set second user
+			delete m_pUser2;
+			m_pUser2 = l_oMsg.read<LmUser>();
 
-		//send the msg
-		bytes msg(10);
-		msg << LmEvent::Play;
-		msg.write(true);
-		WIFIFACADE->sendBytes(msg);
+			//send the msg
+			bytes msg(10);
+			msg << LmEvent::Play;
+			msg.write(true);
+			WIFIFACADE->sendBytes(msg);
 
-		ON_CC_THREAD(LmMenu::menuIsFinished, this);
+			ON_CC_THREAD(LmMenu::menuIsFinished, this);
 
+		}
+		else
+		{
+			CCLOG("on compatible false");
+			//send the msg
+			bytes msg(10);
+			msg << LmEvent::Play;
+			msg.write(false);
+			WIFIFACADE->sendBytes(msg);
+
+			m_pLabelFeedback->setString(s_sError);
+		}
 	}
 	else
 	{
-		CCLOG("on compatible false");
-		//send the msg
-		bytes msg(10);
-		msg << LmEvent::Play;
-		msg.write(false);
-		WIFIFACADE->sendBytes(msg);
+		m_pLabelFeedback->setString(s_sYouAreNotReady);
 	}
 
 	delete l_pUserBuffer;
@@ -647,6 +716,9 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 	{
 		//unblock input
 		ON_CC_THREAD(LmMenu::inputEnabled, this, true);
+
+		m_pLabelFeedback->setString(s_sError);
+
 	}
 }
 

@@ -43,6 +43,12 @@ public:
 		return m_iIndex;
 	}
 
+	//test
+	const std::vector<LmLayer*>& getALayers() const
+	{
+		return m_aLayers;
+	}
+
 private:
 
 	//ATTRIBUTES

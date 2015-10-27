@@ -5,11 +5,10 @@
 
 USING_NS_CC;
 
-int LmInteractionScene::s_iNumberOfInteraction=0;
+int LmInteractionScene::s_iNumberOfInteraction = 0;
 
 LmInteractionScene::LmInteractionScene()
 {
-
 
 	//object ludomuse
 	m_pLmSetPointBegin = new LmSetPoint; //need to be delete
@@ -29,9 +28,9 @@ LmInteractionScene::LmInteractionScene()
 	m_bSetPointFinished = false;
 	m_bWin = false;
 	m_bTouchBeganDisabled = false;
-	m_bUser1IsReadyForNextInteraction=false;
-	m_bUser2IsReadyForNextInteraction=false;
-	m_bGameIsRunning=false;
+	m_bUser1IsReadyForNextInteraction = false;
+	m_bUser2IsReadyForNextInteraction = false;
+	m_bGameIsRunning = false;
 	m_iIdGame = s_iNumberOfInteraction;
 	s_iNumberOfInteraction++;
 
@@ -49,7 +48,8 @@ LmInteractionScene::LmInteractionScene()
 	m_pNextButton = nullptr;
 	m_pPreviousButton = nullptr;
 	m_pListener = nullptr;
-	m_pSpriteWaitingScreen=nullptr;
+	m_pSpriteWaitingScreen = nullptr;
+	m_pPlayCheckBox = nullptr;
 
 }
 
@@ -108,7 +108,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 			Vect(
 					l_oVisibleSize.width
 							- m_pNextButton->getContentSize().width * 0.8,
-					m_pNextButton->getContentSize().height * 0.7));
+					l_oVisibleSize.height * 0.1));
 	m_pNextButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::nextSetPointLayer, this));
 	m_pNextButton->retain();
@@ -121,12 +121,24 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pPreviousButton->setTouchEnabled(true);
 	m_pPreviousButton->setPosition(
 			Vect(m_pPreviousButton->getContentSize().width * 0.8,
-					m_pPreviousButton->getContentSize().height * 0.7));
+					l_oVisibleSize.height * 0.1));
 	m_pPreviousButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::previousSetPointLayer, this));
 	m_pPreviousButton->setVisible(false);
 	m_pPreviousButton->retain();
 	addChild(m_pPreviousButton, 1);
+
+	//play pause checkbox
+	m_pPlayCheckBox = ui::CheckBox::create("Ludomuse/GUIElements/pause.png",
+			"Ludomuse/GUIElements/play.png");
+	m_pPlayCheckBox->setTouchEnabled(true);
+	m_pPlayCheckBox->setSwallowTouches(false);
+	m_pPlayCheckBox->setPosition(
+			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.1));
+	m_pPlayCheckBox->addEventListener(
+			CC_CALLBACK_2(LmInteractionScene::playCallback, this));
+	m_pPlayCheckBox->retain();
+	addChild(m_pPlayCheckBox, 1);
 
 	//create the game layer
 	m_pLayerGame = Layer::create();
@@ -134,42 +146,19 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 
 	//finish button default one
 	m_pFinishGameButton = ui::Button::create(
-			"Ludomuse/GUIElements/nextButtonNormal.png",
-			"Ludomuse/GUIElements/nextButtonPressed.png");
+			"Ludomuse/GUIElements/fin.png",
+			"Ludomuse/GUIElements/finpress.png");
 
-	//if there is a reward we init the button with the appropriate sprite
-	if (m_pLmReward)
-	{
-
-		//init sprite reward
-		m_pLmReward->init();
-		//init background button
-		m_pFinishGameButton->loadTextures(
-				m_pLmReward->getSFilenameSpriteBackground(),
-				m_pLmReward->getSFilenameSpriteBackground(),
-				m_pLmReward->getSFilenameSpriteBackground());
-
-		//if there is a sprite reward
-		if (m_pLmReward->getPSpriteReward())
-		{
-			//add the sprite to the button
-			m_pLmReward->getPSpriteReward()->setPosition(
-					Vec2(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-							l_oVisibleSize.height * 0.5 + l_oOrigin.y));
-
-			m_pFinishGameButton->addChild(m_pLmReward->getPSpriteReward());
-		}
-
-	}
+	m_pFinishGameButton->setAnchorPoint(Vec2(1, 0.5));
+	m_pFinishGameButton->setPosition(
+			Vec2(l_oVisibleSize.width, l_oVisibleSize.height * 0.1));
 
 	m_pFinishGameButton->setTouchEnabled(true);
-	m_pFinishGameButton->setPosition(
-			Vect(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-					l_oVisibleSize.height * 0.5 + l_oOrigin.y));
+
 	m_pFinishGameButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::endGame, this));
 	m_pFinishGameButton->setVisible(false);
-	m_pLayerGame->addChild(m_pFinishGameButton, 1);
+	m_pLayerGame->addChild(m_pFinishGameButton, 2);
 
 	//replay button default one
 	m_pReplayButton = ui::Button::create("Ludomuse/GUIElements/playNormal.png",
@@ -181,11 +170,12 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pReplayButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::resetScene, this));
 	m_pReplayButton->setVisible(false);
-	m_pLayerGame->addChild(m_pReplayButton, 1);
+	m_pLayerGame->addChild(m_pReplayButton, 2);
 
 	//waiting screen to wait his partner before each interaction
-	m_pSpriteWaitingScreen  = Sprite::create("Game/Background/background4.png");
-	m_pSpriteWaitingScreen->setPosition(Vec2(l_oVisibleSize.width*0.5,l_oVisibleSize.height*0.5));
+	m_pSpriteWaitingScreen = Sprite::create("Ludomuse/Background/splash.png");
+	m_pSpriteWaitingScreen->setPosition(
+			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
 	m_pLayerGame->addChild(m_pSpriteWaitingScreen);
 	m_pSpriteWaitingScreen->setVisible(false);
 
@@ -229,10 +219,10 @@ void LmInteractionScene::nextSetPointLayer()
 			m_bSetPointFinished = true;
 			m_pNextButton->setVisible(false);
 			m_pPreviousButton->setVisible(false);
-
+			m_pPlayCheckBox->setVisible(false);
 
 			//we are ready
-			m_bUser1IsReadyForNextInteraction=true;
+			m_bUser1IsReadyForNextInteraction = true;
 
 			//send the msg to indicate user 2 we are ready
 			bytes msg(10);
@@ -241,10 +231,14 @@ void LmInteractionScene::nextSetPointLayer()
 			WIFIFACADE->sendBytes(msg);
 
 			//add the layer of the game
-			this->addChild(m_pLayerGame,0);
+			this->addChild(m_pLayerGame, 0);
+
+			//stop sound
+			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
+					true);
 
 			//if we can't start game because we are waiting for user 2
-			if(!startGame())
+			if (!startGame())
 			{
 				m_pSpriteWaitingScreen->setVisible(true);
 			}
@@ -256,6 +250,8 @@ void LmInteractionScene::nextSetPointLayer()
 			{
 				m_pPreviousButton->setVisible(true);
 			}
+
+			m_pPlayCheckBox->setSelected(false);
 		}
 
 	}
@@ -268,6 +264,33 @@ void LmInteractionScene::nextSetPointLayer()
 			m_bSetPointFinished = true;
 			m_pNextButton->setVisible(false);
 			m_pPreviousButton->setVisible(false);
+			m_pPlayCheckBox->setVisible(false);
+
+			//stop sound
+			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
+					true);
+
+			//to permit the user2 to update his dashboard
+			if (m_bWin)
+			{
+				//send msg to inform other usert that he wins
+				bytes msg(10);
+				msg << LmEvent::InteractionDone;
+				msg.write(m_iIdGame);
+				msg.write(true);
+				WIFIFACADE->sendBytes(msg);
+
+			}
+			else
+			{
+				//send msg to inform other usert that he wins
+				bytes msg(10);
+				msg << LmEvent::InteractionDone;
+				msg.write(m_iIdGame);
+				msg.write(false);
+				WIFIFACADE->sendBytes(msg);
+			}
+
 			//finish the interaction
 			CCLOG("popscene");
 			Director::getInstance()->popScene();
@@ -280,6 +303,9 @@ void LmInteractionScene::nextSetPointLayer()
 			{
 				m_pPreviousButton->setVisible(true);
 			}
+
+			//uncheck play button
+			m_pPlayCheckBox->setSelected(false);
 		}
 	}
 
@@ -331,16 +357,19 @@ void LmInteractionScene::initDashboardLayer()
 			m_pSpriteDashboardBand->getContentSize().height * 0.5f);
 	m_pDashboardBandLayer->addChild(m_pLabelScore);
 
-	//backtodashborad button
-	m_pBackDashboardButton = ui::Button::create(
-			"Ludomuse/GUIElements/backToDashboard.png");
-	m_pBackDashboardButton->setTouchEnabled(true);
+	//create a menu and back to dashboard menuitemiamhe
+	auto l_pMenu = Menu::create();
+	l_pMenu->setPosition(Vec2::ZERO);
+	m_pDashboardBandLayer->addChild(l_pMenu);
+
+	m_pBackDashboardButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/backToDashboard.png",
+			"Ludomuse/GUIElements/backToDashboard.png",
+			CC_CALLBACK_1(LmInteractionScene::backToDashboard, this));
 	m_pBackDashboardButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width * (0.5f),
 					m_pSpriteDashboardBand->getContentSize().height * 0.3f));
-	m_pBackDashboardButton->addTouchEventListener(
-			CC_CALLBACK_0(LmInteractionScene::backToDashboard, this));
-	m_pDashboardBandLayer->addChild(m_pBackDashboardButton);
+	l_pMenu->addChild(m_pBackDashboardButton);
 
 	//hide it
 	auto l_oMoveLeftAction = MoveBy::create(0,
@@ -418,7 +447,7 @@ void LmInteractionScene::moveLeftDone()
 
 }
 
-void LmInteractionScene::backToDashboard()
+void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 {
 	if (!m_bBackPressed && m_bMoveDone && m_pLmSetPointBegin->isBActionDone())
 	{
@@ -427,8 +456,7 @@ void LmInteractionScene::backToDashboard()
 		CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
 		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 
-		CCLOG("popscene");
-		Director::getInstance()->popScene();
+		CCLOG("back to dashboard");
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 				"BackToDashboard");
 	}
@@ -450,21 +478,20 @@ void LmInteractionScene::endGame()
 {
 	if (m_bFinishGameButtonSync)
 	{
+		CCLOG("end function");
 		m_bFinishGameButtonSync = false;
 
 		//reset sync beetween player
-		m_bUser1IsReadyForNextInteraction=false;
-		m_bUser2IsReadyForNextInteraction=false;
+		m_bUser1IsReadyForNextInteraction = false;
+		m_bUser2IsReadyForNextInteraction = false;
 
 		//stop send event async till the next inetraction
 		stopListenWifiFacade();
 
-
-		//if there is a reward we add score reward to the score of the user
 		if (m_pLmReward && m_bWin)
 		{
 			//add reward to the user
-			m_pUser->addToScore(m_pLmReward->getIRewardScore());
+			m_pUser->winReward(m_pLmReward);
 		}
 
 		//the game is finished we can remove the layer of the game
@@ -477,13 +504,22 @@ void LmInteractionScene::endGame()
 
 		m_pNextButton->setVisible(true);
 		m_pPreviousButton->setVisible(false);
+		//reset play button
+		m_pPlayCheckBox->setVisible(true);
+		m_pPlayCheckBox->setSelected(false);
 
 		//its a linear progression so for now it can be release here
 		m_pLayerGame->release();
 		m_pNextButton->release();
 		m_pPreviousButton->release();
+		m_pPlayCheckBox->release();
 
-		m_bGameIsRunning=false;
+		m_bGameIsRunning = false;
+
+
+		//stop sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
+				true);
 
 		//init the end set point
 		if (!m_pLmSetPointEnd->init(this))
@@ -505,7 +541,7 @@ bool LmInteractionScene::startGame()
 
 	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
 	{
-		m_bGameIsRunning=true;
+		m_bGameIsRunning = true;
 
 		//to get notigy by event
 		CCLOG("run game");
@@ -538,5 +574,88 @@ void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 
 void LmInteractionScene::onWinEvent(bytes l_oMsg)
 {
+	bool buffer = l_oMsg.readBool();
+
+	win(buffer);
+}
+
+void LmInteractionScene::win(bool win)
+{
+
+	m_bWin = win;
+
+	//depend of m_bwin
+	initFinishButtonTexture();
+
+	if (m_bWin)
+	{
+		m_pLmReward->playRewardSound();
+	}
+
 	m_pFinishGameButton->setVisible(true);
 }
+
+void LmInteractionScene::playCallback(cocos2d::Ref*,
+		cocos2d::ui::CheckBox::EventType type)
+{
+	switch (type)
+	{
+	case ui::CheckBox::EventType::SELECTED:
+		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+
+		break;
+
+	case ui::CheckBox::EventType::UNSELECTED:
+		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+
+		break;
+
+	default:
+		break;
+	}
+}
+
+void LmInteractionScene::initFinishButtonTexture()
+{
+
+
+
+	//if there is a reward we init the button with the appropriate sprite
+	if (m_pLmReward && m_bWin)
+	{
+
+		CCLOG("init finish button texture");
+
+		//use to place elements
+		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+
+		//init sprite reward
+		m_pLmReward->init();
+		//init background button
+		m_pFinishGameButton->loadTextures(
+				m_pLmReward->getSFilenameSpriteBackground(),
+				m_pLmReward->getSFilenameSpriteBackground(),
+				m_pLmReward->getSFilenameSpriteBackground());
+
+		m_pFinishGameButton->setAnchorPoint(Vec2(0.5, 0.5));
+		m_pFinishGameButton->setPosition(
+				Vect(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
+						l_oVisibleSize.height * 0.5 + l_oOrigin.y));
+
+		//if there is a sprite reward
+		if (m_pLmReward->getPSpriteReward())
+		{
+			//add the sprite to the button
+			m_pLmReward->getPSpriteReward()->setPosition(
+					Vec2(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
+							l_oVisibleSize.height * 0.5 + l_oOrigin.y));
+
+			m_pFinishGameButton->addChild(m_pLmReward->getPSpriteReward());
+		}
+
+		m_pFinishGameButton->addChild(m_pLmReward->getPLabekReward());
+
+	}
+}
+

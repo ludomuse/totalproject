@@ -8,6 +8,19 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 
+struct LmLayerSeed
+{
+	std::vector<std::pair<std::string, int>> Images;
+	std::string SoundURL;
+	std::string Text;
+	cocos2d::Color3B ColorText;
+	float FontSize;
+	float WidthPercent;
+	float HeightPercent;
+	float SizePercent;
+
+};
+
 class LmLayer: public cocos2d::Layer
 {
 public:
@@ -18,7 +31,7 @@ public:
 	 * Sound URL
 	 * Text
 	 */
-	LmLayer(std::vector<std::pair<std::string, int>>, std::string, std::string);
+	LmLayer(const LmLayerSeed &);
 	~LmLayer();
 
 	bool init();
@@ -28,9 +41,14 @@ public:
 
 private:
 
-	std::vector<std::pair<std::string, int>> m_aImagesURL;
+	std::vector<std::pair<std::string, int>> m_aImages;
 	std::string m_sSoundURL;
 	std::string m_sText;
+	cocos2d::Color3B m_oColorText;
+	float m_fFontSize;
+	float m_fWidthPercent;
+	float m_fHeightPercent;
+	float m_fSizePercent;
 
 
 

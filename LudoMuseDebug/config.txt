@@ -10,3 +10,4 @@ LUDOSERVER
 LUDOCLIENT
 LudoMuse
 cocos
+assert

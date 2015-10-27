@@ -24,9 +24,8 @@ LmQuizz_v2Scene::LmQuizz_v2Scene(const LmQuizz_v2SceneSeed &l_Seed) :
 	m_iAttemptByQuestion = l_Seed.AttemptByQuestion;
 	m_fTimerDuration = l_Seed.TimerDuration;
 	m_bTimerEnbaled = l_Seed.TimerEnbaled;
-	m_sFilenameSpriteGoodAnswerButton = l_Seed.FilenameSpriteGoodAnswerButton;
-	m_sFilenameSpriteBadAnswerButton = l_Seed.FilenameSpriteBadAnswerButton;
-	m_sFilenameAudioAnswerSelected = l_Seed.FilenameAudioAnswerSelected;
+	m_sFilenameAudioGoodAnswer = l_Seed.FilenameAudioGoodAnswer;
+	m_sFilenameAudioBadAnswer = l_Seed.FilenameAudioBadAnswer;
 
 	//pointer
 	m_pSpriteBackground = nullptr;
@@ -77,7 +76,10 @@ void LmQuizz_v2Scene::runGame()
 
 	//we preload the sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			m_sFilenameAudioAnswerSelected.c_str());
+			m_sFilenameAudioGoodAnswer.c_str());
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			m_sFilenameAudioBadAnswer.c_str());
 }
 
 void LmQuizz_v2Scene::restart()
@@ -137,7 +139,6 @@ bool LmQuizz_v2Scene::initGame()
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
-
 	//init the background
 	m_pSpriteBackground = Sprite::create(m_sFilenameSpriteBackground);
 	m_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
@@ -146,20 +147,18 @@ bool LmQuizz_v2Scene::initGame()
 
 	//init timer
 	m_pTimer = LoadingBar::create();
-	m_pTimer->loadTexture("Ludomuse/GUIElements/bandMid.png");
+	m_pTimer->loadTexture("Ludomuse/Content/timer.png");
 	m_pTimer->setPercent(0);
 	m_pTimer->setPosition(
 			Point(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
 					l_oVisibleSize.height * 0.05 + l_oOrigin.y));
-	if (m_bTimerEnbaled)
-	{
-		m_pLayerGame->addChild(m_pTimer);
-	}
 
 	//band top sprite
 	m_pBandTopSprite = Sprite::create(m_sFilenameSpriteBandTop);
-	m_pBandTopSprite->setAnchorPoint(Vec2(0, 1));
-	m_pBandTopSprite->setPosition(Vec2(0, l_oVisibleSize.height + l_oOrigin.y));
+	m_pBandTopSprite->setAnchorPoint(Vec2(0.5, 1));
+	m_pBandTopSprite->setPosition(
+			Vec2(l_oVisibleSize.width * 0.5,
+					l_oVisibleSize.height + l_oOrigin.y));
 	m_pLayerGame->addChild(m_pBandTopSprite);
 
 	//usefull height to scale
@@ -215,15 +214,15 @@ bool LmQuizz_v2Scene::initGame()
 
 	//init label question
 	m_pQuestionLabel = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.04);
+			l_oVisibleSize.width * 0.03);
 	m_pBandTopSprite->addChild(m_pQuestionLabel);
 	m_pQuestionLabel->setPosition(
 			Vec2(m_pBandTopSprite->getContentSize().width * 0.5,
 					m_pBandTopSprite->getContentSize().height * 0.5));
 	m_pQuestionLabel->setColor(Color3B::BLACK);
-	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.9);
+	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.6);
 
-	if (!m_pUser->isBParent())
+	if (m_pUser->isBParent())
 	{
 		initAnswerLabel();
 	}
@@ -233,11 +232,19 @@ bool LmQuizz_v2Scene::initGame()
 			"Ludomuse/GUIElements/nextButtonNormal.png",
 			"Ludomuse/GUIElements/nextButtonPressed.png");
 	m_pNextQuestionButton->setTouchEnabled(true);
+	m_pNextQuestionButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pNextQuestionButton->setPosition(
-			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
+			Vec2(l_oVisibleSize.width, l_oVisibleSize.height * 0.1));
 	m_pNextQuestionButton->addTouchEventListener(
 			CC_CALLBACK_0(LmQuizz_v2Scene::beginQuestion, this));
 	m_pNextQuestionButton->setVisible(false);
+
+	//add it here so checkbox have zorder less than timer
+	if (m_bTimerEnbaled)
+	{
+		m_pLayerGame->addChild(m_pTimer);
+	}
+
 	m_pLayerGame->addChild(m_pNextQuestionButton);
 
 	m_iIndexQuestion = -1;	//so when we init the next question index = 0
@@ -273,40 +280,31 @@ void LmQuizz_v2Scene::beginQuestion()
 
 		m_bQuestionFinished = false;
 
-		//no more layers end of the game
-		if ((int) m_iIndexQuestion >= (int) (m_aQuestionsParent.size() - 1))
+		//reset checkbox
+		m_pCheckBoxAnswer[0]->setSelected(false);
+		m_pCheckBoxAnswer[1]->setSelected(false);
+		m_pCheckBoxAnswer[2]->setSelected(false);
+		m_pCheckBoxAnswer[3]->setSelected(false);
+
+		m_iNumberOfAttempt = m_iAttemptByQuestion;
+
+		if (m_bTimerEnbaled)
 		{
-			m_pFinishGameButton->setVisible(true);
-			m_pLmReward->playRewardSound();
+			//reset timer
+			m_pTimer->setPercent(0);
+			m_iCounter = 0;
+			//test
+			unschedule(schedule_selector(LmQuizz_v2Scene::updateLoadingBar));
+
+			schedule(schedule_selector(LmQuizz_v2Scene::updateLoadingBar),
+					m_fTimerDuration);
 		}
-		else
-		{
-			//reset checkbox
-			m_pCheckBoxAnswer[0]->setSelected(false);
-			m_pCheckBoxAnswer[1]->setSelected(false);
-			m_pCheckBoxAnswer[2]->setSelected(false);
-			m_pCheckBoxAnswer[3]->setSelected(false);
 
-			m_iNumberOfAttempt = m_iAttemptByQuestion;
+		//disable answer selected
+		m_iAnswerSelected = -1;
 
-			if (m_bTimerEnbaled)
-			{
-				//reset timer
-				m_pTimer->setPercent(0);
-				m_iCounter = 0;
-				//test
-				unschedule(schedule_selector(LmQuizz_v2Scene::updateLoadingBar));
-
-				schedule(schedule_selector(LmQuizz_v2Scene::updateLoadingBar),
-						m_fTimerDuration);
-			}
-
-			//disable answer selected
-			m_iAnswerSelected = -1;
-
-			//next layer
-			initNextQuestion();
-		}
+		//next layer
+		initNextQuestion();
 
 	}
 
@@ -316,15 +314,19 @@ void LmQuizz_v2Scene::initNextQuestion()
 {
 	//increment index
 	m_iIndexQuestion++;
-
 	if (m_pUser->isBParent())
 	{
 		auto l_pQuestion = m_aQuestionsParent.at(m_iIndexQuestion);
+
 		//set label string
 		m_pQuestionLabel->setString(l_pQuestion->getSQuestion());
+
 		m_pAnswerLabel[0]->setString(l_pQuestion->getSAnswer1());
+
 		m_pAnswerLabel[1]->setString(l_pQuestion->getSAnswer2());
+
 		m_pAnswerLabel[2]->setString(l_pQuestion->getSAnswer3());
+
 		m_pAnswerLabel[3]->setString(l_pQuestion->getSAnswer4());
 
 	}
@@ -336,28 +338,28 @@ void LmQuizz_v2Scene::initNextQuestion()
 
 		m_pCheckBoxAnswer[0]->loadTextureBackGround(l_pQuestion->getSAnswer1(),
 				TextureResType::LOCAL);
-		m_pCheckBoxAnswer[0]->loadTextureBackGroundSelected(
-				l_pQuestion->getSAnswer1(), TextureResType::LOCAL);
-		m_pCheckBoxAnswer[0]->loadTextureFrontCross(l_pQuestion->getSAnswer1(),
+		m_pCheckBoxAnswer[0]->loadTextureBackGround(l_pQuestion->getSAnswer1(),
 				TextureResType::LOCAL);
+		m_pCheckBoxAnswer[0]->loadTextureFrontCross(
+				m_sFilenameSpriteAnswerCross, TextureResType::LOCAL);
 		m_pCheckBoxAnswer[1]->loadTextureBackGround(l_pQuestion->getSAnswer2(),
 				TextureResType::LOCAL);
 		m_pCheckBoxAnswer[1]->loadTextureBackGroundSelected(
 				l_pQuestion->getSAnswer2(), TextureResType::LOCAL);
-		m_pCheckBoxAnswer[1]->loadTextureFrontCross(l_pQuestion->getSAnswer2(),
-				TextureResType::LOCAL);
+		m_pCheckBoxAnswer[1]->loadTextureFrontCross(
+				m_sFilenameSpriteAnswerCross, TextureResType::LOCAL);
 		m_pCheckBoxAnswer[2]->loadTextureBackGround(l_pQuestion->getSAnswer3(),
 				TextureResType::LOCAL);
 		m_pCheckBoxAnswer[2]->loadTextureBackGroundSelected(
 				l_pQuestion->getSAnswer3(), TextureResType::LOCAL);
-		m_pCheckBoxAnswer[2]->loadTextureFrontCross(l_pQuestion->getSAnswer3(),
-				TextureResType::LOCAL);
+		m_pCheckBoxAnswer[2]->loadTextureFrontCross(
+				m_sFilenameSpriteAnswerCross, TextureResType::LOCAL);
 		m_pCheckBoxAnswer[3]->loadTextureBackGround(l_pQuestion->getSAnswer4(),
 				TextureResType::LOCAL);
 		m_pCheckBoxAnswer[3]->loadTextureBackGroundSelected(
 				l_pQuestion->getSAnswer4(), TextureResType::LOCAL);
-		m_pCheckBoxAnswer[3]->loadTextureFrontCross(l_pQuestion->getSAnswer4(),
-				TextureResType::LOCAL);
+		m_pCheckBoxAnswer[3]->loadTextureFrontCross(
+				m_sFilenameSpriteAnswerCross, TextureResType::LOCAL);
 
 	}
 
@@ -365,21 +367,35 @@ void LmQuizz_v2Scene::initNextQuestion()
 
 void LmQuizz_v2Scene::checkAnswer()
 {
-	//good answer
-	if (m_aQuestionsParent.at(m_iIndexQuestion)->getINumberGoodAnswer()
-			== m_iAnswerSelected)
+
+
+	LmQuestion* l_pQuestion;
+
+	if (m_pUser->isBParent())
 	{
-		//load good texture for next button to indicate win
-		m_pNextQuestionButton->loadTextureNormal(
-				m_sFilenameSpriteGoodAnswerButton);
-		m_pNextQuestionButton->loadTexturePressed(
-				m_sFilenameSpriteGoodAnswerButton);
+		l_pQuestion = m_aQuestionsParent.at(m_iIndexQuestion);
+	}
+	else
+	{
+		l_pQuestion = m_aQuestionsChild.at(m_iIndexQuestion);
+	}
+
+	//good answer
+	if (l_pQuestion->getINumberGoodAnswer() == m_iAnswerSelected)
+	{
+		//play a sound from the json
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+				m_sFilenameAudioGoodAnswer.c_str(), false);
 		questionFinish(true);
 	}
 	else
 	{
 
 		CCLOG("bad answer");
+
+		//play a sound from the json
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+				m_sFilenameAudioBadAnswer.c_str(), false);
 
 		//still have attempt
 		if (m_iNumberOfAttempt > 1)
@@ -389,11 +405,7 @@ void LmQuizz_v2Scene::checkAnswer()
 		}
 		else
 		{
-			//load good texture for the next button to indicate loose
-			m_pNextQuestionButton->loadTextureNormal(
-					m_sFilenameSpriteBadAnswerButton);
-			m_pNextQuestionButton->loadTexturePressed(
-					m_sFilenameSpriteBadAnswerButton);
+
 			questionFinish(false);
 		}
 	}
@@ -449,9 +461,6 @@ void LmQuizz_v2Scene::answerSelected(Ref* pSender, CheckBox::EventType type)
 		switch (type)
 		{
 		case CheckBox::EventType::SELECTED:
-			//play a sound from the json
-			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-					m_sFilenameAudioAnswerSelected.c_str(), false);
 			select(l_iIdCheckBox, true);
 			break;
 
@@ -477,17 +486,18 @@ void LmQuizz_v2Scene::questionFinish(bool goodAnswer)
 		unschedule(schedule_selector(LmQuizz_v2Scene::updateLoadingBar));
 	}
 
-	//make appear the next question button
-	m_pNextQuestionButton->setVisible(true);
-
-	if (goodAnswer)
+	//no more layers end of the game
+	if ((int) m_iIndexQuestion >= (int) (m_aQuestionsParent.size() - 1))
 	{
-		m_bNextQuestionButtonCanBePress = true;
+
+		win(goodAnswer);
+
 	}
 	else
 	{
-		m_pNextButton->setTouchEnabled(false);
-		m_pReplayButton->setVisible(true);
+		//make appear the next question button
+		m_pNextQuestionButton->setVisible(true);
+		m_bNextQuestionButtonCanBePress = true;
 	}
 
 }

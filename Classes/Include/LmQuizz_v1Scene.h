@@ -24,6 +24,9 @@ struct LmQuizz_v1SceneSeed
 	std::string FilenameSpriteBadAnswerButton;
 	std::string FilenameAudioAnswerSelected;
 	LmLayer* InGameScreenParent;
+	LmLayer* ReplayScreen;
+	LmLayer* WinChildScreen;
+	LmLayer* WinParentScreen;
 	std::vector<LmQuestion*> Questions;
 	int AttemptByQuestion;
 	float TimerDuration;
@@ -64,7 +67,13 @@ private:
 	std::string m_sFilenameSpriteGoodAnswerButtonParent;
 	std::string m_sFilenameSpriteBadAnswerButton;
 	std::string m_sFilenameAudioAnswerSelected;
+
+	//screens
 	LmLayer* m_pInGameScreenParent;
+	LmLayer* m_pReplayScreen;
+	LmLayer* m_pWinChildScreen;
+	LmLayer* m_pWinParentScreen;
+
 
 
 	std::vector<LmQuestion*> m_aQuestions;
@@ -74,7 +83,6 @@ private:
 
 	//gui elements
 
-	cocos2d::Sprite* m_pSpriteBuffer;
 
 	//use to force checkbox to be checked when question finish
 	bool m_bQuestionFinished;

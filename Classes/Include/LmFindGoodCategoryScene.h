@@ -14,8 +14,11 @@ struct LmFindGoodCategorySceneSeed
 {
 	std::string FilenameSpriteBackground;
 	std::string FilenameSpriteSendingArea;
+	std::string FilenameAudioGoodCategory;
+	std::string FilenameAudioBadCategory;
 	std::vector<std::pair<int, std::string>> Images;
 	std::vector<std::pair<int, std::string>> Categories;
+	int NumberOfGoodImages;
 };
 
 class LmFindGoodCategoryScene: public LmInteractionScene
@@ -43,10 +46,13 @@ private:
 	//json
 	std::string m_sFilenameSpriteBackground;
 	std::string m_sFilenameSpriteSendingArea;
+	std::string m_sFilenameAudioGoodCategory;
+	std::string m_sFilenameAudioBadCategory;
+
 	std::vector<std::pair<int, std::string>> m_aImages;
 	std::vector<std::pair<int, std::string>> m_aCategories;
 
-	int m_iNumberOfImages;
+	int m_iNumberOfGoodImages;
 
 	//gui elements
 

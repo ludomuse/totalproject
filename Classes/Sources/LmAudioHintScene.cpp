@@ -15,7 +15,7 @@ LmAudioHintScene::LmAudioHintScene(const LmAudioHintSceneSeed &l_Seed)
 	m_sFilenameSpriteBackground = l_Seed.FilenameSpriteBackground;
 	m_sFilenameSpriteMainImage = l_Seed.FilenameSpriteMainImage;
 	m_aLabelsFilenameSprite = l_Seed.LabelsFilenameSprite;
-	m_aLabelsFilenameAudio = l_Seed.LabelsFilenameAudio;
+	m_aLabelsFilenameSpriteHint = l_Seed.LabelsFilenameSpriteHint;
 	m_aLabelsCoordonateHole = l_Seed.LabelsCoordonateHole;
 
 	//primitive type
@@ -53,15 +53,6 @@ void LmAudioHintScene::runGame()
 		CCLOG("initGame failed");
 	}
 
-	//preload all sound
-	for (std::map<int, std::string>::iterator it =
-			m_aLabelsFilenameAudio.begin(); it != m_aLabelsFilenameAudio.end();
-			++it)
-	{
-		CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(
-				it->second.c_str());
-	}
-
 }
 
 bool LmAudioHintScene::initGame()
@@ -90,12 +81,7 @@ bool LmAudioHintScene::initGame()
 	//use to place element
 	int l_iIndex = 0;
 	LmGameComponent* l_pGameComponentCreated;
-	MenuItemImage* l_pMenuItemImageCreated;
-
-	// create menu, it's an autorelease object
-	auto l_oMenu = Menu::create();
-	l_oMenu->setPosition(Vec2::ZERO);
-	m_pLayerGame->addChild(l_oMenu);
+	Sprite* l_pSpriteHintCreated;
 
 	//init labels gamecomponent
 	for (std::map<int, std::string>::iterator it =
@@ -116,15 +102,6 @@ bool LmAudioHintScene::initGame()
 		l_pGameComponentCreated->addTo(m_pLayerGame);
 		l_pGameComponentCreated->setVisible(false);
 
-		//init menuitem image
-
-		l_pMenuItemImageCreated = MenuItemImage::create();
-
-		l_pMenuItemImageCreated = MenuItemImage::create(
-				"Ludomuse/GUIElements/logNormal.png",
-				"Ludomuse/GUIElements/logPressed.png",
-				CC_CALLBACK_1(LmAudioHintScene::menuItemImagePressed, this));
-
 		//we get coordonnate in percent from json
 		Vec2 l_oPosition = Vec2(
 				(m_aLabelsCoordonateHole.find(it->first)->second.x
@@ -133,15 +110,6 @@ bool LmAudioHintScene::initGame()
 				((m_aLabelsCoordonateHole.find(it->first)->second.y - 50)
 						* m_pSpriteMainImage->getContentSize().height / 100)
 						+ l_oVisibleSize.height * 0.5);
-
-		//init menuitemiamge
-		l_pMenuItemImageCreated->setAnchorPoint(Vec2(0.5, 0.5));
-		l_pMenuItemImageCreated->setPosition(l_oPosition);
-		l_pMenuItemImageCreated->setVisible(false);
-
-		m_aLabelsMenuItemImage.insert(
-		{ l_pMenuItemImageCreated, it->first });
-		l_oMenu->addChild(l_pMenuItemImageCreated);
 
 		//init hole set aposition according the anchor point
 		m_aLabelsHole.insert(
@@ -157,9 +125,36 @@ bool LmAudioHintScene::initGame()
 								l_pGameComponentCreated->getContentSize().height) });
 
 		//init id label well place to check victory
-		m_aIdLabelWellPlaced.insert({it->first,false});
+		m_aIdLabelWellPlaced.insert(
+		{ it->first, false });
 
 		l_iIndex++;
+	}
+
+	for (std::map<int, std::string>::iterator it =
+			m_aLabelsFilenameSpriteHint.begin();
+			it != m_aLabelsFilenameSpriteHint.end(); ++it)
+	{
+		//init sprite hint image
+
+		l_pSpriteHintCreated = Sprite::create(it->second);
+		l_pSpriteHintCreated->setAnchorPoint(Vec2(0.5, 0.5));
+
+		//we get coordonnate in percent from json
+		Vec2 l_oPosition = Vec2(
+				(m_aLabelsCoordonateHole.find(it->first)->second.x
+						* m_pSpriteMainImage->getContentSize().width / 100)
+						+ s_fMarginLeft,
+				((m_aLabelsCoordonateHole.find(it->first)->second.y - 50)
+						* m_pSpriteMainImage->getContentSize().height / 100)
+						+ l_oVisibleSize.height * 0.5);
+
+		l_pSpriteHintCreated->setPosition(l_oPosition);
+		l_pSpriteHintCreated->setVisible(false);
+
+		m_aLabelsSpriteHint.insert(
+		{  it->first,l_pSpriteHintCreated });
+		m_pLayerGame->addChild(l_pSpriteHintCreated);
 	}
 
 	//check what type of user
@@ -186,30 +181,12 @@ bool LmAudioHintScene::initGame()
 	}
 	else
 	{
-		//put button visible
-		for (std::map<MenuItemImage*, int>::iterator it =
-				m_aLabelsMenuItemImage.begin();
-				it != m_aLabelsMenuItemImage.end(); ++it)
+
+		for(std::map<int,Sprite*>::iterator it=m_aLabelsSpriteHint.begin();it!=m_aLabelsSpriteHint.end();++it)
 		{
-			it->first->setVisible(true);
+			it->second->setVisible(true);
 		}
 	}
-
-	return true;
-}
-
-bool LmAudioHintScene::menuItemImagePressed(cocos2d::Ref* pSender)
-{
-
-	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-
-	auto l_pMenuItemPressed = dynamic_cast<MenuItemImage*>(pSender);
-
-	int l_iIdLabel = m_aLabelsMenuItemImage.find(l_pMenuItemPressed)->second;
-
-	//play sound
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
-			m_aLabelsFilenameAudio.find(l_iIdLabel)->second.c_str(), false);
 
 	return true;
 }
@@ -299,31 +276,33 @@ void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 								m_aLabelsHole.find(m_iHoleTouchedIndex)->second.origin.x,
 								m_aLabelsHole.find(m_iHoleTouchedIndex)->second.origin.y));
 
-
 				m_aIdLabelWellPlaced.find(m_iBufferId)->second = true;
 
-				m_bWin=true;
+				m_bWin = true;
 				//check win
-				for(std::map<int,bool>::iterator it=m_aIdLabelWellPlaced.begin();it!=m_aIdLabelWellPlaced.end();++it)
+				for (std::map<int, bool>::iterator it =
+						m_aIdLabelWellPlaced.begin();
+						it != m_aIdLabelWellPlaced.end(); ++it)
 				{
 					//if one is not well placed
-					if(!it->second)
+					if (!it->second)
 					{
-						m_bWin=false;
+						m_bWin = false;
 						break;
 					}
 				}
 
-				if(m_bWin)
+				if (m_bWin)
 				{
+					initFinishButtonTexture();
 					//win
 					m_pFinishGameButton->setVisible(true);
 
 					bytes msg(10);
-					msg<<LmEvent::Win;
+					msg << LmEvent::Win;
+					msg.write(true);
 					WIFIFACADE->sendBytes(msg);
 				}
-
 
 			}
 
@@ -391,6 +370,4 @@ int LmAudioHintScene::touchCollideHole(Touch* touch)
 
 	return -1;
 }
-
-
 

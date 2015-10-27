@@ -160,6 +160,9 @@ void LmSetPoint::moveRightDone()
 	//we remove the current to put the next one as current
 	m_pLayerTransition->removeChild(m_pCurrentLayer);
 	m_pCurrentLayer = m_aLayers.at(m_iIndex);
+
+	//we stop music and play the curerent one
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(false);
 	m_pCurrentLayer->playSound();
 
 	//set the new position of the layer transition  and of the current layer
@@ -176,6 +179,10 @@ void LmSetPoint::moveLeftDone()
 	//we remove the current to put the next one as current
 	m_pLayerTransition->removeChild(m_pCurrentLayer);
 	m_pCurrentLayer = m_aLayers.at(m_iIndex);
+
+	//we stop music and play the curerent one
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(false);
+
 	m_pCurrentLayer->playSound();
 
 	//set the new position of the layer transition  and of the current layer

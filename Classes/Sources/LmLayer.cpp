@@ -10,12 +10,16 @@ LmLayer::~LmLayer()
 
 }
 
-LmLayer::LmLayer(std::vector<std::pair<std::string, int>> l_aImagesURL,
-		std::string l_pSoundURL, std::string l_pText)
+LmLayer::LmLayer(const LmLayerSeed &Seed)
 {
-	m_aImagesURL = l_aImagesURL;
-	m_sSoundURL = l_pSoundURL;
-	m_sText = l_pText;
+	m_aImages = Seed.Images;
+	m_sSoundURL = Seed.SoundURL;
+	m_sText = Seed.Text;
+	m_fFontSize = Seed.FontSize;
+	m_fHeightPercent = Seed.HeightPercent;
+	m_fWidthPercent = Seed.WidthPercent;
+	m_fSizePercent = Seed.SizePercent;
+	m_oColorText = Seed.ColorText;
 }
 
 bool LmLayer::init()
@@ -35,7 +39,7 @@ bool LmLayer::init()
 
 	//we add sprites
 	for (std::vector<std::pair<std::string, int>>::iterator it =
-			m_aImagesURL.begin(); it != m_aImagesURL.end(); ++it)
+			m_aImages.begin(); it != m_aImages.end(); ++it)
 	{
 		auto l_oSprite = Sprite::create(it->first);
 		switch (it->second)
@@ -85,20 +89,25 @@ bool LmLayer::init()
 			m_sSoundURL.c_str());
 
 	//we add text to the center of the screen
-	auto l_oLabel = Label::createWithTTF(m_sText,
-			"Fonts/JosefinSans-Regular.ttf", 50);
-	l_oLabel->setPosition(l_oVisibleSize.width / 2 + l_oOrigin.x,
-			l_oVisibleSize.height / 2 + l_oOrigin.y);
-	addChild(l_oLabel, 1);
+	auto l_pLabel = Label::createWithTTF(m_sText,
+			"Fonts/JosefinSans-Regular.ttf", m_fFontSize);
+	l_pLabel->setPosition(l_oVisibleSize.width * m_fWidthPercent,
+			l_oVisibleSize.height * m_fHeightPercent);
+	l_pLabel->setColor(m_oColorText);
+	l_pLabel->setMaxLineWidth(l_oVisibleSize.width * m_fSizePercent);
+	addChild(l_pLabel);
 
 	return true;
 }
 
 void LmLayer::playSound()
 {
+
+	CCLOG("play sound layer");
 	//play sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
 			m_sSoundURL.c_str(), false);
+
 }
 
 void LmLayer::pauseSound()

@@ -51,7 +51,7 @@ const std::vector<LmInteractionScene*>& LmJsonParser::getAInteractionSceneOfTheG
 
 	if (!m_aInteractionSceneOfTheGame.size())
 	{
-		initInteractionSceneOfTheGame();
+		initInteractionAttributesSceneOfTheGame();
 	}
 
 	return m_aInteractionSceneOfTheGame;
@@ -103,7 +103,179 @@ std::string LmJsonParser::getSFilenameSpriteSplashScreen()
 	return m_sFilenameSpriteSplashScreen;
 }
 
-void LmJsonParser::initInteractionSceneOfTheGame()
+LmLayer* LmJsonParser::makeLmLayer(const rapidjson::Value& l_oLayer)
+{
+
+	LmLayerSeed l_oSeedBuffer;
+	std::string l_sBuffer;
+
+	//Images
+	std::string l_sImgURLBuffer;
+	int l_iAnchorPointBuffer;
+
+	assert(l_oLayer.IsObject());
+	assert(l_oLayer["Images"].IsArray() && l_oLayer.HasMember("Images"));
+	for (int j = 0; j < l_oLayer["Images"].Size(); j++)
+	{
+
+		assert(
+				l_oLayer["Images"][j]["imgURL"].IsString()
+						&& l_oLayer["Images"][j].HasMember("imgURL"));
+
+		l_sBuffer = l_oLayer["Images"][j]["imgURL"].GetString();
+		l_sImgURLBuffer = l_sBuffer.c_str();
+
+		assert(
+				l_oLayer["Images"][j]["anchorPoint"].IsInt()
+						&& l_oLayer["Images"][j].HasMember("anchorPoint"));
+
+		l_iAnchorPointBuffer = l_oLayer["Images"][j]["anchorPoint"].GetInt();
+
+		l_oSeedBuffer.Images.push_back(
+		{ l_sImgURLBuffer, l_iAnchorPointBuffer });
+
+	}
+	//Sound
+	assert(l_oLayer["SoundURL"].IsString() && l_oLayer.HasMember("SoundURL"));
+	l_sBuffer = l_oLayer["SoundURL"].GetString();
+	l_oSeedBuffer.SoundURL = l_sBuffer.c_str();
+	//Label
+	assert(l_oLayer["Label"].IsObject() && l_oLayer.HasMember("Label"));
+	//color
+	int r, g, b;
+	assert(
+			l_oLayer["Label"].HasMember("ColorText")
+					&& l_oLayer["Label"]["ColorText"].IsObject());
+	assert(
+			l_oLayer["Label"]["ColorText"].HasMember("R")
+					&& l_oLayer["Label"]["ColorText"]["R"].IsInt()
+					&& l_oLayer["Label"]["ColorText"]["R"].GetInt() < 256);
+	r = l_oLayer["Label"]["ColorText"]["R"].GetInt();
+	assert(
+			l_oLayer["Label"]["ColorText"].HasMember("G")
+					&& l_oLayer["Label"]["ColorText"]["G"].IsInt()
+					&& l_oLayer["Label"]["ColorText"]["G"].GetInt() < 256);
+	g = l_oLayer["Label"]["ColorText"]["G"].GetInt();
+	assert(
+			l_oLayer["Label"]["ColorText"].HasMember("B")
+					&& l_oLayer["Label"]["ColorText"]["B"].IsInt()
+					&& l_oLayer["Label"]["ColorText"]["B"].GetInt() < 256);
+	b = l_oLayer["Label"]["ColorText"]["B"].GetInt();
+	l_oSeedBuffer.ColorText = cocos2d::Color3B(r, g, b);
+	//percent
+	assert(
+			l_oLayer["Label"].HasMember("FontSize")
+					&& l_oLayer["Label"]["FontSize"].IsInt());
+	l_oSeedBuffer.FontSize = (float) l_oLayer["Label"]["FontSize"].GetInt();
+	assert(
+			l_oLayer["Label"].HasMember("WidthPercent")
+					&& l_oLayer["Label"]["WidthPercent"].IsInt());
+	l_oSeedBuffer.WidthPercent =
+			(float) l_oLayer["Label"]["WidthPercent"].GetInt() * 0.01;
+	assert(
+			l_oLayer["Label"].HasMember("HeightPercent")
+					&& l_oLayer["Label"]["HeightPercent"].IsInt());
+	l_oSeedBuffer.HeightPercent =
+			(float) l_oLayer["Label"]["HeightPercent"].GetInt() * 0.01;
+	assert(
+			l_oLayer["Label"].HasMember("SizePercent")
+					&& l_oLayer["Label"]["SizePercent"].IsInt());
+	l_oSeedBuffer.SizePercent =
+			(float) l_oLayer["Label"]["SizePercent"].GetInt() * 0.01;
+	//Text
+	assert(
+			l_oLayer["Label"].HasMember("Text")
+					&& l_oLayer["Label"]["Text"].IsString());
+	l_sBuffer = l_oLayer["Label"]["Text"].GetString();
+	l_oSeedBuffer.Text = l_sBuffer.c_str();
+
+	return new LmLayer(l_oSeedBuffer);
+}
+
+LmReward* LmJsonParser::makeLmReward(const rapidjson::Value& l_oReward)
+{
+	LmRewardSeed l_oSeedBuffer;
+
+	//use to deep copy string
+	std::string l_sBufferString;
+
+	assert(
+			l_oReward["FilenameSpriteBackground"].IsString()
+					&& l_oReward.HasMember("FilenameSpriteBackground"));
+	l_sBufferString = l_oReward["FilenameSpriteBackground"].GetString();
+	l_oSeedBuffer.FilenameSpriteBackground = l_sBufferString.c_str();
+
+	assert(
+			l_oReward["FilenameSpriteReward"].IsString()
+					&& l_oReward.HasMember("FilenameSpriteReward"));
+	l_sBufferString = l_oReward["FilenameSpriteReward"].GetString();
+	l_oSeedBuffer.FilenameSpriteReward = l_sBufferString.c_str();
+
+	assert(
+			l_oReward["RewardScore"].IsInt()
+					&& l_oReward.HasMember("RewardScore"));
+	l_oSeedBuffer.RewardScore = l_oReward["RewardScore"].GetInt();
+
+	assert(
+			l_oReward["FilenameSound"].IsString()
+					&& l_oReward.HasMember("FilenameSound"));
+	l_sBufferString = l_oReward["FilenameSound"].GetString();
+	l_oSeedBuffer.FilenameSound = l_sBufferString.c_str();
+
+	//Label
+	assert(l_oReward["Label"].IsObject() && l_oReward.HasMember("Label"));
+	//color
+	int r, g, b;
+	assert(
+			l_oReward["Label"].HasMember("ColorText")
+					&& l_oReward["Label"]["ColorText"].IsObject());
+	assert(
+			l_oReward["Label"]["ColorText"].HasMember("R")
+					&& l_oReward["Label"]["ColorText"]["R"].IsInt()
+					&& l_oReward["Label"]["ColorText"]["R"].GetInt() < 256);
+	r = l_oReward["Label"]["ColorText"]["R"].GetInt();
+	assert(
+			l_oReward["Label"]["ColorText"].HasMember("G")
+					&& l_oReward["Label"]["ColorText"]["G"].IsInt()
+					&& l_oReward["Label"]["ColorText"]["G"].GetInt() < 256);
+	g = l_oReward["Label"]["ColorText"]["G"].GetInt();
+	assert(
+			l_oReward["Label"]["ColorText"].HasMember("B")
+					&& l_oReward["Label"]["ColorText"]["B"].IsInt()
+					&& l_oReward["Label"]["ColorText"]["B"].GetInt() < 256);
+	b = l_oReward["Label"]["ColorText"]["B"].GetInt();
+	l_oSeedBuffer.ColorText = cocos2d::Color3B(r, g, b);
+	//percent
+	assert(
+			l_oReward["Label"].HasMember("FontSize")
+					&& l_oReward["Label"]["FontSize"].IsInt());
+	l_oSeedBuffer.FontSize = (float) l_oReward["Label"]["FontSize"].GetInt();
+	assert(
+			l_oReward["Label"].HasMember("WidthPercent")
+					&& l_oReward["Label"]["WidthPercent"].IsInt());
+	l_oSeedBuffer.WidthPercent =
+			(float) l_oReward["Label"]["WidthPercent"].GetInt() * 0.01;
+	assert(
+			l_oReward["Label"].HasMember("HeightPercent")
+					&& l_oReward["Label"]["HeightPercent"].IsInt());
+	l_oSeedBuffer.HeightPercent =
+			(float) l_oReward["Label"]["HeightPercent"].GetInt() * 0.01;
+	assert(
+			l_oReward["Label"].HasMember("SizePercent")
+					&& l_oReward["Label"]["SizePercent"].IsInt());
+	l_oSeedBuffer.SizePercent =
+			(float) l_oReward["Label"]["SizePercent"].GetInt() * 0.01;
+	//Text
+	assert(
+			l_oReward["Label"].HasMember("Text")
+					&& l_oReward["Label"]["Text"].IsString());
+	l_sBufferString = l_oReward["Label"]["Text"].GetString();
+	l_oSeedBuffer.Text = l_sBufferString.c_str();
+
+	return new LmReward(l_oSeedBuffer);
+}
+
+void LmJsonParser::initInteractionAttributesSceneOfTheGame()
 {
 	// Using a reference for consecutive access is handy and faster.
 	assert(
@@ -149,6 +321,35 @@ void LmJsonParser::initInteractionSceneOfTheGame()
 
 }
 
+LmSetPoint* LmJsonParser::getLmSetPoint(const rapidjson::Value& l_oScene,
+		const char* l_sNameSetPoint)
+{
+	LmSetPoint * l_pLmSetPoint = new LmSetPoint;
+
+	//buffers
+	std::vector<std::pair<std::string, int>> l_aImgBuffer;
+	std::string l_sImgURLBuffer;
+	int l_iAnchorPointBuffer;
+	std::string l_sSoundURLBuffer;
+	std::string l_sTextURLBuffer;
+
+	std::string l_sBuffer;
+
+	assert(
+			l_oScene[l_sNameSetPoint].IsArray()
+					&& l_oScene.HasMember(l_sNameSetPoint));
+	for (int i = 0; i < l_oScene[l_sNameSetPoint].Size(); i++)
+	{
+		//for each layer
+		assert(l_oScene[l_sNameSetPoint][i].IsObject());
+
+		l_pLmSetPoint->add(makeLmLayer(l_oScene[l_sNameSetPoint][i]));
+
+	}
+
+	return l_pLmSetPoint;
+}
+
 void LmJsonParser::initSetPoint(const rapidjson::Value& l_oScene,
 		LmInteractionScene* l_pInteractionScene)
 {
@@ -185,7 +386,7 @@ void LmJsonParser::initDescription(const rapidjson::Value& l_oScene,
 	l_pInteractionScene->setSDescription(l_sBufferString.c_str());
 }
 
-void LmJsonParser::initInteraction(const rapidjson::Value& l_oScene,
+void LmJsonParser::initInteractionAttributes(const rapidjson::Value& l_oScene,
 		LmInteractionScene* l_pInteractionScene)
 {
 	//get the element we just push to set the introduction
@@ -199,131 +400,36 @@ void LmJsonParser::initInteraction(const rapidjson::Value& l_oScene,
 void LmJsonParser::initReward(const rapidjson::Value& l_oScene,
 		LmInteractionScene* l_pInteractionScene)
 {
-	//to make difference between child and parent
-	const char* l_sRewardTag;
 
 	if (m_bIsParent)
 	{
-		l_sRewardTag = "RewardParent";
+		if (l_oScene.HasMember("RewardParent"))
+		{
+			l_pInteractionScene->setPLmReward(
+					makeLmReward(l_oScene["RewardParent"]));
+		}
+
+		if (l_oScene.HasMember("RewardChild"))
+		{
+			l_pInteractionScene->setPLmRewardUser2(
+					makeLmReward(l_oScene["RewardChild"]));
+		}
 	}
 	else
 	{
-		l_sRewardTag = "RewardChild";
-	}
-
-	if (l_oScene.HasMember(l_sRewardTag))
-	{
-		/*
-		 * 4 parameters
-		 * FilenameSpriteBackground
-		 * FilenameSpriteReward
-		 * RewardScore
-		 * FilenameSound
-		 */
-
-		//buffers
-		std::string l_sFilenameSpriteBackground;
-		std::string l_sFilenameSpriteReward;
-		int l_iRewardScore;
-		std::string l_sFilenameSound;
-
-		//use to deep copy string
-		std::string l_sBufferString;
-
-		assert(
-				l_oScene[l_sRewardTag]["FilenameSpriteBackground"].IsString()
-						&& l_oScene[l_sRewardTag].HasMember(
-								"FilenameSpriteBackground"));
-		l_sBufferString =
-				l_oScene[l_sRewardTag]["FilenameSpriteBackground"].GetString();
-		l_sFilenameSpriteBackground = l_sBufferString.c_str();
-
-		assert(
-				l_oScene[l_sRewardTag]["FilenameSpriteReward"].IsString()
-						&& l_oScene[l_sRewardTag].HasMember(
-								"FilenameSpriteReward"));
-		l_sBufferString =
-				l_oScene[l_sRewardTag]["FilenameSpriteReward"].GetString();
-		l_sFilenameSpriteReward = l_sBufferString.c_str();
-
-		assert(
-				l_oScene[l_sRewardTag]["RewardScore"].IsInt()
-						&& l_oScene[l_sRewardTag].HasMember("RewardScore"));
-		l_iRewardScore = l_oScene[l_sRewardTag]["RewardScore"].GetInt();
-
-		assert(
-				l_oScene[l_sRewardTag]["FilenameSound"].IsString()
-						&& l_oScene[l_sRewardTag].HasMember("FilenameSound"));
-		l_sBufferString = l_oScene[l_sRewardTag]["FilenameSound"].GetString();
-		l_sFilenameSound = l_sBufferString.c_str();
-
-		l_pInteractionScene->setPLmReward(
-				new LmReward(l_sFilenameSpriteBackground,
-						l_sFilenameSpriteReward, l_iRewardScore,
-						l_sFilenameSound));
-	}
-}
-
-LmSetPoint* LmJsonParser::getLmSetPoint(const rapidjson::Value& l_oScene,
-		const char* l_sNameSetPoint)
-{
-	LmSetPoint * l_pLmSetPoint = new LmSetPoint;
-
-	//buffers
-	std::vector<std::pair<std::string, int>> l_aImgBuffer;
-	std::string l_sImgURLBuffer;
-	int l_iAnchorPointBuffer;
-	std::string l_sSoundURLBuffer;
-	std::string l_sTextURLBuffer;
-
-	std::string l_sBuffer;
-
-	assert(
-			l_oScene[l_sNameSetPoint].IsArray()
-					&& l_oScene.HasMember(l_sNameSetPoint));
-	for (int i = 0; i < l_oScene[l_sNameSetPoint].Size(); i++)
-	{
-		//for each layer
-		assert(l_oScene[l_sNameSetPoint][i].IsObject());
-		assert(
-				l_oScene[l_sNameSetPoint][i]["img"].IsArray()
-						&& l_oScene[l_sNameSetPoint][i].HasMember("img"));
-		for (int j = 0; j < l_oScene[l_sNameSetPoint][i]["img"].Size(); j++)
+		if (l_oScene.HasMember("RewardParent"))
 		{
-			assert(
-					l_oScene[l_sNameSetPoint][i]["img"][j]["imgURL"].IsString()
-							&& l_oScene[l_sNameSetPoint][i]["img"][j].HasMember(
-									"imgURL"));
-
-			l_sBuffer =
-					l_oScene[l_sNameSetPoint][i]["img"][j]["imgURL"].GetString();
-			l_sImgURLBuffer = l_sBuffer.c_str();
-
-			assert(
-					l_oScene[l_sNameSetPoint][i]["img"][j]["anchorPoint"].IsInt()
-							&& l_oScene[l_sNameSetPoint][i]["img"][j].HasMember(
-									"anchorPoint"));
-			l_iAnchorPointBuffer =
-					l_oScene[l_sNameSetPoint][i]["img"][j]["anchorPoint"].GetInt();
-			l_aImgBuffer.push_back(
-			{ l_sImgURLBuffer, l_iAnchorPointBuffer });
+			l_pInteractionScene->setPLmRewardUser2(
+					makeLmReward(l_oScene["RewardParent"]));
 		}
-		assert(
-				l_oScene[l_sNameSetPoint][i]["sound"].IsString()
-						&& l_oScene[l_sNameSetPoint][i].HasMember("sound"));
-		l_sBuffer = l_oScene[l_sNameSetPoint][i]["sound"].GetString();
-		l_sSoundURLBuffer = l_sBuffer.c_str();
-		assert(
-				l_oScene[l_sNameSetPoint][i]["text"].IsString()
-						&& l_oScene[l_sNameSetPoint][i].HasMember("text"));
-		l_sBuffer = l_oScene[l_sNameSetPoint][i]["text"].GetString();
-		l_sTextURLBuffer = l_sBuffer.c_str();
 
-		l_pLmSetPoint->add(
-				new LmLayer(l_aImgBuffer, l_sSoundURLBuffer, l_sTextURLBuffer));
+		if (l_oScene.HasMember("RewardChild"))
+		{
+			l_pInteractionScene->setPLmReward(
+					makeLmReward(l_oScene["RewardChild"]));
+		}
 	}
 
-	return l_pLmSetPoint;
 }
 
 void LmJsonParser::makeLmRightSpotScene(const rapidjson::Value& l_oScene)
@@ -382,7 +488,7 @@ void LmJsonParser::makeLmRightSpotScene(const rapidjson::Value& l_oScene)
 	//create the scene delete in the game manager
 	m_aInteractionSceneOfTheGame.push_back(new LmRightSpotScene(l_SeedBuffer));
 
-	initInteraction(l_oScene,
+	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 
@@ -423,14 +529,18 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 
 	assert(
 			l_oScene["FilenameSpriteGoodAnswerButtonChild"].IsString()
-					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButtonChild"));
-	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButtonChild"].GetString();
+					&& l_oScene.HasMember(
+							"FilenameSpriteGoodAnswerButtonChild"));
+	l_sBufferString =
+			l_oScene["FilenameSpriteGoodAnswerButtonChild"].GetString();
 	l_SeedBuffer.FilenameSpriteGoodAnswerButtonChild = l_sBufferString.c_str();
 
 	assert(
 			l_oScene["FilenameSpriteGoodAnswerButtonParent"].IsString()
-					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButtonParent"));
-	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButtonParent"].GetString();
+					&& l_oScene.HasMember(
+							"FilenameSpriteGoodAnswerButtonParent"));
+	l_sBufferString =
+			l_oScene["FilenameSpriteGoodAnswerButtonParent"].GetString();
 	l_SeedBuffer.FilenameSpriteGoodAnswerButtonParent = l_sBufferString.c_str();
 
 	assert(
@@ -445,52 +555,22 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 	l_sBufferString = l_oScene["FilenameAudioAnswerSelected"].GetString();
 	l_SeedBuffer.FilenameAudioAnswerSelected = l_sBufferString.c_str();
 
-	assert(
-			l_oScene["InGameScreen"].IsObject()
-					&& l_oScene.HasMember("InGameScreen"));
-
-	std::string l_sImgURLBuffer;
-	int l_iAnchorPointBuffer;
-	std::vector<std::pair<std::string, int>> l_aImgBuffer;
-	std::string l_sSoundURLBuffer;
-	std::string l_sTextURLBuffer;
-
-	assert(
-			l_oScene["InGameScreen"]["img"].IsArray()
-					&& l_oScene["InGameScreen"].HasMember("img"));
-	for (int j = 0; j < l_oScene["InGameScreen"]["img"].Size(); j++)
-	{
-		assert(
-				l_oScene["InGameScreen"]["img"][j]["imgURL"].IsString()
-						&& l_oScene["InGameScreen"]["img"][j].HasMember(
-								"imgURL"));
-
-		l_sBufferString =
-				l_oScene["InGameScreen"]["img"][j]["imgURL"].GetString();
-		l_sImgURLBuffer = l_sBufferString.c_str();
-
-		assert(
-				l_oScene["InGameScreen"]["img"][j]["anchorPoint"].IsInt()
-						&& l_oScene["InGameScreen"]["img"][j].HasMember(
-								"anchorPoint"));
-		l_iAnchorPointBuffer =
-				l_oScene["InGameScreen"]["img"][j]["anchorPoint"].GetInt();
-		l_aImgBuffer.push_back(
-		{ l_sImgURLBuffer, l_iAnchorPointBuffer });
-	}
-	assert(
-			l_oScene["InGameScreen"]["sound"].IsString()
-					&& l_oScene["InGameScreen"].HasMember("sound"));
-	l_sBufferString = l_oScene["InGameScreen"]["sound"].GetString();
-	l_sSoundURLBuffer = l_sBufferString.c_str();
-	assert(
-			l_oScene["InGameScreen"]["text"].IsString()
-					&& l_oScene["InGameScreen"].HasMember("text"));
-	l_sBufferString = l_oScene["InGameScreen"]["text"].GetString();
-	l_sTextURLBuffer = l_sBufferString.c_str();
-
-	l_SeedBuffer.InGameScreenParent = new LmLayer(l_aImgBuffer,
-			l_sSoundURLBuffer, l_sTextURLBuffer);
+	CCLOG("1");
+	assert(l_oScene["InGameScreen"].IsObject());
+	assert(l_oScene.HasMember("InGameScreen"));
+	l_SeedBuffer.InGameScreenParent = makeLmLayer(l_oScene["InGameScreen"]);
+	CCLOG("2");
+	assert(l_oScene["ReplayScreen"].IsObject());
+	assert(l_oScene.HasMember("ReplayScreen"));
+	l_SeedBuffer.ReplayScreen = makeLmLayer(l_oScene["ReplayScreen"]);
+	CCLOG("3");
+	assert(l_oScene["WinChildScreen"].IsObject());
+	assert(l_oScene.HasMember("WinChildScreen"));
+	l_SeedBuffer.WinChildScreen = makeLmLayer(l_oScene["WinChildScreen"]);
+	CCLOG("4");
+	assert(l_oScene["WinParentScreen"].IsObject());
+	assert(l_oScene.HasMember("WinParentScreen"));
+	l_SeedBuffer.WinParentScreen = makeLmLayer(l_oScene["WinParentScreen"]);
 
 	assert(l_oScene["Questions"].IsArray());
 
@@ -576,7 +656,7 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 
 	m_aInteractionSceneOfTheGame.push_back(new LmQuizz_v1Scene(l_SeedBuffer));
 
-	initInteraction(l_oScene,
+	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 
@@ -616,26 +696,18 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 	l_SeedBuffer.FilenameSpriteAnswerCross = l_sBufferString.c_str();
 
 	assert(
-			l_oScene["FilenameSpriteGoodAnswerButton"].IsString()
-					&& l_oScene.HasMember("FilenameSpriteGoodAnswerButton"));
-	l_sBufferString = l_oScene["FilenameSpriteGoodAnswerButton"].GetString();
-	l_SeedBuffer.FilenameSpriteGoodAnswerButton = l_sBufferString.c_str();
+			l_oScene["FilenameAudioGoodAnswer"].IsString()
+					&& l_oScene.HasMember("FilenameAudioGoodAnswer"));
+	l_sBufferString = l_oScene["FilenameAudioGoodAnswer"].GetString();
+	l_SeedBuffer.FilenameAudioGoodAnswer = l_sBufferString.c_str();
 
 	assert(
-			l_oScene["FilenameSpriteBadAnswerButton"].IsString()
-					&& l_oScene.HasMember("FilenameSpriteBadAnswerButton"));
-	l_sBufferString = l_oScene["FilenameSpriteBadAnswerButton"].GetString();
-	l_SeedBuffer.FilenameSpriteBadAnswerButton = l_sBufferString.c_str();
+			l_oScene["FilenameAudioBadAnswer"].IsString()
+					&& l_oScene.HasMember("FilenameAudioBadAnswer"));
+	l_sBufferString = l_oScene["FilenameAudioBadAnswer"].GetString();
+	l_SeedBuffer.FilenameAudioBadAnswer = l_sBufferString.c_str();
 
-	assert(
-			l_oScene["FilenameAudioAnswerSelected"].IsString()
-					&& l_oScene.HasMember("FilenameAudioAnswerSelected"));
-	l_sBufferString = l_oScene["FilenameAudioAnswerSelected"].GetString();
-	l_SeedBuffer.FilenameAudioAnswerSelected = l_sBufferString.c_str();
-
-	assert(l_oScene["Questions"].IsArray());
-
-	//buffers to construct an LmQuestion
+	//buffers to construct an LmQuestion child & parent
 	std::string l_sAnswer1Buffer;
 	std::string l_sAnswer2Buffer;
 	std::string l_sAnswer3Buffer;
@@ -643,51 +715,53 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 	int l_iNumberGoodAnswerBuffer;
 	std::string l_sQuestionBuffer;
 
-	for (int i = 0; i < l_oScene["Questions"].Size(); i++)
+	/*
+	 * PARENT QUESTION
+	 */
+	assert(
+			l_oScene["QuestionsParent"].IsArray()
+					&& l_oScene.HasMember("QuestionsParent"));
+
+	for (int i = 0; i < l_oScene["QuestionsParent"].Size(); i++)
 	{
-		assert(l_oScene["Questions"][i].IsObject());
+		assert(l_oScene["QuestionsParent"][i].IsObject());
 
 		assert(
-				l_oScene["Questions"][i]["Question"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Question"));
-		l_sBufferString = l_oScene["Questions"][i]["Question"].GetString();
+				l_oScene["QuestionsParent"][i]["Question"].IsString()
+						&& l_oScene["QuestionsParent"][i].HasMember(
+								"Question"));
+		l_sBufferString =
+				l_oScene["QuestionsParent"][i]["Question"].GetString();
 		l_sQuestionBuffer = l_sBufferString.c_str();
-
 		assert(
-				l_oScene["Questions"][i]["NumberRightAnswer"].IsInt()
-						&& l_oScene["Questions"][i].HasMember(
+				l_oScene["QuestionsParent"][i]["NumberRightAnswer"].IsInt()
+						&& l_oScene["QuestionsParent"][i].HasMember(
 								"NumberRightAnswer"));
 		l_iNumberGoodAnswerBuffer =
-				l_oScene["Questions"][i]["NumberRightAnswer"].GetInt();
-
-		/*
-		 * INIT PARENT ANSWER
-		 */
+				l_oScene["QuestionsParent"][i]["NumberRightAnswer"].GetInt();
 
 		assert(
-				l_oScene["Questions"][i]["Answer1Parent"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer1Parent"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer1Parent"].GetString();
+				l_oScene["QuestionsParent"][i]["Answer1"].IsString()
+						&& l_oScene["QuestionsParent"][i].HasMember("Answer1"));
+		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer1"].GetString();
 		l_sAnswer1Buffer = l_sBufferString.c_str();
 
 		assert(
-				l_oScene["Questions"][i]["Answer2Parent"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer2Parent"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer2Parent"].GetString();
+				l_oScene["QuestionsParent"][i]["Answer2"].IsString()
+						&& l_oScene["QuestionsParent"][i].HasMember("Answer2"));
+		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer2"].GetString();
 		l_sAnswer2Buffer = l_sBufferString.c_str();
-
 		assert(
-				l_oScene["Questions"][i]["Answer3Parent"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer3Parent"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer3Parent"].GetString();
+				l_oScene["QuestionsParent"][i]["Answer3"].IsString()
+						&& l_oScene["QuestionsParent"][i].HasMember("Answer3"));
+		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer3"].GetString();
 		l_sAnswer3Buffer = l_sBufferString.c_str();
 
 		assert(
-				l_oScene["Questions"][i]["Answer4Parent"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer4Parent"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer4Parent"].GetString();
+				l_oScene["QuestionsParent"][i]["Answer4"].IsString()
+						&& l_oScene["QuestionsParent"][i].HasMember("Answer4"));
+		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer4"].GetString();
 		l_sAnswer4Buffer = l_sBufferString.c_str();
-
 		/*
 		 * answer1
 		 * answer2
@@ -702,32 +776,54 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 						l_sAnswer3Buffer, l_sAnswer4Buffer,
 						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
 
-		/*
-		 * INIT CHILD ANSWER
-		 */
+	}
+	/*
+	 * CHILD QUESTION
+	 */
+
+	assert(
+			l_oScene["QuestionsChild"].IsArray()
+					&& l_oScene.HasMember("QuestionsChild"));
+
+	for (int i = 0; i < l_oScene["QuestionsChild"].Size(); i++)
+	{
+		assert(l_oScene["QuestionsChild"][i].IsObject());
 
 		assert(
-				l_oScene["Questions"][i]["Answer1Child"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer1Child"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer1Child"].GetString();
+				l_oScene["QuestionsChild"][i]["Question"].IsString()
+						&& l_oScene["QuestionsChild"][i].HasMember("Question"));
+		l_sBufferString = l_oScene["QuestionsChild"][i]["Question"].GetString();
+		l_sQuestionBuffer = l_sBufferString.c_str();
+		CCLOG("5");
+		assert(
+				l_oScene["QuestionsChild"][i]["NumberRightAnswer"].IsInt()
+						&& l_oScene["QuestionsChild"][i].HasMember(
+								"NumberRightAnswer"));
+		l_iNumberGoodAnswerBuffer =
+				l_oScene["QuestionsChild"][i]["NumberRightAnswer"].GetInt();
+
+		assert(
+				l_oScene["QuestionsChild"][i]["Answer1"].IsString()
+						&& l_oScene["QuestionsChild"][i].HasMember("Answer1"));
+		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer1"].GetString();
 		l_sAnswer1Buffer = l_sBufferString.c_str();
 
 		assert(
-				l_oScene["Questions"][i]["Answer2Child"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer2Child"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer2Child"].GetString();
+				l_oScene["QuestionsChild"][i]["Answer2"].IsString()
+						&& l_oScene["QuestionsChild"][i].HasMember("Answer2"));
+		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer2"].GetString();
 		l_sAnswer2Buffer = l_sBufferString.c_str();
 
 		assert(
-				l_oScene["Questions"][i]["Answer3Child"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer3Child"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer3Child"].GetString();
+				l_oScene["QuestionsChild"][i]["Answer3"].IsString()
+						&& l_oScene["QuestionsChild"][i].HasMember("Answer3"));
+		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer3"].GetString();
 		l_sAnswer3Buffer = l_sBufferString.c_str();
 
 		assert(
-				l_oScene["Questions"][i]["Answer4Child"].IsString()
-						&& l_oScene["Questions"][i].HasMember("Answer4Child"));
-		l_sBufferString = l_oScene["Questions"][i]["Answer4Child"].GetString();
+				l_oScene["QuestionsChild"][i]["Answer4"].IsString()
+						&& l_oScene["QuestionsChild"][i].HasMember("Answer4"));
+		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer4"].GetString();
 		l_sAnswer4Buffer = l_sBufferString.c_str();
 
 		/*
@@ -743,6 +839,7 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 				new LmQuestion(l_sAnswer1Buffer, l_sAnswer2Buffer,
 						l_sAnswer3Buffer, l_sAnswer4Buffer,
 						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
+
 	}
 
 	assert(
@@ -763,7 +860,7 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 
 	m_aInteractionSceneOfTheGame.push_back(new LmQuizz_v2Scene(l_SeedBuffer));
 
-	initInteraction(l_oScene,
+	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 
@@ -788,6 +885,18 @@ void LmJsonParser::makeLmFindGoodCategoryScene(const rapidjson::Value& l_oScene)
 					&& l_oScene.HasMember("FilenameSpriteSendingArea"));
 	l_sBufferString = l_oScene["FilenameSpriteSendingArea"].GetString();
 	l_SeedBuffer.FilenameSpriteSendingArea = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameAudioBadCategory"].IsString()
+					&& l_oScene.HasMember("FilenameAudioBadCategory"));
+	l_sBufferString = l_oScene["FilenameAudioBadCategory"].GetString();
+	l_SeedBuffer.FilenameAudioBadCategory = l_sBufferString.c_str();
+
+	assert(
+			l_oScene["FilenameAudioGoodCategory"].IsString()
+					&& l_oScene.HasMember("FilenameAudioGoodCategory"));
+	l_sBufferString = l_oScene["FilenameAudioGoodCategory"].GetString();
+	l_SeedBuffer.FilenameAudioGoodCategory = l_sBufferString.c_str();
 
 	assert(l_oScene["Images"].IsArray() && l_oScene.HasMember("Images"));
 	for (int i = 0; i < l_oScene["Images"].Size(); i++)
@@ -822,10 +931,15 @@ void LmJsonParser::makeLmFindGoodCategoryScene(const rapidjson::Value& l_oScene)
 		{ l_oScene["Categories"][i]["Id"].GetInt(), l_sBufferString.c_str() });
 	}
 
+	assert(
+			l_oScene["NumberOfGoodImages"].IsInt()
+					&& l_oScene.HasMember("NumberOfGoodImages"));
+	l_SeedBuffer.NumberOfGoodImages = l_oScene["NumberOfGoodImages"].GetInt();
+
 	m_aInteractionSceneOfTheGame.push_back(
 			new LmFindGoodCategoryScene(l_SeedBuffer));
 
-	initInteraction(l_oScene,
+	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 }
@@ -878,19 +992,19 @@ void LmJsonParser::makeLmAudioHintScene(const rapidjson::Value& l_oScene)
 		{ l_oScene["Labels"][i]["Id"].GetInt(), l_sBufferString.c_str() });
 
 		assert(
-				l_oScene["Labels"][i].HasMember("FilenameAudioLabel")
-						&& l_oScene["Labels"][i]["FilenameAudioLabel"].IsString());
+				l_oScene["Labels"][i].HasMember("FilenameSpriteHint")
+						&& l_oScene["Labels"][i]["FilenameSpriteHint"].IsString());
 		l_sBufferString =
-				l_oScene["Labels"][i]["FilenameAudioLabel"].GetString();
+				l_oScene["Labels"][i]["FilenameSpriteHint"].GetString();
 
-		l_SeedBuffer.LabelsFilenameAudio.insert(
+		l_SeedBuffer.LabelsFilenameSpriteHint.insert(
 		{ l_oScene["Labels"][i]["Id"].GetInt(), l_sBufferString.c_str() });
 
 	}
 
 	m_aInteractionSceneOfTheGame.push_back(new LmAudioHintScene(l_SeedBuffer));
 
-	initInteraction(l_oScene,
+	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 }

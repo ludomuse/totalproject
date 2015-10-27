@@ -14,7 +14,7 @@ struct LmAudioHintSceneSeed
 {
 	std::string FilenameSpriteBackground;
 	std::string FilenameSpriteMainImage;
-	std::map<int, std::string> LabelsFilenameAudio;
+	std::map<int, std::string> LabelsFilenameSpriteHint;
 	std::map<int, std::string> LabelsFilenameSprite;
 	std::map<int, cocos2d::Vec2> LabelsCoordonateHole;
 
@@ -44,7 +44,7 @@ private:
 	//json
 	std::string m_sFilenameSpriteBackground;
 	std::string m_sFilenameSpriteMainImage;
-	std::map<int, std::string> m_aLabelsFilenameAudio;
+	std::map<int, std::string> m_aLabelsFilenameSpriteHint;
 	std::map<int, std::string> m_aLabelsFilenameSprite;
 	std::map<int, cocos2d::Vec2> m_aLabelsCoordonateHole;
 
@@ -62,8 +62,8 @@ private:
 	//conversion from id gamecomponent to id label
 	std::map<int, LmGameComponent*> m_aLabelsGameComponent;
 
-	//button to listen sound
-	std::map<cocos2d::MenuItemImage*, int> m_aLabelsMenuItemImage;
+	//sprite hint
+	std::map<int,cocos2d::Sprite*> m_aLabelsSpriteHint;
 
 	//to know if a sprite has been selected
 	bool m_bSpriteSelected;
@@ -73,6 +73,7 @@ private:
 	int m_iBufferId;
 	int m_iHoleTouchedIndex;
 	bool m_bBufferSpriteFillHole;
+
 
 	//METHODS
 
@@ -96,6 +97,10 @@ private:
 	void moveBufferSprite(cocos2d::Touch* );
 
 	int touchCollideHole(cocos2d::Touch* );
+
+	//for the child to stop and play musique
+	void playCallback(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
+
 
 
 
