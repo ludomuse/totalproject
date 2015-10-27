@@ -1,9 +1,22 @@
 package org.cocos2dx.cpp.sockets;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+
+import org.apache.http.conn.util.InetAddressUtils;
+import org.cocos2dx.cpp.DebugManager;
+import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 /**
  * Socket Handler is a wrapper class that allow to manager easily a TCP
@@ -198,48 +211,224 @@ public class SocketHandler {
 		}
 	}
 
+	   /**
+     * Get IP address from first non-localhost interface
+     * @param ipv4  true=return ipv4, false=return ipv6
+     * @return  address or empty string
+     */
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress().toUpperCase();
+                        boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr); 
+                        if (useIPv4) {
+                            if (isIPv4) 
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 port suffix
+                                return delim<0 ? sAddr : sAddr.substring(0, delim);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
+    }
+    
 	public static String getAnIpAddresForThisDevice()
 	{
 		return getStringLocalIPAddress();
 		// return getDottedDecimalIP(getLocalIPAddress());
 	}
+	
+	public static String getMyIpv6Address()
+	{
+		return SocketHandler.generateIpv6FromMacAddress(getMACAddress("wlan0"), false);
+	}
+	
+	public static String getDistantIpv6Address(String peerMacAddress)
+	{
+		return SocketHandler.generateIpv6FromMacAddress(peerMacAddress, true);
+	}
+	
+	public static boolean isOwner(String peerMacAddress)
+	{
+		return getValue(getMyIpv6Address()).compareTo(getValue(getDistantIpv6Address(peerMacAddress))) == -1;
+	}
+	
+	public static String getMyIpAddress(String peerMacAddress)
+	{
+		if(!isOwner(peerMacAddress))
+		{
+			return "192.168.49.3";
+		}
+		else
+		{
+			return "192.168.49.2";
+		}
+		
+	}
+	
+	private static BigInteger getValue(String s)
+	{
+		s.replace(":", "");
+		String res = "";
+		for(int i = 0; i < s.length(); i++)
+		{
+			res += (int) s.charAt(i);
+		}
+		DebugManager.print("s/v = " + s + " " + res, WifiDirectManager.DEBUGGER_CHANNEL);
+		return new BigInteger(res);
+	}
+	
+	public static String getPeerIpAddress(String peerMacAddress)
+	{
+		DebugManager.print("peerMacAddres = " + peerMacAddress, WifiDirectManager.DEBUGGER_CHANNEL);
+		if(!isOwner(peerMacAddress))
+		{
+			return "192.168.49.2";
+		}
+		else
+		{
+			return "192.168.49.3";
+		}
+	}
 
-	// private static String getLocalIPAddress()
-	// {
-	// try
-	// {
-	// for (Enumeration<NetworkInterface> en = NetworkInterface
-	// .getNetworkInterfaces(); en.hasMoreElements();)
-	// {
-	// NetworkInterface intf = en.nextElement();
-	// for (Enumeration<InetAddress> enumIpAddr = intf
-	// .getInetAddresses(); enumIpAddr.hasMoreElements();)
-	// {
-	// InetAddress inetAddress = enumIpAddr.nextElement();
-	// if (!inetAddress.isLoopbackAddress())
-	// {
-	// if (inetAddress instanceof Inet4Address)
-	// { // fix for Galaxy Nexus. IPv4 is easy to use :-)
-	// return getDottedDecimalIP(inetAddress.getAddress());
-	// }
-	// else
-	// {
-	// return inetAddress.getHostAddress().toString();
-	// }
-	// }
-	// }
-	// }
-	// }
-	// catch (SocketException ex)
-	// {
-	// // Log.e("AndroidNetworkAddressFactory", "getLocalIPAddress()", ex);
-	// }
-	// catch (NullPointerException ex)
-	// {
-	// // Log.e("AndroidNetworkAddressFactory", "getLocalIPAddress()", ex);
-	// }
-	// return null;
-	// }
+	public static String generateIpv6FromMacAddress(String macAddress,
+			boolean distantAddress)
+	{
+		macAddress = macAddress.toLowerCase();
+		String[] splitted = macAddress.split(":");
+
+		// take the mac address: for example 52:74:f2:b1:a8:7f
+		// throw ff:fe in the middle: 52:74:f2:ff:fe:b1:a8:7f
+		// reformat to IPv6 notation 5274:f2ff:feb1:a87f
+		// convert the first octet from hexadecimal to binary: 52 -> 01010010
+
+		// invert the bit at index 6 (counting from 0): 01010010 -> 01010000
+
+		// convert octet back to hexadecimal: 01010000 -> 50
+		// replace first octet with newly calculated one: 5074:f2ff:feb1:a87f
+		// prepend the link-local prefix: fe80::5074:f2ff:feb1:a87f
+
+		if (distantAddress)
+		{
+			int first = Integer.parseInt(splitted[0], 16);
+
+			// force I/G byte from mac address to localy
+			// administred
+			first = first == (first & 253) ? first | 2 : first & 253;
+
+			splitted[0] = Integer.toHexString(first);
+		}
+
+		macAddress = splitted[0] + splitted[1] + ":" + splitted[2] + "ff:";
+		macAddress += "fe" + splitted[3] + ":" + splitted[4] + splitted[5];
+
+		return "fe80:" + macAddress + "%" + getNetworkScope("p2p");
+
+	}
+
+	public static String generateIpv4FromMacAddress(String macAddress)
+	{
+		String[] splitted = macAddress.split(":");
+		int third = Integer.parseInt(splitted[3], 16);
+		int fourth = Integer.parseInt(splitted[4], 16);
+		int fiveth = Integer.parseInt(splitted[5], 16);
+		return "192." + third + "." + fourth + "." + fiveth;
+	}
+
+	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+	private static String byteToHex(byte hex)
+	{
+		char[] hexChars = new char[2];
+		int v = hex & 0xFF;
+		hexChars[0] = hexArray[v >>> 4];
+		hexChars[1] = hexArray[v & 0x0F];
+		return new String(hexChars);
+	}
+
+	private static byte[] hexStringToByteArray(String s)
+	{
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2)
+		{
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
+					.digit(s.charAt(i + 1), 16));
+		}
+		return data;
+	}
+
+	/**
+	 * Returns MAC address of the given interface name.
+	 * 
+	 * @param interfaceName
+	 *            eth0, wlan0 or NULL=use first interface
+	 * @return mac address or empty string
+	 */
+	public static String getMACAddress(String interfaceName)
+	{
+		try
+		{
+			List<NetworkInterface> interfaces = Collections
+					.list(NetworkInterface.getNetworkInterfaces());
+			for (NetworkInterface intf : interfaces)
+			{
+				if (interfaceName != null)
+				{
+					if (!intf.getName().equalsIgnoreCase(interfaceName))
+						continue;
+				}
+				DebugManager.print(intf.getName(),
+						WifiDirectManager.DEBUGGER_CHANNEL);
+				byte[] mac = intf.getHardwareAddress();
+				if (mac == null)
+					return "";
+				StringBuilder buf = new StringBuilder();
+				for (int idx = 0; idx < mac.length; idx++)
+					buf.append(String.format("%02X:", mac[idx]));
+				if (buf.length() > 0)
+					buf.deleteCharAt(buf.length() - 1);
+				return buf.toString();
+			}
+		}
+		catch (Exception ex)
+		{
+		} // for now eat exceptions
+		return "";
+	}
+
+	private static String getNetworkScope(String containing)
+	{
+		try
+		{
+			String res = null;
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();)
+			{
+				NetworkInterface intf = en.nextElement();
+				if (intf.getName().contains(containing))
+				{
+					res = intf.getName();
+					DebugManager.print(res, WifiDirectManager.DEBUGGER_CHANNEL);
+				}
+			}
+			return res;
+		}
+		catch (Exception ex)
+		{
+
+		}
+		return null;
+	}
 
 	private static String getStringLocalIPAddress()
 	{
