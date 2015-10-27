@@ -5,8 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
+import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import android.os.Bundle;
+
+import android.view.GestureDetector;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import java.lang.Override;
 
@@ -40,21 +45,16 @@ public class AppActivity extends Cocos2dxActivity {
 		
 		_wifiFacade = new WifiDirectFacade(this);
 		
-		
-		//test to see if it fix this => https://github.com/cocos2d/cocos2d-x/issues/8305
-		if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) 
-		{
-		    finish();
-		    _wifiFacade.clear(); //TODO totest
-		    return;
-		}
-
 	}
+	
+    
 
 
 	@Override
 	protected void onStop()
 	{
+		DebugManager.print("[FINISHING] on stop", WifiDirectManager.DEBUGGER_CHANNEL);
+	    _wifiFacade.clear(); //TODO totest
 		super.onStop();
 	}
 

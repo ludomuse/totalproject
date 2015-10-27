@@ -84,4 +84,9 @@ public class JniJavaFacade {
 	{
 		JniCppFacade.setTabletName(android.os.Build.MODEL);
 	}
+	
+	public static void clean()
+	{
+		_wifiDirectFacade.clear();
+	}
 }

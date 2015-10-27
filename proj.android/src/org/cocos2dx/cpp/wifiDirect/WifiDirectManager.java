@@ -994,23 +994,37 @@ public class WifiDirectManager {
 				onReceiveChar);
 	}
 
+	public String getPeerMacAddress()
+	{
+		return _mapAddressNameAllDevices.get(lastPeerName);
+	}
 	
 	private void onConnect()
 	{
-		DebugManager.print("device connected to network", DEBUGGER_CHANNEL);
+
+		/*DebugManager.print("peer mac = " + peerMacAddress, DEBUGGER_CHANNEL);
+		String myIpv6Address = SocketHandler.getMyIpAddress(peerMacAddress);
+		String peerIpv6Address = SocketHandler.getPeerIpAddress(peerMacAddress);//SocketHandler.generateIpv6FromMacAddress(peerMacAddress, true);
 		
-		// socket.setOnReceiveIPCallBack(_cmPeerConnected);
-		// setCallBacks();
+		DebugManager.print("listenning on " + myIpv6Address, DEBUGGER_CHANNEL);
+		DebugManager.print("connecting to " + lastPeerName + " "+ peerIpv6Address, DEBUGGER_CHANNEL);
+		DebugManager.print(SocketHandler.getAnIpAddresForThisDevice(), WifiDirectManager.DEBUGGER_CHANNEL);
+		
+		socket.listen(LISTENNING_PORT, myIpv6Address);
+		socket.connectTo(peerIpv6Address);*/
+		
 		_manager.requestConnectionInfo(_channel, new ConnectionInfoListener() {
 			@Override
 			public void onConnectionInfoAvailable(WifiP2pInfo info)
 			{
+				String peerMacAddress = getPeerMacAddress();
 				String ownerAddress = info.groupOwnerAddress.getHostAddress();
-				
-				if (!info.isGroupOwner)
+				DebugManager.print("owner address is = " + ownerAddress, WifiDirectManager.DEBUGGER_CHANNEL);
+
+				if (SocketHandler.isOwner(peerMacAddress) && info.groupFormed)
 				{
 					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);
-					String myLocalAddress = SocketHandler.getAnIpAddresForThisDevice();
+					String myLocalAddress = SocketHandler.getIPAddress(true);//SocketHandler.getAnIpAddresForThisDevice();
 					DebugManager.print("My IP Address is " + myLocalAddress, DEBUGGER_CHANNEL);
 					//create local server
 					socket.listen(LISTENNING_PORT, myLocalAddress);
@@ -1018,7 +1032,7 @@ public class WifiDirectManager {
 					socket.connectTo(ownerAddress);
 
 				}
-				else
+				else if(info.groupFormed)
 				{
 					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
 					DebugManager.print("My IP Address is " + ownerAddress, DEBUGGER_CHANNEL);
@@ -1028,6 +1042,7 @@ public class WifiDirectManager {
 					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
 				}
 
+				
 				_cmPeerConnected = null;
 			}
 		});
