@@ -212,6 +212,7 @@ public class WifiDirectManager {
 	public void clear()
 	{
 		stopHandlers();
+		askToRemoveGroup();
 		socket.stop();
 		turnOffWifi();
 		turnOnWifi();
@@ -999,6 +1000,46 @@ public class WifiDirectManager {
 		return _mapAddressNameAllDevices.get(lastPeerName);
 	}
 	
+	public void askToRemoveGroup()
+	{
+		_manager.removeGroup(_channel, new ActionListener() {
+			@Override
+			public void onSuccess()
+			{
+				DebugManager.print(
+						"success on launching service RemoveGroup",
+						DEBUGGER_CHANNEL);
+				requestForAddingDnsRequestAlreadyLaunched = false;
+			}
+
+			@Override
+			public void onFailure(int arg0)
+			{
+				String text = "Fail to launch service RemoveGroup ";
+				switch (arg0)
+				{
+					case 0:
+						text += "of internal error";
+						break;
+					case 1:
+						text += "P2P is unsupported on this device";
+						break;
+					case 2:
+						text += "the framework is busy and unable to service the request";
+						break;
+					case 3:
+						text = "because no service resquests are added";
+						break;
+					default:
+						text = "of unknow error";
+						break;
+				}
+				DebugManager.print(text, DEBUGGER_CHANNEL);
+				requestForAddingDnsRequestAlreadyLaunched = false;
+			}
+		});
+	}
+	
 	private void onConnect()
 	{
 
@@ -1020,7 +1061,7 @@ public class WifiDirectManager {
 				String peerMacAddress = getPeerMacAddress();
 				String ownerAddress = info.groupOwnerAddress.getHostAddress();
 				DebugManager.print("owner address is = " + ownerAddress, WifiDirectManager.DEBUGGER_CHANNEL);
-
+				
 				if (SocketHandler.isOwner(peerMacAddress) && info.groupFormed)
 				{
 					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);

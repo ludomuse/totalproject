@@ -98,7 +98,7 @@ class bytes {
 
 		void del(byte* data)
 		{
-			free(data);
+			//free(data);
 		}
 
 		byte* alloc(int size)
