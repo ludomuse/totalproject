@@ -211,60 +211,145 @@ public class SocketHandler {
 		}
 	}
 
-	   /**
-     * Get IP address from first non-localhost interface
-     * @param ipv4  true=return ipv4, false=return ipv6
-     * @return  address or empty string
-     */
-    public static String getIPAddress(boolean useIPv4) {
-        try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface intf : interfaces) {
-                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                for (InetAddress addr : addrs) {
-                    if (!addr.isLoopbackAddress()) {
-                        String sAddr = addr.getHostAddress().toUpperCase();
-                        boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr); 
-                        if (useIPv4) {
-                            if (isIPv4) 
-                                return sAddr;
-                        } else {
-                            if (!isIPv4) {
-                                int delim = sAddr.indexOf('%'); // drop ip6 port suffix
-                                return delim<0 ? sAddr : sAddr.substring(0, delim);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) { } // for now eat exceptions
-        return "";
-    }
-    
+	public static void printAllNetworkInterfaceName()
+	{
+		try
+		{
+			List<NetworkInterface> interfaces = Collections
+					.list(NetworkInterface.getNetworkInterfaces());
+			for (NetworkInterface intf : interfaces)
+			{
+				List<InetAddress> addrs = Collections.list(intf
+						.getInetAddresses());
+				for (InetAddress addr : addrs)
+				{
+					String sAddr = addr.getHostAddress().toUpperCase();
+					DebugManager.print("sAddr = " + sAddr,
+							WifiDirectManager.DEBUGGER_CHANNEL);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+		} // for now eat exceptions
+	}
+
+	/**
+	 * Get IP address from first non-localhost interface
+	 * 
+	 * @param ipv4
+	 *            true=return ipv4, false=return ipv6
+	 * @return address or empty string
+	 */
+	public static String getIPAddress(boolean useIPv4)
+	{
+		try
+		{
+			List<NetworkInterface> interfaces = Collections
+					.list(NetworkInterface.getNetworkInterfaces());
+			for (NetworkInterface intf : interfaces)
+			{
+				if (intf.getName().contains("p2p"))
+				{
+					List<InetAddress> addrs = Collections.list(intf
+							.getInetAddresses());
+					for (InetAddress addr : addrs)
+					{
+						if (!addr.isLoopbackAddress())
+						{
+							String sAddr = addr.getHostAddress().toUpperCase();
+							boolean isIPv4 = InetAddressUtils
+									.isIPv4Address(sAddr);
+							if (useIPv4)
+							{
+								if (isIPv4)
+									return sAddr;
+							}
+							else
+							{
+								if (!isIPv4)
+								{
+									int delim = sAddr.indexOf('%'); // drop ip6
+																	// port
+																	// suffix
+									return delim < 0 ? sAddr : sAddr.substring(
+											0, delim);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+		} // for now eat exceptions
+		return "";
+	}
+
 	public static String getAnIpAddresForThisDevice()
 	{
 		return getStringLocalIPAddress();
 		// return getDottedDecimalIP(getLocalIPAddress());
 	}
-	
+
 	public static String getMyIpv6Address()
 	{
-		return SocketHandler.generateIpv6FromMacAddress(getMACAddress("wlan0"), false);
+		return SocketHandler.generateIpv6FromMacAddress(getMACAddress("wlan0"),
+				false);
 	}
-	
+
 	public static String getDistantIpv6Address(String peerMacAddress)
 	{
 		return SocketHandler.generateIpv6FromMacAddress(peerMacAddress, true);
 	}
-	
+
+	private static String getMyIpv6AddressValue()
+	{
+		return getValue(getMyIpv6Address());
+	}
+
+	private static String getDistantIpv6AddressValue(String peerMacAddress)
+	{
+		return getValue(getDistantIpv6Address(peerMacAddress));
+	}
+
+	private static int compareTo(String i1, String i2)
+	{
+		int a = i1.compareTo(i2);
+		int b = i2.compareTo(i1);
+		return a > b ? 1 : b > a ? -1 : 0;
+		// int i1Len = i1.length();
+		// int i2Len = i2.length();
+		// if(i1Len > i2Len)
+		// return 1;
+		// if(i2Len > i1Len)
+		// return -1;
+		// for(int i = 0; i < i1Len; i++)
+		// {
+		// int ci1 = Integer.parseInt(i1.charAt(i) + "");
+		// int ci2 = Integer.parseInt(i2.charAt(i) + "");
+		// if(ci1 > ci2)
+		// return 1;
+		// if(ci2 > ci1)
+		// return -1;
+		// }
+		// return 0;
+	}
+
 	public static boolean isOwner(String peerMacAddress)
 	{
-		return getValue(getMyIpv6Address()).compareTo(getValue(getDistantIpv6Address(peerMacAddress))) == -1;
+
+		int res = compareTo(getMyIpv6AddressValue(),
+				getDistantIpv6AddressValue(peerMacAddress));
+		DebugManager.print("<font color='green'>" + res + "</font>",
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		return res < 0;
 	}
-	
+
 	public static String getMyIpAddress(String peerMacAddress)
 	{
-		if(!isOwner(peerMacAddress))
+		if (!isOwner(peerMacAddress))
 		{
 			return "192.168.49.3";
 		}
@@ -272,25 +357,27 @@ public class SocketHandler {
 		{
 			return "192.168.49.2";
 		}
-		
+
 	}
-	
-	private static BigInteger getValue(String s)
+
+	private static String getValue(String s)
 	{
 		s.replace(":", "");
 		String res = "";
-		for(int i = 0; i < s.length(); i++)
+		for (int i = 0; i < s.length(); i++)
 		{
 			res += (int) s.charAt(i);
 		}
-		DebugManager.print("s/v = " + s + " " + res, WifiDirectManager.DEBUGGER_CHANNEL);
-		return new BigInteger(res);
+		DebugManager.print("s/v = " + s + " " + res,
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		return res;
 	}
-	
+
 	public static String getPeerIpAddress(String peerMacAddress)
 	{
-		DebugManager.print("peerMacAddres = " + peerMacAddress, WifiDirectManager.DEBUGGER_CHANNEL);
-		if(!isOwner(peerMacAddress))
+		DebugManager.print("peerMacAddres = " + peerMacAddress,
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		if (!isOwner(peerMacAddress))
 		{
 			return "192.168.49.2";
 		}
@@ -330,8 +417,12 @@ public class SocketHandler {
 
 		macAddress = splitted[0] + splitted[1] + ":" + splitted[2] + "ff:";
 		macAddress += "fe" + splitted[3] + ":" + splitted[4] + splitted[5];
-
-		return "fe80:" + macAddress + "%" + getNetworkScope("p2p");
+		String res = "fe80:" + macAddress + "%" + getNetworkScope("p2p");
+		res = res.replace(":0000", ":");
+		res = res.replace(":000", ":");
+		res = res.replace(":00", ":");
+		res = res.replace(":0", "");
+		return res;
 
 	}
 
