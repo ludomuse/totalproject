@@ -210,6 +210,20 @@ public class SocketHandler {
 			client.accuseId = -idReceived;
 		}
 	}
+	
+	public static void printAllNetworkInterfaceName()
+	{
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                       String sAddr = addr.getHostAddress().toUpperCase();
+                       DebugManager.print("sAddr = " + sAddr, WifiDirectManager.DEBUGGER_CHANNEL);
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+	}
 
 	   /**
      * Get IP address from first non-localhost interface

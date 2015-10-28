@@ -1061,7 +1061,8 @@ public class WifiDirectManager {
 				String peerMacAddress = getPeerMacAddress();
 				String ownerAddress = info.groupOwnerAddress.getHostAddress();
 				DebugManager.print("owner address is = " + ownerAddress, WifiDirectManager.DEBUGGER_CHANNEL);
-				
+				DebugManager.print("owner sdk ? " + info.isGroupOwner, DEBUGGER_CHANNEL);
+				SocketHandler.printAllNetworkInterfaceName();
 				if (SocketHandler.isOwner(peerMacAddress) && info.groupFormed)
 				{
 					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);
