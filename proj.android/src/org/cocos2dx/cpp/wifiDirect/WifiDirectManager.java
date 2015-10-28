@@ -1061,12 +1061,14 @@ public class WifiDirectManager {
 				String peerMacAddress = getPeerMacAddress();
 				String ownerAddress = info.groupOwnerAddress.getHostAddress();
 				DebugManager.print("owner address is = " + ownerAddress, WifiDirectManager.DEBUGGER_CHANNEL);
-				DebugManager.print("owner sdk ? " + info.isGroupOwner, DEBUGGER_CHANNEL);
+				DebugManager.print("<font color='red'>owner sdk ? </font>" + info.isGroupOwner, DEBUGGER_CHANNEL);
 				SocketHandler.printAllNetworkInterfaceName();
-				if (SocketHandler.isOwner(peerMacAddress) && info.groupFormed)
+				String myLocalAddress = SocketHandler.getIPAddress(true);
+				
+				if (!myLocalAddress.equals(ownerAddress) && info.groupFormed)
 				{
 					DebugManager.print("I am not the group owner", DEBUGGER_CHANNEL);
-					String myLocalAddress = SocketHandler.getIPAddress(true);//SocketHandler.getAnIpAddresForThisDevice();
+					//SocketHandler.getAnIpAddresForThisDevice();
 					DebugManager.print("My IP Address is " + myLocalAddress, DEBUGGER_CHANNEL);
 					//create local server
 					socket.listen(LISTENNING_PORT, myLocalAddress);
@@ -1077,9 +1079,9 @@ public class WifiDirectManager {
 				else if(info.groupFormed)
 				{
 					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
-					DebugManager.print("My IP Address is " + ownerAddress, DEBUGGER_CHANNEL);
+					DebugManager.print("My IP Address is " + myLocalAddress, DEBUGGER_CHANNEL);
 					//create local server
-					socket.listen(LISTENNING_PORT, ownerAddress);
+					socket.listen(LISTENNING_PORT, myLocalAddress);
 					//and wait for receiving pair'ip address
 					DebugManager.print("I am the group owner", DEBUGGER_CHANNEL);
 				}
