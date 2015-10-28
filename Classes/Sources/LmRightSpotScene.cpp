@@ -589,7 +589,7 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 				//check win
 				if (m_iNumberOfHole == 0)
 				{
-					m_pFinishGameButton->setVisible(true);
+					win(true);
 				}
 
 			}
@@ -805,7 +805,7 @@ void LmRightSpotScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 		//check win
 		if (m_iNumberOfHole == 0)
 		{
-			m_pFinishGameButton->setVisible(true);
+			win(true);
 		}
 	}
 	else

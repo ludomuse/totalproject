@@ -99,20 +99,23 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
+	// create menu, it's an autorelease object
+	auto l_oMenu = Menu::create();
+	l_oMenu->setPosition(Vec2::ZERO);
+	addChild(l_oMenu);
+
 	//next button
-	m_pNextButton = ui::Button::create(
+	m_pNextButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/nextButtonNormal.png",
-			"Ludomuse/GUIElements/nextButtonPressed.png");
-	m_pNextButton->setTouchEnabled(true);
+						"Ludomuse/GUIElements/nextButtonPressed.png",
+			CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
 	m_pNextButton->setPosition(
 			Vect(
 					l_oVisibleSize.width
 							- m_pNextButton->getContentSize().width * 0.8,
 					l_oVisibleSize.height * 0.1));
-	m_pNextButton->addTouchEventListener(
-			CC_CALLBACK_0(LmInteractionScene::nextSetPointLayer, this));
 	m_pNextButton->retain();
-	addChild(m_pNextButton, 1);
+	l_oMenu->addChild(m_pNextButton, 1);
 
 	//previous button
 	m_pPreviousButton = ui::Button::create(
@@ -207,8 +210,10 @@ void LmInteractionScene::previousSetPointLayer()
 	}
 }
 
-void LmInteractionScene::nextSetPointLayer()
+void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 {
+
+	CCLOG("next button pressed");
 
 	if (m_bSetPointBegin)
 	{
@@ -453,8 +458,10 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 	{
 		m_bBackPressed = true;
 
+		//simulate a press on the m_pplaycheckbox
 		CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
 		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+		m_pPlayCheckBox->setSelected(true);
 
 		CCLOG("back to dashboard");
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(

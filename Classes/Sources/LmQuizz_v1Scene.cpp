@@ -354,8 +354,11 @@ void LmQuizz_v1Scene::beginQuestion()
 		//no more layers end of the game
 		if ((int) m_iIndexQuestion >= (int) (m_aQuestions.size() - 1))
 		{
-			m_pFinishGameButton->setVisible(true);
-			m_pLmReward->playRewardSound();
+			/*
+			 * m_bwin is set to true for parent and child
+			 * (architecture suck because remove at the last moment)
+			 */
+			win(m_bWin);
 		}
 		else
 		{
@@ -509,6 +512,7 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 	{
 		//make appear win child
 		m_pWinChildScreen->setVisible(true);
+		m_bWin = true;
 
 		m_pNextQuestionButton->setVisible(true);
 		m_pNextQuestionButton->setEnabled(true);
@@ -626,6 +630,7 @@ void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 		m_pNextQuestionButton->setEnabled(true);
 
 		m_pWinParentScreen->setVisible(true);
+		m_bWin = true;
 
 	}
 	else

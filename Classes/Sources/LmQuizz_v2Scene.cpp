@@ -124,7 +124,6 @@ void LmQuizz_v2Scene::resetScene()
 		//reset replay button
 		m_pReplayButton->setVisible(false);
 		m_pNextQuestionButton->setVisible(false);
-		m_pNextButton->setTouchEnabled(true);
 		m_bQuestionFinished = false;
 
 		m_bReplayButtonSync = true;

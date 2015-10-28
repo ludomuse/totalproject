@@ -149,7 +149,7 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
 	//test
-	//m_pLogEditBox->setText("UserName");
+	m_pLogEditBox->setText("UserName");
 
 	//init checkbox male
 	m_pCheckBoxMale = CheckBox::create("Ludomuse/GUIElements/checkoutmale2.png",

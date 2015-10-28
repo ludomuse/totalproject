@@ -898,7 +898,6 @@ int LmGameManager::interactionTouched(cocos2d::Touch* touch)
 
 		if (boundingboxInWorldSpace.containsPoint(l_oTouchLocation))
 		{
-			CCLOG("touched");
 			return i;
 		}
 	}
