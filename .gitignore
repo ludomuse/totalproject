@@ -34,6 +34,6 @@ build.xml
 R.java.d
 proj.android/jni/Application.mk
 proj.android/jni/hellocpp/
-
+LudoMuseDebug/config.txt
 
 /Debug/
