@@ -31,8 +31,6 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed) :
 	m_sFilenameAudioAnswerSelected = l_Seed.FilenameAudioAnswerSelected;
 	m_pInGameScreenParent = l_Seed.InGameScreenParent;
 	m_pReplayScreen=l_Seed.ReplayScreen;
-	m_pWinChildScreen = l_Seed.WinChildScreen;
-	m_pWinParentScreen = l_Seed.WinParentScreen;
 
 	//pointer
 	m_pSpriteBackground = nullptr;
@@ -156,22 +154,13 @@ bool LmQuizz_v1Scene::initGame()
 	{
 		m_pInGameScreenParent->init();
 		m_pReplayScreen->init();
-		m_pWinParentScreen->init();
 
 		m_pLayerGame->addChild(m_pInGameScreenParent);
-		m_pLayerGame->addChild(m_pWinParentScreen,1);
-		m_pWinParentScreen->setVisible(false);
 		m_pLayerGame->addChild(m_pReplayScreen,1);
 		m_pReplayScreen->setVisible(false);
 
 	}
-	else
-	{
-		m_pWinChildScreen->init();
-		m_pLayerGame->addChild(m_pWinChildScreen,1);
-		m_pWinChildScreen->setVisible(false);
 
-	}
 
 	//init timer
 	m_pTimer = LoadingBar::create();
@@ -354,8 +343,11 @@ void LmQuizz_v1Scene::beginQuestion()
 		//no more layers end of the game
 		if ((int) m_iIndexQuestion >= (int) (m_aQuestions.size() - 1))
 		{
-			m_pFinishGameButton->setVisible(true);
-			m_pLmReward->playRewardSound();
+			/*
+			 * m_bwin is set to true for parent and child
+			 * (architecture suck because remove at the last moment)
+			 */
+			win(m_bWin);
 		}
 		else
 		{
@@ -507,11 +499,7 @@ void LmQuizz_v1Scene::questionFinish(bool goodAnswer)
 
 	if (goodAnswer)
 	{
-		//make appear win child
-		m_pWinChildScreen->setVisible(true);
-
-		m_pNextQuestionButton->setVisible(true);
-		m_pNextQuestionButton->setEnabled(true);
+		win(true);
 
 		//send to parent that was a good answer
 		bytes msg(10);
@@ -619,13 +607,7 @@ void LmQuizz_v1Scene::goodAnswerFromChild(bool good)
 
 	if (good)
 	{
-		CCLOG("good answer");
-
-		//can go to the next
-		m_pNextQuestionButton->setVisible(true);
-		m_pNextQuestionButton->setEnabled(true);
-
-		m_pWinParentScreen->setVisible(true);
+		win(true);
 
 	}
 	else

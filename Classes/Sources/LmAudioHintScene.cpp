@@ -294,13 +294,11 @@ void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 
 				if (m_bWin)
 				{
-					initFinishButtonTexture();
-					//win
-					m_pFinishGameButton->setVisible(true);
+					win(m_bWin);
 
 					bytes msg(10);
 					msg << LmEvent::Win;
-					msg.write(true);
+					msg.write(m_bWin);
 					WIFIFACADE->sendBytes(msg);
 				}
 

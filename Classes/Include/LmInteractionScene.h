@@ -197,8 +197,9 @@ protected:
 
 	//introduction gui element
 	//buttons next and previous
-	cocos2d::ui::Button* m_pNextButton;
-	cocos2d::ui::Button* m_pPreviousButton;
+	cocos2d::MenuItemImage* m_pNextButton;
+	cocos2d::MenuItemImage* m_pPreviousButton;
+	cocos2d::Menu* m_pMenu;
 	cocos2d::ui::CheckBox* m_pPlayCheckBox;
 
 	//to know when a set point is finish
@@ -233,8 +234,8 @@ protected:
 	//METHODS
 
 	//callback
-	void nextSetPointLayer();
-	void previousSetPointLayer();
+	void nextSetPointLayer(cocos2d::Ref*);
+	void previousSetPointLayer(cocos2d::Ref*);
 
 	//interface for all games where we init our games and so on
 	virtual void runGame()=0;
@@ -267,6 +268,9 @@ protected:
 	void playCallback(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
 	void initFinishButtonTexture();
+
+	void initNextPreviousButton();
+
 
 
 

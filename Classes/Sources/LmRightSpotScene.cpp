@@ -559,7 +559,6 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 		if (m_bBufferSpriteFillHole)
 		{
 
-
 			//check if its good position
 			if (imageWellPlaced(m_iHoleTouchedIndex, m_iBufferId))
 			{
@@ -589,7 +588,7 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 				//check win
 				if (m_iNumberOfHole == 0)
 				{
-					m_pFinishGameButton->setVisible(true);
+					win(true);
 				}
 
 			}
@@ -608,6 +607,11 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 
 			}
 
+		}
+		else
+		{
+			//we put the gamecomponent visible again
+			m_aIdTable.find(m_iBufferId)->second->setVisible(true);
 		}
 
 		//put it invisible
@@ -805,7 +809,7 @@ void LmRightSpotScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 		//check win
 		if (m_iNumberOfHole == 0)
 		{
-			m_pFinishGameButton->setVisible(true);
+			win(true);
 		}
 	}
 	else
