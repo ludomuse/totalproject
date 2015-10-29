@@ -25,8 +25,6 @@ struct LmQuizz_v1SceneSeed
 	std::string FilenameAudioAnswerSelected;
 	LmLayer* InGameScreenParent;
 	LmLayer* ReplayScreen;
-	LmLayer* WinChildScreen;
-	LmLayer* WinParentScreen;
 	std::vector<LmQuestion*> Questions;
 	int AttemptByQuestion;
 	float TimerDuration;
@@ -71,8 +69,6 @@ private:
 	//screens
 	LmLayer* m_pInGameScreenParent;
 	LmLayer* m_pReplayScreen;
-	LmLayer* m_pWinChildScreen;
-	LmLayer* m_pWinParentScreen;
 
 
 

@@ -7,43 +7,7 @@
     "SceneArray": [
       {
         "Id": 1,
-        "Description": "Défi 1: ",
-        "RewardParent": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 0
-            },
-            "FontSize": 40,
-            "WidthPercent": 50,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
-          },
-          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "Game/Content/eggs.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 51
-        },
-        "RewardChild": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 0
-            },
-            "FontSize": 40,
-            "WidthPercent": 50,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
-          },
-          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "Game/Content/eggs.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 51
-        },
+        "Description": "Défi 1: Un entretien d'embauche !",
         "SetPointBeginParent": [
           {
             "Label": {
@@ -52,11 +16,11 @@
                 "G": 255,
                 "B": 255
               },
-              "FontSize": 40,
+              "FontSize": 50,
               "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Vous devez réussir un premier defi pour être embauché dans la biscuiterie LU.Ecoutez ce que le patron  Monsieur Louis vous demande. Bonne chance pour ce test d'embauche!"
+              "Text": "Vous devez réussir un premier défi pour être embauché dans la biscuiterie LU.Ecoutez ce que le patron Monsieur Louis vous demande. Bonne chance pour ce test d'embauche!"
             },
             "Images": [
               {
@@ -64,11 +28,11 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1left.png",
+                "imgURL": "Game/Content/perso4.png",
                 "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           },
           {
             "Label": {
@@ -81,7 +45,7 @@
               "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Suivez M.LU. Ecoutez ce qu'il avous demande. Attention c'est un test d'embauche!"
+              "Text": "Ecoutez ce que monsieur Louis vous demande. Attention, c'est un test d'embauche! Vous devez le réussir pour rejoindre l'entreprise."
             },
             "Images": [
               {
@@ -89,11 +53,11 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1left.png",
+                "imgURL": "Game/Content/perso3.png",
                 "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
         "SetPointBeginChild": [
@@ -108,7 +72,7 @@
               "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Bienvenue à la biscuiterie LU ! Pendant cette visite, tu seras  Monsieur Louis, le patron de l'entreprise de biscuits LU.Tu as repris l'entreprise de tes parents à l'âge de 24 ans et tu l'as développé. Aujourd'hui, tu souhaites créer un nouveau biscuit. Pour le créer, tu vas devoir relever plusieurs défis avec l'aide de ton ouvrier. A chaque défi relevé, le processus de création de la recette avance!"
+              "Text": "Bienvenue à la biscuiterie LU ! Pendant cette visite, tu seras Monsieur Louis, le patron de l'entreprise de biscuits LU.Tu as repris l'entreprise de tes parents à l'âge de 24 ans\net tu l'as développé. Aujourd'hui, tu souhaites créer un nouveau biscuit. Pour le créer, tu vas devoir relever plusieurs défis avec l'aide de ton ouvrier. A chaque défi relevé, le processus de création de la recette avance!"
             },
             "Images": [
               {
@@ -116,11 +80,11 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1left.png",
+                "imgURL": "Game/Content/perso4.png",
                 "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": "Audio/Game/nantes1.mp3"
           },
           {
             "Label": {
@@ -133,7 +97,7 @@
               "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Demande à haute voix à ton ouvrier \"  suis moi et compte les marches jusqu'à la salle 23\""
+              "Text": "Demande à haute voix à ton ouvrier \"Suis moi et compte les marches jusqu'à la salle 23\""
             },
             "Images": [
               {
@@ -145,30 +109,62 @@
                 "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": "Audio/Game/nantes2.mp3"
           }
         ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 90,
+            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 90,
+            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/nantes3.mp3",
+          "RewardScore": 50
+        },
         "SetPointEndParent": [
           {
             "Label": {
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 30,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
+                "imgURL": "Game/Background/backgroundFactory.png",
                 "anchorPoint": 0
               },
               {
@@ -176,7 +172,7 @@
                 "anchorPoint": 4
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
         "SetPointEndChild": [
@@ -185,21 +181,17 @@
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 30,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/GUIElements/cookie.png",
+                "imgURL": "Game/Background/backgroundFactory.png",
                 "anchorPoint": 0
               },
               {
@@ -207,17 +199,17 @@
                 "anchorPoint": 4
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
         "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
         "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackground.png",
         "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
-        "FilenameSpriteGoodAnswerButtonChild": "Game/Background/background3.png",
-        "FilenameSpriteGoodAnswerButtonParent": "Game/GUIElements/youwin.png",
-        "FilenameSpriteBadAnswerButton": "Game/Background/splashScreenLu.png",
-        "FilenameAudioAnswerSelected": "Audio/Game/son.mp3",
+        "FilenameSpriteGoodAnswerButtonChild": "Ludomuse/Background/splash.png",
+        "FilenameSpriteGoodAnswerButtonParent": "Ludomuse/Background/splash.png",
+        "FilenameSpriteBadAnswerButton": "Ludomuse/Background/splash.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/xylophone.mp3",
         "InGameScreen": {
           "Label": {
             "ColorText": {
@@ -228,12 +220,12 @@
             "FontSize": 80,
             "WidthPercent": 25,
             "HeightPercent": 50,
-            "SizePercent": 50,
+            "SizePercent": 40,
             "Text": "Repond à la question de M.LU"
           },
           "Images": [
             {
-              "imgURL": "Game/Background/background3.png",
+              "imgURL": "Game/Background/background4LU.png",
               "anchorPoint": 0
             },
             {
@@ -245,7 +237,7 @@
               "anchorPoint": 4
             }
           ],
-          "SoundURL": "Audio/Game/son1.mp3"
+          "SoundURL": ""
         },
         "ReplayScreen": {
           "Label": {
@@ -257,12 +249,12 @@
             "FontSize": 80,
             "WidthPercent": 25,
             "HeightPercent": 50,
-            "SizePercent": 50,
+            "SizePercent": 40,
             "Text": "Attention, rejoue !"
           },
           "Images": [
             {
-              "imgURL": "Game/Background/background3.png",
+              "imgURL": "Game/Background/background4LU.png",
               "anchorPoint": 0
             },
             {
@@ -270,78 +262,20 @@
               "anchorPoint": 0
             },
             {
-              "imgURL": "Game/Content/perso2.png",
+              "imgURL": "Game/Content/perso3right.png",
               "anchorPoint": 4
             }
           ],
-          "SoundURL": "Audio/Game/son1.mp3"
-        },
-        "WinChildScreen": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 255
-            },
-            "FontSize": 40,
-            "WidthPercent": 75,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
-          },
-          "Images": [
-            {
-              "imgURL": "Game/Background/background3.png",
-              "anchorPoint": 0
-            },
-            {
-              "imgURL": "Game/GUIElements/cookie.png",
-              "anchorPoint": 0
-            },
-            {
-              "imgURL": "Game/Content/perso1.png",
-              "anchorPoint": 4
-            }
-          ],
-          "SoundURL": "Audio/Game/son1.mp3"
-        },
-        "WinParentScreen": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 255
-            },
-            "FontSize": 40,
-            "WidthPercent": 75,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU!"
-          },
-          "Images": [
-            {
-              "imgURL": "Game/Background/background3.png",
-              "anchorPoint": 0
-            },
-            {
-              "imgURL": "Game/GUIElements/cookie.png",
-              "anchorPoint": 0
-            },
-            {
-              "imgURL": "Game/Content/perso1.png",
-              "anchorPoint": 4
-            }
-          ],
-          "SoundURL": "Audio/Game/son1.mp3"
+          "SoundURL": ""
         },
         "Questions": [
           {
             "Question": "Demande à ton ouvrier combien de marche il a compté:",
             "Answer1": "84",
-            "Answer2": "102",
-            "Answer3": "201",
-            "Answer4": "156",
-            "NumberRightAnswer": 2
+            "Answer2": "66",
+            "Answer3": "70",
+            "Answer4": "77",
+            "NumberRightAnswer": 4
           }
         ],
         "AttemptByQuestion": 1,
@@ -350,42 +284,24 @@
       },
       {
         "Id": 0,
-        "Description": "test",
-        "RewardParent": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 0
-            },
-            "FontSize": 40,
-            "WidthPercent": 50,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
-          },
-          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "Game/Content/milk.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 51
-        },
+        "Description": "Défi 2: Présentation du personel LU ",
         "SetPointBeginParent": [
           {
             "Label": {
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 50,
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
+              "Text": "Vous allez maintenant découvrir vos collègues grâce à un jeu.Faites glisser les personnages un par un dans la zone de partage en forme de petit beurre pour les envoyer à Monsieur Louis. il va devoir les replacer au bon endroit."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/background3LU.png",
                 "anchorPoint": 0
               },
               {
@@ -393,11 +309,11 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
+                "imgURL": "Game/Content/perso6.png",
+                "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
         "SetPointBeginChild": [
@@ -406,17 +322,17 @@
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Plutôt que de te présenter tes collègues un par un ce qui nous prendrait trop de temps. Je te propose un jeu ! Lorsque l'ouvrier patissier t'envoie un détail dans la zone de partage (en forme de petit beurre), replace le au bon endroit sur la photographie."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/background3LU.png",
                 "anchorPoint": 0
               },
               {
@@ -424,30 +340,66 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
+                "imgURL": "Game/Content/perso6.png",
+                "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": "Audio/Game/nantes4.mp3"
           }
         ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg.png",
+          "FilenameSpriteReward": "Game/Content/butter.png",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg.png",
+          "FilenameSpriteReward": "Game/Content/butter.png",
+          "FilenameSound": "Audio/Game/nantes7.mp3",
+          "RewardScore": 50
+        },
         "SetPointEndParent": [
           {
             "Label": {
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Bravo, nous avons un ingrédient pour la recette."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/background3LU.png",
                 "anchorPoint": 0
               },
               {
@@ -455,11 +407,11 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
         "SetPointEndChild": [
@@ -468,17 +420,17 @@
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Bravo, nous avons un ingrédient pour la recette."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/background3LU.png",
                 "anchorPoint": 0
               },
               {
@@ -486,14 +438,14 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": "Audio/Game/nantes5.mp3"
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteBackground": "Game/Background/background3LU.png",
         "FilenameSpriteSendingArea": "Game/GUIElements/sendingArea.png",
         "FilenameMainImage": "Game/Content/rightSpotImage.png",
         "HoleOnX": 5,
@@ -519,72 +471,32 @@
       },
       {
         "Id": 3,
-        "Description": "test",
-        "RewardParent": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 0
-            },
-            "FontSize": 40,
-            "WidthPercent": 50,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
-          },
-          "FilenameSpriteBackground": "Game/Background/rewardbg4.png",
-          "FilenameSpriteReward": "Game/Content/milk.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 51
-        },
-        "RewardChild": {
-          "Label": {
-            "ColorText": {
-              "R": 255,
-              "G": 255,
-              "B": 0
-            },
-            "FontSize": 40,
-            "WidthPercent": 50,
-            "HeightPercent": 50,
-            "SizePercent": 40,
-            "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
-          },
-          "FilenameSpriteBackground": "Game/Background/rewardbg2.png",
-          "FilenameSpriteReward": "Game/Content/eggs.png",
-          "FilenameSound": "Audio/Game/son.mp3",
-          "RewardScore": 96
-        },
+        "Description": "Défi 3: L'organisation de l'usine",
         "SetPointBeginParent": [
           {
             "Label": {
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 50,
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "e designated reservations. After a long trial, the decision of federal judge George Hugo Boldt held that the tribes were entitled to half the fish harvest each year. In 1975 the Ninth Circuit Court of Appeals upheld Judge "
+              "Text": "Sois attentif aux informations que Monsieur Louis te donne. Elles vont te permettre de t'orienter dans l'usine et de replacer les ateliers au bon endroit."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/backgroundFactory.png",
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
         "SetPointBeginChild": [
@@ -593,48 +505,80 @@
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "A l'aide des indices qui apparaissent sur ton écran, donne oralement des indications à ton ouvrier pour qu'il place au bon endroit les noms des différents ateliers."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/backgroundFactory.png",
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/GUIElements/cookie.png",
-                "anchorPoint": 0
-              },
-              {
-                "imgURL": "Game/Content/perso1.png",
-                "anchorPoint": 4
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": "Audio/Game/nantes6.mp3"
           }
         ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
+          "FilenameSpriteReward": "Game/Content/sugar.png",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
+          "FilenameSpriteReward": "Game/Content/sugar.png",
+          "FilenameSound": "Audio/Game/nantes7.mp3",
+          "RewardScore": 50
+        },
         "SetPointEndParent": [
           {
             "Label": {
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 30,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Bravo, tu dois maintenant te rendre en salle 24."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/background3LU.png",
                 "anchorPoint": 0
               },
               {
@@ -646,7 +590,7 @@
                 "anchorPoint": 4
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
         "SetPointEndChild": [
@@ -655,17 +599,17 @@
               "ColorText": {
                 "R": 255,
                 "G": 255,
-                "B": 0
+                "B": 255
               },
-              "FontSize": 40,
-              "WidthPercent": 20,
+              "FontSize": 50,
+              "WidthPercent": 30,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Ceci est un texte pour pouvoir tester laz taille la couleur et les trucs ades labzduvd,n nvdb dsvkbdfuh sdv jhdsk ds,n hjvsbuief vdfhv d odh osh fdihv ilsfhgvighfibxh sihgfuih vbdf hihfdi sf"
+              "Text": "Bravo, tu dois maintenant te rendre en salle 24."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background3.png",
+                "imgURL": "Game/Background/background3LU.png",
                 "anchorPoint": 0
               },
               {
@@ -677,39 +621,39 @@
                 "anchorPoint": 4
               }
             ],
-            "SoundURL": "Audio/Game/son1.mp3"
+            "SoundURL": ""
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/background4.png",
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
         "FilenameSpriteMainImage": "Game/Content/audioHintImage.png",
         "Labels": [
           {
             "Id": 0,
-            "WidthPercent": 45,
-            "HeightPercent": 26,
+            "WidthPercent": 18,
+            "HeightPercent": 55,
             "FilenameSpriteLabel": "Game/Content/labelCuisson.png",
-            "FilenameSpriteHint": "Game/Content/labelCuisson.png"
+            "FilenameSpriteHint": "Game/Content/Cuisson.png"
           },
           {
             "Id": 1,
-            "WidthPercent": 78,
-            "HeightPercent": 56,
+            "WidthPercent": 41,
+            "HeightPercent": 33,
             "FilenameSpriteLabel": "Game/Content/labelEmballage.png",
-            "FilenameSpriteHint": "Game/Content/labelCuisson.png"
+            "FilenameSpriteHint": "Game/Content/MiseEnBoite.png"
           },
           {
             "Id": 2,
-            "WidthPercent": 80,
-            "HeightPercent": 80,
+            "WidthPercent": 89,
+            "HeightPercent": 55,
             "FilenameSpriteLabel": "Game/Content/labelFabrication.png",
-            "FilenameSpriteHint": "Game/Content/labelCuisson.png"
+            "FilenameSpriteHint": "Game/Content/PreparationPates.png"
           },
           {
             "Id": 3,
-            "WidthPercent": 23,
-            "HeightPercent": 89,
+            "WidthPercent": 63,
+            "HeightPercent": 67,
             "FilenameSpriteLabel": "Game/Content/labelTransport.png",
-            "FilenameSpriteHint": "Game/Content/labelCuisson.png"
+            "FilenameSpriteHint": "Game/Content/PreparationExpedition.png"
           }
         ]
       }

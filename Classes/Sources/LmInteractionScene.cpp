@@ -100,36 +100,11 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
 	// create menu, it's an autorelease object
-	auto l_oMenu = Menu::create();
-	l_oMenu->setPosition(Vec2::ZERO);
-	addChild(l_oMenu);
+	m_pMenu = Menu::create();
+	m_pMenu->setPosition(Vec2::ZERO);
+	addChild(m_pMenu,1);
 
-	//next button
-	m_pNextButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/nextButtonNormal.png",
-						"Ludomuse/GUIElements/nextButtonPressed.png",
-			CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
-	m_pNextButton->setPosition(
-			Vect(
-					l_oVisibleSize.width
-							- m_pNextButton->getContentSize().width * 0.8,
-					l_oVisibleSize.height * 0.1));
-	m_pNextButton->retain();
-	l_oMenu->addChild(m_pNextButton, 1);
-
-	//previous button
-	m_pPreviousButton = ui::Button::create(
-			"Ludomuse/GUIElements/previousButtonNormal.png",
-			"Ludomuse/GUIElements/previousButtonPressed.png");
-	m_pPreviousButton->setTouchEnabled(true);
-	m_pPreviousButton->setPosition(
-			Vect(m_pPreviousButton->getContentSize().width * 0.8,
-					l_oVisibleSize.height * 0.1));
-	m_pPreviousButton->addTouchEventListener(
-			CC_CALLBACK_0(LmInteractionScene::previousSetPointLayer, this));
-	m_pPreviousButton->setVisible(false);
-	m_pPreviousButton->retain();
-	addChild(m_pPreviousButton, 1);
+	initNextPreviousButton();
 
 	//play pause checkbox
 	m_pPlayCheckBox = ui::CheckBox::create("Ludomuse/GUIElements/pause.png",
@@ -147,33 +122,31 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pLayerGame = Layer::create();
 	m_pLayerGame->retain();
 
-	//finish button default one
-	m_pFinishGameButton = ui::Button::create(
-			"Ludomuse/GUIElements/fin.png",
-			"Ludomuse/GUIElements/finpress.png");
 
+
+	//finish button default one
+	m_pFinishGameButton = ui::Button::create("Ludomuse/GUIElements/fin.png",
+			"Ludomuse/GUIElements/finpress.png");
 	m_pFinishGameButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pFinishGameButton->setPosition(
 			Vec2(l_oVisibleSize.width, l_oVisibleSize.height * 0.1));
-
 	m_pFinishGameButton->setTouchEnabled(true);
-
 	m_pFinishGameButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::endGame, this));
 	m_pFinishGameButton->setVisible(false);
 	m_pLayerGame->addChild(m_pFinishGameButton, 2);
 
 	//replay button default one
-	m_pReplayButton = ui::Button::create("Ludomuse/GUIElements/playNormal.png",
-			"Ludomuse/GUIElements/playPressed.png");
-
-	m_pReplayButton->setTouchEnabled(true);
+	m_pReplayButton = ui::Button::create("Ludomuse/GUIElements/rejouer.png",
+			"Ludomuse/GUIElements/rejouerpress.png");
 	m_pReplayButton->setAnchorPoint(Vec2(0, 0.5));
 	m_pReplayButton->setPosition(Vect(0, l_oVisibleSize.height * 0.2));
+	m_pReplayButton->setTouchEnabled(true);
 	m_pReplayButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::resetScene, this));
 	m_pReplayButton->setVisible(false);
 	m_pLayerGame->addChild(m_pReplayButton, 2);
+
 
 	//waiting screen to wait his partner before each interaction
 	m_pSpriteWaitingScreen = Sprite::create("Ludomuse/Background/splash.png");
@@ -185,7 +158,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	return true;
 }
 
-void LmInteractionScene::previousSetPointLayer()
+void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
 	if (m_bSetPointBegin)
@@ -222,8 +195,8 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				&& m_pLmSetPointBegin->isBActionDone() && !m_bSetPointFinished)
 		{
 			m_bSetPointFinished = true;
-			m_pNextButton->setVisible(false);
-			m_pPreviousButton->setVisible(false);
+			m_pMenu->removeAllChildrenWithCleanup(true);
+
 			m_pPlayCheckBox->setVisible(false);
 
 			//we are ready
@@ -267,8 +240,8 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				&& !m_bSetPointFinished)
 		{
 			m_bSetPointFinished = true;
-			m_pNextButton->setVisible(false);
-			m_pPreviousButton->setVisible(false);
+			m_pMenu->removeAllChildrenWithCleanup(true);
+
 			m_pPlayCheckBox->setVisible(false);
 
 			//stop sound
@@ -509,24 +482,21 @@ void LmInteractionScene::endGame()
 		//new setpoint
 		m_bSetPointFinished = false;
 
-		m_pNextButton->setVisible(true);
-		m_pPreviousButton->setVisible(false);
-		//reset play button
+
 		m_pPlayCheckBox->setVisible(true);
 		m_pPlayCheckBox->setSelected(false);
 
 		//its a linear progression so for now it can be release here
 		m_pLayerGame->release();
-		m_pNextButton->release();
-		m_pPreviousButton->release();
 		m_pPlayCheckBox->release();
 
 		m_bGameIsRunning = false;
 
-
 		//stop sound
 		CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
 				true);
+
+		initNextPreviousButton();
 
 		//init the end set point
 		if (!m_pLmSetPointEnd->init(this))
@@ -625,8 +595,6 @@ void LmInteractionScene::playCallback(cocos2d::Ref*,
 void LmInteractionScene::initFinishButtonTexture()
 {
 
-
-
 	//if there is a reward we init the button with the appropriate sprite
 	if (m_pLmReward && m_bWin)
 	{
@@ -664,5 +632,42 @@ void LmInteractionScene::initFinishButtonTexture()
 		m_pFinishGameButton->addChild(m_pLmReward->getPLabekReward());
 
 	}
+}
+
+void LmInteractionScene::initNextPreviousButton()
+{
+	CCLOG("init button");
+
+	//use to place elements
+		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+
+
+
+		//next button
+		m_pNextButton = MenuItemImage::create(
+				"Ludomuse/GUIElements/nextButtonNormal.png",
+				"Ludomuse/GUIElements/nextButtonPressed.png",
+				CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
+		m_pNextButton->setPosition(
+				Vect(
+						l_oVisibleSize.width
+								- m_pNextButton->getContentSize().width * 0.8,
+						l_oVisibleSize.height * 0.1));
+		m_pMenu->addChild(m_pNextButton, 1);
+
+		//previous button
+		m_pPreviousButton = MenuItemImage::create(
+				"Ludomuse/GUIElements/previousButtonNormal.png",
+				"Ludomuse/GUIElements/previousButtonPressed.png",
+				CC_CALLBACK_1(LmInteractionScene::previousSetPointLayer, this));
+		m_pPreviousButton->setPosition(
+				Vect(m_pPreviousButton->getContentSize().width * 0.8,
+						l_oVisibleSize.height * 0.1));
+		m_pMenu->addChild(m_pPreviousButton, 1);
+
+		m_pNextButton->setVisible(true);
+		m_pPreviousButton->setVisible(true);
+
 }
 

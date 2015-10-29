@@ -555,22 +555,13 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 	l_sBufferString = l_oScene["FilenameAudioAnswerSelected"].GetString();
 	l_SeedBuffer.FilenameAudioAnswerSelected = l_sBufferString.c_str();
 
-	CCLOG("1");
 	assert(l_oScene["InGameScreen"].IsObject());
 	assert(l_oScene.HasMember("InGameScreen"));
 	l_SeedBuffer.InGameScreenParent = makeLmLayer(l_oScene["InGameScreen"]);
-	CCLOG("2");
 	assert(l_oScene["ReplayScreen"].IsObject());
 	assert(l_oScene.HasMember("ReplayScreen"));
 	l_SeedBuffer.ReplayScreen = makeLmLayer(l_oScene["ReplayScreen"]);
-	CCLOG("3");
-	assert(l_oScene["WinChildScreen"].IsObject());
-	assert(l_oScene.HasMember("WinChildScreen"));
-	l_SeedBuffer.WinChildScreen = makeLmLayer(l_oScene["WinChildScreen"]);
-	CCLOG("4");
-	assert(l_oScene["WinParentScreen"].IsObject());
-	assert(l_oScene.HasMember("WinParentScreen"));
-	l_SeedBuffer.WinParentScreen = makeLmLayer(l_oScene["WinParentScreen"]);
+
 
 	assert(l_oScene["Questions"].IsArray());
 

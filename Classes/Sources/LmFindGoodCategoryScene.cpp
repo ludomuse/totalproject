@@ -47,7 +47,7 @@ void LmFindGoodCategoryScene::restart()
 
 }
 
-void LmFindGoodCategoryScene::resetScene()
+void LmFindGoodCategoryScene::resetScene( )
 {
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
