@@ -318,6 +318,7 @@ bool LmMenu::wifiDirectScreen(cocos2d::Ref* l_oSender)
 		m_pUser1->setPUserName(m_pLogEditBox->getText());
 		m_pUser1->setPUserTabletName(getUser1TabletName());
 
+		CCLOG("<font color='blue'>%s</font>", getUser1TabletName().c_str());
 		_wifiFacade->discoverPeers();
 
 		return true;

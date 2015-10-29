@@ -37,6 +37,8 @@ private:
 
 	static void getTabletName();
 
+	static void clean();
+
 	inline static jint toJObject(int i) {
 		return (jint) i;
 	}

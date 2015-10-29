@@ -6,6 +6,10 @@ import java.lang.String;
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
+import android.bluetooth.BluetoothAdapter;
+import android.database.Cursor;
+import android.provider.ContactsContract;
+
 /**
  * These method are called by c++, when the cpp part of the WifiDirectFacade
  * want to send data or launch a service (request peer and connection)
@@ -82,7 +86,7 @@ public class JniJavaFacade {
 
 	public static void getTabletName()
 	{
-		JniCppFacade.setTabletName(android.os.Build.MODEL);
+		JniCppFacade.setTabletName(_wifiDirectFacade.getThisDeviceName());
 	}
 	
 	public static void clean()

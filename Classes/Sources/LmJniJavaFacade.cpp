@@ -130,6 +130,12 @@ void LmJniJavaFacade::connectTo(string deviceName)
 
 }
 
+void LmJniJavaFacade::clean()
+{
+	callJavaMethod("clean", (void*) 0, PARAM_VOID);
+
+}
+
 void LmJniJavaFacade::getTabletName()
 {
 	callJavaMethod("getTabletName", (void*) 0, PARAM_VOID);
