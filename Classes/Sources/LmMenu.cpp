@@ -331,6 +331,7 @@ bool LmMenu::wifiDirectScreen()
 	m_pCheckBoxChild->setVisible(false);
 	m_pCheckBoxParent->setVisible(false);
 
+	CCLOG("<font color='blue'>%s</font>", getUser1TabletName().c_str());
 	_wifiFacade->discoverPeers();
 
 	return true;

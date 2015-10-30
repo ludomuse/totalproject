@@ -48,7 +48,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 			{
 				DebugManager.print("WifiP2P is not enabled !",
 						WifiDirectManager.DEBUGGER_CHANNEL);
-//				_wifiDirectManager.turnOnWifi();
+				// _wifiDirectManager.turnOnWifi();
 			}
 		}
 		else if (action.equals(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION))
@@ -59,7 +59,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 			// callback on PeerListListener.onPeersAvailable()
 
 			_wifiDirectManager.launchServiceRequestPeers();
-			//_wifiDirectManager.onConnectionChanged(intent);
+			// _wifiDirectManager.onConnectionChanged(intent);
 
 		}
 		else if (action
@@ -86,9 +86,9 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 		{
 			// TODO
 			// Respond to this device's wifi state changing
-			// WifiP2pDevice device = (WifiP2pDevice) intent
-			// .getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
-			// mActivity.appendLog("Device status -" + device.status);
+			WifiP2pDevice device = (WifiP2pDevice) intent
+					.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
+			_wifiDirectManager.setThisDeviceName(device.deviceName);
 		}
 
 	}

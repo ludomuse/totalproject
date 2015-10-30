@@ -1,6 +1,7 @@
 package org.cocos2dx.cpp.wifiDirect;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import org.cocos2dx.cpp.sockets.SocketHandler;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -34,6 +36,7 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
+import android.os.Build;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -546,7 +549,6 @@ public class WifiDirectManager {
 				@Override
 				public void onPeersAvailable(WifiP2pDeviceList peers)
 				{
-
 					int previousSize = _deviceList.size();
 
 					if (enabledAutoRelanchingServiceDiscoverPeers
@@ -1094,6 +1096,12 @@ public class WifiDirectManager {
 
 	public boolean autoReconnect = true;
 
+	
+	public String getThisDeviceName()
+	{
+		return thisDeviceName.equals("") ? BluetoothAdapter.getDefaultAdapter().getName() : thisDeviceName;
+	}
+	
 	private void onDisconnect(NetworkInfo ni)
 	{
 		socket.notifyIsDisconnectedFromNetwork();
@@ -1173,6 +1181,13 @@ public class WifiDirectManager {
 	public List<DnsListenerTxtRecordItem> getAvailableTxtRecords()
 	{
 		return _txtRecordAvailables;
+	}
+
+	private String thisDeviceName = "";
+	
+	public void setThisDeviceName(String thisDeviceName)
+	{
+		this.thisDeviceName = thisDeviceName;
 	}
 
 }

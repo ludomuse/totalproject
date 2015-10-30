@@ -8,6 +8,8 @@ import org.cocos2dx.cpp.sockets.CallBackMethod;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 
 /**
  * This is a wrapper for the WifiDirectManager, that expose simple method such
@@ -125,6 +127,10 @@ public class WifiDirectFacade {
 //		LudoMuseThread.stopAllLudoMuseThread();
 		
 		DebugManager.print("WifiDirectFacade is created !",
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		
+		
+		DebugManager.print("tablet name is",
 				WifiDirectManager.DEBUGGER_CHANNEL);
 	}
 
@@ -263,5 +269,15 @@ public class WifiDirectFacade {
 	public void clear()
 	{
 		_manager.clear();	
+	}
+	
+	public Activity getActivity()
+	{
+		return _manager.getActivity();
+	}
+	
+	public String getThisDeviceName()
+	{
+		return _manager.getThisDeviceName();
 	}
 }
