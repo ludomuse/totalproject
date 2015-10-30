@@ -37,7 +37,6 @@ LmGameManager::LmGameManager()
 	m_pLabelScore = nullptr;
 	m_pLabelTitleApplication = nullptr;
 	m_pLabelUser1Name = nullptr;
-
 	m_pCompareButton = nullptr;
 	m_pScrollView = nullptr;
 	m_pPlayNextInteractionButton = nullptr;
@@ -85,6 +84,16 @@ LmGameManager::~LmGameManager()
 
 }
 
+void LmGameManager::runGames()
+{
+	//Init of the GameManager
+	init();
+
+	//replace the menu scene with Dashboard scene
+	Director::getInstance()->replaceScene(
+			TransitionFade::create(s_fTimeBetweenLmLayer, m_pGameManagerScene));
+}
+
 bool LmGameManager::init()
 {
 
@@ -109,6 +118,8 @@ bool LmGameManager::init()
 	//init callback method of the custom event (use to know when an interactionScene want to communicate with this)
 	auto InteractionSceneFinished = [=](EventCustom * event)
 	{
+
+		CCLOG("onInteractionSceneFinishedEvent");
 
 		//check if t's done and win etc and update sprite
 			if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward())
@@ -139,19 +150,21 @@ bool LmGameManager::init()
 			m_bBackToDashboard=false;
 
 			//reset touch enable
-			removeListeners(false);
+			inputDisabled(false);
 
 		};
 
 	auto BackToDashboard = [=](EventCustom * event)
 	{
 
+		CCLOG("onBackToDashboardEvent");
+
 		Director::getInstance()->popScene();
 
 		m_bBackToDashboard=true;
 
 		//reset touch enable
-			removeListeners(false);
+			inputDisabled(false);
 
 		};
 
@@ -160,6 +173,58 @@ bool LmGameManager::init()
 			"InteractionSceneFinished", InteractionSceneFinished);
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"BackToDashboard", BackToDashboard);
+
+	return true;
+}
+
+bool LmGameManager::initSplashScreen()
+{
+	//use to place elements
+	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+
+	//create the scene
+	m_pGameManagerScene = Scene::create();
+
+	//add the layer of the splash screen
+	m_pSplashSreenLayer = Layer::create();
+	m_pGameManagerScene->addChild(m_pSplashSreenLayer);
+
+	//add the sprite background get from the config json file
+	auto l_pSplashScreenSprite = Sprite::create(
+			m_pLmServerManager->getSFilenameSpriteSplashScreen());
+	l_pSplashScreenSprite->setPosition(
+			l_oVisibleSize.width * 0.5f + l_oOrigin.x,
+			l_oVisibleSize.height * 0.5f + l_oOrigin.y);
+	m_pSplashSreenLayer->addChild(l_pSplashScreenSprite);
+
+	//init its listener
+	m_pListener = EventListenerTouchOneByOne::create();
+	m_pListener->onTouchBegan = CC_CALLBACK_2(
+			LmGameManager::onTouchBeganSplashScreen, this);
+	m_pListener->setSwallowTouches(true);
+
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
+			m_pListener, m_pSplashSreenLayer);
+
+	return true;
+}
+
+bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
+{
+
+	//remove layer
+	m_pGameManagerScene->removeChild(m_pSplashSreenLayer);
+	//remove listener
+	Director::getInstance()->getEventDispatcher()->removeEventListener(
+			m_pListener);
+
+	//init dashboard
+	if (!initDashboard())
+	{
+		CCLOG("Initialization DashBoard failed");
+		return false;
+	}
 
 	return true;
 }
@@ -321,6 +386,10 @@ bool LmGameManager::initDashboard()
 	m_pCheckSpriteUser2->setVisible(false);
 	m_pLabelInteractionDoneUser2->setVisible(false);
 
+	/*
+	 * Others gui elements
+	 */
+
 	//add the band mid at the top of the pink background
 	m_pSpriteBandMid = Sprite::create("Ludomuse/GUIElements/bandMid.png");
 	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
@@ -389,8 +458,6 @@ bool LmGameManager::initDashboard()
 					* 0.9);
 	m_pSpriteBandTop->addChild(m_pLabelTitleApplication);
 
-
-
 	//play next interaction button
 	m_pPlayNextInteractionButton = ui::Button::create(
 			"Ludomuse/GUIElements/playNextInteraction.png");
@@ -403,111 +470,48 @@ bool LmGameManager::initDashboard()
 			CC_CALLBACK_0(LmGameManager::runNextInteraction, this));
 	m_pSpriteBandMid->addChild(m_pPlayNextInteractionButton, 2);
 
-	//init interactions
+	//init interactions sprite
 	initDashboardInteraction();
 
 	return true;
 }
 
-void LmGameManager::runGame()
+Sprite* LmGameManager::addSpriteToLabel(Label* l_pLabel, std::string filename)
 {
-	//Init of the GameManager
-	init();
+	auto result = Sprite::create(filename);
 
-	CCLOG("after init gamemanager");
+	result->setAnchorPoint(Vec2(1, 0.5));
 
-	//replace the menu scene with the first one of the game
-	Director::getInstance()->replaceScene(
-			TransitionFade::create(s_fTimeBetweenLmLayer, m_pGameManagerScene));
+	//the label must have an anchor point 0.5;0.5
+	auto position = l_pLabel->getPosition();
+	auto labelSize = l_pLabel->getContentSize();
+	result->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
 
-	CCLOG("end run game");
+	return result;
 }
 
-void LmGameManager::compare()
+Sprite* LmGameManager::makeUserAvatarSprite(LmUser* l_pUser)
 {
-	if (m_bActionIsDone)
+	auto result = Sprite::create();
+
+	if (l_pUser->isBParent() && l_pUser->isBMale())
 	{
-		m_bActionIsDone = false;
-
-		m_pListener->setEnabled(false);
-
-		auto l_oCompareAction =
-				MoveBy::create(s_fTimeCompareAction,
-						Vect(0,
-								(m_pSpriteBackgroundPink->getContentSize().height)
-										* 0.5f
-										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
-		auto l_oCompareActionIsDone = CallFunc::create(
-				std::bind(&LmGameManager::compareDone, this));
-		m_pPinkLayer->runAction(
-				Sequence::create(l_oCompareAction, l_oCompareActionIsDone,
-						nullptr));
-
+		result->setTexture("Ludomuse/GUIElements/dadavatar.png");
 	}
-}
-
-void LmGameManager::compareDone()
-{
-
-	m_bActionIsDone = true;
-	m_pCompareButton->setVisible(false);
-	m_pLabelCompareButton->setVisible(false);
-	m_pSpriteBandTop->setVisible(false);
-	m_pBackButton->setVisible(true);
-	m_pAvatarSpriteUser2->setVisible(true);
-	m_pCheckSpriteUser2->setVisible(true);
-	m_pLabelInteractionDoneUser2->setVisible(true);
-
-	//move the label of the score and the star
-	m_pLabelScoreUser2->setPosition(
-			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
-			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.3f);
-	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
-
-	setSpritesInteractionsUser2Visible(true);
-
-}
-
-void LmGameManager::back()
-{
-	if (m_bActionIsDone)
+	else if (l_pUser->isBParent() && !l_pUser->isBMale())
 	{
-		m_bActionIsDone = false;
-		auto l_oBackAction =
-				MoveBy::create(s_fTimeCompareAction,
-						Vect(0,
-								-(m_pSpriteBackgroundPink->getContentSize().height)
-										* 0.5f
-										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
-		auto l_oBackActionIsDone = CallFunc::create(
-				std::bind(&LmGameManager::backDone, this));
-		m_pPinkLayer->runAction(
-				Sequence::create(l_oBackAction, l_oBackActionIsDone, nullptr));
+		result->setTexture("Ludomuse/GUIElements/momavatar.png");
 	}
-}
+	else if (!l_pUser->isBParent() && l_pUser->isBMale())
+	{
+		result->setTexture("Ludomuse/GUIElements/sonavatar.png");
+	}
+	else if (!l_pUser->isBParent() && !l_pUser->isBMale())
+	{
+		result->setTexture("Ludomuse/GUIElements/daughteravatar.png");
+	}
 
-void LmGameManager::backDone()
-{
-	m_bActionIsDone = true;
-
-	m_pListener->setEnabled(true);
-
-	m_pCompareButton->setVisible(true);
-	m_pLabelCompareButton->setVisible(true);
-	m_pSpriteBandTop->setVisible(true);
-	m_pBackButton->setVisible(false);
-	m_pAvatarSpriteUser2->setVisible(false);
-	m_pCheckSpriteUser2->setVisible(false);
-	m_pLabelInteractionDoneUser2->setVisible(false);
-
-	//move the label of the score and the star
-	m_pLabelScoreUser2->setPosition(
-			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
-			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.7f);
-	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
-
-	setSpritesInteractionsUser2Visible(false);
-
+	return result;
 }
 
 void LmGameManager::initDashboardInteraction()
@@ -654,131 +658,13 @@ void LmGameManager::initDashboardInteraction()
 
 }
 
-void LmGameManager::runNextInteraction()
+void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,
+		cocos2d::Label* label)
 {
-	//if its the last interactionscene the app finished
-	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
-	{
-		CCLOG("END");
-		Director::getInstance()->end();
-	}
-	else
-	{
-
-		//if yes we need to init the scene
-		if (!m_bBackToDashboard)
-		{
-			//we pass the local user
-			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
-					m_pUser1))
-			{
-				CCLOG("Interaction scene init failed");
-			}
-
-		}
-
-		runInteraction(m_iIndexInteractionScene);
-
-	}
-
-}
-
-void LmGameManager::removeListeners(bool l_bTrue)
-{
-	m_pBackButton->setTouchEnabled(!l_bTrue);
-	m_pCompareButton->setTouchEnabled(!l_bTrue);
-	m_pPlayNextInteractionButton->setTouchEnabled(!l_bTrue);
-	m_pListener->setEnabled(!l_bTrue);
-}
-
-bool LmGameManager::initSplashScreen()
-{
-	//use to place elements
-	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
-	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
-
-	//create the scene
-	m_pGameManagerScene = Scene::create();
-
-	//add the layer of the splash screen
-	m_pSplashSreenLayer = Layer::create();
-	m_pGameManagerScene->addChild(m_pSplashSreenLayer);
-
-	//add the sprite background get from the config json file
-	auto l_pSplashScreenSprite = Sprite::create(
-			m_pLmServerManager->getSFilenameSpriteSplashScreen());
-	l_pSplashScreenSprite->setPosition(
-			l_oVisibleSize.width * 0.5f + l_oOrigin.x,
-			l_oVisibleSize.height * 0.5f + l_oOrigin.y);
-	m_pSplashSreenLayer->addChild(l_pSplashScreenSprite);
-
-	//init its listener
-	m_pListener = EventListenerTouchOneByOne::create();
-	m_pListener->onTouchBegan = CC_CALLBACK_2(
-			LmGameManager::onTouchBeganSplashScreen, this);
-	m_pListener->setSwallowTouches(true);
-
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
-			m_pListener, m_pSplashSreenLayer);
-
-	return true;
-}
-
-bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
-{
-
-	//remove layer
-	m_pGameManagerScene->removeChild(m_pSplashSreenLayer);
-	//remove listener
-	Director::getInstance()->getEventDispatcher()->removeEventListener(
-			m_pListener);
-
-	//init dashboard
-	if (!initDashboard())
-	{
-		CCLOG("Initialization DashBoard failed");
-		return false;
-	}
-
-	return true;
-}
-
-Sprite* LmGameManager::makeUserAvatarSprite(LmUser* l_pUser)
-{
-	auto result = Sprite::create();
-
-	if (l_pUser->isBParent() && l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/dadavatar.png");
-	}
-	else if (l_pUser->isBParent() && !l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/momavatar.png");
-	}
-	else if (!l_pUser->isBParent() && l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/sonavatar.png");
-	}
-	else if (!l_pUser->isBParent() && !l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/daughteravatar.png");
-	}
-
-	return result;
-}
-
-Sprite* LmGameManager::addSpriteToLabel(Label* l_pLabel, std::string filename)
-{
-	auto result = Sprite::create(filename);
-
-	result->setAnchorPoint(Vec2(1, 0.5));
-
 	//the label must have an anchor point 0.5;0.5
-	auto position = l_pLabel->getPosition();
-	auto labelSize = l_pLabel->getContentSize();
-	result->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
-
-	return result;
+	auto position = label->getPosition();
+	auto labelSize = label->getContentSize();
+	sprite->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
 }
 
 void LmGameManager::updateDashboard()
@@ -826,13 +712,159 @@ void LmGameManager::updateDashboard()
 
 }
 
-void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,
-		cocos2d::Label* label)
+void LmGameManager::compare()
 {
-	//the label must have an anchor point 0.5;0.5
-	auto position = label->getPosition();
-	auto labelSize = label->getContentSize();
-	sprite->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
+	if (m_bActionIsDone)
+	{
+		m_bActionIsDone = false;
+
+		m_pListener->setEnabled(false);
+
+		auto l_oCompareAction =
+				MoveBy::create(s_fTimeCompareAction,
+						Vect(0,
+								(m_pSpriteBackgroundPink->getContentSize().height)
+										* 0.5f
+										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
+		auto l_oCompareActionIsDone = CallFunc::create(
+				std::bind(&LmGameManager::compareDone, this));
+		m_pPinkLayer->runAction(
+				Sequence::create(l_oCompareAction, l_oCompareActionIsDone,
+						nullptr));
+
+	}
+}
+
+void LmGameManager::compareDone()
+{
+
+	m_bActionIsDone = true;
+
+	compareScreen(true);
+
+	//move the label of the score and the star
+	m_pLabelScoreUser2->setPosition(
+			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
+			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.3f);
+	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
+
+}
+
+void LmGameManager::back()
+{
+	if (m_bActionIsDone)
+	{
+		m_bActionIsDone = false;
+		auto l_oBackAction =
+				MoveBy::create(s_fTimeCompareAction,
+						Vect(0,
+								-(m_pSpriteBackgroundPink->getContentSize().height)
+										* 0.5f
+										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
+		auto l_oBackActionIsDone = CallFunc::create(
+				std::bind(&LmGameManager::backDone, this));
+		m_pPinkLayer->runAction(
+				Sequence::create(l_oBackAction, l_oBackActionIsDone, nullptr));
+	}
+}
+
+void LmGameManager::backDone()
+{
+	m_bActionIsDone = true;
+
+	m_pListener->setEnabled(true);
+
+	compareScreen(false);
+
+	//move the label of the score and the star
+	m_pLabelScoreUser2->setPosition(
+			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
+			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.7f);
+	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
+
+
+}
+
+void LmGameManager::setSpritesInteractionsUser2Visible(bool visible)
+{
+	m_pSpriteBackgroundPink->setVisible(!visible);
+
+	for (std::vector<Sprite*>::iterator it =
+			m_aSpritesInteractionsUser2.begin();
+			it != m_aSpritesInteractionsUser2.end(); ++it)
+	{
+		(*it)->setVisible(visible);
+	}
+}
+
+void LmGameManager::compareScreen(bool visible)
+{
+	m_pCompareButton->setVisible(!visible);
+	m_pLabelCompareButton->setVisible(!visible);
+	m_pSpriteBandTop->setVisible(!visible);
+	m_pBackButton->setVisible(visible);
+	m_pAvatarSpriteUser2->setVisible(visible);
+	m_pCheckSpriteUser2->setVisible(visible);
+	m_pLabelInteractionDoneUser2->setVisible(visible);
+
+	setSpritesInteractionsUser2Visible(visible);
+
+
+}
+
+void LmGameManager::runInteraction(int index)
+{
+	//enable the back button of the interaction because it was disable before the back action (LmInteractionScene::backToDashboard)
+	m_aInteractionSceneOfTheGame.at(index)->setBBackPressed(false);
+
+	CCLOG("pushscene");
+	inputDisabled(true);
+	Director::getInstance()->pushScene(
+			TransitionFade::create(s_fTimeBetweenLmLayer,
+					m_aInteractionSceneOfTheGame.at(index)));
+
+	//it was a back
+	if (m_bBackToDashboard)
+	{
+		m_aInteractionSceneOfTheGame.at(index)->restart();
+	}
+}
+
+void LmGameManager::runNextInteraction()
+{
+	//if its the last interactionscene the app finished
+	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
+	{
+		CCLOG("END");
+		Director::getInstance()->end();
+	}
+	else
+	{
+
+		//if yes we need to init the scene
+		if (!m_bBackToDashboard)
+		{
+			//we pass the local user
+			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
+					m_pUser1))
+			{
+				CCLOG("Interaction scene init failed");
+			}
+
+		}
+
+		runInteraction(m_iIndexInteractionScene);
+
+	}
+
+}
+
+void LmGameManager::inputDisabled(bool l_bTrue)
+{
+	m_pBackButton->setTouchEnabled(!l_bTrue);
+	m_pCompareButton->setTouchEnabled(!l_bTrue);
+	m_pPlayNextInteractionButton->setTouchEnabled(!l_bTrue);
+	m_pListener->setEnabled(!l_bTrue);
 }
 
 bool LmGameManager::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)
@@ -975,35 +1007,5 @@ void LmGameManager::onInteractionDoneEvent(bytes l_oMsg)
 	m_iInteractionDoneUser2++;
 
 	updateDashboard();
-}
-
-void LmGameManager::runInteraction(int index)
-{
-	//enable the back button of the interaction because it was disable before the back action (LmInteractionScene::backToDashboard)
-	m_aInteractionSceneOfTheGame.at(index)->setBBackPressed(false);
-
-	CCLOG("pushscene");
-	removeListeners(true);
-	Director::getInstance()->pushScene(
-			TransitionFade::create(s_fTimeBetweenLmLayer,
-					m_aInteractionSceneOfTheGame.at(index)));
-
-	//it was a back
-	if (m_bBackToDashboard)
-	{
-		m_aInteractionSceneOfTheGame.at(index)->restart();
-	}
-}
-
-void LmGameManager::setSpritesInteractionsUser2Visible(bool visible)
-{
-	m_pSpriteBackgroundPink->setVisible(!visible);
-
-	for (std::vector<Sprite*>::iterator it =
-			m_aSpritesInteractionsUser2.begin();
-			it != m_aSpritesInteractionsUser2.end(); ++it)
-	{
-		(*it)->setVisible(visible);
-	}
 }
 

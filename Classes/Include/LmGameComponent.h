@@ -1,7 +1,7 @@
 /*
  * LmGameComponent.h
  *
- * Object which compose our games extend cocos2d::node
+ * Object which compose our games
  *
  *  Created on: 2 sept. 2015
  *      Author: IHMTEKDev4

@@ -271,6 +271,9 @@ protected:
 
 	void initNextPreviousButton();
 
+	void finishInteraction();
+
+
 
 
 

@@ -21,6 +21,7 @@ LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed) :
 	m_iHoleOnX = l_Seed.HoleOnX;
 	m_iHoleOnY = l_Seed.HoleOnY;
 	m_aLocationOfHole = l_Seed.LocationOfHole;
+
 	if (m_aLocationOfHole.size() == 0)
 	{
 		CCLOG("No Hole in LmRightSpot");
@@ -34,6 +35,7 @@ LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed) :
 	m_fHeightRect = 0;
 	m_fWidthRect = 0;
 	m_bSendingAreaElementTouched = false;
+	m_iNumberOfHole = 0;
 
 	//pointer
 	m_pSendingAreaElement = nullptr;

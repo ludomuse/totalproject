@@ -26,7 +26,7 @@ public:
 	~LmGameManager();
 
 	//call different method of gamemanager, init launch scene and handle layers of interactions
-	void runGame();
+	void runGames();
 
 	void setPUser1(LmUser* pUser1)
 	{
@@ -150,7 +150,7 @@ private:
 	void updateDashboard();
 
 	//remove listeners avoid conflict between scene true = remove false = add
-	void removeListeners(bool);
+	void inputDisabled(bool);
 
 	//callback method for the layer splash
 	bool onTouchBeganSplashScreen(cocos2d::Touch*, cocos2d::Event*);
@@ -182,6 +182,10 @@ private:
 
 	//set visible lolipop user 2
 	void setSpritesInteractionsUser2Visible(bool );
+
+	//set visible element or not of the both state of dashboard
+	void compareScreen(bool );
+
 
 
 

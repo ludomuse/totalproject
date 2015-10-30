@@ -26,7 +26,7 @@
 #include "LmRightSpotScene.h"
 #include "LmQuizz_v1Scene.h"
 #include "LmFindGoodCategoryScene.h"
-#include "LmAudioHintScene.h"
+#include "LmHintScene.h"
 #include "LmQuizz_v2Scene.h"
 
 
@@ -94,7 +94,7 @@ private:
 	void makeLmRightSpotScene(const rapidjson::Value&);
 	void makeLmQuizz_v1Scene(const rapidjson::Value&);
 	void makeLmFindGoodCategoryScene(const rapidjson::Value&);
-	void makeLmAudioHintScene(const rapidjson::Value&);
+	void makeLmHintScene(const rapidjson::Value&);
 	void makeLmQuizz_v2Scene(const rapidjson::Value&);
 
 

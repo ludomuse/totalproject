@@ -14,6 +14,7 @@ LmInteractionScene::LmInteractionScene()
 	m_pLmSetPointBegin = new LmSetPoint; //need to be delete
 	m_pLmSetPointEnd = new LmSetPoint; //need to be delete
 	m_pLmReward = nullptr;
+	m_pLmRewardUser2 = nullptr;
 
 	//primitive type
 	m_bDone = false;
@@ -31,7 +32,7 @@ LmInteractionScene::LmInteractionScene()
 	m_bUser1IsReadyForNextInteraction = false;
 	m_bUser2IsReadyForNextInteraction = false;
 	m_bGameIsRunning = false;
-	m_iIdGame = s_iNumberOfInteraction;
+	m_iIdGame = s_iNumberOfInteraction;//interaction scene can know which scene of the game it is (use to send event)
 	s_iNumberOfInteraction++;
 
 	//pointer
@@ -50,6 +51,7 @@ LmInteractionScene::LmInteractionScene()
 	m_pListener = nullptr;
 	m_pSpriteWaitingScreen = nullptr;
 	m_pPlayCheckBox = nullptr;
+	m_pMenu = nullptr;
 
 }
 
@@ -102,7 +104,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	// create menu, it's an autorelease object
 	m_pMenu = Menu::create();
 	m_pMenu->setPosition(Vec2::ZERO);
-	addChild(m_pMenu,1);
+	addChild(m_pMenu, 1);
 
 	initNextPreviousButton();
 
@@ -121,8 +123,6 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	//create the game layer
 	m_pLayerGame = Layer::create();
 	m_pLayerGame->retain();
-
-
 
 	//finish button default one
 	m_pFinishGameButton = ui::Button::create("Ludomuse/GUIElements/fin.png",
@@ -147,7 +147,6 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pReplayButton->setVisible(false);
 	m_pLayerGame->addChild(m_pReplayButton, 2);
 
-
 	//waiting screen to wait his partner before each interaction
 	m_pSpriteWaitingScreen = Sprite::create("Ludomuse/Background/splash.png");
 	m_pSpriteWaitingScreen->setPosition(
@@ -156,6 +155,63 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pSpriteWaitingScreen->setVisible(false);
 
 	return true;
+}
+
+void LmInteractionScene::initNextPreviousButton()
+{
+	CCLOG("init button");
+
+	m_pMenu->removeAllChildrenWithCleanup(true);
+
+	//use to place elements
+	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+
+	//next button
+	m_pNextButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/nextButtonNormal.png",
+			"Ludomuse/GUIElements/nextButtonPressed.png",
+			CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
+	m_pNextButton->setPosition(
+			Vect(
+					l_oVisibleSize.width
+							- m_pNextButton->getContentSize().width * 0.8,
+					l_oVisibleSize.height * 0.1));
+	m_pMenu->addChild(m_pNextButton, 1);
+
+	//previous button
+	m_pPreviousButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/previousButtonNormal.png",
+			"Ludomuse/GUIElements/previousButtonPressed.png",
+			CC_CALLBACK_1(LmInteractionScene::previousSetPointLayer, this));
+	m_pPreviousButton->setPosition(
+			Vect(m_pPreviousButton->getContentSize().width * 0.8,
+					l_oVisibleSize.height * 0.1));
+	m_pMenu->addChild(m_pPreviousButton, 1);
+
+	m_pNextButton->setVisible(true);
+	m_pPreviousButton->setVisible(true);
+
+}
+
+void LmInteractionScene::playCallback(cocos2d::Ref*,
+		cocos2d::ui::CheckBox::EventType type)
+{
+	switch (type)
+	{
+	case ui::CheckBox::EventType::SELECTED:
+		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+
+		break;
+
+	case ui::CheckBox::EventType::UNSELECTED:
+		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+
+		break;
+
+	default:
+		break;
+	}
 }
 
 void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
@@ -186,7 +242,7 @@ void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
-	CCLOG("next button pressed");
+	CCLOG("LmInteractionScene::nextSetPointLayer");
 
 	if (m_bSetPointBegin)
 	{
@@ -269,11 +325,9 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				WIFIFACADE->sendBytes(msg);
 			}
 
-			//finish the interaction
-			CCLOG("popscene");
-			Director::getInstance()->popScene();
-			Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
-					"InteractionSceneFinished");
+			//test to see if we need to display event in cocos thread
+			ON_CC_THREAD(LmInteractionScene::finishInteraction, this);
+
 		}
 		else
 		{
@@ -287,6 +341,15 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 		}
 	}
 
+}
+
+void LmInteractionScene::finishInteraction()
+{
+	//finish the interaction
+	CCLOG("popscene");
+	Director::getInstance()->popScene();
+	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+			"InteractionSceneFinished");
 }
 
 void LmInteractionScene::initDashboardLayer()
@@ -431,129 +494,19 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 	{
 		m_bBackPressed = true;
 
-		//simulate a press on the m_pplaycheckbox
-		CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
-		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-		m_pPlayCheckBox->setSelected(true);
+		if(!m_pPlayCheckBox->isSelected())
+		{
+			//simulate a press on the m_pplaycheckbox
+			CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
+			CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+			m_pPlayCheckBox->setSelected(true);
+		}
+
 
 		CCLOG("back to dashboard");
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 				"BackToDashboard");
 	}
-}
-
-LmGameComponent* LmInteractionScene::makeGameComponent()
-{
-	//generate a new id
-	m_iNumberOfGameComponent++;
-	//register it into the id table
-	m_aIdTable.insert(
-			std::pair<int, LmGameComponent*>(m_iNumberOfGameComponent,
-					new LmGameComponent(m_iNumberOfGameComponent)));
-
-	return m_aIdTable.find(m_iNumberOfGameComponent)->second;
-}
-
-void LmInteractionScene::endGame()
-{
-	if (m_bFinishGameButtonSync)
-	{
-		CCLOG("end function");
-		m_bFinishGameButtonSync = false;
-
-		//reset sync beetween player
-		m_bUser1IsReadyForNextInteraction = false;
-		m_bUser2IsReadyForNextInteraction = false;
-
-		//stop send event async till the next inetraction
-		stopListenWifiFacade();
-
-		if (m_pLmReward && m_bWin)
-		{
-			//add reward to the user
-			m_pUser->winReward(m_pLmReward);
-		}
-
-		//the game is finished we can remove the layer of the game
-		removeChild(m_pLayerGame);
-
-		//so the next time we print the end setpoint
-		m_bSetPointBegin = false;
-		//new setpoint
-		m_bSetPointFinished = false;
-
-
-		m_pPlayCheckBox->setVisible(true);
-		m_pPlayCheckBox->setSelected(false);
-
-		//its a linear progression so for now it can be release here
-		m_pLayerGame->release();
-		m_pPlayCheckBox->release();
-
-		m_bGameIsRunning = false;
-
-		//stop sound
-		CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
-				true);
-
-		initNextPreviousButton();
-
-		//init the end set point
-		if (!m_pLmSetPointEnd->init(this))
-		{
-			CCLOG("LmSetPoint init failed");
-		}
-
-	}
-}
-
-void LmInteractionScene::restart()
-{
-	CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-
-}
-
-bool LmInteractionScene::startGame()
-{
-
-	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
-	{
-		m_bGameIsRunning = true;
-
-		//to get notigy by event
-		CCLOG("run game");
-		m_pSpriteWaitingScreen->setVisible(false);
-		listenWifiFacade();
-		runGame();
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
-}
-
-void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
-{
-	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
-	switch (LmWifiObserver::_event)
-	{
-	case LmEvent::Win:
-		CCLOG("Win");
-		ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
-		;
-		break;
-	default:
-		break;
-	}
-}
-
-void LmInteractionScene::onWinEvent(bytes l_oMsg)
-{
-	bool buffer = l_oMsg.readBool();
-
-	win(buffer);
 }
 
 void LmInteractionScene::win(bool win)
@@ -570,26 +523,6 @@ void LmInteractionScene::win(bool win)
 	}
 
 	m_pFinishGameButton->setVisible(true);
-}
-
-void LmInteractionScene::playCallback(cocos2d::Ref*,
-		cocos2d::ui::CheckBox::EventType type)
-{
-	switch (type)
-	{
-	case ui::CheckBox::EventType::SELECTED:
-		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-
-		break;
-
-	case ui::CheckBox::EventType::UNSELECTED:
-		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-
-		break;
-
-	default:
-		break;
-	}
 }
 
 void LmInteractionScene::initFinishButtonTexture()
@@ -634,40 +567,117 @@ void LmInteractionScene::initFinishButtonTexture()
 	}
 }
 
-void LmInteractionScene::initNextPreviousButton()
+void LmInteractionScene::endGame()
 {
-	CCLOG("init button");
+	if (m_bFinishGameButtonSync)
+	{
+		CCLOG("end function");
+		m_bFinishGameButtonSync = false;
 
-	//use to place elements
-		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
-		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+		//reset sync beetween player
+		m_bUser1IsReadyForNextInteraction = false;
+		m_bUser2IsReadyForNextInteraction = false;
 
+		//stop send event async till the next inetraction
+		stopListenWifiFacade();
 
+		if (m_pLmReward && m_bWin)
+		{
+			//add reward to the user
+			m_pUser->winReward(m_pLmReward);
+		}
 
-		//next button
-		m_pNextButton = MenuItemImage::create(
-				"Ludomuse/GUIElements/nextButtonNormal.png",
-				"Ludomuse/GUIElements/nextButtonPressed.png",
-				CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
-		m_pNextButton->setPosition(
-				Vect(
-						l_oVisibleSize.width
-								- m_pNextButton->getContentSize().width * 0.8,
-						l_oVisibleSize.height * 0.1));
-		m_pMenu->addChild(m_pNextButton, 1);
+		//the game is finished we can remove the layer of the game
+		removeChild(m_pLayerGame);
 
-		//previous button
-		m_pPreviousButton = MenuItemImage::create(
-				"Ludomuse/GUIElements/previousButtonNormal.png",
-				"Ludomuse/GUIElements/previousButtonPressed.png",
-				CC_CALLBACK_1(LmInteractionScene::previousSetPointLayer, this));
-		m_pPreviousButton->setPosition(
-				Vect(m_pPreviousButton->getContentSize().width * 0.8,
-						l_oVisibleSize.height * 0.1));
-		m_pMenu->addChild(m_pPreviousButton, 1);
+		//so the next time we print the end setpoint
+		m_bSetPointBegin = false;
+		//new setpoint
+		m_bSetPointFinished = false;
 
-		m_pNextButton->setVisible(true);
-		m_pPreviousButton->setVisible(true);
+		m_pPlayCheckBox->setVisible(true);
+		m_pPlayCheckBox->setSelected(false);
 
+		//its a linear progression so for now it can be release here
+		m_pLayerGame->release();
+		m_pPlayCheckBox->release();
+
+		m_bGameIsRunning = false;
+
+		//stop sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
+				true);
+
+		initNextPreviousButton();
+
+		//init the end set point
+		if (!m_pLmSetPointEnd->init(this))
+		{
+			CCLOG("LmSetPoint init failed");
+		}
+
+	}
+}
+
+void LmInteractionScene::restart()
+{
+
+}
+
+bool LmInteractionScene::startGame()
+{
+	CCLOG("LmInteractionScene::startGame");
+
+	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
+	{
+		m_bGameIsRunning = true;
+
+		//to get notigy by event
+		m_pSpriteWaitingScreen->setVisible(false);
+		listenWifiFacade();
+
+		CCLOG("LmInteractionScene::runGame");
+		runGame();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
+{
+	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
+	switch (LmWifiObserver::_event)
+	{
+	case LmEvent::Win:
+		CCLOG("Win");
+		ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
+		;
+		break;
+	default:
+		break;
+	}
+}
+
+void LmInteractionScene::onWinEvent(bytes l_oMsg)
+{
+	bool buffer = l_oMsg.readBool();
+
+	win(buffer);
+}
+
+LmGameComponent* LmInteractionScene::makeGameComponent()
+{
+	//generate a new id
+	m_iNumberOfGameComponent++;
+	//register it into the id table
+	m_aIdTable.insert(
+			std::pair<int, LmGameComponent*>(m_iNumberOfGameComponent,
+					new LmGameComponent(m_iNumberOfGameComponent)));
+
+	return m_aIdTable.find(m_iNumberOfGameComponent)->second;
 }
 
