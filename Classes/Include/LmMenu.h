@@ -17,17 +17,18 @@
 #include "LmWifiObserver.h"
 
 //message of the feedback label
-static const std::string s_sUserIsReady = "En attente de ton partenaire."; //ok
-static const std::string s_sDeviceNotConnected =
-		"Tu dois choisir une tablette avec qui te connecter !"; //ok
-static const std::string s_sRoleNotChoose = "Choisis le role que tu vas jouer pendant cette partie."; //ok
+static const std::string s_sUserIsReady = "En attente de ton partenaire..."; //ok
+static const std::string s_sDeviceAndRoleSlected =
+		"Maintenant tu peux te connecter avec ton partenaire.";//ok
+static const std::string s_sRoleNotChoose =
+		"Choisis le role que tu vas jouer pendant cette partie."; //ok
 static const std::string s_sBegining = "Choisis une tablette avec qui jouer"; //ok
-static const std::string s_sUserNotCompatible =
-		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-static const std::string s_sYouAreNotReady =
-		"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
-static const std::string s_sError =
-		"ERRRRROOROROR";
+static const std::string s_sUserNotCompatibleRole =
+		"Vos roles ne sont pas compatible.";
+static const std::string s_sUserNotCompatibleTabletName =
+		"Vos noms de tablette ne correspondent pas.";
+static const std::string s_sError = "Une erreur est survenue, veuillez recommencer.";
+static const std::string s_sSearching = "Nous recherchons les appareils disponible...";
 
 //Parameters
 static const float s_fSplashScreenDuration = 0.5f;
@@ -123,7 +124,8 @@ private:
 	bool m_bConnected;
 	//to know when ready or not
 	bool m_bReady;
-
+	//to know when it's the first time we get tablet name
+	bool m_bFirstGettingPeers;
 	//to stop listening
 	int m_iIdWifiObserver;
 
@@ -142,6 +144,7 @@ private:
 	//callback method of checkbox gender
 	void maleSelected(cocos2d::Ref*);
 	void femaleSelected(cocos2d::Ref*);
+	void removeMenuElement();
 	//launch discover peers method in java
 	void scan(cocos2d::Ref*);
 	//make menuitemiamge with the vector of string of wifi direct names
@@ -153,7 +156,7 @@ private:
 	//callback method of the ready button
 	void ready(cocos2d::Ref*);
 	//check if user are compatible return true if yes
-	bool usersAreCompatible();
+	bool usersAreCompatible(LmUser*);
 	//block input of the wifi direct screen
 	void inputEnabled(bool);
 	//function to end menu by sending a custom event
@@ -162,6 +165,9 @@ private:
 	void onUserIsReadyEvent(bytes);
 	void onCompatibleToPlayEvent(bytes);
 	void onPlayEvent(bytes);
+
+	void setLabelFeedBack();
+
 
 };
 

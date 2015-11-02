@@ -234,6 +234,11 @@ bool LmGameManager::initDashboard()
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+	Size l_oWinSize = Director::getInstance()->getWinSize();
+
+	CCLOG("visible width =%f & height =%f ",l_oVisibleSize.width,l_oVisibleSize.height);
+	CCLOG("win width =%f & height =%f ",l_oWinSize.width,l_oWinSize.height);
+
 
 	//create the main layer and put element on it
 	m_pBlueLayer = Layer::create();
@@ -418,6 +423,8 @@ bool LmGameManager::initDashboard()
 			l_oVisibleSize.height * 0.1f);
 	m_pPinkLayer->addChild(m_pLabelCompareButton);
 
+
+
 	//back button
 	m_pBackButton = ui::Button::create("Ludomuse/GUIElements/backNormal.png");
 	m_pBackButton->setTouchEnabled(true);
@@ -428,7 +435,7 @@ bool LmGameManager::initDashboard()
 							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
 							* 0.5f
 							+ m_pSpriteBackgroundBlueProfile->getContentSize().width,
-					l_oVisibleSize.height));
+							l_oVisibleSize.height));
 	m_pBackButton->addTouchEventListener(
 			CC_CALLBACK_0(LmGameManager::back, this));
 	m_pBackButton->setVisible(false);

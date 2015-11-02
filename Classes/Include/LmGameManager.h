@@ -17,7 +17,7 @@ static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 
-class LmGameManager : public LmWifiObserver
+class LmGameManager: public LmWifiObserver
 {
 
 public:
@@ -38,8 +38,10 @@ public:
 		m_pUser2 = pUser2;
 	}
 
-	virtual void onReceivingMsg(bytes );
+	virtual void onReceivingMsg(bytes);
 
+	//to init texture of the user
+	static cocos2d::Sprite* makeUserAvatarSprite(LmUser*);
 
 private:
 
@@ -102,7 +104,6 @@ private:
 	std::vector<cocos2d::Sprite*> m_aSpritesInteractions;
 	std::vector<cocos2d::Sprite*> m_aSpritesInteractionsUser2;
 
-
 	//to know how many interaction have been played
 	int m_iIndexInteractionScene;
 
@@ -127,7 +128,6 @@ private:
 	//call server manager and init m_vectorSceneOfTheGame
 	bool init();
 
-
 	//callback methods
 	void compare();
 	void compareDone();
@@ -135,7 +135,6 @@ private:
 	void backDone();
 
 	void runNextInteraction();
-
 
 	//init the dashboard
 	bool initDashboard();
@@ -155,9 +154,6 @@ private:
 	//callback method for the layer splash
 	bool onTouchBeganSplashScreen(cocos2d::Touch*, cocos2d::Event*);
 
-	//to init texture of the user
-	cocos2d::Sprite* makeUserAvatarSprite(LmUser*);
-
 	//to add a star sprite to a label true = red; false = green
 	cocos2d::Sprite* addSpriteToLabel(cocos2d::Label*, std::string);
 
@@ -170,25 +166,20 @@ private:
 	int interactionTouched(cocos2d::Touch*);
 
 	//update position of chack and the star
-	void updateSpriteToLabel(cocos2d::Sprite* ,cocos2d::Label* );
+	void updateSpriteToLabel(cocos2d::Sprite*, cocos2d::Label*);
 
 	//list of callback event
-	void onReadyForNextInteractionEvent(bytes );
-	void onInteractionDoneEvent(bytes );
-
+	void onReadyForNextInteractionEvent(bytes);
+	void onInteractionDoneEvent(bytes);
 
 	//push the index scene interaction
 	void runInteraction(int);
 
 	//set visible lolipop user 2
-	void setSpritesInteractionsUser2Visible(bool );
+	void setSpritesInteractionsUser2Visible(bool);
 
 	//set visible element or not of the both state of dashboard
-	void compareScreen(bool );
-
-
-
-
+	void compareScreen(bool);
 
 };
 

@@ -46,6 +46,7 @@ LmMenu::LmMenu()
 	m_bReady = false;
 	m_bMenuIsFinished = false;
 	m_iIdWifiObserver = 0;
+	m_bFirstGettingPeers = true;
 
 }
 
@@ -86,6 +87,45 @@ void LmMenu::splashScreen()
 			Sequence::create(delay,
 					CallFunc::create(std::bind(&LmMenu::logScreen, this)),
 					nullptr));
+
+}
+
+void LmMenu::onGettingPeers(std::vector<std::string> peers)
+{
+
+	if (m_bFirstGettingPeers)
+	{
+		m_bFirstGettingPeers = false;
+		ON_CC_THREAD(LmMenu::setLabelFeedBack, this);
+	}
+
+	ON_CC_THREAD(LmMenu::makeCheckboxUserTabletName, this, peers);
+
+}
+
+void LmMenu::onReceivingMsg(bytes l_oMsg)
+{
+	CCLOG("lm menu_event is %d", _event);
+	switch (_event)
+	{
+	case LmEvent::UserIsReady:
+		CCLOG("onUserIsReadyEvent");
+		ON_CC_THREAD(LmMenu::onUserIsReadyEvent, this, l_oMsg)
+		;
+		break;
+	case LmEvent::CompatibleToPlay:
+		CCLOG("onCompatibleToPlayEvent");
+		ON_CC_THREAD(LmMenu::onCompatibleToPlayEvent, this, l_oMsg)
+		;
+		break;
+	case LmEvent::Play:
+		CCLOG("onPlayEvent");
+		ON_CC_THREAD(LmMenu::onPlayEvent, this, l_oMsg)
+		;
+		break;
+	default:
+		break;
+	}
 
 }
 
@@ -189,6 +229,8 @@ void LmMenu::logFinished(Ref* p_Sender)
 				CC_CALLBACK_1(LmMenu::maleSelected, this));
 		m_pMenuItemImageMale->setPosition(
 				Vec2(l_oVisibleSize.width * 0.25, l_oVisibleSize.height * 0.5));
+		m_pMenuItemImageMale->setScaleX(7);
+		m_pMenuItemImageMale->setScaleY(7);
 		m_pMenu->addChild(m_pMenuItemImageMale);
 
 		//init checkbox female
@@ -198,17 +240,17 @@ void LmMenu::logFinished(Ref* p_Sender)
 				CC_CALLBACK_1(LmMenu::femaleSelected, this));
 		m_pMenuItemImageFemale->setPosition(
 				Vec2(l_oVisibleSize.width * 0.75, l_oVisibleSize.height * 0.5));
+		m_pMenuItemImageFemale->setScaleX(7);
+		m_pMenuItemImageFemale->setScaleY(7);
 		m_pMenu->addChild(m_pMenuItemImageFemale);
 	}
 }
 
 bool LmMenu::wifiDirectScreen()
 {
-
-	m_pMenuItemImageFemale->setEnabled(false);
-	m_pMenuItemImageMale->setEnabled(false);
-	m_pMenu->removeAllChildrenWithCleanup(true);
-
+	CCLOG("1");
+	ON_CC_THREAD(LmMenu::removeMenuElement, this);
+	CCLOG("2");
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
@@ -231,8 +273,7 @@ bool LmMenu::wifiDirectScreen()
 	m_pLabelFeedback->setMaxLineWidth(l_oVisibleSize.width * 0.8);
 	m_pSpriteWifiBackground->addChild(m_pLabelFeedback);
 
-	CCLOG("m_pLabelFeedback->setString(s_sBegining);");
-	m_pLabelFeedback->setString(s_sBegining);
+	m_pLabelFeedback->setString(s_sSearching);
 
 	//sprite to indicate if ready or not
 	m_pSpriteReadyIndicator = Sprite::create("Ludomuse/GUIElements/cross.png");
@@ -255,14 +296,14 @@ bool LmMenu::wifiDirectScreen()
 	m_pMenu->addChild(m_pReadyButton);
 
 	//label to know what is the name of our tablet
-	std::string l_sTextLabelDeviceName = "Nom de l'appareil : "
+	std::string l_sTextLabelDeviceName = "Nom tablette : "
 			+ getUser1TabletName();
 	CCLOG("%s", l_sTextLabelDeviceName.c_str());
-	auto l_pLabelDeviceName = Label::createWithTTF(
-			l_sTextLabelDeviceName.c_str(), "Fonts/JosefinSans-Bold.ttf",
-			l_oVisibleSize.height * 0.05);
+	auto l_pLabelDeviceName = Label::createWithTTF(l_sTextLabelDeviceName,
+			"Fonts/JosefinSans-Bold.ttf", l_oVisibleSize.height * 0.05);
 	l_pLabelDeviceName->setAnchorPoint(Vec2(1, 0));
-	l_pLabelDeviceName->setPosition(l_oVisibleSize.width, 0);
+	l_pLabelDeviceName->setPosition(l_oVisibleSize.width - s_fMarginLeftMenu,
+			l_oVisibleSize.height * 0.15);
 	l_pLabelDeviceName->setColor(Color3B::WHITE);
 	m_pSpriteWifiBackground->addChild(l_pLabelDeviceName);
 
@@ -305,6 +346,8 @@ bool LmMenu::wifiDirectScreen()
 	m_pCheckBoxParent->setAnchorPoint(Vec2(0, 0.5));
 	m_pCheckBoxParent->setPosition(
 			Vec2(s_fMarginLeftMenu, l_oVisibleSize.height * 0.25));
+	m_pCheckBoxParent->setScaleX(2.3);
+	m_pCheckBoxParent->setScaleY(2.3);
 	m_pCheckBoxParent->addEventListener(
 			CC_CALLBACK_2(LmMenu::parentSelected, this));
 	m_pWifiLayer->addChild(m_pCheckBoxParent);
@@ -315,10 +358,12 @@ bool LmMenu::wifiDirectScreen()
 	m_pCheckBoxChild->setSwallowTouches(false);
 	m_pCheckBoxChild->setAnchorPoint(Vec2(0, 0.5));
 	m_pCheckBoxChild->setPosition(
-			Vec2(s_fMarginLeftMenu + m_pCheckBoxParent->getCustomSize().width,
+			Vec2(s_fMarginLeftMenu + m_pCheckBoxParent->getCustomSize().width*2.3,
 					l_oVisibleSize.height * 0.25));
 	m_pCheckBoxChild->addEventListener(
 			CC_CALLBACK_2(LmMenu::childSelected, this));
+	m_pCheckBoxChild->setScaleX(2.3);
+	m_pCheckBoxChild->setScaleY(2.3);
 	m_pWifiLayer->addChild(m_pCheckBoxChild);
 
 	//init user1
@@ -340,42 +385,20 @@ bool LmMenu::wifiDirectScreen()
 
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
-
 	if (!m_bReady)
 	{
-		//can't be ready if no role selected and no user 2 choose
-		if (m_bRoleSelected)
-		{
-			if (m_bConnected)
-			{
-				//wer are ready
-				m_bReady = true;
+		//role are selected and user 2 has a tablet name
+		m_bReady = true;
 
-				m_pSpriteReadyIndicator->setTexture(
-						"Ludomuse/GUIElements/check.png");
+		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/check.png");
 
-				//send the msg
-				bytes msg(50);
-				msg << LmEvent::UserIsReady << *m_pUser1;
-				WIFIFACADE->sendBytes(msg);
+		//send the msg
+		bytes msg(50);
+		msg << LmEvent::UserIsReady << *m_pUser1;
+		WIFIFACADE->sendBytes(msg);
 
-				CCLOG("m_pLabelFeedback->setString(s_sUserIsReady);");
-				m_pLabelFeedback->setString(s_sUserIsReady);
-
-			}
-			else
-			{
-				CCLOG("m_pLabelFeedback->setString(s_sDeviceNotConnected);");
-				m_pLabelFeedback->setString(s_sDeviceNotConnected);
-
-			}
-
-		}
-		else
-		{
-			CCLOG("m_pLabelFeedback->setString(s_sRoleNotChoose);");
-			m_pLabelFeedback->setString(s_sRoleNotChoose);
-		}
+		CCLOG("m_pLabelFeedback->setString(s_sUserIsReady);");
+		m_pLabelFeedback->setString(s_sUserIsReady);
 
 	}
 	else
@@ -386,7 +409,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/cross.png");
 
 		CCLOG("m_pLabelFeedback->setString(s_sBegining);");
-		m_pLabelFeedback->setString(s_sBegining);
+		m_pLabelFeedback->setString(s_sDeviceAndRoleSlected);
 
 	}
 
@@ -427,7 +450,7 @@ void LmMenu::femaleSelected(cocos2d::Ref*)
 void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
 
-	if (m_bReady)
+	if (m_bReady && !m_pUser1->isBParent())
 	{
 		//unclick the ready button
 		ready(nullptr);
@@ -439,16 +462,16 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	//update user role
 	m_pUser1->setBParent(true);
 	m_bRoleSelected = true;
-	setReadyVisible(true);
 
-	CCLOG("parent selected");
+	setReadyVisible(true);
+	m_pLabelFeedback->setString(s_sDeviceAndRoleSlected);
 
 }
 
 void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
 
-	if (m_bReady)
+	if (m_bReady && m_pUser1->isBParent())
 	{
 		//unclick the ready button
 		ready(nullptr);
@@ -459,9 +482,10 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_pCheckBoxParent->setSelected(false);
 	m_pUser1->setBParent(false);
 	m_bRoleSelected = true;
-	setReadyVisible(true);
 
-	CCLOG("child selected");
+	setReadyVisible(true);
+	m_pLabelFeedback->setString(s_sDeviceAndRoleSlected);
+
 }
 
 void LmMenu::scan(cocos2d::Ref* l_pSender)
@@ -540,27 +564,6 @@ void LmMenu::makeCheckboxUserTabletName(
 
 }
 
-void LmMenu::onGettingPeers(std::vector<std::string> peers)
-{
-
-	//test
-	peers.push_back("tablette 1");
-	peers.push_back("tablette 2");
-	peers.push_back("tablette 3");
-	peers.push_back("tablette 4");
-	peers.push_back("tablette 5");
-	peers.push_back("tablette 6");
-	peers.push_back("tablette 1");
-	peers.push_back("tablette 2");
-	peers.push_back("tablette 3");
-	peers.push_back("tablette 4");
-	peers.push_back("tablette 5");
-	peers.push_back("tablette 6");
-
-	ON_CC_THREAD(LmMenu::makeCheckboxUserTabletName, this, peers);
-
-}
-
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender,
 		cocos2d::ui::CheckBox::EventType)
 {
@@ -616,8 +619,6 @@ std::string LmMenu::getUser1TabletName()
 
 void LmMenu::inputEnabled(bool enabled)
 {
-
-	CCLOG("on input Enabled");
 	//menuitemtabletname
 	for (std::map<cocos2d::ui::CheckBox*, cocos2d::Label*>::iterator it =
 			m_aMenuItemUserTabletName.begin();
@@ -631,56 +632,27 @@ void LmMenu::inputEnabled(bool enabled)
 	m_pCheckBoxParent->setEnabled(enabled);
 
 	m_pReadyButton->setEnabled(enabled);
-	CCLOG("exit input Enabled");
-}
-
-void LmMenu::onReceivingMsg(bytes l_oMsg)
-{
-	CCLOG("lm menu_event is %d", _event);
-	switch (_event)
-	{
-	case LmEvent::UserIsReady:
-		CCLOG("onUserIsReadyEvent");
-		ON_CC_THREAD(LmMenu::onUserIsReadyEvent, this, l_oMsg)
-		;
-		break;
-	case LmEvent::CompatibleToPlay:
-		CCLOG("onCompatibleToPlayEvent");
-		ON_CC_THREAD(LmMenu::onCompatibleToPlayEvent, this, l_oMsg)
-		;
-		break;
-	case LmEvent::Play:
-		CCLOG("onPlayEvent");
-		ON_CC_THREAD(LmMenu::onPlayEvent, this, l_oMsg)
-		;
-		break;
-	default:
-		break;
-	}
-
 }
 
 void LmMenu::onUserIsReadyEvent(bytes l_oMsg)
 {
-	m_pUser2 = l_oMsg.read<LmUser>();
+	auto l_pUserBuffer = l_oMsg.read<LmUser>(); //the other player
 	CCLOG("onUserIsReadyEvent user receive = %s",
 			m_pUser2->getUserSerialized().c_str());
 
-	if (m_pUser2)
+	if (l_pUserBuffer)
 	{
-		//check if user are compatible just check parent child stuff maybe add tabletname recognition aswell
+		//check if user are compatible
 		if (m_bReady)
 		{
-			if (usersAreCompatible())
+
+			if (usersAreCompatible(l_pUserBuffer))
 			{
+				delete m_pUser2;
+				m_pUser2 = l_pUserBuffer;
+
 				//disable input to be sure to not change his state
 				inputEnabled(false);
-				//send CompatibleToPlay user A & B as parameters TODO
-
-				CCLOG("send CompatibleToPlay {%s;%s} to %s",
-						m_pUser1->getUserSerialized().c_str(),
-						m_pUser2->getUserSerialized().c_str(),
-						m_pUser2->getPUserTabletName().c_str());
 
 				//send the msg
 				bytes msg(100);
@@ -689,18 +661,11 @@ void LmMenu::onUserIsReadyEvent(bytes l_oMsg)
 			}
 			else
 			{
-				CCLOG("m_pLabelFeedback->setString(s_sUserNotCompatible);");
-				m_pLabelFeedback->setString(s_sUserNotCompatible);
-
+				delete l_pUserBuffer;
 			}
 
 		}
-		else
-		{
-			CCLOG("m_pLabelFeedback->setString(s_sYouAreNotReady);");
-			m_pLabelFeedback->setString(s_sYouAreNotReady);
 
-		}
 	}
 
 }
@@ -746,12 +711,12 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 
 			CCLOG("m_pLabelFeedback->setString(s_sError);");
 			m_pLabelFeedback->setString(s_sError);
+			if (m_bReady)
+			{
+				ready(nullptr);
+
+			}
 		}
-	}
-	else
-	{
-		CCLOG("m_pLabelFeedback->setString(s_sYouAreNotReady);");
-		m_pLabelFeedback->setString(s_sYouAreNotReady);
 	}
 
 	delete l_pUserBuffer;
@@ -770,20 +735,52 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 		inputEnabled(true);
 		CCLOG("m_pLabelFeedback->setString(s_sError);");
 		m_pLabelFeedback->setString(s_sError);
+		if (m_bReady)
+		{
+			ready(nullptr);
+
+		}
 
 	}
 }
 
-bool LmMenu::usersAreCompatible()
+bool LmMenu::usersAreCompatible(LmUser* userToCompare)
 {
+	CCLOG("user received %s", userToCompare->getUserSerialized().c_str());
+	CCLOG("user 1 %s", m_pUser1->getUserSerialized().c_str());
+	CCLOG("user 2 %s", m_pUser2->getUserSerialized().c_str());
 
-	return ((m_pUser2->isBParent() && !m_pUser1->isBParent())
-			|| (!m_pUser2->isBParent() && m_pUser1->isBParent()));
+	if ((userToCompare->isBParent() && m_pUser1->isBParent())
+			|| (!userToCompare->isBParent() && !m_pUser1->isBParent()))
+	{
+		m_pLabelFeedback->setString(s_sUserNotCompatibleRole);
+		return false;
+	}
+	else if (userToCompare->getPUserTabletName().compare(
+			m_pUser2->getPUserTabletName()) != 0)
+	{
+		m_pLabelFeedback->setString(s_sUserNotCompatibleTabletName);
+		return false;
+	}
+
+	CCLOG("USER COMPATIBLE");
+	return true;
 }
 
 void LmMenu::setReadyVisible(bool visible)
 {
 	m_pReadyButton->setVisible(visible);
 	m_pSpriteReadyIndicator->setVisible(visible);
+}
+
+void LmMenu::removeMenuElement()
+{
+	m_pMenu->removeChild(m_pMenuItemImageFemale, true);
+	m_pMenu->removeChild(m_pMenuItemImageMale, true);
+}
+
+void LmMenu::setLabelFeedBack()
+{
+	m_pLabelFeedback->setString(s_sBegining);
 }
 

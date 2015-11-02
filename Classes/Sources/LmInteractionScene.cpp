@@ -2,6 +2,8 @@
 #define COCOS2D_DEBUG 1
 
 #include "../Include/LmInteractionScene.h"
+//to avoid double inclusion and to use static method makeuseravatar
+#include "../Include/LmGameManager.h"
 
 USING_NS_CC;
 
@@ -32,7 +34,7 @@ LmInteractionScene::LmInteractionScene()
 	m_bUser1IsReadyForNextInteraction = false;
 	m_bUser2IsReadyForNextInteraction = false;
 	m_bGameIsRunning = false;
-	m_iIdGame = s_iNumberOfInteraction;//interaction scene can know which scene of the game it is (use to send event)
+	m_iIdGame = s_iNumberOfInteraction; //interaction scene can know which scene of the game it is (use to send event)
 	s_iNumberOfInteraction++;
 
 	//pointer
@@ -157,12 +159,52 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	return true;
 }
 
+void LmInteractionScene::restart()
+{
+
+}
+
+bool LmInteractionScene::startGame()
+{
+	CCLOG("LmInteractionScene::startGame");
+
+	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
+	{
+		m_bGameIsRunning = true;
+
+		//to get notigy by event
+		m_pSpriteWaitingScreen->setVisible(false);
+		listenWifiFacade();
+
+		CCLOG("LmInteractionScene::runGame");
+		runGame();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
+{
+	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
+	switch (LmWifiObserver::_event)
+	{
+	case LmEvent::Win:
+		CCLOG("Win");
+		ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
+		;
+		break;
+	default:
+		break;
+	}
+}
+
 void LmInteractionScene::initNextPreviousButton()
 {
 	CCLOG("init button");
-
-	m_pMenu->removeAllChildrenWithCleanup(true);
-
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
@@ -251,8 +293,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				&& m_pLmSetPointBegin->isBActionDone() && !m_bSetPointFinished)
 		{
 			m_bSetPointFinished = true;
-			m_pMenu->removeAllChildrenWithCleanup(true);
-
+			ON_CC_THREAD(LmInteractionScene::removeNextPreviousMenuItem, this);
 			m_pPlayCheckBox->setVisible(false);
 
 			//we are ready
@@ -296,9 +337,8 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				&& !m_bSetPointFinished)
 		{
 			m_bSetPointFinished = true;
-			m_pMenu->removeAllChildrenWithCleanup(true);
-
 			m_pPlayCheckBox->setVisible(false);
+			ON_CC_THREAD(LmInteractionScene::removeNextPreviousMenuItem, this);
 
 			//stop sound
 			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
@@ -382,11 +422,20 @@ void LmInteractionScene::initDashboardLayer()
 
 	//user1 name
 	m_pLabelUserName = Label::createWithTTF(m_pUser->getPUserName(),
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.05);
 	m_pLabelUserName->setPosition(
 			m_pSpriteDashboardBand->getContentSize().width * (0.5f),
-			m_pSpriteDashboardBand->getContentSize().height * 0.7f);
-	m_pDashboardBandLayer->addChild(m_pLabelUserName);
+			m_pSpriteDashboardBand->getContentSize().height * 0.85f);
+	m_pLabelUserName->setMaxLineWidth(
+			m_pSpriteDashboardBand->getContentSize().width);
+	m_pSpriteDashboardBand->addChild(m_pLabelUserName);
+
+	//sprite user 1 avatar
+	auto l_pAvatarSpriteUser1 = LmGameManager::makeUserAvatarSprite(m_pUser);
+	l_pAvatarSpriteUser1->setPosition(
+			Vec2(m_pSpriteDashboardBand->getContentSize().width * 0.5,
+					m_pSpriteDashboardBand->getContentSize().height * 0.7f));
+	m_pSpriteDashboardBand->addChild(l_pAvatarSpriteUser1);
 
 	//label score
 	char l_aScoreString[10];
@@ -395,13 +444,13 @@ void LmInteractionScene::initDashboardLayer()
 			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
 	m_pLabelScore->setPosition(
 			m_pSpriteDashboardBand->getContentSize().width * (0.5f),
-			m_pSpriteDashboardBand->getContentSize().height * 0.5f);
-	m_pDashboardBandLayer->addChild(m_pLabelScore);
+			m_pSpriteDashboardBand->getContentSize().height * 0.55f);
+	m_pSpriteDashboardBand->addChild(m_pLabelScore);
 
 	//create a menu and back to dashboard menuitemiamhe
 	auto l_pMenu = Menu::create();
 	l_pMenu->setPosition(Vec2::ZERO);
-	m_pDashboardBandLayer->addChild(l_pMenu);
+	m_pDashboardBandLayer->addChild(l_pMenu,1);
 
 	m_pBackDashboardButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/backToDashboard.png",
@@ -494,14 +543,13 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 	{
 		m_bBackPressed = true;
 
-		if(!m_pPlayCheckBox->isSelected())
+		if (!m_pPlayCheckBox->isSelected())
 		{
 			//simulate a press on the m_pplaycheckbox
 			CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
 			CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 			m_pPlayCheckBox->setSelected(true);
 		}
-
 
 		CCLOG("back to dashboard");
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
@@ -619,49 +667,6 @@ void LmInteractionScene::endGame()
 	}
 }
 
-void LmInteractionScene::restart()
-{
-
-}
-
-bool LmInteractionScene::startGame()
-{
-	CCLOG("LmInteractionScene::startGame");
-
-	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
-	{
-		m_bGameIsRunning = true;
-
-		//to get notigy by event
-		m_pSpriteWaitingScreen->setVisible(false);
-		listenWifiFacade();
-
-		CCLOG("LmInteractionScene::runGame");
-		runGame();
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
-}
-
-void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
-{
-	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
-	switch (LmWifiObserver::_event)
-	{
-	case LmEvent::Win:
-		CCLOG("Win");
-		ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
-		;
-		break;
-	default:
-		break;
-	}
-}
-
 void LmInteractionScene::onWinEvent(bytes l_oMsg)
 {
 	bool buffer = l_oMsg.readBool();
@@ -679,5 +684,11 @@ LmGameComponent* LmInteractionScene::makeGameComponent()
 					new LmGameComponent(m_iNumberOfGameComponent)));
 
 	return m_aIdTable.find(m_iNumberOfGameComponent)->second;
+}
+
+void LmInteractionScene::removeNextPreviousMenuItem()
+{
+	m_pMenu->removeAllChildrenWithCleanup(true);
+
 }
 
