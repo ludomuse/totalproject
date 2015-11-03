@@ -1,15 +1,15 @@
 /*
- * LmAudioHintScene.cpp
+ * LmHintScene.cpp
  *
  *  Created on: 7 oct. 2015
  *      Author: IHMTEKDev4
  */
 
-#include "../Include/LmAudioHintScene.h"
+#include "../Include/LmHintScene.h"
 
 using namespace cocos2d;
 
-LmAudioHintScene::LmAudioHintScene(const LmAudioHintSceneSeed &l_Seed)
+LmHintScene::LmHintScene(const LmHintSceneSeed &l_Seed)
 {
 	//from json
 	m_sFilenameSpriteBackground = l_Seed.FilenameSpriteBackground;
@@ -31,22 +31,22 @@ LmAudioHintScene::LmAudioHintScene(const LmAudioHintSceneSeed &l_Seed)
 
 }
 
-LmAudioHintScene::~LmAudioHintScene()
+LmHintScene::~LmHintScene()
 {
 
 }
 
-void LmAudioHintScene::restart()
+void LmHintScene::restart()
 {
 
 }
 
-void LmAudioHintScene::resetScene()
+void LmHintScene::resetScene()
 {
 
 }
 
-void LmAudioHintScene::runGame()
+void LmHintScene::runGame()
 {
 	if (!initGame())
 	{
@@ -55,7 +55,7 @@ void LmAudioHintScene::runGame()
 
 }
 
-bool LmAudioHintScene::initGame()
+bool LmHintScene::initGame()
 {
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
@@ -82,6 +82,7 @@ bool LmAudioHintScene::initGame()
 	int l_iIndex = 0;
 	LmGameComponent* l_pGameComponentCreated;
 	Sprite* l_pSpriteHintCreated;
+	Sprite* l_pSpriteHintIconCreated;
 
 	//init labels gamecomponent
 	for (std::map<int, std::string>::iterator it =
@@ -136,10 +137,16 @@ bool LmAudioHintScene::initGame()
 			it != m_aLabelsFilenameSpriteHint.end(); ++it)
 	{
 		//init sprite hint image
-
 		l_pSpriteHintCreated = Sprite::create(it->second);
-		l_pSpriteHintCreated->setAnchorPoint(Vec2(0.5, 0.5));
+		l_pSpriteHintCreated->setAnchorPoint(Vec2(0,0.5));
+		l_pSpriteHintCreated->setPosition(Vec2(s_fMarginLeft,l_oVisibleSize.height*0.5));
+		l_pSpriteHintCreated->setVisible(false);
+		m_aLabelsSpriteHint.insert(
+		{ it->first, l_pSpriteHintCreated });
 
+		//init his icon
+		l_pSpriteHintIconCreated = Sprite::create(
+				"Ludomuse/GUIElements/hint.png");
 		//we get coordonnate in percent from json
 		Vec2 l_oPosition = Vec2(
 				(m_aLabelsCoordonateHole.find(it->first)->second.x
@@ -148,14 +155,27 @@ bool LmAudioHintScene::initGame()
 				((m_aLabelsCoordonateHole.find(it->first)->second.y - 50)
 						* m_pSpriteMainImage->getContentSize().height / 100)
 						+ l_oVisibleSize.height * 0.5);
+		l_pSpriteHintIconCreated->setPosition(l_oPosition);
+		l_pSpriteHintIconCreated->setVisible(false);
+		m_aLabelsSpriteHintIcon.insert(
+		{ it->first, l_pSpriteHintIconCreated });
 
-		l_pSpriteHintCreated->setPosition(l_oPosition);
-		l_pSpriteHintCreated->setVisible(false);
-
-		m_aLabelsSpriteHint.insert(
-		{  it->first,l_pSpriteHintCreated });
-		m_pLayerGame->addChild(l_pSpriteHintCreated);
 	}
+
+	for (std::map<int, Sprite*>::iterator it =
+			m_aLabelsSpriteHintIcon.begin();
+			it != m_aLabelsSpriteHintIcon.end(); ++it)
+	{
+		m_pLayerGame->addChild(it->second);
+	}
+
+	for (std::map<int, Sprite*>::iterator it =
+			m_aLabelsSpriteHint.begin();
+			it != m_aLabelsSpriteHint.end(); ++it)
+	{
+		m_pLayerGame->addChild(it->second);
+	}
+
 
 	//check what type of user
 	if (m_pUser->isBParent())
@@ -171,28 +191,40 @@ bool LmAudioHintScene::initGame()
 		//init listener
 		m_pListener = EventListenerTouchOneByOne::create();
 		m_pListener->onTouchBegan = CC_CALLBACK_2(
-				LmAudioHintScene::onTouchBeganParent, this);
+				LmHintScene::onTouchBeganParent, this);
 		m_pListener->onTouchMoved = CC_CALLBACK_2(
-				LmAudioHintScene::onTouchMovedParent, this);
+				LmHintScene::onTouchMovedParent, this);
 		m_pListener->onTouchEnded = CC_CALLBACK_2(
-				LmAudioHintScene::onTouchEndedParent, this);
+				LmHintScene::onTouchEndedParent, this);
 		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
 				m_pListener, m_pLayerGame);
 	}
 	else
 	{
 
-		for(std::map<int,Sprite*>::iterator it=m_aLabelsSpriteHint.begin();it!=m_aLabelsSpriteHint.end();++it)
+		for (std::map<int, Sprite*>::iterator it =
+				m_aLabelsSpriteHintIcon.begin();
+				it != m_aLabelsSpriteHintIcon.end(); ++it)
 		{
 			it->second->setVisible(true);
 		}
+
+		//init listener
+		m_pListener = EventListenerTouchOneByOne::create();
+		m_pListener->onTouchBegan = CC_CALLBACK_2(
+				LmHintScene::onTouchBeganChild, this);
+		m_pListener->onTouchMoved = CC_CALLBACK_2(
+				LmHintScene::onTouchMovedChild, this);
+		m_pListener->onTouchEnded = CC_CALLBACK_2(
+				LmHintScene::onTouchEndedChild, this);
+		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
+				m_pListener, m_pLayerGame);
 	}
 
 	return true;
 }
 
-//callback method of parent layer
-bool LmAudioHintScene::onTouchBeganParent(cocos2d::Touch* touch,
+bool LmHintScene::onTouchBeganParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	//to avoid to bein a touch when the previous is not finish
@@ -221,7 +253,7 @@ bool LmAudioHintScene::onTouchBeganParent(cocos2d::Touch* touch,
 	return true;
 }
 
-void LmAudioHintScene::onTouchMovedParent(cocos2d::Touch* touch,
+void LmHintScene::onTouchMovedParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	if (m_bSpriteSelected)
@@ -251,7 +283,7 @@ void LmAudioHintScene::onTouchMovedParent(cocos2d::Touch* touch,
 	}
 }
 
-void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
+void LmHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 		cocos2d::Event* event)
 {
 	if (m_bSpriteSelected)
@@ -315,7 +347,72 @@ void LmAudioHintScene::onTouchEndedParent(cocos2d::Touch* touch,
 	m_bTouchBeganDisabled = false;
 }
 
-int LmAudioHintScene::idLabel(cocos2d::Touch* touch)
+bool LmHintScene::onTouchBeganChild(cocos2d::Touch* touch,
+		cocos2d::Event* event)
+{
+	//to avoid to bein a touch when the previous is not finish
+	if (m_bTouchBeganDisabled)
+	{
+		return false;
+	}
+	else
+	{
+		m_bTouchBeganDisabled = true;
+	}
+
+	m_iBufferId = idHintTouched(touch);
+
+	if (m_iBufferId >= 0)
+	{
+		m_aLabelsSpriteHint.find(m_iBufferId)->second->setVisible(true);
+	}
+	else
+	{
+		for (std::map<int, Sprite*>::iterator it =
+				m_aLabelsSpriteHint.begin(); it != m_aLabelsSpriteHint.end();
+				++it)
+		{
+			it->second->setVisible(false);
+		}
+	}
+
+	return true;
+}
+
+void LmHintScene::onTouchMovedChild(cocos2d::Touch* touch,
+		cocos2d::Event* event)
+{
+	m_iBufferId = idHintTouched(touch);
+
+	if (m_iBufferId >= 0)
+	{
+		m_aLabelsSpriteHint.find(m_iBufferId)->second->setVisible(true);
+	}
+	else
+	{
+		for (std::map<int, Sprite*>::iterator it =
+				m_aLabelsSpriteHint.begin(); it != m_aLabelsSpriteHint.end();
+				++it)
+		{
+			it->second->setVisible(false);
+		}
+	}
+}
+
+void LmHintScene::onTouchEndedChild(cocos2d::Touch* touch,
+		cocos2d::Event* event)
+{
+	for (std::map<int, Sprite*>::iterator it =
+			m_aLabelsSpriteHint.begin(); it != m_aLabelsSpriteHint.end();
+			++it)
+	{
+		it->second->setVisible(false);
+	}
+
+	m_bTouchBeganDisabled = false;
+}
+
+int LmHintScene::idLabel(cocos2d::Touch* touch)
 {
 	auto l_oTouchLocation = touch->getLocation();
 
@@ -333,7 +430,7 @@ int LmAudioHintScene::idLabel(cocos2d::Touch* touch)
 	return -1;
 }
 
-void LmAudioHintScene::initBufferSprite(int l_iIdGameComponent)
+void LmHintScene::initBufferSprite(int l_iIdGameComponent)
 {
 	//the sprite is selected
 	m_bSpriteSelected = true;
@@ -347,13 +444,13 @@ void LmAudioHintScene::initBufferSprite(int l_iIdGameComponent)
 	m_pBufferSprite->setVisible(true);
 }
 
-void LmAudioHintScene::moveBufferSprite(Touch* touch)
+void LmHintScene::moveBufferSprite(Touch* touch)
 {
 	auto l_oTouchLocation = touch->getLocation();
 	m_pBufferSprite->setPosition(Vec2(l_oTouchLocation.x, l_oTouchLocation.y));
 }
 
-int LmAudioHintScene::touchCollideHole(Touch* touch)
+int LmHintScene::touchCollideHole(Touch* touch)
 {
 	auto l_oTouchLocation = touch->getLocation();
 
@@ -361,6 +458,22 @@ int LmAudioHintScene::touchCollideHole(Touch* touch)
 			it != m_aLabelsHole.end(); ++it)
 	{
 		if (it->second.containsPoint(l_oTouchLocation))
+		{
+			return it->first;
+		}
+	}
+
+	return -1;
+}
+
+int LmHintScene::idHintTouched(Touch* touch)
+{
+	auto l_oTouchLocation = touch->getLocation();
+
+	for (std::map<int, Sprite*>::iterator it = m_aLabelsSpriteHintIcon.begin();
+			it != m_aLabelsSpriteHintIcon.end(); ++it)
+	{
+		if (it->second->getBoundingBox().containsPoint(l_oTouchLocation))
 		{
 			return it->first;
 		}

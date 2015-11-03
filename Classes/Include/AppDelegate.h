@@ -9,8 +9,9 @@
 #include "LmGameManager.h"
 #include "LmMenu.h"
 
-//Different resolution
+//coordonate of the screen
 static const cocos2d::Size s_DesignResolutionSize = cocos2d::Size(1280, 800);
+//Different size of resolution
 static const cocos2d::Size s_SmallResolutionSize = cocos2d::Size(1280, 800);
 static const cocos2d::Size s_MediumResolutionSize = cocos2d::Size(1440, 900);
 static const cocos2d::Size s_LargeResolutionSize = cocos2d::Size(1680, 1050);
@@ -50,17 +51,17 @@ public:
 
 private:
 
-	//ATTRIBUTES
+	//********************ATTRIBUTES********************
 
 	LmWifiDirectFacade* m_pwifiFacade;
 
-	//our gameManager which handle the good behavior of the game
+	//handle the good behavior of the game
 	LmGameManager* m_pLmGameManager;
 
-	//this object handle log of user & wifi direct & get info to set after gameanager
+	//this object handle log of user & wifi direct & get info to set after gamanager
 	LmMenu* m_pLmMenu;
 
-	//METHODS
+	//********************METHODS********************
 
 	//init paths so the app find good ressources
 	void initPathsForResolution();

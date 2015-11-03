@@ -23,11 +23,6 @@ LmQuizz_v1Scene::LmQuizz_v1Scene(const LmQuizz_v1SceneSeed &l_Seed) :
 	m_iAttemptByQuestion = l_Seed.AttemptByQuestion;
 	m_fTimerDuration = l_Seed.TimerDuration;
 	m_bTimerEnbaled = l_Seed.TimerEnbaled;
-	m_sFilenameSpriteGoodAnswerButtonChild =
-			l_Seed.FilenameSpriteGoodAnswerButtonChild;
-	m_sFilenameSpriteGoodAnswerButtonParent =
-			l_Seed.FilenameSpriteGoodAnswerButtonParent;
-	m_sFilenameSpriteBadAnswerButton = l_Seed.FilenameSpriteBadAnswerButton;
 	m_sFilenameAudioAnswerSelected = l_Seed.FilenameAudioAnswerSelected;
 	m_pInGameScreenParent = l_Seed.InGameScreenParent;
 	m_pReplayScreen=l_Seed.ReplayScreen;

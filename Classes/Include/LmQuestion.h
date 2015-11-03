@@ -10,6 +10,16 @@
 
 #include <string>
 
+struct LmQuestionSeed
+{
+	std::string Question;
+	std::string Answer1;
+	std::string Answer2;
+	std::string Answer3;
+	std::string Answer4;
+	int NumberGoodAnswer;
+};
+
 class LmQuestion
 {
 public:
@@ -22,8 +32,7 @@ public:
 	 * number good answer
 	 * question
 	 */
-	LmQuestion(std::string, std::string, std::string, std::string, int,
-			std::string);
+	LmQuestion(const LmQuestionSeed&);
 	~LmQuestion();
 
 	int getINumberGoodAnswer() const

@@ -1,16 +1,16 @@
 /*
- * LmAudioHintScene.h
+ * LmHintScene.h
  *
  *  Created on: 7 oct. 2015
  *      Author: IHMTEKDev4
  */
 
-#ifndef CLASSES_INCLUDE_LMAUDIOHINTSCENE_H_
-#define CLASSES_INCLUDE_LMAUDIOHINTSCENE_H_
+#ifndef CLASSES_INCLUDE_LMHINTSCENE_H_
+#define CLASSES_INCLUDE_LMHINTSCENE_H_
 
 #include "LmInteractionScene.h"
 
-struct LmAudioHintSceneSeed
+struct LmHintSceneSeed
 {
 	std::string FilenameSpriteBackground;
 	std::string FilenameSpriteMainImage;
@@ -20,15 +20,15 @@ struct LmAudioHintSceneSeed
 
 };
 
-class LmAudioHintScene: public LmInteractionScene
+class LmHintScene: public LmInteractionScene
 {
 
 public:
 
 	static const int s_iId = 3;
 
-	LmAudioHintScene(const LmAudioHintSceneSeed &);
-	~LmAudioHintScene();
+	LmHintScene(const LmHintSceneSeed &);
+	~LmHintScene();
 
 	//use in case the user back to the dashboard and we need to restore some stuff
 	void restart();
@@ -59,11 +59,15 @@ private:
 	//gamecomponents
 	std::map<int, cocos2d::Rect> m_aLabelsHole;
 
-	//conversion from id gamecomponent to id label
+	//conversion from id label to gamecomponent
 	std::map<int, LmGameComponent*> m_aLabelsGameComponent;
 
 	//sprite hint
 	std::map<int,cocos2d::Sprite*> m_aLabelsSpriteHint;
+
+	//sprite icon hint
+	std::map<int,cocos2d::Sprite*> m_aLabelsSpriteHintIcon;
+
 
 	//to know if a sprite has been selected
 	bool m_bSpriteSelected;
@@ -90,8 +94,14 @@ private:
 	void onTouchMovedParent(cocos2d::Touch*, cocos2d::Event*);
 	void onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*);
 
+	bool onTouchBeganChild(cocos2d::Touch*, cocos2d::Event*);
+	void onTouchMovedChild(cocos2d::Touch*, cocos2d::Event*);
+	void onTouchEndedChild(cocos2d::Touch*, cocos2d::Event*);
+
 	//get id label with touch /!\ not id game component
 	int idLabel(cocos2d::Touch* );
+	//to know which hint is touched
+	int idHintTouched(cocos2d::Touch*);
 	//init the buffer sprite & move it with touch
 	void initBufferSprite(int );
 	void moveBufferSprite(cocos2d::Touch* );
@@ -107,4 +117,4 @@ private:
 
 };
 
-#endif /* CLASSES_INCLUDE_LMAUDIOHINTSCENE_H_ */
+#endif /* CLASSES_INCLUDE_LMHINTSCENE_H_ */

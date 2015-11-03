@@ -7,7 +7,6 @@ USING_NS_CC;
 
 AppDelegate::AppDelegate()
 {
-	CCLOG("AppDelegate constructor");
 
 	//object
 	m_pwifiFacade = new LmWifiDirectFacade();//Create the wifi direct
@@ -16,7 +15,6 @@ AppDelegate::AppDelegate()
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
 
 	m_pLmGameManager = new LmGameManager; //need to be delete
-
 	m_pLmMenu = new LmMenu; //need to be delete
 
 
@@ -81,8 +79,42 @@ void AppDelegate::applicationWillEnterForeground()
 	// SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }
 
+bool AppDelegate::init()
+{
+
+	CCLOG("AppDelegate::init");
+
+	//purge fileutils
+	FileUtils::getInstance()->purgeCachedEntries();
+
+	//init resolution
+	initPathsForResolution();
+
+	//init callback method of the custom event (use to know when LmMenu finished )
+	auto MenuFinished = [=](EventCustom * event)
+	{
+		//LmGameManager get users from the LmMenu
+			m_pLmGameManager->setPUser1(m_pLmMenu->getPUser1());
+			m_pLmGameManager->setPUser2(m_pLmMenu->getPUser2());
+			//then run the game
+			m_pLmGameManager->runGames();
+		};
+
+	//add the custom event to the event dispatcher
+	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
+			"MenuFinished", MenuFinished);
+
+	//put sound at maximum
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(1.0f);
+
+	return true;
+}
+
 void AppDelegate::initPathsForResolution()
 {
+	CCLOG("AppDelegate::initPathsForResolution");
+
 	// initialize director
 	auto l_director = Director::getInstance();
 	auto l_glview = l_director->getOpenGLView();
@@ -115,6 +147,8 @@ void AppDelegate::initPathsForResolution()
 	// if the frame's height is larger than the height of medium size we want to get large ressources
 	if (l_frameSize.height > s_MediumResolutionSize.height)
 	{
+
+		CCLOG("Large resolution");
 		//we are going to get ressources in the large ressources directorie then in the  medium and finally in the small
 		l_resDirOrders.push_back("LargeResolutionSize");
 		l_resDirOrders.push_back("MediumResolutionSize");
@@ -129,6 +163,7 @@ void AppDelegate::initPathsForResolution()
 	// if the frame's height is larger than the height of small size.
 	else if (l_frameSize.height > s_SmallResolutionSize.height)
 	{
+		CCLOG("Medium resolution");
 		l_resDirOrders.push_back("MediumResolutionSize");
 		l_resDirOrders.push_back("SmallResolutionSize");
 		l_director->setContentScaleFactor(
@@ -141,6 +176,7 @@ void AppDelegate::initPathsForResolution()
 	// if the frame's height is smaller than the height of medium size.
 	else
 	{
+		CCLOG("Small resolution");
 		l_resDirOrders.push_back("SmallResolutionSize");
 		l_director->setContentScaleFactor(
 				MIN(
@@ -154,28 +190,3 @@ void AppDelegate::initPathsForResolution()
 	l_fileUtils->setSearchPaths(l_resDirOrders);
 }
 
-bool AppDelegate::init()
-{
-
-	//purge fileutils
-	FileUtils::getInstance()->purgeCachedEntries();
-
-	//init resolution
-	initPathsForResolution();
-
-	//init callback method of the custom event (use to know when LmMenu finished )
-	auto MenuFinished = [=](EventCustom * event)
-	{
-		//LmGameManager get users from the LmMenu
-			m_pLmGameManager->setPUser1(m_pLmMenu->getPUser1());
-			m_pLmGameManager->setPUser2(m_pLmMenu->getPUser2());
-			//then run the game
-			m_pLmGameManager->runGame();
-		};
-
-	//add the custom event to the event dispatcher
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
-			"MenuFinished", MenuFinished);
-
-	return true;
-}

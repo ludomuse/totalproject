@@ -31,7 +31,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Sources/LmQuestion.cpp\
                    ../../Classes/Sources/LmReward.cpp\
                    ../../Classes/Sources/LmFindGoodCategoryScene.cpp\
-                   ../../Classes/Sources/LmAudioHintScene.cpp\
+                   ../../Classes/Sources/LmHintScene.cpp\
 
 
 

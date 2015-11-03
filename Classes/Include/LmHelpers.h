@@ -21,7 +21,7 @@ typedef byte event;
 struct LmEvent
 {
 	/*
-	 * parameter is the user serialized it's indicate that he is ready to begin a session
+	 * parameter is the user serialized it's indicate that he is ready to begin a session the second is the tablet name for connection
 	 */
 	static const event UserIsReady = 0;
 

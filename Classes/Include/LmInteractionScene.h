@@ -271,6 +271,11 @@ protected:
 
 	void initNextPreviousButton();
 
+	void finishInteraction();
+
+	void removeNextPreviousMenuItem();
+
+
 
 
 

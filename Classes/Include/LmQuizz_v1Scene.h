@@ -19,9 +19,6 @@ struct LmQuizz_v1SceneSeed
 	std::string FilenameSpriteBandTop;
 	std::string FilenameSpriteAnswerBackground;
 	std::string FilenameSpriteAnswerCross;
-	std::string FilenameSpriteGoodAnswerButtonChild;
-	std::string FilenameSpriteGoodAnswerButtonParent;
-	std::string FilenameSpriteBadAnswerButton;
 	std::string FilenameAudioAnswerSelected;
 	LmLayer* InGameScreenParent;
 	LmLayer* ReplayScreen;
@@ -61,9 +58,6 @@ private:
 	std::string m_sFilenameSpriteBandTop;
 	std::string m_sFilenameSpriteAnswerBackground;
 	std::string m_sFilenameSpriteAnswerCross;
-	std::string m_sFilenameSpriteGoodAnswerButtonChild;
-	std::string m_sFilenameSpriteGoodAnswerButtonParent;
-	std::string m_sFilenameSpriteBadAnswerButton;
 	std::string m_sFilenameAudioAnswerSelected;
 
 	//screens

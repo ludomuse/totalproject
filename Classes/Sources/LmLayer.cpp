@@ -5,11 +5,6 @@
 
 USING_NS_CC;
 
-LmLayer::~LmLayer()
-{
-
-}
-
 LmLayer::LmLayer(const LmLayerSeed &Seed)
 {
 	m_aImages = Seed.Images;
@@ -20,6 +15,11 @@ LmLayer::LmLayer(const LmLayerSeed &Seed)
 	m_fWidthPercent = Seed.WidthPercent;
 	m_fSizePercent = Seed.SizePercent;
 	m_oColorText = Seed.ColorText;
+}
+
+LmLayer::~LmLayer()
+{
+
 }
 
 bool LmLayer::init()

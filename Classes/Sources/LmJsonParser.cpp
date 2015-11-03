@@ -306,8 +306,8 @@ void LmJsonParser::initInteractionAttributesSceneOfTheGame()
 		case LmFindGoodCategoryScene::s_iId:
 			makeLmFindGoodCategoryScene(l_aSceneArray[i]);
 			break;
-		case LmAudioHintScene::s_iId:
-			makeLmAudioHintScene(l_aSceneArray[i]);
+		case LmHintScene::s_iId:
+			makeLmHintScene(l_aSceneArray[i]);
 			break;
 		case LmQuizz_v2Scene::s_iId:
 			makeLmQuizz_v2Scene(l_aSceneArray[i]);
@@ -528,28 +528,6 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 	l_SeedBuffer.FilenameSpriteAnswerCross = l_sBufferString.c_str();
 
 	assert(
-			l_oScene["FilenameSpriteGoodAnswerButtonChild"].IsString()
-					&& l_oScene.HasMember(
-							"FilenameSpriteGoodAnswerButtonChild"));
-	l_sBufferString =
-			l_oScene["FilenameSpriteGoodAnswerButtonChild"].GetString();
-	l_SeedBuffer.FilenameSpriteGoodAnswerButtonChild = l_sBufferString.c_str();
-
-	assert(
-			l_oScene["FilenameSpriteGoodAnswerButtonParent"].IsString()
-					&& l_oScene.HasMember(
-							"FilenameSpriteGoodAnswerButtonParent"));
-	l_sBufferString =
-			l_oScene["FilenameSpriteGoodAnswerButtonParent"].GetString();
-	l_SeedBuffer.FilenameSpriteGoodAnswerButtonParent = l_sBufferString.c_str();
-
-	assert(
-			l_oScene["FilenameSpriteBadAnswerButton"].IsString()
-					&& l_oScene.HasMember("FilenameSpriteBadAnswerButton"));
-	l_sBufferString = l_oScene["FilenameSpriteBadAnswerButton"].GetString();
-	l_SeedBuffer.FilenameSpriteBadAnswerButton = l_sBufferString.c_str();
-
-	assert(
 			l_oScene["FilenameAudioAnswerSelected"].IsString()
 					&& l_oScene.HasMember("FilenameAudioAnswerSelected"));
 	l_sBufferString = l_oScene["FilenameAudioAnswerSelected"].GetString();
@@ -562,16 +540,10 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 	assert(l_oScene.HasMember("ReplayScreen"));
 	l_SeedBuffer.ReplayScreen = makeLmLayer(l_oScene["ReplayScreen"]);
 
-
 	assert(l_oScene["Questions"].IsArray());
 
 	//buffers to construct an LmQuestion
-	std::string l_sAnswer1Buffer;
-	std::string l_sAnswer2Buffer;
-	std::string l_sAnswer3Buffer;
-	std::string l_sAnswer4Buffer;
-	int l_iNumberGoodAnswerBuffer;
-	std::string l_sQuestionBuffer;
+	LmQuestionSeed l_SeedQuestionBuffer;
 
 	for (int i = 0; i < l_oScene["Questions"].Size(); i++)
 	{
@@ -581,52 +553,40 @@ void LmJsonParser::makeLmQuizz_v1Scene(const rapidjson::Value& l_oScene)
 				l_oScene["Questions"][i]["Question"].IsString()
 						&& l_oScene["Questions"][i].HasMember("Question"));
 		l_sBufferString = l_oScene["Questions"][i]["Question"].GetString();
-		l_sQuestionBuffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Question = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["Questions"][i]["Answer1"].IsString()
 						&& l_oScene["Questions"][i].HasMember("Answer1"));
 		l_sBufferString = l_oScene["Questions"][i]["Answer1"].GetString();
-		l_sAnswer1Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer1 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["Questions"][i]["Answer2"].IsString()
 						&& l_oScene["Questions"][i].HasMember("Answer2"));
 		l_sBufferString = l_oScene["Questions"][i]["Answer2"].GetString();
-		l_sAnswer2Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer2 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["Questions"][i]["Answer3"].IsString()
 						&& l_oScene["Questions"][i].HasMember("Answer3"));
 		l_sBufferString = l_oScene["Questions"][i]["Answer3"].GetString();
-		l_sAnswer3Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer3 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["Questions"][i]["Answer4"].IsString()
 						&& l_oScene["Questions"][i].HasMember("Answer4"));
 		l_sBufferString = l_oScene["Questions"][i]["Answer4"].GetString();
-		l_sAnswer4Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer4 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["Questions"][i]["NumberRightAnswer"].IsInt()
 						&& l_oScene["Questions"][i].HasMember(
 								"NumberRightAnswer"));
-		l_iNumberGoodAnswerBuffer =
+		l_SeedQuestionBuffer.NumberGoodAnswer =
 				l_oScene["Questions"][i]["NumberRightAnswer"].GetInt();
 
-		/*
-		 * answer1
-		 * answer2
-		 * answer3
-		 * answer4
-		 * number good answer
-		 * question
-		 */
-
-		l_SeedBuffer.Questions.push_back(
-				new LmQuestion(l_sAnswer1Buffer, l_sAnswer2Buffer,
-						l_sAnswer3Buffer, l_sAnswer4Buffer,
-						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
+		l_SeedBuffer.Questions.push_back(new LmQuestion(l_SeedQuestionBuffer));
 	}
 
 	assert(
@@ -698,20 +658,14 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 	l_sBufferString = l_oScene["FilenameAudioBadAnswer"].GetString();
 	l_SeedBuffer.FilenameAudioBadAnswer = l_sBufferString.c_str();
 
-	//buffers to construct an LmQuestion child & parent
-	std::string l_sAnswer1Buffer;
-	std::string l_sAnswer2Buffer;
-	std::string l_sAnswer3Buffer;
-	std::string l_sAnswer4Buffer;
-	int l_iNumberGoodAnswerBuffer;
-	std::string l_sQuestionBuffer;
+	LmQuestionSeed l_SeedQuestionBuffer;
 
 	/*
 	 * PARENT QUESTION
 	 */
 	assert(
 			l_oScene["QuestionsParent"].IsArray()
-					&& l_oScene.HasMember("QuestionsParent"));
+			&& l_oScene.HasMember("QuestionsParent"));
 
 	for (int i = 0; i < l_oScene["QuestionsParent"].Size(); i++)
 	{
@@ -723,50 +677,39 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 								"Question"));
 		l_sBufferString =
 				l_oScene["QuestionsParent"][i]["Question"].GetString();
-		l_sQuestionBuffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Question = l_sBufferString.c_str();
 		assert(
 				l_oScene["QuestionsParent"][i]["NumberRightAnswer"].IsInt()
 						&& l_oScene["QuestionsParent"][i].HasMember(
 								"NumberRightAnswer"));
-		l_iNumberGoodAnswerBuffer =
+		l_SeedQuestionBuffer.NumberGoodAnswer =
 				l_oScene["QuestionsParent"][i]["NumberRightAnswer"].GetInt();
 
 		assert(
 				l_oScene["QuestionsParent"][i]["Answer1"].IsString()
 						&& l_oScene["QuestionsParent"][i].HasMember("Answer1"));
 		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer1"].GetString();
-		l_sAnswer1Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer1 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["QuestionsParent"][i]["Answer2"].IsString()
 						&& l_oScene["QuestionsParent"][i].HasMember("Answer2"));
 		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer2"].GetString();
-		l_sAnswer2Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer2 = l_sBufferString.c_str();
 		assert(
 				l_oScene["QuestionsParent"][i]["Answer3"].IsString()
 						&& l_oScene["QuestionsParent"][i].HasMember("Answer3"));
 		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer3"].GetString();
-		l_sAnswer3Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer3 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["QuestionsParent"][i]["Answer4"].IsString()
 						&& l_oScene["QuestionsParent"][i].HasMember("Answer4"));
 		l_sBufferString = l_oScene["QuestionsParent"][i]["Answer4"].GetString();
-		l_sAnswer4Buffer = l_sBufferString.c_str();
-		/*
-		 * answer1
-		 * answer2
-		 * answer3
-		 * answer4
-		 * number good answer
-		 * question
-		 */
+		l_SeedQuestionBuffer.Answer4 = l_sBufferString.c_str();
 
 		l_SeedBuffer.QuestionsParent.push_back(
-				new LmQuestion(l_sAnswer1Buffer, l_sAnswer2Buffer,
-						l_sAnswer3Buffer, l_sAnswer4Buffer,
-						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
-
+				new LmQuestion(l_SeedQuestionBuffer));
 	}
 	/*
 	 * CHILD QUESTION
@@ -784,52 +727,40 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 				l_oScene["QuestionsChild"][i]["Question"].IsString()
 						&& l_oScene["QuestionsChild"][i].HasMember("Question"));
 		l_sBufferString = l_oScene["QuestionsChild"][i]["Question"].GetString();
-		l_sQuestionBuffer = l_sBufferString.c_str();
-		CCLOG("5");
+		l_SeedQuestionBuffer.Question = l_sBufferString.c_str();
 		assert(
 				l_oScene["QuestionsChild"][i]["NumberRightAnswer"].IsInt()
 						&& l_oScene["QuestionsChild"][i].HasMember(
 								"NumberRightAnswer"));
-		l_iNumberGoodAnswerBuffer =
+		l_SeedQuestionBuffer.NumberGoodAnswer =
 				l_oScene["QuestionsChild"][i]["NumberRightAnswer"].GetInt();
 
 		assert(
 				l_oScene["QuestionsChild"][i]["Answer1"].IsString()
 						&& l_oScene["QuestionsChild"][i].HasMember("Answer1"));
 		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer1"].GetString();
-		l_sAnswer1Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer1 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["QuestionsChild"][i]["Answer2"].IsString()
 						&& l_oScene["QuestionsChild"][i].HasMember("Answer2"));
 		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer2"].GetString();
-		l_sAnswer2Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer2 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["QuestionsChild"][i]["Answer3"].IsString()
 						&& l_oScene["QuestionsChild"][i].HasMember("Answer3"));
 		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer3"].GetString();
-		l_sAnswer3Buffer = l_sBufferString.c_str();
+		l_SeedQuestionBuffer.Answer3 = l_sBufferString.c_str();
 
 		assert(
 				l_oScene["QuestionsChild"][i]["Answer4"].IsString()
 						&& l_oScene["QuestionsChild"][i].HasMember("Answer4"));
 		l_sBufferString = l_oScene["QuestionsChild"][i]["Answer4"].GetString();
-		l_sAnswer4Buffer = l_sBufferString.c_str();
-
-		/*
-		 * answer1
-		 * answer2
-		 * answer3
-		 * answer4
-		 * number good answer
-		 * question
-		 */
+		l_SeedQuestionBuffer.Answer4 = l_sBufferString.c_str();
 
 		l_SeedBuffer.QuestionsChild.push_back(
-				new LmQuestion(l_sAnswer1Buffer, l_sAnswer2Buffer,
-						l_sAnswer3Buffer, l_sAnswer4Buffer,
-						l_iNumberGoodAnswerBuffer, l_sQuestionBuffer));
+				new LmQuestion(l_SeedQuestionBuffer));
 
 	}
 
@@ -859,10 +790,10 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 
 void LmJsonParser::makeLmFindGoodCategoryScene(const rapidjson::Value& l_oScene)
 {
-	//buffer seed
+//buffer seed
 	LmFindGoodCategorySceneSeed l_SeedBuffer;
 
-	//use to deep copy string
+//use to deep copy string
 	std::string l_sBufferString;
 
 	assert(
@@ -935,12 +866,12 @@ void LmJsonParser::makeLmFindGoodCategoryScene(const rapidjson::Value& l_oScene)
 					m_aInteractionSceneOfTheGame.size() - 1));
 }
 
-void LmJsonParser::makeLmAudioHintScene(const rapidjson::Value& l_oScene)
+void LmJsonParser::makeLmHintScene(const rapidjson::Value& l_oScene)
 {
-	//buffer seed
-	LmAudioHintSceneSeed l_SeedBuffer;
+//buffer seed
+	LmHintSceneSeed l_SeedBuffer;
 
-	//use to deep copy string
+//use to deep copy string
 	std::string l_sBufferString;
 
 	assert(
@@ -993,7 +924,7 @@ void LmJsonParser::makeLmAudioHintScene(const rapidjson::Value& l_oScene)
 
 	}
 
-	m_aInteractionSceneOfTheGame.push_back(new LmAudioHintScene(l_SeedBuffer));
+	m_aInteractionSceneOfTheGame.push_back(new LmHintScene(l_SeedBuffer));
 
 	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(
