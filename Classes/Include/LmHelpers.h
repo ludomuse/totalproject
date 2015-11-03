@@ -8,6 +8,7 @@
 #ifndef HELPERS_H_
 #define HELPERS_H_
 
+#define CURR_PHOTO_PATH LmJniCppFacade::getCurrentPicturePath()
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))
 #define WIFIFACADE LmJniCppFacade::getWifiFacade()
 #define ON_CC_THREAD(FUN, OBJ, ...) 	Director::getInstance()->getScheduler()->performFunctionInCocosThread(\

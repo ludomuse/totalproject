@@ -136,6 +136,11 @@ void LmJniJavaFacade::clean()
 
 }
 
+void LmJniJavaFacade::takePicture()
+{
+	callJavaMethod("takePicture", (void*) 0, PARAM_VOID);
+}
+
 void LmJniJavaFacade::getTabletName()
 {
 	callJavaMethod("getTabletName", (void*) 0, PARAM_VOID);
