@@ -3,6 +3,7 @@ package org.cocos2dx.cpp.jniFacade;
 import java.io.File;
 import java.lang.String;
 
+import org.cocos2dx.cpp.AppActivity;
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
@@ -93,4 +94,11 @@ public class JniJavaFacade {
 	{
 		_wifiDirectFacade.clear();
 	}
+	
+	public static void takePicture()
+	{
+		AppActivity appActivity = (AppActivity) _wifiDirectFacade.getActivity();
+		appActivity.dispatchTakePictureIntent();
+	}
+	
 }

@@ -39,6 +39,8 @@ private:
 
 	static void clean();
 
+	static void takePicture();
+
 	inline static jint toJObject(int i) {
 		return (jint) i;
 	}

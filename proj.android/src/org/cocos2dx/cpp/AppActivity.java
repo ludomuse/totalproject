@@ -3,18 +3,27 @@ package org.cocos2dx.cpp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 import org.cocos2dx.lib.Cocos2dxActivity;
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.Override;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * This is the main activity for LudoMuse. THERE MUST NOT BE ANY GRAPHICS
@@ -30,7 +39,6 @@ public class AppActivity extends Cocos2dxActivity {
 
 	private WifiDirectFacade _wifiFacade;
 
-
 	public static Activity getInstance()
 	{
 		return instance;
@@ -42,19 +50,17 @@ public class AppActivity extends Cocos2dxActivity {
 		// DebugManager.printInfo();
 		instance = this;
 		super.onCreate(savedInstanceState);
-		
-		_wifiFacade = new WifiDirectFacade(this);
-		
-	}
-	
-    
 
+		_wifiFacade = new WifiDirectFacade(this);
+
+	}
 
 	@Override
 	protected void onStop()
 	{
-		DebugManager.print("[FINISHING] on stop", WifiDirectManager.DEBUGGER_CHANNEL);
-	    _wifiFacade.clear(); //TODO totest
+		DebugManager.print("[FINISHING] on stop",
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		_wifiFacade.clear(); // TODO totest
 		super.onStop();
 	}
 
@@ -74,5 +80,54 @@ public class AppActivity extends Cocos2dxActivity {
 		_wifiFacade.pause();
 	}
 
+	// Taking photo
 
+	static final int REQUEST_TAKE_PHOTO = 1;
+
+	public void dispatchTakePictureIntent()
+	{
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		// Ensure that there's a camera activity to handle the intent
+		if (takePictureIntent.resolveActivity(getPackageManager()) != null)
+		{
+			// Create the File where the photo should go
+			File photoFile = null;
+			try
+			{
+				photoFile = createImageFile();
+			}
+			catch (IOException ex)
+			{
+				// Error occurred while creating the File
+			}
+			// Continue only if the File was successfully created
+			if (photoFile != null)
+			{
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+						Uri.fromFile(photoFile));
+				startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+			}
+		}
+	}
+
+	String mCurrentPhotoPath;
+
+	private File createImageFile() throws IOException
+	{
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		String imageFileName = "JPEG_" + timeStamp + "_";
+		File storageDir = Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		File image = File.createTempFile(imageFileName, /* prefix */
+				".jpg", /* suffix */
+				storageDir /* directory */
+		);
+
+		// Save a file: path for use with ACTION_VIEW intents
+		mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+		return image;
+	}
+	
 }

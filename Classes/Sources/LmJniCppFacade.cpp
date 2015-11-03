@@ -2,6 +2,7 @@
 #include "cocos2d.h"
 
 LmWifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
+std::string LmJniCppFacade::_currentPicturePath = "";
 
 LmWifiDirectFacade* LmJniCppFacade::getWifiFacade()
 {
@@ -11,6 +12,16 @@ LmWifiDirectFacade* LmJniCppFacade::getWifiFacade()
 void LmJniCppFacade::setWifiFacade(LmWifiDirectFacade* wifiFacade)
 {
 	_wifiDirectFacade = wifiFacade;
+}
+
+std::string LmJniCppFacade::getCurrentPicturePath()
+{
+	return _currentPicturePath;
+}
+
+void LmJniCppFacade::setCurrentPicturePath(std::string path)
+{
+	_currentPicturePath = path;
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPeers(
@@ -91,3 +102,8 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setTabletNam
 	WIFIFACADE->setTabletName(LmJniCppFacade::toCObject(name, env));
 }
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setCurrentPicturePath(
+		JNIEnv* env, jobject thiz, jstring path)
+{
+	LmJniCppFacade::setCurrentPicturePath(LmJniCppFacade::toCObject(path, env));
+}
