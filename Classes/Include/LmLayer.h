@@ -38,6 +38,10 @@ public:
 	void playSound();
 	void pauseSound();
 
+	const std::string& getSSoundUrl() const
+	{
+		return m_sSoundURL;
+	}
 
 private:
 
@@ -49,9 +53,6 @@ private:
 	float m_fWidthPercent;
 	float m_fHeightPercent;
 	float m_fSizePercent;
-
-
-
 };
 
 #endif // LMLAYER_H

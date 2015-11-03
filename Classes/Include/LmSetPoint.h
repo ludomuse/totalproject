@@ -43,11 +43,12 @@ public:
 		return m_iIndex;
 	}
 
-	//test
-	const std::vector<LmLayer*>& getALayers() const
+	LmLayer* const getNextLayerDisplay()
 	{
-		return m_aLayers;
+		return m_aLayers.at(m_iIndex);
 	}
+
+
 
 private:
 

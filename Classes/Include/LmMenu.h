@@ -24,11 +24,11 @@ static const std::string s_sRoleNotChoose =
 		"Choisis le role que tu vas jouer pendant cette partie."; //ok
 static const std::string s_sBegining = "Choisis une tablette avec qui jouer"; //ok
 static const std::string s_sUserNotCompatibleRole =
-		"Vos roles ne sont pas compatible.";
+		"Vos roles ne sont pas compatible.";//ok
 static const std::string s_sUserNotCompatibleTabletName =
 		"Vos noms de tablette ne correspondent pas.";
 static const std::string s_sError = "Une erreur est survenue, veuillez recommencer.";
-static const std::string s_sSearching = "Nous recherchons les appareils disponible...";
+static const std::string s_sSearching = "Nous recherchons les appareils disponibles...";//ok
 
 //Parameters
 static const float s_fSplashScreenDuration = 0.5f;
@@ -167,6 +167,9 @@ private:
 	void onPlayEvent(bytes);
 
 	void setLabelFeedBack();
+
+	void test(cocos2d::Ref* );
+
 
 
 };

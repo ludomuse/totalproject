@@ -219,6 +219,7 @@ bool LmQuizz_v2Scene::initGame()
 			Vec2(m_pBandTopSprite->getContentSize().width * 0.5,
 					m_pBandTopSprite->getContentSize().height * 0.5));
 	m_pQuestionLabel->setColor(Color3B::BLACK);
+	m_pQuestionLabel->setAlignment(TextHAlignment::CENTER);
 	m_pQuestionLabel->setMaxLineWidth(l_oVisibleSize.width * 0.6);
 
 	if (m_pUser->isBParent())

@@ -89,6 +89,10 @@ LmInteractionScene::~LmInteractionScene()
 bool LmInteractionScene::init(LmUser* l_pUser)
 {
 
+	//preload sounds
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	//init user
 	m_pUser = l_pUser;
 
@@ -121,6 +125,8 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 			CC_CALLBACK_2(LmInteractionScene::playCallback, this));
 	m_pPlayCheckBox->retain();
 	addChild(m_pPlayCheckBox, 1);
+
+	checkIfDisplayPlayCheckBox(m_pLmSetPointBegin);
 
 	//create the game layer
 	m_pLayerGame = Layer::create();
@@ -161,7 +167,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 
 void LmInteractionScene::restart()
 {
-
+	CCLOG("restart parent");
 }
 
 bool LmInteractionScene::startGame()
@@ -232,13 +238,16 @@ void LmInteractionScene::initNextPreviousButton()
 	m_pMenu->addChild(m_pPreviousButton, 1);
 
 	m_pNextButton->setVisible(true);
-	m_pPreviousButton->setVisible(true);
+	m_pPreviousButton->setVisible(false);
 
 }
 
 void LmInteractionScene::playCallback(cocos2d::Ref*,
 		cocos2d::ui::CheckBox::EventType type)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	switch (type)
 	{
 	case ui::CheckBox::EventType::SELECTED:
@@ -259,6 +268,9 @@ void LmInteractionScene::playCallback(cocos2d::Ref*,
 void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	if (m_bSetPointBegin)
 	{
 		if (m_pLmSetPointBegin->previousLayer())
@@ -267,6 +279,9 @@ void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 			{
 				m_pPreviousButton->setVisible(false);
 			}
+
+			checkIfDisplayPlayCheckBox(m_pLmSetPointBegin);
+
 		}
 	}
 	else
@@ -277,12 +292,17 @@ void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 			{
 				m_pPreviousButton->setVisible(false);
 			}
+
+			checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
 		}
 	}
 }
 
 void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 {
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
 
 	CCLOG("LmInteractionScene::nextSetPointLayer");
 
@@ -325,6 +345,8 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 			{
 				m_pPreviousButton->setVisible(true);
 			}
+
+			checkIfDisplayPlayCheckBox(m_pLmSetPointBegin);
 
 			m_pPlayCheckBox->setSelected(false);
 		}
@@ -375,6 +397,8 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 			{
 				m_pPreviousButton->setVisible(true);
 			}
+
+			checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
 
 			//uncheck play button
 			m_pPlayCheckBox->setSelected(false);
@@ -450,7 +474,7 @@ void LmInteractionScene::initDashboardLayer()
 	//create a menu and back to dashboard menuitemiamhe
 	auto l_pMenu = Menu::create();
 	l_pMenu->setPosition(Vec2::ZERO);
-	m_pDashboardBandLayer->addChild(l_pMenu,1);
+	m_pDashboardBandLayer->addChild(l_pMenu, 1);
 
 	m_pBackDashboardButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/backToDashboard.png",
@@ -539,6 +563,9 @@ void LmInteractionScene::moveLeftDone()
 
 void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	if (!m_bBackPressed && m_bMoveDone && m_pLmSetPointBegin->isBActionDone())
 	{
 		m_bBackPressed = true;
@@ -664,6 +691,8 @@ void LmInteractionScene::endGame()
 			CCLOG("LmSetPoint init failed");
 		}
 
+		checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
+
 	}
 }
 
@@ -691,4 +720,22 @@ void LmInteractionScene::removeNextPreviousMenuItem()
 	m_pMenu->removeAllChildrenWithCleanup(true);
 
 }
+
+void LmInteractionScene::checkIfDisplayPlayCheckBox(LmSetPoint* l_pSetPoint)
+{
+
+
+	if(l_pSetPoint->getNextLayerDisplay()->getSSoundUrl().compare("")==0)
+	{
+
+		m_pPlayCheckBox->setVisible(false);
+	}
+	else
+	{
+
+		CCLOG("there is a sound on the current layer");
+		m_pPlayCheckBox->setVisible(true);
+	}
+}
+
 

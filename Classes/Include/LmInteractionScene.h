@@ -27,6 +27,8 @@ static const float s_fMarginBot = 20.0f;
 //margin between image when images has to be display
 static const float s_fMarginBetweenImage = 20.0f;
 
+
+
 class LmInteractionScene: public cocos2d::Scene , public LmWifiObserver
 {
 
@@ -273,7 +275,11 @@ protected:
 
 	void finishInteraction();
 
+	//to remove from the menu the next and previous menuitem
 	void removeNextPreviousMenuItem();
+
+	//check id there is a sound to display or not the play checkbox
+	void checkIfDisplayPlayCheckBox(LmSetPoint*);
 
 
 

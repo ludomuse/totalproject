@@ -9,6 +9,7 @@
 #define COCOS2D_DEBUG 1
 
 #include "../Include/LmMenu.h"
+#include "../Include/LmGameManager.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -139,10 +140,27 @@ bool LmMenu::logScreen()
 	//remove the splash screen
 	m_pLogLayer->removeChild(m_pSpriteSplashScreen);
 
+	auto menu = Menu::create();
+	menu->setPosition(Vec2::ZERO);
+	m_pLogLayer->addChild(menu,1);
+
+	//test gregoire
+	auto takepictureButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/playNormal.png",
+			"Ludomuse/GUIElements/playPressed.png",
+			CC_CALLBACK_1(LmMenu::test, this));
+	takepictureButton->setPosition(
+			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.1));
+	menu->addChild(takepictureButton);
+
+	//preload sounds
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	//add a background img for the log layer
 	m_pSpriteLogBackground = Sprite::create(s_sFilenameSpriteBackground);
-	m_pSpriteLogBackground->setPosition(l_oVisibleSize.width / 2 + l_oOrigin.x,
-			l_oVisibleSize.height / 2 + l_oOrigin.y);
+	m_pSpriteLogBackground->setPosition(l_oVisibleSize.width *0.5,
+			l_oVisibleSize.height*0.5);
 	m_pLogLayer->addChild(m_pSpriteLogBackground);
 
 	//add the sprite of the form
@@ -385,6 +403,9 @@ bool LmMenu::wifiDirectScreen()
 
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	if (!m_bReady)
 	{
 		//role are selected and user 2 has a tablet name
@@ -432,6 +453,8 @@ void LmMenu::menuIsFinished()
 
 void LmMenu::maleSelected(cocos2d::Ref*)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
 
 	CCLOG("male");
 	m_pUser1->setBMale(true);
@@ -440,6 +463,10 @@ void LmMenu::maleSelected(cocos2d::Ref*)
 
 void LmMenu::femaleSelected(cocos2d::Ref*)
 {
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	CCLOG("female");
 
 	m_pUser1->setBMale(false);
@@ -449,6 +476,9 @@ void LmMenu::femaleSelected(cocos2d::Ref*)
 
 void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
 
 	if (m_bReady && !m_pUser1->isBParent())
 	{
@@ -470,6 +500,9 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 
 void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
 
 	if (m_bReady && m_pUser1->isBParent())
 	{
@@ -567,6 +600,9 @@ void LmMenu::makeCheckboxUserTabletName(
 void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender,
 		cocos2d::ui::CheckBox::EventType)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	auto l_pCheckBoxPressed = dynamic_cast<ui::CheckBox*>(p_Sender);
 	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pCheckBoxPressed)->second;
 	const char* l_sDeviceName = l_pLabel->getString().c_str();
@@ -679,8 +715,8 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 	CCLOG("user buffer = %s, user1 = %s",
 			l_pUserBuffer->getUserSerialized().c_str(),
 			m_pUser1->getUserSerialized().c_str());
-	//it's an answer from the guy we send UserIsReady
 
+	//it's an answer from the guy we send UserIsReady
 	if (m_bReady)
 	{
 		if (l_pUserBuffer->getUserSerialized().compare(
@@ -717,6 +753,16 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 
 			}
 		}
+	}
+	else
+	{
+		//if unclick debloque l'autre tablette
+		CCLOG("on compatible false");
+		//send the msg
+		bytes msg(10);
+		msg << LmEvent::Play;
+		msg.write(false);
+		WIFIFACADE->sendBytes(msg);
 	}
 
 	delete l_pUserBuffer;
@@ -782,5 +828,10 @@ void LmMenu::removeMenuElement()
 void LmMenu::setLabelFeedBack()
 {
 	m_pLabelFeedback->setString(s_sBegining);
+}
+
+void LmMenu::test(Ref* p_Sender)
+{
+	CCLOG("take picture");
 }
 

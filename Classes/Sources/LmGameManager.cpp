@@ -5,6 +5,8 @@
 
 USING_NS_CC;
 
+const char* LmGameManager::s_sFilenameButtonClicked= "Audio/Ludomuse/buttonClicked.mp3";
+
 LmGameManager::LmGameManager()
 {
 
@@ -96,6 +98,10 @@ void LmGameManager::runGames()
 
 bool LmGameManager::init()
 {
+
+	//preload sounds
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			LmGameManager::s_sFilenameButtonClicked);
 
 	if (!m_pLmServerManager->init())
 	{
@@ -235,10 +241,6 @@ bool LmGameManager::initDashboard()
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 	Size l_oWinSize = Director::getInstance()->getWinSize();
-
-	CCLOG("visible width =%f & height =%f ",l_oVisibleSize.width,l_oVisibleSize.height);
-	CCLOG("win width =%f & height =%f ",l_oWinSize.width,l_oWinSize.height);
-
 
 	//create the main layer and put element on it
 	m_pBlueLayer = Layer::create();
@@ -423,8 +425,6 @@ bool LmGameManager::initDashboard()
 			l_oVisibleSize.height * 0.1f);
 	m_pPinkLayer->addChild(m_pLabelCompareButton);
 
-
-
 	//back button
 	m_pBackButton = ui::Button::create("Ludomuse/GUIElements/backNormal.png");
 	m_pBackButton->setTouchEnabled(true);
@@ -435,7 +435,7 @@ bool LmGameManager::initDashboard()
 							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
 							* 0.5f
 							+ m_pSpriteBackgroundBlueProfile->getContentSize().width,
-							l_oVisibleSize.height));
+					l_oVisibleSize.height));
 	m_pBackButton->addTouchEventListener(
 			CC_CALLBACK_0(LmGameManager::back, this));
 	m_pBackButton->setVisible(false);
@@ -723,6 +723,11 @@ void LmGameManager::compare()
 {
 	if (m_bActionIsDone)
 	{
+
+		//play button clicked sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+				LmGameManager::s_sFilenameButtonClicked);
+
 		m_bActionIsDone = false;
 
 		m_pListener->setEnabled(false);
@@ -761,6 +766,10 @@ void LmGameManager::back()
 {
 	if (m_bActionIsDone)
 	{
+		//play button clicked sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+				LmGameManager::s_sFilenameButtonClicked);
+
 		m_bActionIsDone = false;
 		auto l_oBackAction =
 				MoveBy::create(s_fTimeCompareAction,
@@ -789,7 +798,6 @@ void LmGameManager::backDone()
 			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.7f);
 	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
-
 }
 
 void LmGameManager::setSpritesInteractionsUser2Visible(bool visible)
@@ -816,7 +824,6 @@ void LmGameManager::compareScreen(bool visible)
 
 	setSpritesInteractionsUser2Visible(visible);
 
-
 }
 
 void LmGameManager::runInteraction(int index)
@@ -839,6 +846,10 @@ void LmGameManager::runInteraction(int index)
 
 void LmGameManager::runNextInteraction()
 {
+	//play button clicked sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
+
 	//if its the last interactionscene the app finished
 	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
 	{

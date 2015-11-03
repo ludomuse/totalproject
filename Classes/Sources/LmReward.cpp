@@ -77,6 +77,7 @@ void LmReward::init()
 	m_pLabekReward->setPosition(l_oVisibleSize.width * m_fWidthPercent,
 			l_oVisibleSize.height * m_fHeightPercent);
 	m_pLabekReward->setColor(m_oColorText);
+	m_pLabekReward->setAlignment(TextHAlignment::CENTER);
 	m_pLabekReward->setMaxLineWidth(l_oVisibleSize.width * m_fSizePercent);
 
 }

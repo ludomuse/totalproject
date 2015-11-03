@@ -17,10 +17,14 @@ static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 
+
+
 class LmGameManager: public LmWifiObserver
 {
 
 public:
+
+	static const char* s_sFilenameButtonClicked;
 
 	LmGameManager();
 	~LmGameManager();

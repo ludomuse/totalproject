@@ -9,6 +9,7 @@ LmLayer::LmLayer(const LmLayerSeed &Seed)
 {
 	m_aImages = Seed.Images;
 	m_sSoundURL = Seed.SoundURL;
+	CCLOG("m_sSoundURL = %s",m_sSoundURL.c_str());
 	m_sText = Seed.Text;
 	m_fFontSize = Seed.FontSize;
 	m_fHeightPercent = Seed.HeightPercent;
@@ -94,6 +95,7 @@ bool LmLayer::init()
 	l_pLabel->setPosition(l_oVisibleSize.width * m_fWidthPercent,
 			l_oVisibleSize.height * m_fHeightPercent);
 	l_pLabel->setColor(m_oColorText);
+	l_pLabel->setAlignment(TextHAlignment::CENTER);
 	l_pLabel->setMaxLineWidth(l_oVisibleSize.width * m_fSizePercent);
 	addChild(l_pLabel);
 
@@ -103,7 +105,6 @@ bool LmLayer::init()
 void LmLayer::playSound()
 {
 
-	CCLOG("play sound layer");
 	//play sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
 			m_sSoundURL.c_str(), false);

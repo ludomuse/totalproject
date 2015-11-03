@@ -725,6 +725,13 @@ void LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 	if (l_bWellPlaced)
 	{
 
+		//erase it of the elements that can be touched
+		m_aGameComponentImages.erase(
+				std::remove(m_aGameComponentImages.begin(),
+						m_aGameComponentImages.end(),
+						m_aIdTable.find(l_iIdGameComponent)->second),
+						m_aGameComponentImages.end());
+
 		//make disapear this element
 		m_aIdTable.find(l_iIdGameComponent)->second->setVisible(false);
 

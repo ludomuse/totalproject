@@ -26,7 +26,7 @@ LmUser::LmUser()
 
 LmUser::~LmUser()
 {
-	//destory reward here
+	//destory user reward here
 	for (std::vector<LmReward*>::iterator it = m_aRewards.begin();
 			it != m_aRewards.end(); ++it)
 	{
@@ -154,13 +154,8 @@ void LmUser::writeOn(bytes* msg)
 
 void LmUser::readOn(bytes* msg)
 {
-	CCLOG(
-			"reading on msg. Msg size = %d, msg free space = %d, msg len = %d, readCursor = %d",
-			msg->getSize(), msg->getFreeCount(), msg->getLen(),
-			msg->getReadCursor());
 	std::string ser = msg->readString();
 	CCLOG("string is = %s", ser.c_str());
 	setUser(ser);
-	CCLOG("sring read");
 }
 

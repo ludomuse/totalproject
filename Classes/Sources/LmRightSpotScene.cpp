@@ -449,12 +449,6 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 		if (bufferCollideSendingArea() && !m_bSendingAreaElementTouched)
 		{
 
-			//send the msg to indicate user 2 we are ready
-			bytes msg(10);
-			msg << LmEvent::Gamecomponent;
-			msg.write(m_iBufferId);
-			WIFIFACADE->sendBytes(msg);
-
 			//move gamecomponent
 			setPositionInSendingArea(m_iBufferId);
 
@@ -468,6 +462,12 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 
 			//we block touch till we receive a response from the child
 			l_bThereIsElementInSendingArea = true;
+
+			//send the msg to indicate user 2 we are ready
+			bytes msg(10);
+			msg << LmEvent::Gamecomponent;
+			msg.write(m_iBufferId);
+			WIFIFACADE->sendBytes(msg);
 
 		}
 		else if (m_bSendingAreaElementTouched && !bufferCollideSendingArea())
@@ -803,6 +803,14 @@ void LmRightSpotScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 
 	if (l_bWellPlaced)
 	{
+
+		//erase it of the elements that can be touched
+		m_aDynamicGameComponents.erase(
+				std::remove(m_aDynamicGameComponents.begin(),
+						m_aDynamicGameComponents.end(),
+						m_aIdTable.find(l_iIdGameComponent)->second),
+				m_aDynamicGameComponents.end());
+
 		m_iNumberOfHole--;
 
 		//make disapear this element
