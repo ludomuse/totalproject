@@ -833,5 +833,6 @@ void LmMenu::setLabelFeedBack()
 void LmMenu::test(Ref* p_Sender)
 {
 	CCLOG("take picture");
+	TAKE_PICTURE
 }
 

@@ -3,7 +3,6 @@ package org.cocos2dx.cpp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
@@ -13,11 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-
-import android.view.GestureDetector;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -128,6 +123,18 @@ public class AppActivity extends Cocos2dxActivity {
 		// Save a file: path for use with ACTION_VIEW intents
 		mCurrentPhotoPath = "file:" + image.getAbsolutePath();
 		return image;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+
+	    if (requestCode == REQUEST_TAKE_PHOTO) {
+	        if (resultCode == RESULT_OK) {
+	        	Toast.makeText(this, "Image saved to:\n" + mCurrentPhotoPath, Toast.LENGTH_LONG).show();
+	          //  handleAvatarUpload(data); // which uses Uri selectedImage = data.getData();
+	        } 
+	    }
 	}
 	
 }

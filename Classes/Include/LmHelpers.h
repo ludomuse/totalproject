@@ -9,12 +9,14 @@
 #define HELPERS_H_
 
 #define CURR_PHOTO_PATH LmJniCppFacade::getCurrentPicturePath()
+#define TAKE_PICTURE LmJniJavaFacade::takePicture();
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))
 #define WIFIFACADE LmJniCppFacade::getWifiFacade()
 #define ON_CC_THREAD(FUN, OBJ, ...) 	Director::getInstance()->getScheduler()->performFunctionInCocosThread(\
 										std::bind(&FUN, OBJ, ##__VA_ARGS__));
 
 #include "LmBytesMessage.h"
+#include "LmJniJavaFacade.h"
 
 typedef byte event;
 

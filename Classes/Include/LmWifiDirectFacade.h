@@ -70,6 +70,10 @@ class LmWifiDirectFacade {
 
 		void sendFile(std::string filePath);
 
+		void setServerTempFileName(std::string filePath);
+
+		void clean();
+
 		void send(double d);
 
 		void send(float f);

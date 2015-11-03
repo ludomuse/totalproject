@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
+import org.cocos2dx.cpp.sockets.SocketHandler;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.app.Activity;
@@ -279,5 +280,10 @@ public class WifiDirectFacade {
 	public String getThisDeviceName()
 	{
 		return _manager.getThisDeviceName();
+	}
+	
+	public static void setServerTempFileName(String name)
+	{
+		WifiDirectManager.setServerTempFileName(name);
 	}
 }

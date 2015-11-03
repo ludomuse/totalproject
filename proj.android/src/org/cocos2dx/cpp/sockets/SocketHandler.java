@@ -575,6 +575,11 @@ public class SocketHandler {
 		client.setRemoteHost(hostAddress, listenningPort);
 	}
 
+	public static void setServerTempFileName(String name)
+	{
+		ServerSocketHandler.setServerTempFileName(name);
+	}
+	
 	public void connectTo(String hostAddress)
 	{
 		setRemoteHost(hostAddress, listenningPort);

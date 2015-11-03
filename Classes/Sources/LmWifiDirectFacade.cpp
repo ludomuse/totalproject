@@ -18,6 +18,7 @@ LmWifiDirectFacade::LmWifiDirectFacade()
 	LmJniCppFacade::setWifiFacade(this);
 }
 
+
 void LmWifiDirectFacade::onGettingPeers(vector<string> peers)
 {
 	FORWARD(onGettingPeers(peers));
@@ -140,6 +141,11 @@ void LmWifiDirectFacade::sendBytes(bytes bytes)
 	LmJniJavaFacade::sendBytes(bytes);
 }
 
+void LmWifiDirectFacade::setServerTempFileName(std::string filePath)
+{
+	LmJniJavaFacade::setServerTempFileName(filePath);
+}
+
 int LmWifiDirectFacade::addObserver(LmWifiObserver* wo)
 {
 	_observers.push_back(wo);
@@ -230,5 +236,10 @@ void LmWifiDirectFacade::setTabletName(std::string name)
 std::string LmWifiDirectFacade::getTabletName()
 {
 	return _name;
+}
+
+void LmWifiDirectFacade::clean()
+{
+	LmJniJavaFacade::clean();
 }
 
