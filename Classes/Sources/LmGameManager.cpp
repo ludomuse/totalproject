@@ -5,7 +5,8 @@
 
 USING_NS_CC;
 
-const char* LmGameManager::s_sFilenameButtonClicked= "Audio/Ludomuse/buttonClicked.mp3";
+const char* LmGameManager::s_sFilenameButtonClicked =
+		"Audio/Ludomuse/buttonClicked.mp3";
 
 LmGameManager::LmGameManager()
 {
@@ -14,6 +15,7 @@ LmGameManager::LmGameManager()
 
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
+	m_pLmSettings = new LmSettings;
 
 	//primitive type
 	m_iIndexInteractionScene = 0;
@@ -63,11 +65,12 @@ LmGameManager::LmGameManager()
 
 LmGameManager::~LmGameManager()
 {
+	delete m_pLmSettings;
+
 	//delete users created by LmMenu
 	delete m_pUser1;
 	delete m_pUser2;
 
-	//destroy the ServerManager
 	delete m_pLmServerManager;
 
 	//Browse the vector of scene and delete them
@@ -465,17 +468,20 @@ bool LmGameManager::initDashboard()
 					* 0.9);
 	m_pSpriteBandTop->addChild(m_pLabelTitleApplication);
 
+	auto l_pMenu = Menu::create();
+	l_pMenu->setPosition(Vec2::ZERO);
+	m_pSpriteBandMid->addChild(l_pMenu);
+
 	//play next interaction button
-	m_pPlayNextInteractionButton = ui::Button::create(
-			"Ludomuse/GUIElements/playNextInteraction.png");
-	m_pPlayNextInteractionButton->setTouchEnabled(true);
+	m_pPlayNextInteractionButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/playNextInteraction.png",
+			"Ludomuse/GUIElements/playNextInteraction.png",
+			CC_CALLBACK_1(LmGameManager::runNextInteraction, this));
 	m_pPlayNextInteractionButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pPlayNextInteractionButton->setPosition(
 			Vec2(m_pSpriteBandMid->getContentSize().width * 0.95,
 					m_pSpriteBandMid->getContentSize().height * 0.5f));
-	m_pPlayNextInteractionButton->addTouchEventListener(
-			CC_CALLBACK_0(LmGameManager::runNextInteraction, this));
-	m_pSpriteBandMid->addChild(m_pPlayNextInteractionButton, 2);
+	l_pMenu->addChild(m_pPlayNextInteractionButton,2);
 
 	//init interactions sprite
 	initDashboardInteraction();
@@ -844,36 +850,44 @@ void LmGameManager::runInteraction(int index)
 	}
 }
 
-void LmGameManager::runNextInteraction()
+void LmGameManager::runNextInteraction(Ref* p_Sender)
 {
 	//play button clicked sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 			LmGameManager::s_sFilenameButtonClicked);
 
-	//if its the last interactionscene the app finished
-	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
-	{
-		CCLOG("END");
-		Director::getInstance()->end();
-	}
-	else
-	{
 
-		//if yes we need to init the scene
-		if (!m_bBackToDashboard)
-		{
-			//we pass the local user
-			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
-					m_pUser1))
-			{
-				CCLOG("Interaction scene init failed");
-			}
+	m_pLmSettings->init();
 
-		}
+	m_pLmSettings->addTo((Node*)m_pGameManagerScene,1);
 
-		runInteraction(m_iIndexInteractionScene);
 
-	}
+	m_pLmSettings->setVisible(true);
+
+	/*//if its the last interactionscene the app finished
+	 if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
+	 {
+	 //no more games for now end application
+	 LmSettings::endApplication();
+	 }
+	 else
+	 {
+
+	 //if yes we need to init the scene
+	 if (!m_bBackToDashboard)
+	 {
+	 //we pass the local user
+	 if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
+	 m_pUser1))
+	 {
+	 CCLOG("Interaction scene init failed");
+	 }
+
+	 }
+
+	 runInteraction(m_iIndexInteractionScene);
+
+	 }*/
 
 }
 
@@ -881,7 +895,7 @@ void LmGameManager::inputDisabled(bool l_bTrue)
 {
 	m_pBackButton->setTouchEnabled(!l_bTrue);
 	m_pCompareButton->setTouchEnabled(!l_bTrue);
-	m_pPlayNextInteractionButton->setTouchEnabled(!l_bTrue);
+	m_pPlayNextInteractionButton->setEnabled(!l_bTrue);
 	m_pListener->setEnabled(!l_bTrue);
 }
 

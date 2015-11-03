@@ -733,7 +733,6 @@ void LmInteractionScene::checkIfDisplayPlayCheckBox(LmSetPoint* l_pSetPoint)
 	else
 	{
 
-		CCLOG("there is a sound on the current layer");
 		m_pPlayCheckBox->setVisible(true);
 	}
 }

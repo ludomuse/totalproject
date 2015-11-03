@@ -57,7 +57,6 @@ void LmSprite::addEvents()
 			{
 				if(m_bTouchEnabled)
 				{
-					CCLOG("touch enable");
 					cocos2d::Vec2 p = touch->getLocation();
 
 					cocos2d::Rect rect = this->getBoundingBox();

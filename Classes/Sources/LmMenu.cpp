@@ -140,7 +140,7 @@ bool LmMenu::logScreen()
 	//remove the splash screen
 	m_pLogLayer->removeChild(m_pSpriteSplashScreen);
 
-	auto menu = Menu::create();
+	/*auto menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
 	m_pLogLayer->addChild(menu,1);
 
@@ -150,8 +150,8 @@ bool LmMenu::logScreen()
 			"Ludomuse/GUIElements/playPressed.png",
 			CC_CALLBACK_1(LmMenu::test, this));
 	takepictureButton->setPosition(
-			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.1));
-	menu->addChild(takepictureButton);
+			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.2));
+	menu->addChild(takepictureButton);*/
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(

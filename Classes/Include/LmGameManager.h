@@ -12,6 +12,7 @@
 #include "LmWifiDirectFacade.h"
 #include "LmJniCppFacade.h"
 #include "LmWifiObserver.h"
+#include "LmSettings.h"
 
 static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;
@@ -50,6 +51,9 @@ public:
 private:
 
 	//ATTRIBUTES
+
+	//menu settings
+	LmSettings* m_pLmSettings;
 
 	//layer splash
 	cocos2d::Layer* m_pSplashSreenLayer;
@@ -94,7 +98,7 @@ private:
 	cocos2d::ui::Button* m_pCompareButton;
 	cocos2d::Label* m_pLabelCompareButton;
 	cocos2d::ui::Button* m_pBackButton;
-	cocos2d::ui::Button* m_pPlayNextInteractionButton;
+	cocos2d::MenuItemImage* m_pPlayNextInteractionButton;
 
 	//need to be member so we can make it visible or not
 	cocos2d::Sprite* m_pAvatarSpriteUser2;
@@ -138,7 +142,7 @@ private:
 	void back();
 	void backDone();
 
-	void runNextInteraction();
+	void runNextInteraction(cocos2d::Ref*);
 
 	//init the dashboard
 	bool initDashboard();

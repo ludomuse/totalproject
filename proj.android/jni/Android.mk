@@ -32,6 +32,8 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Sources/LmReward.cpp\
                    ../../Classes/Sources/LmFindGoodCategoryScene.cpp\
                    ../../Classes/Sources/LmHintScene.cpp\
+                   ../../Classes/Sources/LmSettings.cpp\
+                   
 
 
 
