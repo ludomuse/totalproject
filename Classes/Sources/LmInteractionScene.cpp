@@ -208,6 +208,11 @@ void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 	}
 }
 
+void LmInteractionScene::notifyPictureIsTaken()
+{
+	CCLOG("Picture is saved in %s", CURR_PHOTO_PATH.c_str());
+}
+
 void LmInteractionScene::initNextPreviousButton()
 {
 	CCLOG("init button");

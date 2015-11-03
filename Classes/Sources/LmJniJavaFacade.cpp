@@ -103,6 +103,11 @@ void LmJniJavaFacade::sendFile(string path)
 	callJavaMethod("sendFile", (void*) &path, PARAM_STRING);
 }
 
+void LmJniJavaFacade::setServerTempFileName(std::string name)
+{
+	callJavaMethod("setServerTempFileName", (void*) &name, PARAM_STRING);
+}
+
 void LmJniJavaFacade::sendByte(byte b)
 {
 	callJavaMethod("sendByte", (void*) &b, PARAM_BYTE);

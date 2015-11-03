@@ -58,6 +58,11 @@ public class JniJavaFacade {
 		_wifiDirectFacade.send(new File(path));
 	}
 
+	public static void setServerTempFileName(String name)
+	{
+		WifiDirectFacade.setServerTempFileName(name);
+	}
+	
 	public static void sendByte(byte b)
 	{
 		DebugManager.print("send byte is called from c++", WifiDirectManager.DEBUGGER_CHANNEL);

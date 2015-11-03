@@ -19,6 +19,7 @@ import java.util.Calendar;
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 /**
@@ -32,6 +33,10 @@ import android.os.AsyncTask;
 class Communication implements Runnable {
 	private Socket client;
 	private SocketHandler master;
+	
+	// Temp file name
+	@SuppressLint("SdCardPath")
+	public static String tempFile = "/sdcard/Screenshots/tps";
 
 	// This array list contains the id of the message previously received
 	private static ArrayList<Long> alreadyTreated = new ArrayList<Long>();
@@ -158,6 +163,7 @@ class Communication implements Runnable {
 		return bos.toByteArray();
 	}
 
+	
 	/**
 	 * read a file into the inputstream 'is' The file will be created with the
 	 * following path : "/sdcard/Screenshots/tps"
@@ -167,7 +173,7 @@ class Communication implements Runnable {
 	 */
 	private File getFileFromInputStream(InputStream is)
 	{
-		File f = new File("/sdcard/Screenshots/tps");
+		File f = new File(tempFile);
 		try
 		{
 			f.createNewFile();
@@ -910,6 +916,11 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public static void setServerTempFileName(String name)
+	{
+		Communication.tempFile = name;
 	}
 
 }

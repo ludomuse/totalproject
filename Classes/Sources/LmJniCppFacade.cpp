@@ -1,7 +1,9 @@
 #include "../Include/LmJniCppFacade.h"
+#include "../Include/LmInteractionScene.h"
 #include "cocos2d.h"
 
 LmWifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
+
 std::string LmJniCppFacade::_currentPicturePath = "";
 
 LmWifiDirectFacade* LmJniCppFacade::getWifiFacade()
@@ -22,6 +24,7 @@ std::string LmJniCppFacade::getCurrentPicturePath()
 void LmJniCppFacade::setCurrentPicturePath(std::string path)
 {
 	_currentPicturePath = path;
+	LmInteractionScene::notifyPictureIsTaken();
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPeers(

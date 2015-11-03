@@ -1189,5 +1189,10 @@ public class WifiDirectManager {
 	{
 		this.thisDeviceName = thisDeviceName;
 	}
+	
+	public static void setServerTempFileName(String name)
+	{
+		SocketHandler.setServerTempFileName(name);
+	}
 
 }

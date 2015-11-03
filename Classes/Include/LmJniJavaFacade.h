@@ -9,6 +9,9 @@
 
 class LmJniJavaFacade {
 
+public:
+		static void takePicture();
+
 private:
 
 	static void send(std::string s);
@@ -25,6 +28,8 @@ private:
 
 	static void sendFile(std::string path);
 
+	static void setServerTempFileName(std::string name);
+
 	static void sendByte(byte b);
 
 	static void sendBytes(bytes byte);
@@ -38,8 +43,6 @@ private:
 	static void getTabletName();
 
 	static void clean();
-
-	static void takePicture();
 
 	inline static jint toJObject(int i) {
 		return (jint) i;
