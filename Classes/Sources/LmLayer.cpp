@@ -9,7 +9,6 @@ LmLayer::LmLayer(const LmLayerSeed &Seed)
 {
 	m_aImages = Seed.Images;
 	m_sSoundURL = Seed.SoundURL;
-	CCLOG("m_sSoundURL = %s",m_sSoundURL.c_str());
 	m_sText = Seed.Text;
 	m_fFontSize = Seed.FontSize;
 	m_fHeightPercent = Seed.HeightPercent;

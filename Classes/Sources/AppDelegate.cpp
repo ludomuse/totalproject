@@ -104,9 +104,10 @@ bool AppDelegate::init()
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"MenuFinished", MenuFinished);
 
-	//put sound at maximum
-	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
-	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(1.0f);
+	//put sound at maximum for effect and background
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(1.0);
+
 
 	return true;
 }
@@ -144,7 +145,7 @@ void AppDelegate::initPathsForResolution()
 	std::vector<std::string> l_resDirOrders;
 
 
-	// if the frame's height is larger than the height of medium size we want to get large ressources
+	/*// if the frame's height is larger than the height of medium size we want to get large ressources
 	if (l_frameSize.height > s_MediumResolutionSize.height)
 	{
 
@@ -184,7 +185,15 @@ void AppDelegate::initPathsForResolution()
 								/ s_DesignResolutionSize.height,
 						s_SmallResolutionSize.width
 								/ s_DesignResolutionSize.width));
-	}
+	}*/
+
+	l_resDirOrders.push_back("MediumResolutionSize");
+	l_director->setContentScaleFactor(
+			MIN(
+					s_MediumResolutionSize.height
+							/ s_DesignResolutionSize.height,
+					s_MediumResolutionSize.width
+							/ s_DesignResolutionSize.width));
 
 	//set the paths
 	l_fileUtils->setSearchPaths(l_resDirOrders);

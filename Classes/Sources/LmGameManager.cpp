@@ -3,6 +3,8 @@
 
 #include "../Include/LmGameManager.h"
 
+
+
 USING_NS_CC;
 
 const char* LmGameManager::s_sFilenameButtonClicked =
@@ -35,7 +37,7 @@ LmGameManager::LmGameManager()
 	m_pSpriteBandTop = nullptr;
 	m_pGameManagerScene = nullptr;
 	m_pBackButton = nullptr;
-	m_pBlueLayer = nullptr;
+	m_pBackgroundLayer = nullptr;
 	m_pCompareButton == nullptr;
 	m_pLabelCompareButton = nullptr;
 	m_pLabelScore = nullptr;
@@ -60,6 +62,7 @@ LmGameManager::LmGameManager()
 	m_pStarUser2Sprite = nullptr;
 	m_pCheckSpriteUser1 = nullptr;
 	m_pCheckSpriteUser2 = nullptr;
+	m_pSettingsButton = nullptr;
 
 }
 
@@ -246,9 +249,9 @@ bool LmGameManager::initDashboard()
 	Size l_oWinSize = Director::getInstance()->getWinSize();
 
 	//create the main layer and put element on it
-	m_pBlueLayer = Layer::create();
+	m_pBackgroundLayer = Layer::create();
 	m_pPinkLayer = Layer::create();
-	m_pGameManagerScene->addChild(m_pBlueLayer);
+	m_pGameManagerScene->addChild(m_pBackgroundLayer);
 	m_pGameManagerScene->addChild(m_pPinkLayer);
 
 	//we add the different background with different zorder
@@ -258,7 +261,7 @@ bool LmGameManager::initDashboard()
 			"Ludomuse/Background/dashboard.png");
 	m_pSpriteBackgroundBlue->setPosition(l_oVisibleSize.width * 0.5f,
 			l_oVisibleSize.height * 0.5f);
-	m_pBlueLayer->addChild(m_pSpriteBackgroundBlue);
+	m_pBackgroundLayer->addChild(m_pSpriteBackgroundBlue);
 
 	//background pink
 	m_pSpriteBackgroundPink = Sprite::create(
@@ -279,7 +282,7 @@ bool LmGameManager::initDashboard()
 	m_pSpriteBackgroundBlueProfile->setPosition(
 			m_pSpriteBackgroundBlueProfile->getContentSize().width * 0.5f,
 			l_oVisibleSize.height * 0.5);
-	m_pBlueLayer->addChild(m_pSpriteBackgroundBlueProfile, 1);
+	m_pBackgroundLayer->addChild(m_pSpriteBackgroundBlueProfile, 1);
 
 	auto l_fMidOfSpriteBackgroundUsers =
 			m_pSpriteBackgroundBlueProfile->getContentSize().width * 0.5f;
@@ -442,13 +445,13 @@ bool LmGameManager::initDashboard()
 	m_pBackButton->addTouchEventListener(
 			CC_CALLBACK_0(LmGameManager::back, this));
 	m_pBackButton->setVisible(false);
-	m_pBlueLayer->addChild(m_pBackButton);
+	m_pBackgroundLayer->addChild(m_pBackButton);
 
 	//put the top band
 	m_pSpriteBandTop = Sprite::create("Ludomuse/GUIElements/bandTop.png");
 	m_pSpriteBandTop->setAnchorPoint(Vec2(0, 1));
 	m_pSpriteBandTop->setPosition(Vec2(0, l_oVisibleSize.height + l_oOrigin.y));
-	m_pBlueLayer->addChild(m_pSpriteBandTop);
+	m_pBackgroundLayer->addChild(m_pSpriteBandTop);
 
 	//title label app
 	m_sTitleApplication = m_pLmServerManager->getSTitleApplication();
@@ -465,7 +468,7 @@ bool LmGameManager::initDashboard()
 	m_pLabelTitleApplication->setMaxLineWidth(
 			(l_oVisibleSize.width
 					- m_pSpriteBackgroundBlueProfile->getContentSize().width)
-					* 0.9);
+					* 0.7);
 	m_pSpriteBandTop->addChild(m_pLabelTitleApplication);
 
 	auto l_pMenu = Menu::create();
@@ -481,7 +484,22 @@ bool LmGameManager::initDashboard()
 	m_pPlayNextInteractionButton->setPosition(
 			Vec2(m_pSpriteBandMid->getContentSize().width * 0.95,
 					m_pSpriteBandMid->getContentSize().height * 0.5f));
-	l_pMenu->addChild(m_pPlayNextInteractionButton,2);
+	l_pMenu->addChild(m_pPlayNextInteractionButton, 2);
+
+	//checkbox settings
+	m_pSettingsButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/settings.png",
+			"Ludomuse/GUIElements/settings.png",
+			CC_CALLBACK_1(LmGameManager::settings, this));
+	m_pSettingsButton->setAnchorPoint(Vec2(1, 1));
+	m_pSettingsButton->setPosition(
+			Vec2(m_pSpriteBandMid->getContentSize().width, l_oWinSize.height));
+	l_pMenu->addChild(m_pSettingsButton);
+
+	//add settings menu
+	m_pLmSettings->init();
+	m_pLmSettings->setVisible(false);
+	m_pLmSettings->addTo((Node*) m_pPinkLayer, 3);
 
 	//init interactions sprite
 	initDashboardInteraction();
@@ -656,7 +674,7 @@ void LmGameManager::initDashboardInteraction()
 							+ (l_oVisibleSize.width
 									- m_pSpriteBackgroundBlueProfile->getContentSize().width)
 									* 0.5, l_oVisibleSize.height * 0.6));
-	m_pBlueLayer->addChild(m_pDescriptionBox);
+	m_pBackgroundLayer->addChild(m_pDescriptionBox);
 
 	m_pDescriptionLabel = Label::createWithTTF("test",
 			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.02);
@@ -856,38 +874,39 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 			LmGameManager::s_sFilenameButtonClicked);
 
+	//if its the last interactionscene the app finished
+	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
+	{
+		//no more games for now end application
+		LmSettings::endApplication();
+	}
+	else
+	{
 
-	m_pLmSettings->init();
+		//if yes we need to init the scene
+		if (!m_bBackToDashboard)
+		{
+			//we pass the local user
+			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
+					m_pUser1))
+			{
+				CCLOG("Interaction scene init failed");
+			}
 
-	m_pLmSettings->addTo((Node*)m_pGameManagerScene,1);
+		}
 
+		runInteraction(m_iIndexInteractionScene);
+
+	}
+
+}
+
+void LmGameManager::settings(cocos2d::Ref*)
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			LmGameManager::s_sFilenameButtonClicked);
 
 	m_pLmSettings->setVisible(true);
-
-	/*//if its the last interactionscene the app finished
-	 if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
-	 {
-	 //no more games for now end application
-	 LmSettings::endApplication();
-	 }
-	 else
-	 {
-
-	 //if yes we need to init the scene
-	 if (!m_bBackToDashboard)
-	 {
-	 //we pass the local user
-	 if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
-	 m_pUser1))
-	 {
-	 CCLOG("Interaction scene init failed");
-	 }
-
-	 }
-
-	 runInteraction(m_iIndexInteractionScene);
-
-	 }*/
 
 }
 
@@ -897,6 +916,8 @@ void LmGameManager::inputDisabled(bool l_bTrue)
 	m_pCompareButton->setTouchEnabled(!l_bTrue);
 	m_pPlayNextInteractionButton->setEnabled(!l_bTrue);
 	m_pListener->setEnabled(!l_bTrue);
+	m_pSettingsButton->setEnabled(!l_bTrue);
+
 }
 
 bool LmGameManager::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event)

@@ -18,8 +18,6 @@ static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 
-
-
 class LmGameManager: public LmWifiObserver
 {
 
@@ -55,6 +53,9 @@ private:
 	//menu settings
 	LmSettings* m_pLmSettings;
 
+	//checkbox to make appear setting
+	cocos2d::MenuItemImage* m_pSettingsButton;
+
 	//layer splash
 	cocos2d::Layer* m_pSplashSreenLayer;
 
@@ -71,7 +72,7 @@ private:
 	cocos2d::Scene* m_pGameManagerScene;
 
 	//layer of dashboard
-	cocos2d::Layer* m_pBlueLayer;
+	cocos2d::Layer* m_pBackgroundLayer;
 	cocos2d::Layer* m_pPinkLayer;
 
 	cocos2d::ui::ScrollView* m_pScrollView;
@@ -188,6 +189,8 @@ private:
 
 	//set visible element or not of the both state of dashboard
 	void compareScreen(bool);
+
+	void settings(cocos2d::Ref*);
 
 };
 
