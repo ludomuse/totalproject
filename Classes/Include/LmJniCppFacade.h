@@ -55,8 +55,13 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setTabletNam
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setCurrentPicturePath(
 		JNIEnv* env, jobject thiz, jstring path);
 
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setApplicationDirectory(
+		JNIEnv* env, jobject thiz, jstring path);
+
 }
-;
+
+
+
 
 
 
@@ -73,6 +78,10 @@ public:
 	static std::string getCurrentPicturePath();
 
 	static void setCurrentPicturePath(std::string);
+
+	static std::string getApplicationDirectory();
+
+	static void setApplicationDirectory(std::string);
 
 	inline static int toCObject(jint i) {
 		return (int) i;
@@ -139,6 +148,7 @@ private:
 
 	static LmWifiDirectFacade* _wifiDirectFacade;
 	static std::string _currentPicturePath;
+	static std::string _applicationDirectory;
 };
 
 #endif //LMJNICPPFACADE_H

@@ -8,6 +8,7 @@
 #ifndef HELPERS_H_
 #define HELPERS_H_
 
+#define APP_DIR LmJniCppFacade::getApplicationDirectory()
 #define CURR_PHOTO_PATH LmJniCppFacade::getCurrentPicturePath()
 #define TAKE_PICTURE LmJniJavaFacade::takePicture();
 #define PTR_TO_OBJ(PTR, OBJ_TYPE) *(static_cast<OBJ_TYPE*>(PTR))

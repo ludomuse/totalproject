@@ -116,6 +116,9 @@ void AppDelegate::initPathsForResolution()
 {
 	CCLOG("AppDelegate::initPathsForResolution");
 
+	LmJniJavaFacade::getApplicationDirectory();
+	CCLOG("<font color=\"red\"> application directory is: %s</font>", APP_DIR.c_str());
+
 	// initialize director
 	auto l_director = Director::getInstance();
 	auto l_glview = l_director->getOpenGLView();

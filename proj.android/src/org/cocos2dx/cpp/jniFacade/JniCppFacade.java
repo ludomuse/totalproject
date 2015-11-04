@@ -59,4 +59,6 @@ public class JniCppFacade {
 	public static native void setTabletName(String name);
 	
 	public static native void setCurrentPicturePath(String name);
+	
+	public static native void setApplicationDirectory(String path);
 }

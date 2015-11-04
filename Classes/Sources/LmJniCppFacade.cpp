@@ -6,6 +6,8 @@ LmWifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
 
 std::string LmJniCppFacade::_currentPicturePath = "";
 
+std::string LmJniCppFacade::_applicationDirectory = "";
+
 LmWifiDirectFacade* LmJniCppFacade::getWifiFacade()
 {
 	return _wifiDirectFacade;
@@ -25,6 +27,16 @@ void LmJniCppFacade::setCurrentPicturePath(std::string path)
 {
 	_currentPicturePath = path;
 	LmInteractionScene::notifyPictureIsTaken();
+}
+
+std::string LmJniCppFacade::getApplicationDirectory()
+{
+	return _applicationDirectory;
+}
+
+void LmJniCppFacade::setApplicationDirectory(std::string path)
+{
+	_applicationDirectory = path;
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPeers(
@@ -109,4 +121,10 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setCurrentPi
 		JNIEnv* env, jobject thiz, jstring path)
 {
 	LmJniCppFacade::setCurrentPicturePath(LmJniCppFacade::toCObject(path, env));
+}
+
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setApplicationDirectory(
+		JNIEnv* env, jobject thiz, jstring path)
+{
+	LmJniCppFacade::setApplicationDirectory(LmJniCppFacade::toCObject(path, env));
 }
