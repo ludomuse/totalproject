@@ -8,6 +8,7 @@ import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -112,8 +113,8 @@ public class JniJavaFacade {
 
 	public static void getApplicationDirectory()
 	{
-		String s = _wifiDirectFacade.getActivity().getFilesDir().getAbsolutePath();
-		JniCppFacade.setApplicationDirectory(s);
+		File f = _wifiDirectFacade.getActivity().getDir("res", Context.MODE_WORLD_WRITEABLE);
+		JniCppFacade.setApplicationDirectory(f.getAbsolutePath());
 		
 		/*PackageManager m = _wifiDirectFacade.getActivity().getPackageManager();
 		String s = _wifiDirectFacade.getActivity().getPackageName();
