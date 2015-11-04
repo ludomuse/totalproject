@@ -1,6 +1,7 @@
 package org.cocos2dx.cpp.jniFacade;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.String;
 
 import org.cocos2dx.cpp.AppActivity;
@@ -113,7 +114,19 @@ public class JniJavaFacade {
 
 	public static void getApplicationDirectory()
 	{
-		File f = _wifiDirectFacade.getActivity().getDir("res", Context.MODE_WORLD_WRITEABLE);
+		File f = new File("Android/data/" + _wifiDirectFacade.getActivity().getPackageName() + "/");
+		f.mkdir();
+		
+		/*File f = _wifiDirectFacade.getActivity().getDir("res", Context.MODE_WORLD_WRITEABLE);
+		try
+		{
+			new File(f.getAbsolutePath()).createNewFile();
+		}
+		catch (IOException e)
+		{
+			DebugManager.print("error: " + e.getLocalizedMessage(), WifiDirectManager.DEBUGGER_CHANNEL);
+			e.printStackTrace();
+		}*/
 		JniCppFacade.setApplicationDirectory(f.getAbsolutePath());
 		
 		/*PackageManager m = _wifiDirectFacade.getActivity().getPackageManager();
