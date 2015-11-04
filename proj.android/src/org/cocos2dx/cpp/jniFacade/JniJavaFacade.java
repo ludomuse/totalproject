@@ -112,7 +112,10 @@ public class JniJavaFacade {
 
 	public static void getApplicationDirectory()
 	{
-		PackageManager m = _wifiDirectFacade.getActivity().getPackageManager();
+		String s = _wifiDirectFacade.getActivity().getFilesDir().getAbsolutePath();
+		JniCppFacade.setApplicationDirectory(s);
+		
+		/*PackageManager m = _wifiDirectFacade.getActivity().getPackageManager();
 		String s = _wifiDirectFacade.getActivity().getPackageName();
 		try
 		{
@@ -125,7 +128,7 @@ public class JniJavaFacade {
 			DebugManager.print("PackageManager.NameNotFoundException",
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			JniCppFacade.setApplicationDirectory("");
-		}
+		}*/
 
 	}
 
