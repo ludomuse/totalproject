@@ -146,6 +146,11 @@ void LmJniJavaFacade::takePicture()
 	callJavaMethod("takePicture", (void*) 0, PARAM_VOID);
 }
 
+void LmJniJavaFacade::getApplicationDirectory()
+{
+	callJavaMethod("getApplicationDirectory", (void*) 0, PARAM_VOID);
+}
+
 void LmJniJavaFacade::getTabletName()
 {
 	callJavaMethod("getTabletName", (void*) 0, PARAM_VOID);

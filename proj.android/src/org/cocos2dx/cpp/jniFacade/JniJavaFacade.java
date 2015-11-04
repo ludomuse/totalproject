@@ -8,6 +8,8 @@ import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
@@ -62,10 +64,11 @@ public class JniJavaFacade {
 	{
 		WifiDirectFacade.setServerTempFileName(name);
 	}
-	
+
 	public static void sendByte(byte b)
 	{
-		DebugManager.print("send byte is called from c++", WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print("send byte is called from c++",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 		_wifiDirectFacade.send(b);
 	}
 
@@ -81,7 +84,8 @@ public class JniJavaFacade {
 
 	public static void discoverPeers()
 	{
-		DebugManager.print("discover peers is called from c++", WifiDirectManager.DEBUGGER_CHANNEL);
+		DebugManager.print("discover peers is called from c++",
+				WifiDirectManager.DEBUGGER_CHANNEL);
 		_wifiDirectFacade.discoverPeers();
 	}
 
@@ -94,16 +98,35 @@ public class JniJavaFacade {
 	{
 		JniCppFacade.setTabletName(_wifiDirectFacade.getThisDeviceName());
 	}
-	
+
 	public static void clean()
 	{
 		_wifiDirectFacade.clear();
 	}
-	
+
 	public static void takePicture()
 	{
 		AppActivity appActivity = (AppActivity) _wifiDirectFacade.getActivity();
 		appActivity.dispatchTakePictureIntent();
 	}
-	
+
+	public static void getApplicationDirectory()
+	{
+		PackageManager m = _wifiDirectFacade.getActivity().getPackageManager();
+		String s = _wifiDirectFacade.getActivity().getPackageName();
+		try
+		{
+			PackageInfo p = m.getPackageInfo(s, 0);
+			s = p.applicationInfo.dataDir;
+			JniCppFacade.setApplicationDirectory(s);
+		}
+		catch (PackageManager.NameNotFoundException e)
+		{
+			DebugManager.print("PackageManager.NameNotFoundException",
+					WifiDirectManager.DEBUGGER_CHANNEL);
+			JniCppFacade.setApplicationDirectory("");
+		}
+
+	}
+
 }
