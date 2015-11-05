@@ -3,20 +3,21 @@
 
 #include "../Include/AppDelegate.h"
 
+#include <stdio.h>
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate()
 {
 
 	//object
-	m_pwifiFacade = new LmWifiDirectFacade();//Create the wifi direct
+	m_pwifiFacade = new LmWifiDirectFacade(); //Create the wifi direct
 	//and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
 	//trough this the jni facade class)
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
 
 	m_pLmGameManager = new LmGameManager; //need to be delete
 	m_pLmMenu = new LmMenu; //need to be delete
-
 
 }
 
@@ -105,9 +106,9 @@ bool AppDelegate::init()
 			"MenuFinished", MenuFinished);
 
 	//put sound at maximum for effect and background
-	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(
+			1.0);
 	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(1.0);
-
 
 	return true;
 }
@@ -117,7 +118,8 @@ void AppDelegate::initPathsForResolution()
 	CCLOG("AppDelegate::initPathsForResolution");
 
 	LmJniJavaFacade::getApplicationDirectory();
-	CCLOG("<font color=\"red\"> application directory is: %s</font>", APP_DIR.c_str());
+	CCLOG("<font color=\"red\"> application directory is: %s</font>",
+			APP_DIR.c_str());
 
 	// initialize director
 	auto l_director = Director::getInstance();
@@ -147,58 +149,78 @@ void AppDelegate::initPathsForResolution()
 	auto l_fileUtils = FileUtils::getInstance();
 	std::vector<std::string> l_resDirOrders;
 
-
 	/*// if the frame's height is larger than the height of medium size we want to get large ressources
-	if (l_frameSize.height > s_MediumResolutionSize.height)
-	{
+	 if (l_frameSize.height > s_MediumResolutionSize.height)
+	 {
 
-		CCLOG("Large resolution");
-		//we are going to get ressources in the large ressources directorie then in the  medium and finally in the small
-		l_resDirOrders.push_back("LargeResolutionSize");
-		l_resDirOrders.push_back("MediumResolutionSize");
-		l_resDirOrders.push_back("SmallResolutionSize");
-		l_director->setContentScaleFactor(
-				MIN(
-						s_LargeResolutionSize.height
-								/ s_DesignResolutionSize.height,
-						s_LargeResolutionSize.width
-								/ s_DesignResolutionSize.width));
-	}
-	// if the frame's height is larger than the height of small size.
-	else if (l_frameSize.height > s_SmallResolutionSize.height)
-	{
-		CCLOG("Medium resolution");
-		l_resDirOrders.push_back("MediumResolutionSize");
-		l_resDirOrders.push_back("SmallResolutionSize");
-		l_director->setContentScaleFactor(
-				MIN(
-						s_MediumResolutionSize.height
-								/ s_DesignResolutionSize.height,
-						s_MediumResolutionSize.width
-								/ s_DesignResolutionSize.width));
-	}
-	// if the frame's height is smaller than the height of medium size.
-	else
-	{
-		CCLOG("Small resolution");
-		l_resDirOrders.push_back("SmallResolutionSize");
-		l_director->setContentScaleFactor(
-				MIN(
-						s_SmallResolutionSize.height
-								/ s_DesignResolutionSize.height,
-						s_SmallResolutionSize.width
-								/ s_DesignResolutionSize.width));
-	}*/
+	 CCLOG("Large resolution");
+	 //we are going to get ressources in the large ressources directorie then in the  medium and finally in the small
+	 l_resDirOrders.push_back("LargeResolutionSize");
+	 l_resDirOrders.push_back("MediumResolutionSize");
+	 l_resDirOrders.push_back("SmallResolutionSize");
+	 l_director->setContentScaleFactor(
+	 MIN(
+	 s_LargeResolutionSize.height
+	 / s_DesignResolutionSize.height,
+	 s_LargeResolutionSize.width
+	 / s_DesignResolutionSize.width));
+	 }
+	 // if the frame's height is larger than the height of small size.
+	 else if (l_frameSize.height > s_SmallResolutionSize.height)
+	 {
+	 CCLOG("Medium resolution");
+	 l_resDirOrders.push_back("MediumResolutionSize");
+	 l_resDirOrders.push_back("SmallResolutionSize");
+	 l_director->setContentScaleFactor(
+	 MIN(
+	 s_MediumResolutionSize.height
+	 / s_DesignResolutionSize.height,
+	 s_MediumResolutionSize.width
+	 / s_DesignResolutionSize.width));
+	 }
+	 // if the frame's height is smaller than the height of medium size.
+	 else
+	 {
+	 CCLOG("Small resolution");
+	 l_resDirOrders.push_back("SmallResolutionSize");
+	 l_director->setContentScaleFactor(
+	 MIN(
+	 s_SmallResolutionSize.height
+	 / s_DesignResolutionSize.height,
+	 s_SmallResolutionSize.width
+	 / s_DesignResolutionSize.width));
+	 }*/
 
 	l_resDirOrders.push_back("MediumResolutionSize");
 	l_director->setContentScaleFactor(
-			MIN(
-					s_MediumResolutionSize.height
-							/ s_DesignResolutionSize.height,
+			MIN(s_MediumResolutionSize.height / s_DesignResolutionSize.height,
 					s_MediumResolutionSize.width
 							/ s_DesignResolutionSize.width));
 
 	//set the paths
 	l_fileUtils->setSearchPaths(l_resDirOrders);
+
+	//test
+	if (l_fileUtils->isDirectoryExist(APP_DIR))
+	{
+		CCLOG("directoy exist");
+	}
+	else
+	{
+		CCLOG("don't exist");
+	}
+
+	std::string buffer = APP_DIR+"/myfile.txt";
+	CCLOG("path file %s", buffer.c_str());
+
+
+	if (l_fileUtils->isFileExist(buffer))
+	{
+		CCLOG("file exist");
+	}
+	else
+	{
+		CCLOG("file don't exist");
+	}
 }
 

@@ -16,6 +16,10 @@
 #define ON_CC_THREAD(FUN, OBJ, ...) 	Director::getInstance()->getScheduler()->performFunctionInCocosThread(\
 										std::bind(&FUN, OBJ, ##__VA_ARGS__));
 
+
+#define FILENAME_BUTTON_CLICKED "Audio/Ludomuse/buttonClicked.mp3"
+
+
 #include "LmBytesMessage.h"
 #include "LmJniJavaFacade.h"
 
@@ -73,10 +77,10 @@ struct LmEvent
 	 */
 	static const event InteractionDone = 9;
 
-
 };
 
 typedef struct LmEvent LmEvent;
+
 
 /*struct bytes
  {

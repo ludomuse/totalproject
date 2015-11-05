@@ -9,7 +9,6 @@
 #define COCOS2D_DEBUG 1
 
 #include "../Include/LmMenu.h"
-#include "../Include/LmGameManager.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -139,19 +138,6 @@ bool LmMenu::logScreen()
 
 	//remove the splash screen
 	m_pLogLayer->removeChild(m_pSpriteSplashScreen);
-
-	/*auto menu = Menu::create();
-	menu->setPosition(Vec2::ZERO);
-	m_pLogLayer->addChild(menu,1);
-
-	//test gregoire
-	auto takepictureButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/playNormal.png",
-			"Ludomuse/GUIElements/playPressed.png",
-			CC_CALLBACK_1(LmMenu::test, this));
-	takepictureButton->setPosition(
-			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.2));
-	menu->addChild(takepictureButton);*/
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
@@ -404,7 +390,7 @@ bool LmMenu::wifiDirectScreen()
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	if (!m_bReady)
 	{
@@ -454,7 +440,7 @@ void LmMenu::menuIsFinished()
 void LmMenu::maleSelected(cocos2d::Ref*)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	CCLOG("male");
 	m_pUser1->setBMale(true);
@@ -465,7 +451,7 @@ void LmMenu::femaleSelected(cocos2d::Ref*)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	CCLOG("female");
 
@@ -478,7 +464,7 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	if (m_bReady && !m_pUser1->isBParent())
 	{
@@ -502,7 +488,7 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	if (m_bReady && m_pUser1->isBParent())
 	{
@@ -601,7 +587,7 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender,
 		cocos2d::ui::CheckBox::EventType)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	auto l_pCheckBoxPressed = dynamic_cast<ui::CheckBox*>(p_Sender);
 	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pCheckBoxPressed)->second;
@@ -830,9 +816,5 @@ void LmMenu::setLabelFeedBack()
 	m_pLabelFeedback->setString(s_sBegining);
 }
 
-void LmMenu::test(Ref* p_Sender)
-{
-	CCLOG("take picture");
-	TAKE_PICTURE
-}
+
 

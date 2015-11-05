@@ -168,8 +168,6 @@ private:
 
 	void setLabelFeedBack();
 
-	void test(cocos2d::Ref* );
-
 
 
 };

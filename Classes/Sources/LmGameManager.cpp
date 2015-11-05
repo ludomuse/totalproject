@@ -3,12 +3,9 @@
 
 #include "../Include/LmGameManager.h"
 
-
+#include "../Include/LmHelpers.h"
 
 USING_NS_CC;
-
-const char* LmGameManager::s_sFilenameButtonClicked =
-		"Audio/Ludomuse/buttonClicked.mp3";
 
 LmGameManager::LmGameManager()
 {
@@ -403,15 +400,6 @@ bool LmGameManager::initDashboard()
 	 * Others gui elements
 	 */
 
-	//add the band mid at the top of the pink background
-	m_pSpriteBandMid = Sprite::create("Ludomuse/GUIElements/bandMid.png");
-	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
-	m_pSpriteBandMid->setPosition(
-			m_pSpriteBackgroundBlueProfile->getContentSize().width,
-			m_pSpriteBackgroundPink->getContentSize().height
-					* s_fMagingRatioOfSpriteBackgroundUser2Profile);
-	m_pPinkLayer->addChild(m_pSpriteBandMid);
-
 	//compare button with ui::Button
 	m_pCompareButton = ui::Button::create(
 			"Ludomuse/GUIElements/compareNormal1.png");
@@ -441,17 +429,27 @@ bool LmGameManager::initDashboard()
 							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
 							* 0.5f
 							+ m_pSpriteBackgroundBlueProfile->getContentSize().width,
-					l_oVisibleSize.height));
+					l_oVisibleSize.height + l_oOrigin.y));
 	m_pBackButton->addTouchEventListener(
 			CC_CALLBACK_0(LmGameManager::back, this));
-	m_pBackButton->setVisible(false);
 	m_pBackgroundLayer->addChild(m_pBackButton);
 
 	//put the top band
 	m_pSpriteBandTop = Sprite::create("Ludomuse/GUIElements/bandTop.png");
 	m_pSpriteBandTop->setAnchorPoint(Vec2(0, 1));
-	m_pSpriteBandTop->setPosition(Vec2(0, l_oVisibleSize.height + l_oOrigin.y));
-	m_pBackgroundLayer->addChild(m_pSpriteBandTop);
+	m_pSpriteBandTop->setPosition(
+			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
+					l_oVisibleSize.height + l_oOrigin.y));
+	m_pPinkLayer->addChild(m_pSpriteBandTop);
+
+	//add the band mid at the top of the pink background
+	m_pSpriteBandMid = Sprite::create("Ludomuse/GUIElements/bandMid.png");
+	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
+	m_pSpriteBandMid->setPosition(
+			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
+					m_pSpriteBackgroundPink->getContentSize().height
+							* s_fMagingRatioOfSpriteBackgroundUser2Profile));
+	m_pPinkLayer->addChild(m_pSpriteBandMid);
 
 	//title label app
 	m_sTitleApplication = m_pLmServerManager->getSTitleApplication();
@@ -461,8 +459,7 @@ bool LmGameManager::initDashboard()
 			Vec2(
 					(l_oVisibleSize.width
 							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
-							* 0.5
-							+ m_pSpriteBackgroundBlueProfile->getContentSize().width,
+							* 0.5,
 					m_pSpriteBandTop->getContentSize().height * 0.5f));
 	m_pLabelTitleApplication->setColor(Color3B::WHITE);
 	m_pLabelTitleApplication->setMaxLineWidth(
@@ -750,7 +747,7 @@ void LmGameManager::compare()
 
 		//play button clicked sound
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-				LmGameManager::s_sFilenameButtonClicked);
+				FILENAME_BUTTON_CLICKED);
 
 		m_bActionIsDone = false;
 
@@ -792,7 +789,7 @@ void LmGameManager::back()
 	{
 		//play button clicked sound
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-				LmGameManager::s_sFilenameButtonClicked);
+		FILENAME_BUTTON_CLICKED);
 
 		m_bActionIsDone = false;
 		auto l_oBackAction =
@@ -840,8 +837,8 @@ void LmGameManager::compareScreen(bool visible)
 {
 	m_pCompareButton->setVisible(!visible);
 	m_pLabelCompareButton->setVisible(!visible);
-	m_pSpriteBandTop->setVisible(!visible);
-	m_pBackButton->setVisible(visible);
+	//m_pSpriteBandTop->setVisible(!visible);
+	//m_pBackButton->setVisible(visible);
 	m_pAvatarSpriteUser2->setVisible(visible);
 	m_pCheckSpriteUser2->setVisible(visible);
 	m_pLabelInteractionDoneUser2->setVisible(visible);
@@ -872,7 +869,7 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 {
 	//play button clicked sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	//if its the last interactionscene the app finished
 	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
@@ -904,7 +901,7 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 void LmGameManager::settings(cocos2d::Ref*)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	m_pLmSettings->setVisible(true);
 

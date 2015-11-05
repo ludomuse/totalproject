@@ -44,6 +44,18 @@ bool LmJsonParser::initJsonDocument(string l_sFilename)
 
 }
 
+std::string LmJsonParser::getStringValue(const char* key)
+{
+	std::string result;
+
+	assert(m_oDocument["Ludomuse"].HasMember(key));
+	assert(m_oDocument["Ludomuse"][key].IsString());
+
+	result = m_oDocument["Ludomuse"][key].GetString();
+
+	return result.c_str();
+}
+
 const std::vector<LmInteractionScene*>& LmJsonParser::getAInteractionSceneOfTheGame(
 		bool l_bIsParent)
 {
@@ -311,6 +323,9 @@ void LmJsonParser::initInteractionAttributesSceneOfTheGame()
 			break;
 		case LmQuizz_v2Scene::s_iId:
 			makeLmQuizz_v2Scene(l_aSceneArray[i]);
+			break;
+		case LmTakePictureScene::s_iId:
+			makeLmTakePictureScene(l_aSceneArray[i]);
 			break;
 		default:
 			break;
@@ -665,7 +680,7 @@ void LmJsonParser::makeLmQuizz_v2Scene(const rapidjson::Value& l_oScene)
 	 */
 	assert(
 			l_oScene["QuestionsParent"].IsArray()
-			&& l_oScene.HasMember("QuestionsParent"));
+					&& l_oScene.HasMember("QuestionsParent"));
 
 	for (int i = 0; i < l_oScene["QuestionsParent"].Size(); i++)
 	{
@@ -925,6 +940,28 @@ void LmJsonParser::makeLmHintScene(const rapidjson::Value& l_oScene)
 	}
 
 	m_aInteractionSceneOfTheGame.push_back(new LmHintScene(l_SeedBuffer));
+
+	initInteractionAttributes(l_oScene,
+			m_aInteractionSceneOfTheGame.at(
+					m_aInteractionSceneOfTheGame.size() - 1));
+}
+
+void LmJsonParser::makeLmTakePictureScene(const rapidjson::Value& l_oScene)
+{
+	//buffer seed
+	LmTakePictureSceneSeed l_SeedBuffer;
+
+	//use to deep copy string
+	std::string l_sBufferString;
+
+	assert(
+			l_oScene["FilenameSpriteBackground"].IsString()
+					&& l_oScene.HasMember("FilenameSpriteBackground"));
+	l_sBufferString = l_oScene["FilenameSpriteBackground"].GetString();
+	l_SeedBuffer.FilenameSpriteBackground = l_sBufferString.c_str();
+
+	m_aInteractionSceneOfTheGame.push_back(
+			new LmTakePictureScene(l_SeedBuffer));
 
 	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(

@@ -33,6 +33,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Sources/LmFindGoodCategoryScene.cpp\
                    ../../Classes/Sources/LmHintScene.cpp\
                    ../../Classes/Sources/LmSettings.cpp\
+                   ../../Classes/Sources/LmTakePictureScene.cpp\
                    
 
 

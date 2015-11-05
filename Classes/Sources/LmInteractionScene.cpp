@@ -251,7 +251,7 @@ void LmInteractionScene::playCallback(cocos2d::Ref*,
 		cocos2d::ui::CheckBox::EventType type)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	switch (type)
 	{
@@ -274,7 +274,7 @@ void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	if (m_bSetPointBegin)
 	{
@@ -307,7 +307,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	CCLOG("LmInteractionScene::nextSetPointLayer");
 
@@ -483,7 +483,7 @@ void LmInteractionScene::initDashboardLayer()
 
 	m_pBackDashboardButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/backToDashboard.png",
-			"Ludomuse/GUIElements/backToDashboard.png",
+			"Ludomuse/GUIElements/backToDashboardpressed.png",
 			CC_CALLBACK_1(LmInteractionScene::backToDashboard, this));
 	m_pBackDashboardButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width * (0.5f),
@@ -569,7 +569,7 @@ void LmInteractionScene::moveLeftDone()
 void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	if (!m_bBackPressed && m_bMoveDone && m_pLmSetPointBegin->isBActionDone())
 	{

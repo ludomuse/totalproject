@@ -22,12 +22,12 @@
 #include "cocos2d.h"
 
 //use to make each scene
-#include "LmInteractionScene.h"
 #include "LmRightSpotScene.h"
 #include "LmQuizz_v1Scene.h"
 #include "LmFindGoodCategoryScene.h"
 #include "LmHintScene.h"
 #include "LmQuizz_v2Scene.h"
+#include "LmTakePictureScene.h"
 
 
 class LmJsonParser
@@ -48,6 +48,9 @@ public:
 	std::string getSFilenameSpriteSplashScreen();
 
 	const std::vector<LmInteractionScene*>& getAInteractionSceneOfTheGame(bool);
+
+	//first param is the key of the value
+	std::string getStringValue(const char*);
 
 private:
 
@@ -96,6 +99,8 @@ private:
 	void makeLmFindGoodCategoryScene(const rapidjson::Value&);
 	void makeLmHintScene(const rapidjson::Value&);
 	void makeLmQuizz_v2Scene(const rapidjson::Value&);
+	void makeLmTakePictureScene(const rapidjson::Value&);
+
 
 
 };

@@ -23,7 +23,6 @@ class LmGameManager: public LmWifiObserver
 
 public:
 
-	static const char* s_sFilenameButtonClicked;
 
 	LmGameManager();
 	~LmGameManager();
