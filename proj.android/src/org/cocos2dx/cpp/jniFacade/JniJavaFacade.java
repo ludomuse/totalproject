@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Environment;
 import android.provider.ContactsContract;
 
 /**
@@ -114,9 +115,9 @@ public class JniJavaFacade {
 
 	public static void getApplicationDirectory()
 	{
-		File f = new File("Android/data/" + _wifiDirectFacade.getActivity().getPackageName() + "/");
-		f.mkdir();
-		
+		File f = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + _wifiDirectFacade.getActivity().getPackageName());
+		if(!f.exists())
+			f.mkdir();
 		/*File f = _wifiDirectFacade.getActivity().getDir("res", Context.MODE_WORLD_WRITEABLE);
 		try
 		{

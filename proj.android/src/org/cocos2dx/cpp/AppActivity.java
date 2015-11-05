@@ -110,9 +110,10 @@ public class AppActivity extends Cocos2dxActivity {
 	private File createImageFile() throws IOException
 	{
 		// Create an image file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+		/*String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
-		String imageFileName = "JPEG_" + timeStamp + "_";
+		String imageFileName = "JPEG_" + timeStamp + "_";*/
+		String imageFileName = "MyPic";
 		File storageDir = Environment
 				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 		File image = File.createTempFile(imageFileName, /* prefix */
