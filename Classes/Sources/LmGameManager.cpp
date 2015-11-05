@@ -104,7 +104,7 @@ bool LmGameManager::init()
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	if (!m_pLmServerManager->init())
 	{
@@ -838,7 +838,7 @@ void LmGameManager::compareScreen(bool visible)
 	m_pCompareButton->setVisible(!visible);
 	m_pLabelCompareButton->setVisible(!visible);
 	//m_pSpriteBandTop->setVisible(!visible);
-	//m_pBackButton->setVisible(visible);
+	m_pBackButton->setVisible(visible);
 	m_pAvatarSpriteUser2->setVisible(visible);
 	m_pCheckSpriteUser2->setVisible(visible);
 	m_pLabelInteractionDoneUser2->setVisible(visible);

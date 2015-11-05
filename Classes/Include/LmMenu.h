@@ -114,6 +114,8 @@ private:
 	//the window to display the list of device
 	cocos2d::Rect m_oWindowListOfDevice;
 
+	cocos2d::MenuItemImage* m_pRefreshButton;
+
 	/*
 	 * BOOLEAN
 	 */
