@@ -307,7 +307,11 @@ public class WifiDirectManager {
 
 	public void reconnectToPeer()
 	{
-		connectToPeer(lastPeerName, _cmPeerConnected);
+		if(lastPeerName != null && !lastPeerName.equals("") && socket.wasPreviouslyAttached())
+		{
+			socket.attachToRemoteHost();
+			connectToPeer(lastPeerName, _cmPeerConnected);
+		}
 		/*
 		 * Handler handler = new Handler();
 		 * DebugManager.print("Trying to reconnect to peer",

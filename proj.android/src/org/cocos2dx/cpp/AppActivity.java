@@ -3,6 +3,7 @@ package org.cocos2dx.cpp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.hardware.Camera;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
 import org.cocos2dx.cpp.jniFacade.JniCppFacade;
@@ -88,6 +89,8 @@ public class AppActivity extends Cocos2dxActivity {
 
 	public void dispatchTakePictureIntent()
 	{
+		Camera camera = this.getCamera();
+		
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// Ensure that there's a camera activity to handle the intent
 		if (takePictureIntent.resolveActivity(getPackageManager()) != null)

@@ -127,6 +127,8 @@ public class ClientSocketHandler {
 
 	private String remoteIp = null;
 	private int remotePort = -1;
+	
+	private boolean isAttachedToRemoteHost = false;
 
 	private SocketHandler master;
 	
@@ -161,13 +163,14 @@ public class ClientSocketHandler {
 	 */
 	public boolean isConnected()
 	{
-		return socket != null && socket.isConnected() && remoteIp != null;
+		return socket != null && socket.isConnected() && isAttachedToRemoteHost;
 	}
 
 	public void setRemoteHost(String ip, int port)
 	{
 		remoteIp = ip;
 		remotePort = port;
+		isAttachedToRemoteHost = true;
 	}
 
 	private void closeOutputStream(OutputStream os)
@@ -187,15 +190,30 @@ public class ClientSocketHandler {
 
 	public boolean isDettachedFromRemoteHost()
 	{
-		return remoteIp == null;
+		return isAttachedToRemoteHost == false;
+		//return remoteIp == null;
 	}
 
+	/**
+	 * allow client to try to connect again to the host
+	 */
+	public void attachToRemoteHost()
+	{
+		isAttachedToRemoteHost = true;
+	}
+	
+	public boolean wasPreviouslyAttached()
+	{
+		return remoteIp != null;
+	}
+	
 	/**
 	 * Forbid client to try to connect again to the host
 	 */
 	public void dettachFromRemoteHost()
 	{
-		remoteIp = null;
+		isAttachedToRemoteHost = false;
+		//remoteIp = null;
 	}
 
 	/**
