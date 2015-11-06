@@ -9,6 +9,7 @@
 #define COCOS2D_DEBUG 1
 
 #include "../Include/LmMenu.h"
+#include "../Include/LmJsonParser.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -101,11 +102,10 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 	}
 
 	//unclivk ready button
-	if(m_bReady)
+	if (m_bReady)
 	{
 		ready(nullptr);
 	}
-
 
 	ON_CC_THREAD(LmMenu::makeCheckboxUserTabletName, this, peers);
 
@@ -149,12 +149,15 @@ bool LmMenu::logScreen()
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
+
+	//load texts
+	initText();
 
 	//add a background img for the log layer
 	m_pSpriteLogBackground = Sprite::create(s_sFilenameSpriteBackground);
-	m_pSpriteLogBackground->setPosition(l_oVisibleSize.width *0.5,
-			l_oVisibleSize.height*0.5);
+	m_pSpriteLogBackground->setPosition(l_oVisibleSize.width * 0.5,
+			l_oVisibleSize.height * 0.5);
 	m_pLogLayer->addChild(m_pSpriteLogBackground);
 
 	//add the sprite of the form
@@ -202,7 +205,7 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
 	//test
-	//m_pLogEditBox->setText("UserName");
+	m_pLogEditBox->setText("UserName");
 
 	return true;
 }
@@ -214,7 +217,7 @@ void LmMenu::logFinished(Ref* p_Sender)
 	{
 
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-					FILENAME_BUTTON_CLICKED);
+		FILENAME_BUTTON_CLICKED);
 
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 
@@ -288,7 +291,7 @@ bool LmMenu::wifiDirectScreen()
 	m_pLabelFeedback->setMaxLineWidth(l_oVisibleSize.width * 0.8);
 	m_pSpriteWifiBackground->addChild(m_pLabelFeedback);
 
-	m_pLabelFeedback->setString(s_sSearching);
+	m_pLabelFeedback->setString(m_sSearching);
 
 	//sprite to indicate if ready or not
 	m_pSpriteReadyIndicator = Sprite::create("Ludomuse/GUIElements/cross.png");
@@ -373,7 +376,9 @@ bool LmMenu::wifiDirectScreen()
 	m_pCheckBoxChild->setSwallowTouches(false);
 	m_pCheckBoxChild->setAnchorPoint(Vec2(0, 0.5));
 	m_pCheckBoxChild->setPosition(
-			Vec2(s_fMarginLeftMenu + m_pCheckBoxParent->getCustomSize().width*2.3,
+			Vec2(
+					s_fMarginLeftMenu
+							+ m_pCheckBoxParent->getCustomSize().width * 2.3,
 					l_oVisibleSize.height * 0.25));
 	m_pCheckBoxChild->addEventListener(
 			CC_CALLBACK_2(LmMenu::childSelected, this));
@@ -401,7 +406,7 @@ bool LmMenu::wifiDirectScreen()
 void LmMenu::ready(cocos2d::Ref* l_oSender)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	if (!m_bReady)
 	{
@@ -415,8 +420,8 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 		msg << LmEvent::UserIsReady << *m_pUser1;
 		WIFIFACADE->sendBytes(msg);
 
-		CCLOG("m_pLabelFeedback->setString(s_sUserIsReady);");
-		m_pLabelFeedback->setString(s_sUserIsReady);
+		CCLOG("m_pLabelFeedback->setString(m_sUserIsReady);");
+		m_pLabelFeedback->setString(m_sUserIsReady);
 
 	}
 	else
@@ -426,8 +431,8 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 
 		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/cross.png");
 
-		CCLOG("m_pLabelFeedback->setString(s_sBegining);");
-		m_pLabelFeedback->setString(s_sDeviceAndRoleSlected);
+		CCLOG("m_pLabelFeedback->setString(m_sBegining);");
+		m_pLabelFeedback->setString(m_sDeviceAndRoleSlected);
 
 	}
 
@@ -451,7 +456,7 @@ void LmMenu::menuIsFinished()
 void LmMenu::maleSelected(cocos2d::Ref*)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	CCLOG("male");
 	m_pUser1->setBMale(true);
@@ -462,7 +467,7 @@ void LmMenu::femaleSelected(cocos2d::Ref*)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	CCLOG("female");
 	m_pUser1->setBMale(false);
@@ -474,7 +479,7 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	if (m_bReady && !m_pUser1->isBParent())
 	{
@@ -490,7 +495,7 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_bRoleSelected = true;
 
 	setReadyVisible(true);
-	m_pLabelFeedback->setString(s_sDeviceAndRoleSlected);
+	m_pLabelFeedback->setString(m_sDeviceAndRoleSlected);
 
 }
 
@@ -498,7 +503,7 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	if (m_bReady && m_pUser1->isBParent())
 	{
@@ -513,14 +518,14 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_bRoleSelected = true;
 
 	setReadyVisible(true);
-	m_pLabelFeedback->setString(s_sDeviceAndRoleSlected);
+	m_pLabelFeedback->setString(m_sDeviceAndRoleSlected);
 
 }
 
 void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-				FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	_wifiFacade->discoverPeers();
 }
@@ -600,7 +605,7 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender,
 		cocos2d::ui::CheckBox::EventType)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	auto l_pCheckBoxPressed = dynamic_cast<ui::CheckBox*>(p_Sender);
 	auto l_pLabel = m_aMenuItemUserTabletName.find(l_pCheckBoxPressed)->second;
@@ -639,9 +644,8 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender,
 		m_pCheckBoxChild->setVisible(true);
 		m_pCheckBoxParent->setVisible(true);
 
-		m_pLabelFeedback->setString(s_sRoleNotChoose);
+		m_pLabelFeedback->setString(m_sRoleNotChoose);
 	}
-
 
 }
 
@@ -746,8 +750,8 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 			msg.write(false);
 			WIFIFACADE->sendBytes(msg);
 
-			CCLOG("m_pLabelFeedback->setString(s_sError);");
-			m_pLabelFeedback->setString(s_sError);
+			CCLOG("m_pLabelFeedback->setString(m_sError);");
+			m_pLabelFeedback->setString(m_sError);
 			if (m_bReady)
 			{
 				ready(nullptr);
@@ -780,8 +784,8 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 	{
 		//unblock input
 		inputEnabled(true);
-		CCLOG("m_pLabelFeedback->setString(s_sError);");
-		m_pLabelFeedback->setString(s_sError);
+		CCLOG("m_pLabelFeedback->setString(m_sError);");
+		m_pLabelFeedback->setString(m_sError);
 		if (m_bReady)
 		{
 			ready(nullptr);
@@ -800,13 +804,13 @@ bool LmMenu::usersAreCompatible(LmUser* userToCompare)
 	if ((userToCompare->isBParent() && m_pUser1->isBParent())
 			|| (!userToCompare->isBParent() && !m_pUser1->isBParent()))
 	{
-		m_pLabelFeedback->setString(s_sUserNotCompatibleRole);
+		m_pLabelFeedback->setString(m_sUserNotCompatibleRole);
 		return false;
 	}
 	else if (userToCompare->getPUserTabletName().compare(
 			m_pUser2->getPUserTabletName()) != 0)
 	{
-		m_pLabelFeedback->setString(s_sUserNotCompatibleTabletName);
+		m_pLabelFeedback->setString(m_sUserNotCompatibleTabletName);
 		return false;
 	}
 
@@ -828,8 +832,30 @@ void LmMenu::removeMenuElement()
 
 void LmMenu::setLabelFeedBack()
 {
-	m_pLabelFeedback->setString(s_sBegining);
+	m_pLabelFeedback->setString(m_sBegining);
 }
 
+void LmMenu::initText()
+{
+	auto l_pLmJsonParser = new LmJsonParser;
 
+	if(!l_pLmJsonParser->initJsonDocument("Json/strings.json"))
+	{
+		CCLOG("init json credit failed");
+	}
+
+	m_sUserIsReady = l_pLmJsonParser->getStringValue("UserIsReady");
+	m_sDeviceAndRoleSlected = l_pLmJsonParser->getStringValue(
+			"DeviceAndRoleSlected");
+	m_sRoleNotChoose = l_pLmJsonParser->getStringValue("RoleNotChoose");
+	m_sBegining = l_pLmJsonParser->getStringValue("Begining");
+	m_sUserNotCompatibleRole = l_pLmJsonParser->getStringValue(
+			"UserNotCompatibleRole");
+	m_sUserNotCompatibleTabletName = l_pLmJsonParser->getStringValue(
+			"UserNotCompatibleTabletName");
+	m_sError = l_pLmJsonParser->getStringValue("Error");
+	m_sSearching = l_pLmJsonParser->getStringValue("Searching");
+
+	delete l_pLmJsonParser;
+}
 

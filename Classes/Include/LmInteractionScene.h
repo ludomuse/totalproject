@@ -21,7 +21,7 @@ typedef std::map<int, LmGameComponent*>::iterator it_type;
 
 static const float s_fDashboardRatioHidden = 0.95f;
 static const float s_fTimeMovingDashboard = 0.4f;
-static const float s_fMarginLeft = 150.0f;
+static const float s_fMarginLeft = 80.0f;
 static const float s_fMarginBot = 20.0f;
 
 //margin between image when images has to be display
@@ -105,6 +105,10 @@ public:
 	}
 
 	virtual void onReceivingMsg(bytes );
+	virtual void onReceivingFile(std::string)
+	{
+
+	}
 
 	bool startGame();
 

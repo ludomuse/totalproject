@@ -307,11 +307,13 @@ public class WifiDirectManager {
 
 	public void reconnectToPeer()
 	{
+
 		if(lastPeerName != null && !lastPeerName.equals("") && socket.wasPreviouslyAttached())
 		{
 			socket.attachToRemoteHost();
 			connectToPeer(lastPeerName, _cmPeerConnected);
 		}
+
 		/*
 		 * Handler handler = new Handler();
 		 * DebugManager.print("Trying to reconnect to peer",
@@ -1109,6 +1111,7 @@ public class WifiDirectManager {
 	private void onDisconnect(NetworkInfo ni)
 	{
 		socket.notifyIsDisconnectedFromNetwork();
+		//socket.stop();
 
 		DebugManager
 				.print("device is not connect to network", DEBUGGER_CHANNEL);
