@@ -89,7 +89,8 @@ public class AppActivity extends Cocos2dxActivity {
 
 	public void dispatchTakePictureIntent()
 	{
-		Camera camera = this.getCamera();
+		Camera camera = Camera.open();
+		camera.getParameters().setPictureSize(4096, 4096);
 		
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// Ensure that there's a camera activity to handle the intent
