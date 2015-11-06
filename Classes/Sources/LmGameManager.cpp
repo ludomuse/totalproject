@@ -36,7 +36,6 @@ LmGameManager::LmGameManager()
 	m_pBackButton = nullptr;
 	m_pBackgroundLayer = nullptr;
 	m_pCompareButton == nullptr;
-	m_pLabelCompareButton = nullptr;
 	m_pLabelScore = nullptr;
 	m_pLabelTitleApplication = nullptr;
 	m_pLabelUser1Name = nullptr;
@@ -104,7 +103,7 @@ bool LmGameManager::init()
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	if (!m_pLmServerManager->init())
 	{
@@ -400,40 +399,6 @@ bool LmGameManager::initDashboard()
 	 * Others gui elements
 	 */
 
-	//compare button with ui::Button
-	m_pCompareButton = ui::Button::create(
-			"Ludomuse/GUIElements/compareNormal1.png");
-	m_pCompareButton->setTouchEnabled(true);
-	m_pCompareButton->setPosition(
-			Vect(l_oVisibleSize.width * 0.5f, l_oVisibleSize.height * 0.1f));
-	m_pCompareButton->addTouchEventListener(
-			CC_CALLBACK_0(LmGameManager::compare, this));
-	m_pPinkLayer->addChild(m_pCompareButton);
-
-	//label compare button
-	m_pLabelCompareButton = Label::createWithTTF("comparer",
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
-	m_pLabelCompareButton->setPosition(
-			l_oVisibleSize.width * 0.6f
-					+ m_pCompareButton->getContentSize().width,
-			l_oVisibleSize.height * 0.1f);
-	m_pPinkLayer->addChild(m_pLabelCompareButton);
-
-	//back button
-	m_pBackButton = ui::Button::create("Ludomuse/GUIElements/backNormal.png");
-	m_pBackButton->setTouchEnabled(true);
-	m_pBackButton->setAnchorPoint(Vec2(0.5, 1));
-	m_pBackButton->setPosition(
-			Vect(
-					(l_oVisibleSize.width
-							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
-							* 0.5f
-							+ m_pSpriteBackgroundBlueProfile->getContentSize().width,
-					l_oVisibleSize.height + l_oOrigin.y));
-	m_pBackButton->addTouchEventListener(
-			CC_CALLBACK_0(LmGameManager::back, this));
-	m_pBackgroundLayer->addChild(m_pBackButton);
-
 	//put the top band
 	m_pSpriteBandTop = Sprite::create("Ludomuse/GUIElements/bandTop.png");
 	m_pSpriteBandTop->setAnchorPoint(Vec2(0, 1));
@@ -441,15 +406,6 @@ bool LmGameManager::initDashboard()
 			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
 					l_oVisibleSize.height + l_oOrigin.y));
 	m_pPinkLayer->addChild(m_pSpriteBandTop);
-
-	//add the band mid at the top of the pink background
-	m_pSpriteBandMid = Sprite::create("Ludomuse/GUIElements/bandMid.png");
-	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
-	m_pSpriteBandMid->setPosition(
-			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
-					m_pSpriteBackgroundPink->getContentSize().height
-							* s_fMagingRatioOfSpriteBackgroundUser2Profile));
-	m_pPinkLayer->addChild(m_pSpriteBandMid);
 
 	//title label app
 	m_sTitleApplication = m_pLmServerManager->getSTitleApplication();
@@ -468,9 +424,28 @@ bool LmGameManager::initDashboard()
 					* 0.7);
 	m_pSpriteBandTop->addChild(m_pLabelTitleApplication);
 
+	//add the band mid at the top of the pink background
+	m_pSpriteBandMid = Sprite::create("Ludomuse/GUIElements/bandMid.png");
+	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
+	m_pSpriteBandMid->setPosition(
+			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
+					m_pSpriteBackgroundPink->getContentSize().height
+							* s_fMagingRatioOfSpriteBackgroundUser2Profile));
+	m_pPinkLayer->addChild(m_pSpriteBandMid);
+
 	auto l_pMenu = Menu::create();
 	l_pMenu->setPosition(Vec2::ZERO);
 	m_pSpriteBandMid->addChild(l_pMenu);
+
+
+	//compare butto
+	m_pCompareButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/compareNormal1.png",
+			"Ludomuse/GUIElements/compareNormal1.png",
+			CC_CALLBACK_1(LmGameManager::compare, this));
+	m_pCompareButton->setPosition(
+			Vect(l_oVisibleSize.width*0.5, l_oVisibleSize.height * 0.2f));
+	l_pMenu->addChild(m_pCompareButton);
 
 	//play next interaction button
 	m_pPlayNextInteractionButton = MenuItemImage::create(
@@ -492,6 +467,25 @@ bool LmGameManager::initDashboard()
 	m_pSettingsButton->setPosition(
 			Vec2(m_pSpriteBandMid->getContentSize().width, l_oWinSize.height));
 	l_pMenu->addChild(m_pSettingsButton);
+
+	auto l_pStaticMenu = Menu::create();
+	l_pStaticMenu->setPosition(Vec2::ZERO);
+	m_pBackgroundLayer->addChild(l_pStaticMenu);
+
+	//back button
+	m_pBackButton = MenuItemImage::create("Ludomuse/GUIElements/backNormal.png",
+			"Ludomuse/GUIElements/backNormal.png",
+			CC_CALLBACK_1(LmGameManager::back, this));
+	m_pBackButton->setAnchorPoint(Vec2(0.5, 1));
+	m_pBackButton->setPosition(
+			Vect(
+					(l_oVisibleSize.width
+							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
+							* 0.5f
+							+ m_pSpriteBackgroundBlueProfile->getContentSize().width,
+					l_oVisibleSize.height + l_oOrigin.y));
+	m_pBackButton->setVisible(false);
+	l_pStaticMenu->addChild(m_pBackButton);
 
 	//add settings menu
 	m_pLmSettings->init();
@@ -740,14 +734,14 @@ void LmGameManager::updateDashboard()
 
 }
 
-void LmGameManager::compare()
+void LmGameManager::compare(Ref* p_Sender)
 {
 	if (m_bActionIsDone)
 	{
 
 		//play button clicked sound
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-				FILENAME_BUTTON_CLICKED);
+		FILENAME_BUTTON_CLICKED);
 
 		m_bActionIsDone = false;
 
@@ -783,7 +777,7 @@ void LmGameManager::compareDone()
 
 }
 
-void LmGameManager::back()
+void LmGameManager::back(Ref* p_Sender)
 {
 	if (m_bActionIsDone)
 	{
@@ -836,7 +830,6 @@ void LmGameManager::setSpritesInteractionsUser2Visible(bool visible)
 void LmGameManager::compareScreen(bool visible)
 {
 	m_pCompareButton->setVisible(!visible);
-	m_pLabelCompareButton->setVisible(!visible);
 	//m_pSpriteBandTop->setVisible(!visible);
 	m_pBackButton->setVisible(visible);
 	m_pAvatarSpriteUser2->setVisible(visible);
@@ -869,7 +862,7 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 {
 	//play button clicked sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	//if its the last interactionscene the app finished
 	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
@@ -901,7 +894,7 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 void LmGameManager::settings(cocos2d::Ref*)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	m_pLmSettings->setVisible(true);
 
@@ -909,8 +902,8 @@ void LmGameManager::settings(cocos2d::Ref*)
 
 void LmGameManager::inputDisabled(bool l_bTrue)
 {
-	m_pBackButton->setTouchEnabled(!l_bTrue);
-	m_pCompareButton->setTouchEnabled(!l_bTrue);
+	m_pBackButton->setEnabled(!l_bTrue);
+	m_pCompareButton->setEnabled(!l_bTrue);
 	m_pPlayNextInteractionButton->setEnabled(!l_bTrue);
 	m_pListener->setEnabled(!l_bTrue);
 	m_pSettingsButton->setEnabled(!l_bTrue);

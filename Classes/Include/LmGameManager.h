@@ -95,9 +95,8 @@ private:
 	cocos2d::Label* m_pLabelTitleApplication;
 	std::string m_sTitleApplication;
 
-	cocos2d::ui::Button* m_pCompareButton;
-	cocos2d::Label* m_pLabelCompareButton;
-	cocos2d::ui::Button* m_pBackButton;
+	cocos2d::MenuItemImage* m_pCompareButton;
+	cocos2d::MenuItemImage* m_pBackButton;
 	cocos2d::MenuItemImage* m_pPlayNextInteractionButton;
 
 	//need to be member so we can make it visible or not
@@ -137,9 +136,9 @@ private:
 	bool init();
 
 	//callback methods
-	void compare();
+	void compare(cocos2d::Ref* );
 	void compareDone();
-	void back();
+	void back(cocos2d::Ref* );
 	void backDone();
 
 	void runNextInteraction(cocos2d::Ref*);
