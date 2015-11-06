@@ -1,0 +1,123 @@
+{
+  "Ludomuse": {
+    "Configuration": {
+      "Title": "Test",
+      "FilenameSpriteSplashScreen": "Game/Background/splashScreenLu.png"
+    },
+    "SceneArray": [
+      {
+        "Id": 5,
+        "Description": "Un jeu ou on peut prendre des photos",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/alley.png"
+      }
+    ]
+  }
+}

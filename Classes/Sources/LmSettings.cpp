@@ -168,13 +168,16 @@ void LmSettings::addChild(cocos2d::Node* child)
 
 void LmSettings::runCredits(Ref* p_Sender)
 {
+
+	//play button clicked sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			FILENAME_BUTTON_CLICKED);
+
 	m_pLmCredits->run();
 }
 
 LmCredits::LmCredits()
 {
-
-
 
 	//prmitive type
 	m_bLayerTouched = false;
@@ -216,7 +219,7 @@ void LmCredits::initCredits()
 	initText();
 
 	//init label
-	m_pLabel = Label::createWithTTF(m_sText, "Fonts/JosefinSans-Regular.ttf",
+	m_pLabel = Label::createWithTTF(m_sCreditsText, "Fonts/JosefinSans-Regular.ttf",
 			l_oVisibleSize.width * 0.06);
 	m_pLabel->setAnchorPoint(Vec2(0.5, 0));
 	m_pLabel->setPosition(
@@ -238,7 +241,7 @@ void LmCredits::initText()
 		CCLOG("init json credit failed");
 	}
 
-	m_sText = l_pLmJsonParser->getStringValue("CreditsText");
+	m_sCreditsText = l_pLmJsonParser->getStringValue("CreditsText");
 
 
 	delete l_pLmJsonParser;
@@ -270,7 +273,6 @@ bool LmCredits::onTouchBeganCredits(Touch* touch, Event* event)
 	{
 		m_bLayerTouched = true;
 		Director::getInstance()->popScene();
-
 	}
 
 	return true;

@@ -16,20 +16,6 @@
 #include "LmJniCppFacade.h"
 #include "LmWifiObserver.h"
 
-//message of the feedback label
-static const std::string s_sUserIsReady = "En attente de ton partenaire..."; //ok
-static const std::string s_sDeviceAndRoleSlected =
-		"Maintenant tu peux te connecter avec ton partenaire.";//ok
-static const std::string s_sRoleNotChoose =
-		"Choisis le role que tu vas jouer pendant cette partie."; //ok
-static const std::string s_sBegining = "Choisis une tablette avec qui jouer"; //ok
-static const std::string s_sUserNotCompatibleRole =
-		"Vos roles ne sont pas compatible.";//ok
-static const std::string s_sUserNotCompatibleTabletName =
-		"Vos noms de tablette ne correspondent pas.";
-static const std::string s_sError = "Une erreur est survenue, veuillez recommencer.";
-static const std::string s_sSearching = "Nous recherchons les appareils disponibles...";//ok
-
 //Parameters
 static const float s_fSplashScreenDuration = 0.5f;
 static const int s_iMaxLenghtUserName = 10;
@@ -131,6 +117,16 @@ private:
 	//to stop listening
 	int m_iIdWifiObserver;
 
+	//message of the feedback label
+	std::string m_sUserIsReady;
+	std::string m_sDeviceAndRoleSlected;
+	std::string m_sRoleNotChoose;
+	std::string m_sBegining;
+	std::string m_sUserNotCompatibleRole;
+	std::string m_sUserNotCompatibleTabletName;
+	std::string m_sError;
+	std::string m_sSearching ;
+
 	//********************METHODS********************
 
 	//remove splashscreen and init log screen
@@ -170,7 +166,8 @@ private:
 
 	void setLabelFeedBack();
 
-
+	//init text from json
+	void initText();
 
 };
 

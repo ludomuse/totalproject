@@ -30,7 +30,7 @@ private:
 
 
 	//ATTRIBUTES
-	std::string m_sText;
+	std::string m_sCreditsText;
 	cocos2d::Label* m_pLabel;
 	bool m_bLayerTouched;
 	cocos2d::EventListenerTouchOneByOne* m_pListener;

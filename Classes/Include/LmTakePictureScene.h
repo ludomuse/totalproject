@@ -33,6 +33,8 @@ public:
 
 	//dispatcher
 	virtual void onReceivingMsg(bytes);
+	virtual void onReceivingFile(std::string);
+
 
 
 
@@ -56,7 +58,8 @@ private:
 
 	void takePicture(cocos2d::Ref*);
 
-	void notifyPictureIsTaken();
+	void setFileToSprite(std::string);
+
 
 };
 

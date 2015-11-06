@@ -80,43 +80,64 @@ bool LmTakePictureScene::initGame()
 	l_pSpriteBackground->addChild(m_pBufferSpritePhoto);
 
 	//listen to custom event picture taken
-	auto PictureTaken = [=](EventCustom * event)
-	{
+	auto PictureTaken =
+			[=](EventCustom * event)
+			{
 
-		CCLOG("picture has been take");
-		ON_CC_THREAD(LmTakePictureScene::notifyPictureIsTaken, this);
+				CCLOG("picture has been take");
+				ON_CC_THREAD(LmTakePictureScene::setFileToSprite, this,LmJniCppFacade::getCurrentPicturePath());
 
-	};
+				CCLOG("file sent");
+				//send it to the other player
+				//WIFIFACADE->sendFile(LmJniCppFacade::getCurrentPicturePath());
+
+				bytes msg(10);
+				msg << LmEvent::Win;
+				msg.write(true);
+				WIFIFACADE->sendBytes(msg);
+			};
 
 	//add the custom event to the event dispatcher
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"PictureTaken", PictureTaken);
+
 
 	return true;
 }
 
 void LmTakePictureScene::takePicture(Ref* p_Sender)
 {
+	bytes msg(10);
+	msg << LmEvent::Win;
+	msg.write(true);
+	WIFIFACADE->sendBytes(msg);
+
+
 	TAKE_PICTURE;
 }
 
-void LmTakePictureScene::notifyPictureIsTaken()
+void LmTakePictureScene::onReceivingFile(std::string pathFile)
 {
+	CCLOG("LmTakePictureScene::onReceivingFile : %s", pathFile.c_str());
+	ON_CC_THREAD(LmTakePictureScene::setFileToSprite, this, pathFile);
+}
 
-	m_pBufferSpritePhoto->setTexture(CURR_PHOTO_PATH);
+void LmTakePictureScene::setFileToSprite(std::string pathFile)
+{
+	m_pBufferSpritePhoto->setTexture(pathFile);
 
 	//resize it
-			Size l_oSizePhoto = m_pBufferSpritePhoto->getContentSize();
-			Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+	Size l_oSizePhoto = m_pBufferSpritePhoto->getContentSize();
+	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 
-			if(l_oSizePhoto.height>l_oVisibleSize.height*0.5)
-			{
-				float scalefactor = l_oVisibleSize.height*0.5/l_oSizePhoto.height;
+	if (l_oSizePhoto.height > l_oVisibleSize.height * 0.7)
+	{
+		float scalefactor = l_oVisibleSize.height * 0.7 / l_oSizePhoto.height;
 
-				m_pBufferSpritePhoto->setScaleX(scalefactor);
-				m_pBufferSpritePhoto->setScaleY(scalefactor);
-			}
+		m_pBufferSpritePhoto->setScaleX(scalefactor);
+		m_pBufferSpritePhoto->setScaleY(scalefactor);
+	}
 
-			m_pBufferSpritePhoto->setVisible(true);
-		}
+	m_pBufferSpritePhoto->setVisible(true);
+}
 

@@ -60,7 +60,10 @@ public class JniJavaFacade {
 
 	public static void sendFile(String path)
 	{
-		_wifiDirectFacade.send(new File(path));
+		File f = new File(path);
+		DebugManager.print("send file called from c++. File exists? " + f.exists(),
+				WifiDirectManager.DEBUGGER_CHANNEL);
+		_wifiDirectFacade.send(f);
 	}
 
 	public static void setServerTempFileName(String name)

@@ -1,0 +1,13 @@
+{
+  "Ludomuse": {
+    "CreditsText": "Alors on dit tous un grand merci à IHMTEK pour cette application qui est quand meme très chouette!\n\nUne application crée par IHMTEK\n\nLUDOMUSE",
+    "UserIsReady": "En attente de ton partenaire...",
+    "DeviceAndRoleSlected": "Maintenant tu peux te connecter avec ton partenaire.",
+    "RoleNotChoose": "Choisis le role que tu vas jouer pendant cette partie.",
+    "Begining": "Choisis une tablette avec qui jouer.",
+    "UserNotCompatibleRole": "Vos roles ne sont pas compatible.",
+    "UserNotCompatibleTabletName": "Vos roles ne sont pas compatible.",
+    "Error": "Une erreur est survenue, veuillez recommencer.",
+    "Searching": "Nous recherchons les appareils disponibles..."
+  }
+}
