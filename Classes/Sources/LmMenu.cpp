@@ -39,6 +39,7 @@ LmMenu::LmMenu()
 	m_pCheckBoxParent = nullptr;
 	m_pLabelFeedback = nullptr;
 	m_pReadyButton = nullptr;
+	m_pRefreshButton = nullptr;
 
 	//primitive type
 	m_bRoleSelected = false;
@@ -99,6 +100,13 @@ void LmMenu::onGettingPeers(std::vector<std::string> peers)
 		ON_CC_THREAD(LmMenu::setLabelFeedBack, this);
 	}
 
+	//unclivk ready button
+	if(m_bReady)
+	{
+		ready(nullptr);
+	}
+
+
 	ON_CC_THREAD(LmMenu::makeCheckboxUserTabletName, this, peers);
 
 }
@@ -141,7 +149,7 @@ bool LmMenu::logScreen()
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	//add a background img for the log layer
 	m_pSpriteLogBackground = Sprite::create(s_sFilenameSpriteBackground);
@@ -189,11 +197,12 @@ bool LmMenu::logScreen()
 	m_pLogEditBox->setFontColor(Color3B::BLACK);
 	m_pLogEditBox->setMaxLength(s_iMaxLenghtUserName);
 	m_pLogEditBox->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
+	m_pLogEditBox->setInputMode(ui::EditBox::InputMode::SINGLE_LINE);
 	m_pLogEditBox->retain();
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
 	//test
-	m_pLogEditBox->setText("UserName");
+	//m_pLogEditBox->setText("UserName");
 
 	return true;
 }
@@ -203,6 +212,9 @@ void LmMenu::logFinished(Ref* p_Sender)
 	//check if the user enter smthg
 	if (strcmp(m_pLogEditBox->getText(), "") != 0)
 	{
+
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+					FILENAME_BUTTON_CLICKED);
 
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 
@@ -252,9 +264,8 @@ void LmMenu::logFinished(Ref* p_Sender)
 
 bool LmMenu::wifiDirectScreen()
 {
-	CCLOG("1");
 	ON_CC_THREAD(LmMenu::removeMenuElement, this);
-	CCLOG("2");
+
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
@@ -312,15 +323,15 @@ bool LmMenu::wifiDirectScreen()
 	m_pSpriteWifiBackground->addChild(l_pLabelDeviceName);
 
 	//refresh button
-	auto l_pRefreshButton = MenuItemImage::create(
+	m_pRefreshButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/refreshbutton.png",
 			"Ludomuse/GUIElements/refreshbuttonpress.png",
 			CC_CALLBACK_1(LmMenu::scan, this));
-	l_pRefreshButton->setAnchorPoint(Point(1, 0));
-	l_pRefreshButton->setPosition(
+	m_pRefreshButton->setAnchorPoint(Point(1, 0));
+	m_pRefreshButton->setPosition(
 			Vect(m_oWindowListOfDevice.getMaxX(),
 					m_oWindowListOfDevice.origin.y));
-	m_pMenu->addChild(l_pRefreshButton);
+	m_pMenu->addChild(m_pRefreshButton);
 
 	//init checkbox parent
 	if (m_pUser1->isBMale())
@@ -454,7 +465,6 @@ void LmMenu::femaleSelected(cocos2d::Ref*)
 			FILENAME_BUTTON_CLICKED);
 
 	CCLOG("female");
-
 	m_pUser1->setBMale(false);
 	wifiDirectScreen();
 
@@ -509,6 +519,9 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 
 void LmMenu::scan(cocos2d::Ref* l_pSender)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+				FILENAME_BUTTON_CLICKED);
+
 	_wifiFacade->discoverPeers();
 }
 
@@ -626,9 +639,9 @@ void LmMenu::updateUser2NameTablet(cocos2d::Ref* p_Sender,
 		m_pCheckBoxChild->setVisible(true);
 		m_pCheckBoxParent->setVisible(true);
 
-		CCLOG("m_pLabelFeedback->setString(s_sUserNotCompatible);");
 		m_pLabelFeedback->setString(s_sRoleNotChoose);
 	}
+
 
 }
 
@@ -654,6 +667,8 @@ void LmMenu::inputEnabled(bool enabled)
 	m_pCheckBoxParent->setEnabled(enabled);
 
 	m_pReadyButton->setEnabled(enabled);
+
+	m_pRefreshButton->setEnabled(enabled);
 }
 
 void LmMenu::onUserIsReadyEvent(bytes l_oMsg)

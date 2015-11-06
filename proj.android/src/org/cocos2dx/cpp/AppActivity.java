@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
+import org.cocos2dx.cpp.jniFacade.JniCppFacade;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 import org.cocos2dx.lib.Cocos2dxActivity;
 
@@ -47,6 +48,12 @@ public class AppActivity extends Cocos2dxActivity {
 		super.onCreate(savedInstanceState);
 
 		_wifiFacade = new WifiDirectFacade(this);
+		
+		if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) 
+		{
+		    finish();
+		    return;
+		}
 
 	}
 
@@ -122,7 +129,7 @@ public class AppActivity extends Cocos2dxActivity {
 		);
 
 		// Save a file: path for use with ACTION_VIEW intents
-		mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+		mCurrentPhotoPath =image.getAbsolutePath();
 		return image;
 	}
 	
@@ -133,6 +140,7 @@ public class AppActivity extends Cocos2dxActivity {
 	    if (requestCode == REQUEST_TAKE_PHOTO) {
 	        if (resultCode == RESULT_OK) {
 	        	Toast.makeText(this, "Image saved to:\n" + mCurrentPhotoPath, Toast.LENGTH_LONG).show();
+	        	JniCppFacade.setCurrentPicturePath(mCurrentPhotoPath);
 	          //  handleAvatarUpload(data); // which uses Uri selectedImage = data.getData();
 	        } 
 	    }

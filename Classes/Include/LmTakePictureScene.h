@@ -34,12 +34,17 @@ public:
 	//dispatcher
 	virtual void onReceivingMsg(bytes);
 
+
+
 private:
 
 	//ATTRIBUTES
 
 	//json
 	std::string m_sFilenameSpriteBackground;
+
+	//buffer sprite photo
+	cocos2d::Sprite* m_pBufferSpritePhoto;
 
 	//METHODS
 
@@ -50,6 +55,8 @@ private:
 	bool initGame();
 
 	void takePicture(cocos2d::Ref*);
+
+	void notifyPictureIsTaken();
 
 };
 

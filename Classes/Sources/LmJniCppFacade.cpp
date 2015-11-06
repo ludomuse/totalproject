@@ -1,5 +1,4 @@
 #include "../Include/LmJniCppFacade.h"
-#include "../Include/LmInteractionScene.h"
 #include "cocos2d.h"
 
 LmWifiDirectFacade* LmJniCppFacade::_wifiDirectFacade = NULL;
@@ -26,7 +25,10 @@ std::string LmJniCppFacade::getCurrentPicturePath()
 void LmJniCppFacade::setCurrentPicturePath(std::string path)
 {
 	_currentPicturePath = path;
-	LmInteractionScene::notifyPictureIsTaken();
+
+	CCLOG("<font color='red'>dispatch event PictureTaken</font>");
+	cocos2d::Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+			"PictureTaken");
 }
 
 std::string LmJniCppFacade::getApplicationDirectory()
@@ -43,88 +45,88 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onGettingPee
 		JNIEnv* env, jobject thiz, jstring peers)
 {
 	CCLOG("cpp method onGettingPeers is called from Java");
-	WIFIFACADE->onGettingPeers(
-			LmJniCppFacade::toSTDStringList(peers, env));
+WIFIFACADE->onGettingPeers(
+		LmJniCppFacade::toSTDStringList(peers, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingString(
-		JNIEnv* env, jobject thiz, jstring s)
+	JNIEnv* env, jobject thiz, jstring s)
 {
-	WIFIFACADE->onReceiving(
-			LmJniCppFacade::toCObject(s, env));
+WIFIFACADE->onReceiving(
+		LmJniCppFacade::toCObject(s, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingInt(
-		JNIEnv* env, jobject thiz, jint i)
+	JNIEnv* env, jobject thiz, jint i)
 {
-	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(i));
+WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(i));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingBool(
-		JNIEnv* env, jobject thiz, jboolean b)
+	JNIEnv* env, jobject thiz, jboolean b)
 {
-	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(b));
+WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(b));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingLong(
-		JNIEnv* env, jobject thiz, jlong l)
+	JNIEnv* env, jobject thiz, jlong l)
 {
-	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(l));
+WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(l));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingFloat(
-		JNIEnv* env, jobject thiz, jfloat f)
+	JNIEnv* env, jobject thiz, jfloat f)
 {
-	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(f));
+WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(f));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingDouble(
-		JNIEnv* env, jobject thiz, jdouble d)
+	JNIEnv* env, jobject thiz, jdouble d)
 {
-	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(d));
+WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(d));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingBytes(
-		JNIEnv* env, jobject thiz, jbyteArray bytes)
+	JNIEnv* env, jobject thiz, jbyteArray bytes)
 {
-	WIFIFACADE->onReceiving(
-			LmJniCppFacade::toCObject(bytes, env));
+WIFIFACADE->onReceiving(
+		LmJniCppFacade::toCObject(bytes, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingFile(
-		JNIEnv* env, jobject thiz, jstring path)
+	JNIEnv* env, jobject thiz, jstring path)
 {
-	WIFIFACADE->onReceivingFile(
-			LmJniCppFacade::toCObject(path, env));
+WIFIFACADE->onReceivingFile(
+		LmJniCppFacade::toCObject(path, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingByte(
-		JNIEnv* env, jobject thiz, jbyte byte)
+	JNIEnv* env, jobject thiz, jbyte byte)
 {
-	WIFIFACADE->onReceivingByte(
-			LmJniCppFacade::toCObject(byte));
+WIFIFACADE->onReceivingByte(
+		LmJniCppFacade::toCObject(byte));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_onReceivingChar(
-		JNIEnv* env, jobject thiz, jchar c)
+	JNIEnv* env, jobject thiz, jchar c)
 {
-	WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(c));
+WIFIFACADE->onReceiving(LmJniCppFacade::toCObject(c));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setTabletName(
-		JNIEnv* env, jobject thiz, jstring name)
+	JNIEnv* env, jobject thiz, jstring name)
 {
-	WIFIFACADE->setTabletName(LmJniCppFacade::toCObject(name, env));
+WIFIFACADE->setTabletName(LmJniCppFacade::toCObject(name, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setCurrentPicturePath(
-		JNIEnv* env, jobject thiz, jstring path)
+	JNIEnv* env, jobject thiz, jstring path)
 {
-	LmJniCppFacade::setCurrentPicturePath(LmJniCppFacade::toCObject(path, env));
+LmJniCppFacade::setCurrentPicturePath(LmJniCppFacade::toCObject(path, env));
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_jniFacade_JniCppFacade_setApplicationDirectory(
-		JNIEnv* env, jobject thiz, jstring path)
+	JNIEnv* env, jobject thiz, jstring path)
 {
-	LmJniCppFacade::setApplicationDirectory(LmJniCppFacade::toCObject(path, env));
+LmJniCppFacade::setApplicationDirectory(LmJniCppFacade::toCObject(path, env));
 }

@@ -91,7 +91,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	//init user
 	m_pUser = l_pUser;
@@ -208,11 +208,6 @@ void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 	}
 }
 
-void LmInteractionScene::notifyPictureIsTaken()
-{
-	CCLOG("Picture is saved in %s", CURR_PHOTO_PATH.c_str());
-}
-
 void LmInteractionScene::initNextPreviousButton()
 {
 	CCLOG("init button");
@@ -251,7 +246,7 @@ void LmInteractionScene::playCallback(cocos2d::Ref*,
 		cocos2d::ui::CheckBox::EventType type)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	switch (type)
 	{
@@ -274,7 +269,7 @@ void LmInteractionScene::previousSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	if (m_bSetPointBegin)
 	{
@@ -307,7 +302,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 {
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	CCLOG("LmInteractionScene::nextSetPointLayer");
 
@@ -569,7 +564,7 @@ void LmInteractionScene::moveLeftDone()
 void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	if (!m_bBackPressed && m_bMoveDone && m_pLmSetPointBegin->isBActionDone())
 	{
@@ -729,8 +724,7 @@ void LmInteractionScene::removeNextPreviousMenuItem()
 void LmInteractionScene::checkIfDisplayPlayCheckBox(LmSetPoint* l_pSetPoint)
 {
 
-
-	if(l_pSetPoint->getNextLayerDisplay()->getSSoundUrl().compare("")==0)
+	if (l_pSetPoint->getNextLayerDisplay()->getSSoundUrl().compare("") == 0)
 	{
 
 		m_pPlayCheckBox->setVisible(false);
@@ -741,5 +735,4 @@ void LmInteractionScene::checkIfDisplayPlayCheckBox(LmSetPoint* l_pSetPoint)
 		m_pPlayCheckBox->setVisible(true);
 	}
 }
-
 

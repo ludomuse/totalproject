@@ -189,7 +189,11 @@ void AppDelegate::initPathsForResolution()
 	 / s_DesignResolutionSize.height,
 	 s_SmallResolutionSize.width
 	 / s_DesignResolutionSize.width));
-	 }*/
+	 }
+
+	 https://github.com/delight-im/AndroidDrawableResizer/blob/master/Windows/AndroidDrawableResizer.bat
+
+	 */
 
 	l_resDirOrders.push_back("MediumResolutionSize");
 	l_director->setContentScaleFactor(

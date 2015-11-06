@@ -129,13 +129,17 @@ void LmSettings::endApplicationCallbackButton(Ref* p_Sender)
 {
 	//play button clicked sound
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
-			LmGameManager::s_sFilenameButtonClicked);
+			FILENAME_BUTTON_CLICKED);
 
 	endApplication();
 }
 
 void LmSettings::back(Ref* p_Sender)
 {
+	//play button clicked sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+			FILENAME_BUTTON_CLICKED);
+
 	setVisible(false);
 }
 

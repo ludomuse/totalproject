@@ -51,8 +51,6 @@ public:
 		return m_bDone;
 	}
 
-	static void notifyPictureIsTaken();
-
 	void setBBackPressed(bool bBackPressed)
 	{
 		m_bBackPressed = bBackPressed;
