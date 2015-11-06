@@ -744,6 +744,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 
 	public void stop()
 	{
+		DebugManager.print(getTag() + "<font color='green'>stop async</font>", WifiDirectManager.DEBUGGER_CHANNEL);
 		this.cancel(true);
 	}
 
@@ -880,6 +881,7 @@ public class ServerSocketHandler extends AsyncTask<Void, String, Void> {
 		// clean buffer after operations done
 		closeServerSocket();
 
+		DebugManager.printAllStackTraces(WifiDirectManager.DEBUGGER_CHANNEL);
 		DebugManager.print(ServerSocketHandler.getTag()+ "[FINISHING] Server is closed", WifiDirectManager.DEBUGGER_CHANNEL);
 		return null;
 	}

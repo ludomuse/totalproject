@@ -1,5 +1,7 @@
 package org.cocos2dx.cpp;
 
+import java.util.Map.Entry;
+
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.app.Activity;
@@ -330,4 +332,17 @@ public class DebugManager {
 		toast.show();
 	}
 
+	public static void printAllStackTraces(int channel)
+	{
+		String res = "";
+		for(Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet())
+		{
+			String name = "[THREAD=" + entry.getKey() + "]";
+			for(StackTraceElement el : entry.getValue())
+			{
+				res += name + el + "\n";
+			}
+		}
+		print(res, channel);
+	}
 }
