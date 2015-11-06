@@ -91,6 +91,17 @@ public class SocketHandler {
 	{
 		client.dettachFromRemoteHost();
 	}
+	
+	public boolean wasPreviouslyAttached()
+	{
+		return client.wasPreviouslyAttached();
+	}
+	
+	public void attachToRemoteHost()
+	{
+		client.attachToRemoteHost();
+	}
+	
 
 	/**
 	 * Stop server and client
