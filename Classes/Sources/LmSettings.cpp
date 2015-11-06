@@ -181,7 +181,7 @@ LmCredits::LmCredits()
 
 	//prmitive type
 	m_bLayerTouched = false;
-	m_pSpeed=100;
+	m_pSpeed=60;
 
 	//pointer
 	m_pListener = nullptr;
@@ -206,6 +206,12 @@ void LmCredits::initCredits()
 	auto l_pLayerBackground = LayerColor::create();
 	addChild(l_pLayerBackground);
 
+	//init the background
+	auto l_pSpriteBackground = Sprite::create( "Ludomuse/Background/splash.png");
+	l_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f ,
+			l_oVisibleSize.height * 0.5f );
+	l_pLayerBackground->addChild(l_pSpriteBackground);
+
 	//init its listener
 	m_pListener = EventListenerTouchOneByOne::create();
 	m_pListener->onTouchBegan = CC_CALLBACK_2(LmCredits::onTouchBeganCredits,
@@ -220,11 +226,11 @@ void LmCredits::initCredits()
 
 	//init label
 	m_pLabel = Label::createWithTTF(m_sCreditsText, "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.06);
-	m_pLabel->setAnchorPoint(Vec2(0.5, 0));
+			l_oVisibleSize.width * 0.05);
+	m_pLabel->setAnchorPoint(Vec2(0.5, 1));
 	m_pLabel->setPosition(
-			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height));
-	m_pLabel->setColor(Color3B::WHITE);
+			Vec2(l_oVisibleSize.width * 0.5, 0));
+	m_pLabel->setColor(Color3B::BLACK);
 	m_pLabel->setAlignment(TextHAlignment::CENTER);
 	m_pLabel->setMaxLineWidth(l_oVisibleSize.width * 0.8);
 	l_pLayerBackground->addChild(m_pLabel);
@@ -259,10 +265,10 @@ void LmCredits::run()
 
 	float l_fDurationAction = m_pLabel->getContentSize().height/m_pSpeed;
 
-	auto l_pMoveDown = MoveBy::create(l_fDurationAction,Vect(0,-m_pLabel->getContentSize().height));
+	auto l_pMoveDown = MoveBy::create(l_fDurationAction,Vect(0,m_pLabel->getContentSize().height));
 
 	m_pLabel->setPosition(
-				Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height));
+				Vec2(l_oVisibleSize.width * 0.5, 0));
 	m_pLabel->runAction(l_pMoveDown);
 
 }
