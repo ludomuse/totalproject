@@ -5,12 +5,9 @@ import java.util.List;
 
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
-import org.cocos2dx.cpp.sockets.SocketHandler;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.provider.ContactsContract;
 
 /**
  * This is a wrapper for the WifiDirectManager, that expose simple method such

@@ -1,20 +1,13 @@
 package org.cocos2dx.cpp.jniFacade;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.String;
 
 import org.cocos2dx.cpp.AppActivity;
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Environment;
-import android.provider.ContactsContract;
 
 /**
  * These method are called by c++, when the cpp part of the WifiDirectFacade

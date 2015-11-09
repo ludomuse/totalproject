@@ -4,6 +4,8 @@ package org.cocos2dx.cpp;
 import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
 import org.cocos2dx.cpp.jniFacade.JniCppFacade;
@@ -19,8 +21,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Override;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 /**
  * This is the main activity for LudoMuse. THERE MUST NOT BE ANY GRAPHICS
@@ -89,9 +90,17 @@ public class AppActivity extends Cocos2dxActivity {
 
 	public void dispatchTakePictureIntent()
 	{
+		//4096 * 4096
 		Camera camera = Camera.open();
-		camera.getParameters().setPictureSize(4096, 4096);
-		
+		Parameters param = camera.getParameters();
+		List<Size> sizes = param.getSupportedPictureSizes();
+	    Camera.Size size = sizes.get(0);
+	    for (int i = 0; i < sizes.size(); i++) {
+	        if (sizes.get(i).width > size.width)
+	            size = sizes.get(i);
+	    }
+	    param.setPictureSize(size.width, size.height);
+	    
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// Ensure that there's a camera activity to handle the intent
 		if (takePictureIntent.resolveActivity(getPackageManager()) != null)
