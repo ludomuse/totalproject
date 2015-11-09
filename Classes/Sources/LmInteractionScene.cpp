@@ -67,6 +67,11 @@ LmInteractionScene::~LmInteractionScene()
 		delete m_pLmReward;
 	}
 
+	if(m_pLmRewardUser2)
+	{
+		delete m_pLmRewardUser2;
+	}
+
 	//destroy all gamecomponent
 
 	for (it_type it = m_aIdTable.begin(); it != m_aIdTable.end(); ++it)

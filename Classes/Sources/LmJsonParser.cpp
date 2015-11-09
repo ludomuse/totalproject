@@ -404,7 +404,6 @@ void LmJsonParser::initDescription(const rapidjson::Value& l_oScene,
 void LmJsonParser::initInteractionAttributes(const rapidjson::Value& l_oScene,
 		LmInteractionScene* l_pInteractionScene)
 {
-	//get the element we just push to set the introduction
 	initSetPoint(l_oScene, l_pInteractionScene);
 
 	initReward(l_oScene, l_pInteractionScene);
