@@ -6,6 +6,7 @@
 LmServerManager::LmServerManager()
 {
 	m_pLmJsonparser = new LmJsonParser;
+
 }
 
 LmServerManager::~LmServerManager()

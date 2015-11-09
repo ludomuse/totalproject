@@ -14,7 +14,9 @@ LmGameManager::LmGameManager()
 
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
+
 	m_pLmSettings = new LmSettings;
+
 
 	//primitive type
 	m_iIndexInteractionScene = 0;
@@ -59,7 +61,6 @@ LmGameManager::LmGameManager()
 	m_pCheckSpriteUser1 = nullptr;
 	m_pCheckSpriteUser2 = nullptr;
 	m_pSettingsButton = nullptr;
-
 }
 
 LmGameManager::~LmGameManager()

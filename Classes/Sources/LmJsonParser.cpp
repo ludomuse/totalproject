@@ -15,10 +15,11 @@ using namespace cocos2d;
 
 LmJsonParser::LmJsonParser()
 {
+
 	//primitive type
-	m_sTitleApplication = "";
-	//default value
 	m_bIsParent = true;
+
+
 }
 
 LmJsonParser::~LmJsonParser()

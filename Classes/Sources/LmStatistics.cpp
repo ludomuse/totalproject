@@ -7,24 +7,24 @@
 
 #include "../Include/LmStatistics.h"
 
+#include "cocos2d.h"
+
+#define COCOS2D_DEBUG 1
+
 LmStatistics* LmStatistics::m_pLmStatistics = nullptr;
 
 using namespace rapidjson;
 
-LmStatistics::LmStatistics()
-{
+LmStatistics::LmStatistics() {
 
 }
 
-LmStatistics::~LmStatistics()
-{
+LmStatistics::~LmStatistics() {
 
 }
 
-LmStatistics* LmStatistics::getInstance()
-{
-	if (!m_pLmStatistics)
-	{
+LmStatistics* LmStatistics::getInstance() {
+	if (!m_pLmStatistics) {
 		m_pLmStatistics = new LmStatistics;
 		m_pLmStatistics->init();
 	}
@@ -32,12 +32,12 @@ LmStatistics* LmStatistics::getInstance()
 	return m_pLmStatistics;
 }
 
-void LmStatistics::init()
-{
+void LmStatistics::init() {
 	// define the document as an object rather than an array
 	m_oDocument.SetObject();
 
-	m_oAllocator = m_oDocument.GetAllocator();
-}
+	//m_oAllocator = m_oDocument.GetAllocator();
 
+	//cocos2d::CCLOG("LmStatistics test");
+}
 

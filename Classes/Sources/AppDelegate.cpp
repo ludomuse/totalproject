@@ -10,14 +10,19 @@ USING_NS_CC;
 AppDelegate::AppDelegate()
 {
 
-	//object
-	m_pwifiFacade = new LmWifiDirectFacade(); //Create the wifi direct
-	//and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
-	//trough this the jni facade class)
-	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
 
+	//object
+	m_pwifiFacade = new LmWifiDirectFacade();
+
+	/*Create the wifi direct
+	and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
+	trough this the jni facade class)
+	*/
+	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
+	CCLOG("before gamemanager");
 	m_pLmGameManager = new LmGameManager; //need to be delete
 	m_pLmMenu = new LmMenu; //need to be delete
+
 
 }
 
@@ -53,8 +58,13 @@ static int register_all_packages()
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
+	CCLOG("before init");
+
 	//init our application
 	init();
+
+	CCLOG("before splashscreen");
+
 
 	//display a splashscreen of Ludomuse
 	m_pLmMenu->splashScreen();
@@ -116,10 +126,6 @@ bool AppDelegate::init()
 void AppDelegate::initPathsForResolution()
 {
 	CCLOG("AppDelegate::initPathsForResolution");
-
-	LmJniJavaFacade::getApplicationDirectory();
-	CCLOG("<font color=\"red\"> application directory is: %s</font>",
-			APP_DIR.c_str());
 
 	// initialize director
 	auto l_director = Director::getInstance();
@@ -205,6 +211,11 @@ void AppDelegate::initPathsForResolution()
 	l_fileUtils->setSearchPaths(l_resDirOrders);
 
 	//test
+
+	LmJniJavaFacade::getApplicationDirectory();
+	CCLOG("<font color=\"red\"> application directory is: %s</font>",
+			APP_DIR.c_str());
+
 	if (l_fileUtils->isDirectoryExist(APP_DIR))
 	{
 		CCLOG("directoy exist");

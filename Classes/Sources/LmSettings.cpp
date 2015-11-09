@@ -18,7 +18,7 @@ LmSettings::LmSettings()
 {
 
 	//primitive type
-	m_pLmCredits = new LmCredits;
+	m_pLmCredits = nullptr;
 
 	//pointer
 	m_pBackGroundSprite = nullptr;
@@ -32,6 +32,9 @@ LmSettings::~LmSettings()
 
 bool LmSettings::init()
 {
+
+	//init credit scene
+	m_pLmCredits = new LmCredits;
 
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
@@ -179,12 +182,18 @@ void LmSettings::runCredits(Ref* p_Sender)
 LmCredits::LmCredits()
 {
 
+	CCLOG("a");
 	//prmitive type
 	m_bLayerTouched = false;
+	CCLOG("b");
+
 	m_pSpeed=60;
+	CCLOG("c");
 
 	//pointer
 	m_pListener = nullptr;
+	CCLOG("d");
+
 	m_pLabel = nullptr;
 }
 
