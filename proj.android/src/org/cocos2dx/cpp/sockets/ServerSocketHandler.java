@@ -181,7 +181,7 @@ class Communication implements Runnable {
 		catch (IOException e1)
 		{
 			DebugManager.print(ServerSocketHandler.getTag()
-					+ "error while creating new file",
+					+ "error while creating new file" + e1.getLocalizedMessage(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 

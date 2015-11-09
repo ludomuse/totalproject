@@ -9,13 +9,16 @@ USING_NS_CC;
 
 LmGameManager::LmGameManager()
 {
-
+	CCLOG("listen wifi facade");
 	listenWifiFacade();
 
 	//object
+	CCLOG("lm server manager");
 	m_pLmServerManager = new LmServerManager; //need to be delete
+	CCLOG("lm settings");
 	m_pLmSettings = new LmSettings;
 
+	CCLOG("lm init");
 	//primitive type
 	m_iIndexInteractionScene = 0;
 	m_iInteractionDone = 0;

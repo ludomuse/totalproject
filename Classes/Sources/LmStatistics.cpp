@@ -37,7 +37,7 @@ void LmStatistics::init()
 	// define the document as an object rather than an array
 	m_oDocument.SetObject();
 
-	m_oAllocator = m_oDocument.GetAllocator();
+//	m_oAllocator = m_oDocument.GetAllocator();
 }
 
 

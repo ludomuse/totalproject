@@ -64,7 +64,7 @@ public class AppActivity extends Cocos2dxActivity {
 	{
 		DebugManager.print("[FINISHING] on stop",
 				WifiDirectManager.DEBUGGER_CHANNEL);
-		_wifiFacade.clear(); // TODO totest
+		//_wifiFacade.clear(); // TODO totest
 		super.onStop();
 	}
 
@@ -91,7 +91,7 @@ public class AppActivity extends Cocos2dxActivity {
 	public void dispatchTakePictureIntent()
 	{
 		//4096 * 4096
-		Camera camera = Camera.open();
+		/*Camera camera = Camera.open();
 		Parameters param = camera.getParameters();
 		List<Size> sizes = param.getSupportedPictureSizes();
 	    Camera.Size size = sizes.get(0);
@@ -99,7 +99,7 @@ public class AppActivity extends Cocos2dxActivity {
 	        if (sizes.get(i).width > size.width)
 	            size = sizes.get(i);
 	    }
-	    param.setPictureSize(size.width, size.height);
+	    param.setPictureSize(size.width, size.height);*/
 	    
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// Ensure that there's a camera activity to handle the intent

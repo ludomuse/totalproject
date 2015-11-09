@@ -112,7 +112,7 @@ public class WifiDirectFacade {
 
 		_manager = new WifiDirectManager(activity);
 		//If true, wifi manager will automatically reconnect when is deconnected
-		_manager.autoReconnect = false;
+		_manager.autoReconnect = true;
 		//allow wifi manager to relaunch discovery service when the list of found devices
 		//decrease
 		_manager.enabledAutoRelanchingServiceDiscoverPeers = false;

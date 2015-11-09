@@ -32,7 +32,7 @@ private:
 	rapidjson::Document m_oDocument;
 
 	// must pass an allocator when the object may need to allocate memory
-	rapidjson::Document::AllocatorType& m_oAllocator;
+	//rapidjson::Document::AllocatorType& m_oAllocator;
 
 	//METHODS
 	void init();

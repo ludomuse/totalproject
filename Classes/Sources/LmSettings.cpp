@@ -18,11 +18,13 @@ LmSettings::LmSettings()
 {
 
 	//primitive type
-	m_pLmCredits = new LmCredits;
+	CCLOG("lm credits");
+	//m_pLmCredits = nullptr;
 
+	CCLOG("lm init settings");
 	//pointer
 	m_pBackGroundSprite = nullptr;
-
+	CCLOG("lm end init settings");
 }
 
 LmSettings::~LmSettings()
@@ -32,7 +34,7 @@ LmSettings::~LmSettings()
 
 bool LmSettings::init()
 {
-
+	m_pLmCredits = new LmCredits();
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 
@@ -178,7 +180,7 @@ void LmSettings::runCredits(Ref* p_Sender)
 
 LmCredits::LmCredits()
 {
-
+	CCLOG("lm credits constructor");
 	//prmitive type
 	m_bLayerTouched = false;
 	m_pSpeed=60;

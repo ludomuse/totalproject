@@ -35,6 +35,7 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -305,11 +306,20 @@ public class WifiDirectManager {
 
 	public void reconnectToPeer()
 	{
-
 		if(lastPeerName != null && !lastPeerName.equals("") && socket.wasPreviouslyAttached())
 		{
 			//socket.attachToRemoteHost();
-			connectToPeer(lastPeerName, _cmPeerConnected);
+			
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable(){
+
+				@Override
+				public void run()
+				{
+					connectToPeer(lastPeerName, _cmPeerConnected);
+					
+				}}, 2000);
+			
 		}
 
 		/*
@@ -412,7 +422,9 @@ public class WifiDirectManager {
 				// A disconnection message will be passed to the
 				// wifidirectmanager
 				if(autoReconnect)
+				{
 					reconnectToPeer();
+				}
 			}
 		});
 	}

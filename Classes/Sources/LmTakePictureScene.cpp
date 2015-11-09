@@ -32,11 +32,6 @@ void LmTakePictureScene::resetScene()
 
 }
 
-void LmTakePictureScene::onReceivingMsg(bytes)
-{
-
-}
-
 void LmTakePictureScene::runGame()
 {
 	initGame();
@@ -89,12 +84,12 @@ bool LmTakePictureScene::initGame()
 
 				CCLOG("file sent");
 				//send it to the other player
-				//WIFIFACADE->sendFile(LmJniCppFacade::getCurrentPicturePath());
+				WIFIFACADE->sendFile(LmJniCppFacade::getCurrentPicturePath());
 
-				bytes msg(10);
+				/*bytes msg(10);
 				msg << LmEvent::Win;
 				msg.write(true);
-				WIFIFACADE->sendBytes(msg);
+				WIFIFACADE->sendBytes(msg);*/
 			};
 
 	//add the custom event to the event dispatcher
@@ -107,10 +102,10 @@ bool LmTakePictureScene::initGame()
 
 void LmTakePictureScene::takePicture(Ref* p_Sender)
 {
-	bytes msg(10);
-	msg << LmEvent::Win;
-	msg.write(true);
-	WIFIFACADE->sendBytes(msg);
+	//bytes msg(10);
+	//msg << LmEvent::Win;
+	//msg.write(true);
+	//WIFIFACADE->sendBytes(msg);
 
 
 	TAKE_PICTURE;

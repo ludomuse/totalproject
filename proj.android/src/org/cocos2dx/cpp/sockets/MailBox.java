@@ -51,6 +51,7 @@ class Message {
 			// it
 			ClientSocketHandler.class.getMethod(methodName, parameterTypes)
 					.invoke(client, args);
+		
 		}
 		catch (Exception e)
 		{
