@@ -34,6 +34,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Sources/LmHintScene.cpp\
                    ../../Classes/Sources/LmSettings.cpp\
                    ../../Classes/Sources/LmTakePictureScene.cpp\
+                   ../../Classes/Sources/LmStatistics.cpp\
                    
 
 

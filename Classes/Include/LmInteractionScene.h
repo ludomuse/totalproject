@@ -16,6 +16,10 @@
 #include "LmWifiObserver.h"
 #include "LmHelpers.h"
 
+//use for stats
+#include "LmStatistics.h"
+
+
 
 typedef std::map<int, LmGameComponent*>::iterator it_type;
 
