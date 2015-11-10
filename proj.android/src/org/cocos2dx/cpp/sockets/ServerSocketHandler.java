@@ -1,7 +1,10 @@
 package org.cocos2dx.cpp.sockets;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +24,7 @@ import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.os.Environment;
 
 /**
  * An instance of this class is created when the server socket accept a
@@ -35,8 +39,7 @@ class Communication implements Runnable {
 	private SocketHandler master;
 	
 	// Temp file name
-	@SuppressLint("SdCardPath")
-	public static String tempFile = "/sdcard/Screenshots/tps";
+	public static String tempFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Screenshots/";
 
 	// This array list contains the id of the message previously received
 	private static ArrayList<Long> alreadyTreated = new ArrayList<Long>();
@@ -173,7 +176,7 @@ class Communication implements Runnable {
 	 */
 	private File getFileFromInputStream(InputStream is)
 	{
-		File f = new File(tempFile);
+	/*	File f = new File(tempFile);
 		try
 		{
 			f.createNewFile();
@@ -183,25 +186,25 @@ class Communication implements Runnable {
 			DebugManager.print(ServerSocketHandler.getTag()
 					+ "error while creating new file" + e1.getLocalizedMessage(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
-		}
+		}*/
 
-		FileOutputStream fos;
+		BufferedOutputStream bos;
 		try
 		{
-			fos = new FileOutputStream(f);
+			bos = new BufferedOutputStream(new FileOutputStream(new File(tempFile)));
 			int tps;
 			while ((tps = read(is)) != -1)
 			{
-				fos.write(tps);
+				bos.write(tps);
 			}
-			fos.close();
-			return f;
+			bos.close();
+			return new File(tempFile);
 		}
 		catch (Exception e)
 		{
 			DebugManager.print(ServerSocketHandler.getTag()
 					+ "Error while reading file. Default directory is: "
-					+ new File(".").getAbsolutePath(),
+					+ tempFile + " " + e.getLocalizedMessage(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
 			return null;
 		}

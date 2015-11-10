@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.cocos2dx.cpp.AppActivity;
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
@@ -343,8 +344,10 @@ public class ClientSocketHandler {
 	public void send(File f)
 	{
 		DebugManager.print(
-				ClientSocketHandler.GetTag() + "sending file " + f.getName(),
+				ClientSocketHandler.GetTag() + "sending file " + f.getName() + f.length(),
 				WifiDirectManager.DEBUGGER_CHANNEL);
+		//f = new File(((AppActivity) AppActivity.getInstance()).createOrReturnAppDir() + "/../1.JPG");
+		
 		try
 		{
 			send(new BufferedInputStream(new FileInputStream(f)),
@@ -353,7 +356,7 @@ public class ClientSocketHandler {
 		catch (FileNotFoundException e)
 		{
 			DebugManager.print(ClientSocketHandler.GetTag()
-					+ "error occured while sending file",
+					+ "error occured while sending file " + e.getLocalizedMessage(),
 					WifiDirectManager.DEBUGGER_CHANNEL);
 		}
 

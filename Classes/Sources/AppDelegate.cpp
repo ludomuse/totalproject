@@ -121,7 +121,11 @@ void AppDelegate::initPathsForResolution()
 {
 	CCLOG("AppDelegate::initPathsForResolution");
 
+	//create app directory
 	LmJniJavaFacade::getApplicationDirectory();
+	//set server default directory to app directory
+	m_pwifiFacade->setServerTempFileName(APP_DIR + "/MyPic.jpg");
+
 	CCLOG("<font color=\"red\"> application directory is: %s</font>",
 			APP_DIR.c_str());
 

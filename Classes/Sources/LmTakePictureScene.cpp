@@ -82,6 +82,7 @@ bool LmTakePictureScene::initGame()
 				CCLOG("picture has been take");
 				ON_CC_THREAD(LmTakePictureScene::setFileToSprite, this,LmJniCppFacade::getCurrentPicturePath());
 
+				//LmJniCppFacade::set
 				CCLOG("file sent");
 				//send it to the other player
 				WIFIFACADE->sendFile(LmJniCppFacade::getCurrentPicturePath());
