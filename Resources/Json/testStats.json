@@ -1,0 +1,1307 @@
+{
+  "Ludomuse": {
+    "Configuration": {
+      "IdGame": 1,
+      "Title": "Lu Biscuit",
+      "FilenameSpriteSplashScreen": "Game/Background/splashScreenLu.png"
+    },
+    "SceneArray": [
+      {
+        "Id": 1,
+        "Description": "Défi 1: Un entretien d'embauche !",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Vous devez réussir un premier défi pour être embauché dans la biscuiterie LU.Ecoutez ce que le patron Monsieur Louis vous demande. Bonne chance pour ce test d'embauche!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Ecoutez ce que monsieur Louis vous demande. Attention, c'est un test d'embauche! Vous devez le réussir pour rejoindre l'entreprise."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Pendant cette visite, tu seras Monsieur Louis, le patron de l'entreprise de biscuits LU.Tu as repris l'entreprise de tes parents à l'âge de 24 ans\net tu l'as développé. Aujourd'hui, tu souhaites créer un nouveau biscuit. Pour le créer, tu vas devoir relever plusieurs défis avec l'aide de ton ouvrier. A chaque défi relevé, le processus de création de la recette avance!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes1.mp3"
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Demande à haute voix à ton ouvrier \"Suis moi et compte les marches jusqu'à la salle 23\""
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes2.mp3"
+          }
+        ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 85,
+            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 80,
+            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/nantes3.mp3",
+          "RewardScore": 50
+        },
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
+        "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
+        "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackground.png",
+        "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/xylophone.mp3",
+        "InGameScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 40,
+            "Text": "Repond à la question de M.LU"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso1.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "ReplayScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 60,
+            "Text": "Attention, rejoue !"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso3right.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "Questions": [
+          {
+            "Question": "Demande à ton ouvrier combien de marche il a compté:",
+            "Answer1": "84",
+            "Answer2": "66",
+            "Answer3": "70",
+            "Answer4": "77",
+            "NumberRightAnswer": 4
+          }
+        ],
+        "AttemptByQuestion": 1,
+        "TimerDuration": 0,
+        "TimerEnbaled": false
+      },
+      {
+        "Id": 1,
+        "Description": "Défi 1: Un entretien d'embauche !",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Vous devez réussir un premier défi pour être embauché dans la biscuiterie LU.Ecoutez ce que le patron Monsieur Louis vous demande. Bonne chance pour ce test d'embauche!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Ecoutez ce que monsieur Louis vous demande. Attention, c'est un test d'embauche! Vous devez le réussir pour rejoindre l'entreprise."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Pendant cette visite, tu seras Monsieur Louis, le patron de l'entreprise de biscuits LU.Tu as repris l'entreprise de tes parents à l'âge de 24 ans\net tu l'as développé. Aujourd'hui, tu souhaites créer un nouveau biscuit. Pour le créer, tu vas devoir relever plusieurs défis avec l'aide de ton ouvrier. A chaque défi relevé, le processus de création de la recette avance!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes1.mp3"
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Demande à haute voix à ton ouvrier \"Suis moi et compte les marches jusqu'à la salle 23\""
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes2.mp3"
+          }
+        ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 85,
+            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 80,
+            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/nantes3.mp3",
+          "RewardScore": 50
+        },
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
+        "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
+        "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackground.png",
+        "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/xylophone.mp3",
+        "InGameScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 40,
+            "Text": "Repond à la question de M.LU"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso1.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "ReplayScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 60,
+            "Text": "Attention, rejoue !"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso3right.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "Questions": [
+          {
+            "Question": "Demande à ton ouvrier combien de marche il a compté:",
+            "Answer1": "84",
+            "Answer2": "66",
+            "Answer3": "70",
+            "Answer4": "77",
+            "NumberRightAnswer": 4
+          }
+        ],
+        "AttemptByQuestion": 1,
+        "TimerDuration": 0,
+        "TimerEnbaled": false
+      },
+      {
+        "Id": 1,
+        "Description": "Défi 1: Un entretien d'embauche !",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Vous devez réussir un premier défi pour être embauché dans la biscuiterie LU.Ecoutez ce que le patron Monsieur Louis vous demande. Bonne chance pour ce test d'embauche!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Ecoutez ce que monsieur Louis vous demande. Attention, c'est un test d'embauche! Vous devez le réussir pour rejoindre l'entreprise."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Pendant cette visite, tu seras Monsieur Louis, le patron de l'entreprise de biscuits LU.Tu as repris l'entreprise de tes parents à l'âge de 24 ans\net tu l'as développé. Aujourd'hui, tu souhaites créer un nouveau biscuit. Pour le créer, tu vas devoir relever plusieurs défis avec l'aide de ton ouvrier. A chaque défi relevé, le processus de création de la recette avance!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes1.mp3"
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Demande à haute voix à ton ouvrier \"Suis moi et compte les marches jusqu'à la salle 23\""
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes2.mp3"
+          }
+        ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 85,
+            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 80,
+            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/nantes3.mp3",
+          "RewardScore": 50
+        },
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
+        "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
+        "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackground.png",
+        "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/xylophone.mp3",
+        "InGameScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 40,
+            "Text": "Repond à la question de M.LU"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso1.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "ReplayScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 60,
+            "Text": "Attention, rejoue !"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso3right.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "Questions": [
+          {
+            "Question": "Demande à ton ouvrier combien de marche il a compté:",
+            "Answer1": "84",
+            "Answer2": "66",
+            "Answer3": "70",
+            "Answer4": "77",
+            "NumberRightAnswer": 4
+          }
+        ],
+        "AttemptByQuestion": 1,
+        "TimerDuration": 0,
+        "TimerEnbaled": false
+      },
+      {
+        "Id": 1,
+        "Description": "Défi 1: Un entretien d'embauche !",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Vous devez réussir un premier défi pour être embauché dans la biscuiterie LU.Ecoutez ce que le patron Monsieur Louis vous demande. Bonne chance pour ce test d'embauche!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Ecoutez ce que monsieur Louis vous demande. Attention, c'est un test d'embauche! Vous devez le réussir pour rejoindre l'entreprise."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "Bienvenue !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Pendant cette visite, tu seras Monsieur Louis, le patron de l'entreprise de biscuits LU.Tu as repris l'entreprise de tes parents à l'âge de 24 ans\net tu l'as développé. Aujourd'hui, tu souhaites créer un nouveau biscuit. Pour le créer, tu vas devoir relever plusieurs défis avec l'aide de ton ouvrier. A chaque défi relevé, le processus de création de la recette avance!"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes1.mp3"
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Demande à haute voix à ton ouvrier \"Suis moi et compte les marches jusqu'à la salle 23\""
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes2.mp3"
+          }
+        ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 85,
+            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 80,
+            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/nantes3.mp3",
+          "RewardScore": 50
+        },
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
+        "FilenameSpriteBandTop": "Game/GUIElements/questionBackground.png",
+        "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackground.png",
+        "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/xylophone.mp3",
+        "InGameScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 40,
+            "Text": "Repond à la question de M.LU"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso1.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "ReplayScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 60,
+            "Text": "Attention, rejoue !"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/GUIElements/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso3right.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "Questions": [
+          {
+            "Question": "Demande à ton ouvrier combien de marche il a compté:",
+            "Answer1": "84",
+            "Answer2": "66",
+            "Answer3": "70",
+            "Answer4": "77",
+            "NumberRightAnswer": 4
+          }
+        ],
+        "AttemptByQuestion": 1,
+        "TimerDuration": 0,
+        "TimerEnbaled": false
+      }
+    ]
+  }
+}
