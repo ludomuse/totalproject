@@ -15,9 +15,6 @@ LmGameManager::LmGameManager()
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
 
-	m_pLmSettings = new LmSettings;
-
-
 	//primitive type
 	m_iIndexInteractionScene = 0;
 	m_iInteractionDone = 0;
@@ -106,11 +103,21 @@ bool LmGameManager::init()
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
 	FILENAME_BUTTON_CLICKED);
 
+	//user have been get by menu and set by appdelegate
+	m_pLmSettings = new LmSettings(m_pUser1);
+
 	if (!m_pLmServerManager->init())
 	{
 		CCLOG("Initialization Server Manager failed");
 		return false;
 	}
+
+	//init id game into stats of user
+	m_pUser1->getPLmStatistics()->init();
+	m_pUser1->getPLmStatistics()->setIdGameForStats(
+			m_pLmServerManager->getIdGame());
+	m_pUser1->getPLmStatistics()->setGameTitle(
+			m_pLmServerManager->getSTitleApplication());
 
 	//init splashscreen
 	if (!initSplashScreen())
@@ -438,14 +445,13 @@ bool LmGameManager::initDashboard()
 	l_pMenu->setPosition(Vec2::ZERO);
 	m_pSpriteBandMid->addChild(l_pMenu);
 
-
 	//compare butto
 	m_pCompareButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/compareNormal1.png",
 			"Ludomuse/GUIElements/compareNormal1.png",
 			CC_CALLBACK_1(LmGameManager::compare, this));
 	m_pCompareButton->setPosition(
-			Vect(l_oVisibleSize.width*0.5, l_oVisibleSize.height * 0.2f));
+			Vect(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.2f));
 	l_pMenu->addChild(m_pCompareButton);
 
 	//play next interaction button
@@ -521,18 +527,22 @@ Sprite* LmGameManager::makeUserAvatarSprite(LmUser* l_pUser)
 	{
 		result->setTexture("Ludomuse/GUIElements/dadavatar.png");
 	}
-	else if (l_pUser->isBParent() && !l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/momavatar.png");
-	}
-	else if (!l_pUser->isBParent() && l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/sonavatar.png");
-	}
-	else if (!l_pUser->isBParent() && !l_pUser->isBMale())
-	{
-		result->setTexture("Ludomuse/GUIElements/daughteravatar.png");
-	}
+	else
+		if (l_pUser->isBParent() && !l_pUser->isBMale())
+		{
+			result->setTexture("Ludomuse/GUIElements/momavatar.png");
+		}
+		else
+			if (!l_pUser->isBParent() && l_pUser->isBMale())
+			{
+				result->setTexture("Ludomuse/GUIElements/sonavatar.png");
+			}
+			else
+				if (!l_pUser->isBParent() && !l_pUser->isBMale())
+				{
+					result->setTexture(
+							"Ludomuse/GUIElements/daughteravatar.png");
+				}
 
 	return result;
 }
@@ -744,6 +754,9 @@ void LmGameManager::compare(Ref* p_Sender)
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 		FILENAME_BUTTON_CLICKED);
 
+		//stats
+		m_pUser1->getPLmStatistics()->clicked("Comparez");
+
 		m_bActionIsDone = false;
 
 		m_pListener->setEnabled(false);
@@ -869,7 +882,7 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 	if (m_iIndexInteractionScene >= m_aInteractionSceneOfTheGame.size())
 	{
 		//no more games for now end application
-		LmSettings::endApplication();
+		m_pLmSettings->endApplication();
 	}
 	else
 	{
@@ -896,6 +909,9 @@ void LmGameManager::settings(cocos2d::Ref*)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 	FILENAME_BUTTON_CLICKED);
+
+	//stats
+	m_pUser1->getPLmStatistics()->clicked("Settings");
 
 	m_pLmSettings->setVisible(true);
 
@@ -985,20 +1001,20 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 	CCLOG("lmgamemanager _event is %d", _event);
 	switch (_event)
 	{
-	case LmEvent::ReadyForNextInteraction:
-		CCLOG("ReadyForNextInteraction");
-		ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this,
-				l_oMsg)
-		;
-		break;
+		case LmEvent::ReadyForNextInteraction:
+			CCLOG("ReadyForNextInteraction");
+			ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this,
+					l_oMsg)
+			;
+			break;
 
-	case LmEvent::InteractionDone:
-		CCLOG("InteractionDone");
-		ON_CC_THREAD(LmGameManager::onInteractionDoneEvent, this, l_oMsg)
-		;
-		break;
-	default:
-		break;
+		case LmEvent::InteractionDone:
+			CCLOG("InteractionDone");
+			ON_CC_THREAD(LmGameManager::onInteractionDoneEvent, this, l_oMsg)
+			;
+			break;
+		default:
+			break;
 	}
 
 }

@@ -210,32 +210,6 @@ void AppDelegate::initPathsForResolution()
 	//set the paths
 	l_fileUtils->setSearchPaths(l_resDirOrders);
 
-	//test
 
-	LmJniJavaFacade::getApplicationDirectory();
-	CCLOG("<font color=\"red\"> application directory is: %s</font>",
-			APP_DIR.c_str());
-
-	if (l_fileUtils->isDirectoryExist(APP_DIR))
-	{
-		CCLOG("directoy exist");
-	}
-	else
-	{
-		CCLOG("don't exist");
-	}
-
-	std::string buffer = APP_DIR+"/myfile.txt";
-	CCLOG("path file %s", buffer.c_str());
-
-
-	if (l_fileUtils->isFileExist(buffer))
-	{
-		CCLOG("file exist");
-	}
-	else
-	{
-		CCLOG("file don't exist");
-	}
 }
 

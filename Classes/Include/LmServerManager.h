@@ -9,26 +9,31 @@
 
 class LmServerManager
 {
-public:
+	public:
 
-	LmServerManager();
-	~LmServerManager();
+		LmServerManager();
+		~LmServerManager();
 
-	//return the vector of InteractionScene
-	std::vector<LmInteractionScene*> getInteractionSceneOfTheGame(bool);
+		//return the vector of InteractionScene
+		std::vector<LmInteractionScene*> getInteractionSceneOfTheGame(bool);
 
-	//init
-	bool init();
+		//init
+		bool init();
 
-	//init with json and return the title
-	std::string getSTitleApplication();
+		//init with json and return the title
+		std::string getSTitleApplication();
 
-	std::string getSFilenameSpriteSplashScreen();
+		std::string getSFilenameSpriteSplashScreen();
 
-private:
+		int getIdGame()
+		{
+			return m_pLmJsonparser->getGameId();
+		}
 
-	//JsonParser to read our Json File & to instanciate InteractionScene
-	LmJsonParser* m_pLmJsonparser;
+	private:
+
+		//JsonParser to read our Json File & to instanciate InteractionScene
+		LmJsonParser* m_pLmJsonparser;
 
 };
 

@@ -13,6 +13,9 @@
 #include "LmJniCppFacade.h"
 #include "SimpleAudioEngine.h"
 
+//to know stats file to choose
+#include "LmUser.h"
+
 #include "GUI/CCControlExtension/CCControlExtensions.h"
 
 
@@ -50,14 +53,14 @@ class LmSettings: public cocos2d::Ref
 {
 public:
 
-	LmSettings();
+	LmSettings(LmUser*);
 	~LmSettings();
 
 	bool init();
 
 	void setVisible(bool);
 
-	static void endApplication();
+	void endApplication();
 
 	//to add it to a node
 	void addTo(cocos2d::Node*, int);
@@ -70,6 +73,9 @@ private:
 	LmSprite* m_pBackGroundSprite;
 
 	LmCredits* m_pLmCredits;
+
+	LmUser* m_pUser;
+
 
 	//METHODS
 

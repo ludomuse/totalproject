@@ -220,7 +220,7 @@ protected:
 	//gui elements
 	LmSprite* m_pSpriteDashboardBand;
 
-	cocos2d::ui::Button* m_pMoveLayerButton;
+	cocos2d::MenuItemImage* m_pMoveLayerButton;
 	bool m_bMoveDone;
 	bool m_bDone;
 
@@ -256,7 +256,7 @@ protected:
 	//add the dashboard layer
 	void initDashboardLayer();
 
-	void moveDashboardLayer();
+	void moveDashboardLayer(cocos2d::Ref*);
 	void moveRightDone();
 	void moveLeftDone();
 

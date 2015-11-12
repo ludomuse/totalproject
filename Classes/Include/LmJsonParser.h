@@ -29,79 +29,93 @@
 #include "LmQuizz_v2Scene.h"
 #include "LmTakePictureScene.h"
 
-
 class LmJsonParser
 {
-public:
+	public:
 
-	LmJsonParser();
-	~LmJsonParser();
+		LmJsonParser();
+		~LmJsonParser();
 
-	//read json file and init his document object in which we can querying value
-	//return true if json file open correctly and has a member Ludomuse
-	bool initJsonDocument(std::string);
+		//read json file and init his document object in which we can querying value
+		//return true if json file open correctly and has a member Ludomuse
+		bool initJsonDocument(std::string);
 
-	//init and return the title of the app
-	std::string getSTitleApplication();
+		//init and return the title of the app
+		std::string getSTitleApplication()
+		{
+			return m_sTitleApplication;
+		}
 
-	//init and return the filename of the sprite splash screen
-	std::string getSFilenameSpriteSplashScreen();
+		//init and return the filename of the sprite splash screen
+		std::string getSFilenameSpriteSplashScreen()
+		{
+			return m_sFilenameSpriteSplashScreen;
+		}
 
-	const std::vector<LmInteractionScene*>& getAInteractionSceneOfTheGame(bool);
+		const std::vector<LmInteractionScene*>& getAInteractionSceneOfTheGame(
+				bool);
 
-	//first param is the key of the value
-	std::string getStringValue(const char*);
+		//first param is the key of the value
+		std::string getStringValue(const char*);
 
-private:
+		//get game id
+		int getGameId()
+		{
+			return m_iIdGame;
+		}
 
-	//ATTRIBUTES
+		//init
+		bool init(std::string);
 
-	//to know which setpoint to get in json file
-	bool m_bIsParent;
+	private:
 
-	//Where we parse the json file
-	rapidjson::Document m_oDocument;
+		//ATTRIBUTES
 
-	//title of the application
-	std::string m_sTitleApplication;
+		//idgame
+		int m_iIdGame;
 
-	//title of the application
-	std::string m_sFilenameSpriteSplashScreen;
+		//to know which setpoint to get in json file
+		bool m_bIsParent;
 
+		//Where we parse the json file
+		rapidjson::Document m_oDocument;
 
-	//our vector of Scene
-	std::vector<LmInteractionScene*> m_aInteractionSceneOfTheGame;
+		//title of the application
+		std::string m_sTitleApplication;
 
-	//METHODS
+		//title of the application
+		std::string m_sFilenameSpriteSplashScreen;
 
-	//init
-	void initInteractionAttributesSceneOfTheGame();
+		//our vector of Scene
+		std::vector<LmInteractionScene*> m_aInteractionSceneOfTheGame;
 
-	//generic method to make all the setpoint 2nd precise which one to take
-	LmSetPoint* getLmSetPoint(const rapidjson::Value&, const char*);
+		//METHODS
 
-	//init the setpoint of an interaction according to the json
-	void initSetPoint(const rapidjson::Value& , LmInteractionScene* );
-	void initReward(const rapidjson::Value& , LmInteractionScene* );
-	void initDescription(const rapidjson::Value& , LmInteractionScene* );
+		//init
+		void initInteractionAttributesSceneOfTheGame();
 
-	void initInteractionAttributes(const rapidjson::Value& , LmInteractionScene*);
+		//generic method to make all the setpoint 2nd precise which one to take
+		LmSetPoint* getLmSetPoint(const rapidjson::Value&, const char*);
 
-	//return a Lmlayer make according to the json value
-	LmLayer* makeLmLayer(const rapidjson::Value& );
-	LmReward* makeLmReward(const rapidjson::Value& );
+		//init the setpoint of an interaction according to the json
+		void initSetPoint(const rapidjson::Value&, LmInteractionScene*);
+		void initReward(const rapidjson::Value&, LmInteractionScene*);
+		void initDescription(const rapidjson::Value&, LmInteractionScene*);
 
+		void initInteractionAttributes(const rapidjson::Value&,
+				LmInteractionScene*);
 
+		//return a Lmlayer make according to the json value
+		LmLayer* makeLmLayer(const rapidjson::Value&);
+		LmReward* makeLmReward(const rapidjson::Value&);
 
-	//our function which make scene
-	void makeLmRightSpotScene(const rapidjson::Value&);
-	void makeLmQuizz_v1Scene(const rapidjson::Value&);
-	void makeLmFindGoodCategoryScene(const rapidjson::Value&);
-	void makeLmHintScene(const rapidjson::Value&);
-	void makeLmQuizz_v2Scene(const rapidjson::Value&);
-	void makeLmTakePictureScene(const rapidjson::Value&);
-
-
+		//our function which make scene
+		void makeLmRightSpotScene(const rapidjson::Value&);
+		void makeLmQuizz_v1Scene(const rapidjson::Value&);
+		void makeLmFindGoodCategoryScene(const rapidjson::Value&);
+		void makeLmHintScene(const rapidjson::Value&);
+		void makeLmQuizz_v2Scene(const rapidjson::Value&);
+		void makeLmTakePictureScene(const rapidjson::Value&);
 
 };
 

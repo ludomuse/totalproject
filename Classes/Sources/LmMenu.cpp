@@ -21,7 +21,7 @@ LmMenu::LmMenu()
 	listenWifiFacade();
 
 	//ludomuse object
-	m_pUser1 = new LmUser; //delete in LmGameManager
+	m_pUser1 = new LmUser(true); //delete in LmGameManager rue because we want stats of this user
 	m_pUser2 = new LmUser; //delete in LmGameManager
 
 	//pointer
@@ -116,23 +116,23 @@ void LmMenu::onReceivingMsg(bytes l_oMsg)
 	CCLOG("lm menu_event is %d", _event);
 	switch (_event)
 	{
-	case LmEvent::UserIsReady:
-		CCLOG("onUserIsReadyEvent");
-		ON_CC_THREAD(LmMenu::onUserIsReadyEvent, this, l_oMsg)
-		;
-		break;
-	case LmEvent::CompatibleToPlay:
-		CCLOG("onCompatibleToPlayEvent");
-		ON_CC_THREAD(LmMenu::onCompatibleToPlayEvent, this, l_oMsg)
-		;
-		break;
-	case LmEvent::Play:
-		CCLOG("onPlayEvent");
-		ON_CC_THREAD(LmMenu::onPlayEvent, this, l_oMsg)
-		;
-		break;
-	default:
-		break;
+		case LmEvent::UserIsReady:
+			CCLOG("onUserIsReadyEvent");
+			ON_CC_THREAD(LmMenu::onUserIsReadyEvent, this, l_oMsg)
+			;
+			break;
+		case LmEvent::CompatibleToPlay:
+			CCLOG("onCompatibleToPlayEvent");
+			ON_CC_THREAD(LmMenu::onCompatibleToPlayEvent, this, l_oMsg)
+			;
+			break;
+		case LmEvent::Play:
+			CCLOG("onPlayEvent");
+			ON_CC_THREAD(LmMenu::onPlayEvent, this, l_oMsg)
+			;
+			break;
+		default:
+			break;
 	}
 
 }
@@ -408,6 +408,9 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 	FILENAME_BUTTON_CLICKED);
 
+	//test
+	//menuIsFinished();
+
 	if (!m_bReady)
 	{
 		//role are selected and user 2 has a tablet name
@@ -420,7 +423,6 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 		msg << LmEvent::UserIsReady << *m_pUser1;
 		WIFIFACADE->sendBytes(msg);
 
-		CCLOG("m_pLabelFeedback->setString(m_sUserIsReady);");
 		m_pLabelFeedback->setString(m_sUserIsReady);
 
 	}
@@ -431,7 +433,6 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 
 		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/cross.png");
 
-		CCLOG("m_pLabelFeedback->setString(m_sBegining);");
 		m_pLabelFeedback->setString(m_sDeviceAndRoleSlected);
 
 	}
@@ -492,6 +493,7 @@ void LmMenu::parentSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_pCheckBoxChild->setSelected(false);
 	//update user role
 	m_pUser1->setBParent(true);
+
 	m_bRoleSelected = true;
 
 	setReadyVisible(true);
@@ -515,6 +517,7 @@ void LmMenu::childSelected(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType)
 	m_pCheckBoxChild->setSelected(true);
 	m_pCheckBoxParent->setSelected(false);
 	m_pUser1->setBParent(false);
+
 	m_bRoleSelected = true;
 
 	setReadyVisible(true);
@@ -578,8 +581,7 @@ void LmMenu::makeCheckboxUserTabletName(
 		l_pLabel->setColor(Color3B::WHITE);
 		l_pLabel->setMaxLineWidth(l_fWidthButton * 0.9);
 		l_pCheckBox->addChild(l_pLabel);
-		m_aMenuItemUserTabletName.insert(
-		{ l_pCheckBox, l_pLabel });
+		m_aMenuItemUserTabletName.insert( { l_pCheckBox, l_pLabel });
 
 		l_pCheckBox->setAnchorPoint(Vec2(0, 0.5));
 
@@ -750,7 +752,6 @@ void LmMenu::onCompatibleToPlayEvent(bytes l_oMsg)
 			msg.write(false);
 			WIFIFACADE->sendBytes(msg);
 
-			CCLOG("m_pLabelFeedback->setString(m_sError);");
 			m_pLabelFeedback->setString(m_sError);
 			if (m_bReady)
 			{
@@ -784,7 +785,6 @@ void LmMenu::onPlayEvent(bytes l_oMsg)
 	{
 		//unblock input
 		inputEnabled(true);
-		CCLOG("m_pLabelFeedback->setString(m_sError);");
 		m_pLabelFeedback->setString(m_sError);
 		if (m_bReady)
 		{
@@ -807,12 +807,13 @@ bool LmMenu::usersAreCompatible(LmUser* userToCompare)
 		m_pLabelFeedback->setString(m_sUserNotCompatibleRole);
 		return false;
 	}
-	else if (userToCompare->getPUserTabletName().compare(
-			m_pUser2->getPUserTabletName()) != 0)
-	{
-		m_pLabelFeedback->setString(m_sUserNotCompatibleTabletName);
-		return false;
-	}
+	else
+		if (userToCompare->getPUserTabletName().compare(
+				m_pUser2->getPUserTabletName()) != 0)
+		{
+			m_pLabelFeedback->setString(m_sUserNotCompatibleTabletName);
+			return false;
+		}
 
 	CCLOG("USER COMPATIBLE");
 	return true;
@@ -839,23 +840,23 @@ void LmMenu::initText()
 {
 	auto l_pLmJsonParser = new LmJsonParser;
 
-	if(!l_pLmJsonParser->initJsonDocument("Json/strings.json"))
-	{
-		CCLOG("init json credit failed");
-	}
+	 if (!l_pLmJsonParser->initJsonDocument("Json/strings.json"))
+	 {
+	 CCLOG("init json credit failed");
+	 }
 
-	m_sUserIsReady = l_pLmJsonParser->getStringValue("UserIsReady");
-	m_sDeviceAndRoleSlected = l_pLmJsonParser->getStringValue(
-			"DeviceAndRoleSlected");
-	m_sRoleNotChoose = l_pLmJsonParser->getStringValue("RoleNotChoose");
-	m_sBegining = l_pLmJsonParser->getStringValue("Begining");
-	m_sUserNotCompatibleRole = l_pLmJsonParser->getStringValue(
-			"UserNotCompatibleRole");
-	m_sUserNotCompatibleTabletName = l_pLmJsonParser->getStringValue(
-			"UserNotCompatibleTabletName");
-	m_sError = l_pLmJsonParser->getStringValue("Error");
-	m_sSearching = l_pLmJsonParser->getStringValue("Searching");
+	 m_sUserIsReady = l_pLmJsonParser->getStringValue("UserIsReady");
+	 m_sDeviceAndRoleSlected = l_pLmJsonParser->getStringValue(
+	 "DeviceAndRoleSlected");
+	 m_sRoleNotChoose = l_pLmJsonParser->getStringValue("RoleNotChoose");
+	 m_sBegining = l_pLmJsonParser->getStringValue("Begining");
+	 m_sUserNotCompatibleRole = l_pLmJsonParser->getStringValue(
+	 "UserNotCompatibleRole");
+	 m_sUserNotCompatibleTabletName = l_pLmJsonParser->getStringValue(
+	 "UserNotCompatibleTabletName");
+	 m_sError = l_pLmJsonParser->getStringValue("Error");
+	 m_sSearching = l_pLmJsonParser->getStringValue("Searching");
 
-	delete l_pLmJsonParser;
+	 delete l_pLmJsonParser;
 }
 

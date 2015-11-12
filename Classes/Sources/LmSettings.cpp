@@ -14,8 +14,12 @@
 
 using namespace cocos2d;
 
-LmSettings::LmSettings()
+LmSettings::LmSettings(LmUser* l_pUser )
 {
+
+	//ludo object
+	m_pUser = l_pUser;
+
 
 	//primitive type
 	m_pLmCredits = nullptr;
@@ -149,7 +153,16 @@ void LmSettings::back(Ref* p_Sender)
 void LmSettings::endApplication()
 {
 	CCLOG("LudoMuse End");
+	//clear and close
 	WIFIFACADE->clean();
+
+	//merge stats to json file
+	m_pUser->getPLmStatistics()->writeToJson();
+
+	//test
+	m_pUser->getPLmStatistics()->printUserFileToLogcat();
+
+
 	Director::getInstance()->end();
 }
 
@@ -182,17 +195,13 @@ void LmSettings::runCredits(Ref* p_Sender)
 LmCredits::LmCredits()
 {
 
-	CCLOG("a");
 	//prmitive type
 	m_bLayerTouched = false;
-	CCLOG("b");
 
 	m_pSpeed=60;
-	CCLOG("c");
 
 	//pointer
 	m_pListener = nullptr;
-	CCLOG("d");
 
 	m_pLabel = nullptr;
 }

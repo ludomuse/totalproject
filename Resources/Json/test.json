@@ -1,6 +1,7 @@
 {
   "Ludomuse": {
     "Configuration": {
+      "IdGame": 999,
       "Title": "Test",
       "FilenameSpriteSplashScreen": "Game/Background/splashScreenLu.png"
     },

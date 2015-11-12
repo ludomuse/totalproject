@@ -67,7 +67,7 @@ LmInteractionScene::~LmInteractionScene()
 		delete m_pLmReward;
 	}
 
-	if(m_pLmRewardUser2)
+	if (m_pLmRewardUser2)
 	{
 		delete m_pLmRewardUser2;
 	}
@@ -96,17 +96,10 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 
 	//preload sounds
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
-			FILENAME_BUTTON_CLICKED);
+	FILENAME_BUTTON_CLICKED);
 
 	//init user
 	m_pUser = l_pUser;
-
-	initDashboardLayer();
-	if (!m_pLmSetPointBegin->init(this))
-	{
-		CCLOG("LmSetPoint init failed");
-		return false;
-	}
 
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
@@ -167,6 +160,18 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pLayerGame->addChild(m_pSpriteWaitingScreen);
 	m_pSpriteWaitingScreen->setVisible(false);
 
+	initDashboardLayer();
+
+	if (!m_pLmSetPointBegin->init(this))
+	{
+		CCLOG("LmSetPoint init failed");
+		return false;
+	}
+	else
+	{
+		m_pUser->getPLmStatistics()->interactionBegin();
+	}
+
 	return true;
 }
 
@@ -187,6 +192,8 @@ bool LmInteractionScene::startGame()
 		m_pSpriteWaitingScreen->setVisible(false);
 		listenWifiFacade();
 
+		m_pUser->getPLmStatistics()->interactionGameBegin();
+
 		CCLOG("LmInteractionScene::runGame");
 		runGame();
 		return true;
@@ -203,13 +210,13 @@ void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{
-	case LmEvent::Win:
-		CCLOG("Win");
-		ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
-		;
-		break;
-	default:
-		break;
+		case LmEvent::Win:
+			CCLOG("Win");
+			ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
+			;
+			break;
+		default:
+			break;
 	}
 }
 
@@ -255,18 +262,18 @@ void LmInteractionScene::playCallback(cocos2d::Ref*,
 
 	switch (type)
 	{
-	case ui::CheckBox::EventType::SELECTED:
-		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+		case ui::CheckBox::EventType::SELECTED:
+			CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 
-		break;
+			break;
 
-	case ui::CheckBox::EventType::UNSELECTED:
-		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+		case ui::CheckBox::EventType::UNSELECTED:
+			CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 
-		break;
+			break;
 
-	default:
-		break;
+		default:
+			break;
 	}
 }
 
@@ -392,6 +399,9 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				WIFIFACADE->sendBytes(msg);
 			}
 
+			m_pUser->getPLmStatistics()->interactionEnd();
+			m_pUser->getPLmStatistics()->endRecord(m_iIdGame,m_sDescription);
+
 			//test to see if we need to display event in cocos thread
 			ON_CC_THREAD(LmInteractionScene::finishInteraction, this);
 
@@ -431,6 +441,11 @@ void LmInteractionScene::initDashboardLayer()
 	m_pDashboardBandLayer = Layer::create();
 	this->addChild(m_pDashboardBandLayer, 2);
 
+	//create a menu and back to dashboard menuitemiamhe
+	auto l_pMenu = Menu::create();
+	l_pMenu->setPosition(Vec2::ZERO);
+	m_pDashboardBandLayer->addChild(l_pMenu, 1);
+
 	//spritebackground
 	m_pSpriteDashboardBand = LmSprite::create(
 			"Ludomuse/GUIElements/dashboardLayerTexture.png");
@@ -439,15 +454,14 @@ void LmInteractionScene::initDashboardLayer()
 	m_pDashboardBandLayer->addChild(m_pSpriteDashboardBand, 0);
 
 	//button to move the layer
-	m_pMoveLayerButton = ui::Button::create(
-			"Ludomuse/GUIElements/moveDashboardLayer.png");
-	m_pMoveLayerButton->setTouchEnabled(true);
+	m_pMoveLayerButton = MenuItemImage::create(
+			"Ludomuse/GUIElements/moveDashboardLayer.png",
+			"Ludomuse/GUIElements/moveDashboardLayer.png",
+			CC_CALLBACK_1(LmInteractionScene::moveDashboardLayer, this));
 	m_pMoveLayerButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width,
 					l_oVisibleSize.height * 0.5f));
-	m_pMoveLayerButton->addTouchEventListener(
-			CC_CALLBACK_0(LmInteractionScene::moveDashboardLayer, this));
-	m_pDashboardBandLayer->addChild(m_pMoveLayerButton, 0);
+	l_pMenu->addChild(m_pMoveLayerButton);
 
 	//user1 name
 	m_pLabelUserName = Label::createWithTTF(m_pUser->getPUserName(),
@@ -476,11 +490,6 @@ void LmInteractionScene::initDashboardLayer()
 			m_pSpriteDashboardBand->getContentSize().height * 0.55f);
 	m_pSpriteDashboardBand->addChild(m_pLabelScore);
 
-	//create a menu and back to dashboard menuitemiamhe
-	auto l_pMenu = Menu::create();
-	l_pMenu->setPosition(Vec2::ZERO);
-	m_pDashboardBandLayer->addChild(l_pMenu, 1);
-
 	m_pBackDashboardButton = MenuItemImage::create(
 			"Ludomuse/GUIElements/backToDashboard.png",
 			"Ludomuse/GUIElements/backToDashboardpressed.png",
@@ -502,10 +511,17 @@ void LmInteractionScene::initDashboardLayer()
 
 }
 
-void LmInteractionScene::moveDashboardLayer()
+void LmInteractionScene::moveDashboardLayer(cocos2d::Ref* p_Sender)
 {
+
 	if (m_bMoveDone)
 	{
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+		FILENAME_BUTTON_CLICKED);
+
+		//stats
+		m_pUser->getPLmStatistics()->clicked("Sortie Tableau de Bord");
+
 		m_bMoveDone = false;
 
 		//we look if we have to move right or left
@@ -571,6 +587,10 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 	FILENAME_BUTTON_CLICKED);
 
+
+	//stats
+	m_pUser->getPLmStatistics()->clicked("Tableau de Bord");
+
 	if (!m_bBackPressed && m_bMoveDone && m_pLmSetPointBegin->isBActionDone())
 	{
 		m_bBackPressed = true;
@@ -583,14 +603,17 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 			m_pPlayCheckBox->setSelected(true);
 		}
 
-		CCLOG("back to dashboard");
+
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 				"BackToDashboard");
 	}
+
 }
 
 void LmInteractionScene::win(bool win)
 {
+
+	m_pUser->getPLmStatistics()->interactionGameEnd();
 
 	m_bWin = win;
 
