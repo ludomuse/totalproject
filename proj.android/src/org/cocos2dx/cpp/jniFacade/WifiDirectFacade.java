@@ -5,12 +5,9 @@ import java.util.List;
 
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.sockets.CallBackMethod;
-import org.cocos2dx.cpp.sockets.SocketHandler;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.provider.ContactsContract;
 
 /**
  * This is a wrapper for the WifiDirectManager, that expose simple method such
@@ -115,7 +112,7 @@ public class WifiDirectFacade {
 
 		_manager = new WifiDirectManager(activity);
 		//If true, wifi manager will automatically reconnect when is deconnected
-		_manager.autoReconnect = false;
+		_manager.autoReconnect = true;
 		//allow wifi manager to relaunch discovery service when the list of found devices
 		//decrease
 		_manager.enabledAutoRelanchingServiceDiscoverPeers = false;

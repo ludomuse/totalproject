@@ -10,19 +10,18 @@ USING_NS_CC;
 AppDelegate::AppDelegate()
 {
 
-
 	//object
 	m_pwifiFacade = new LmWifiDirectFacade();
 
 	/*Create the wifi direct
-	and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
-	trough this the jni facade class)
-	*/
+	 and set it in the jni facade (it's like doing a singleton -> all class can now access the wifi
+	 trough this the jni facade class)
+	 */
 	LmJniCppFacade::setWifiFacade(m_pwifiFacade);
 	CCLOG("before gamemanager");
+
 	m_pLmGameManager = new LmGameManager; //need to be delete
 	m_pLmMenu = new LmMenu; //need to be delete
-
 
 }
 
@@ -43,8 +42,7 @@ void AppDelegate::initGLContextAttrs()
 {
 	//set OpenGL context attributions,now can only set six attributions:
 	//red,green,blue,alpha,depth,stencil
-	GLContextAttrs glContextAttrs =
-	{ 8, 8, 8, 8, 24, 8 };
+	GLContextAttrs glContextAttrs = { 8, 8, 8, 8, 24, 8 };
 
 	GLView::setGLContextAttrs(glContextAttrs);
 }
@@ -64,7 +62,6 @@ bool AppDelegate::applicationDidFinishLaunching()
 	init();
 
 	CCLOG("before splashscreen");
-
 
 	//display a splashscreen of Ludomuse
 	m_pLmMenu->splashScreen();
@@ -126,6 +123,16 @@ bool AppDelegate::init()
 void AppDelegate::initPathsForResolution()
 {
 	CCLOG("AppDelegate::initPathsForResolution");
+
+
+	//create app directory
+	LmJniJavaFacade::getApplicationDirectory();
+	//set server default directory to app directory
+	m_pwifiFacade->setServerTempFileName(APP_DIR+ "/MyPic.jpg");
+
+	CCLOG("<font color=\"red\"> application directory is: %s</font>",
+			APP_DIR.c_str());
+
 
 	// initialize director
 	auto l_director = Director::getInstance();
@@ -209,7 +216,6 @@ void AppDelegate::initPathsForResolution()
 
 	//set the paths
 	l_fileUtils->setSearchPaths(l_resDirOrders);
-
 
 }
 

@@ -1,20 +1,13 @@
 package org.cocos2dx.cpp.jniFacade;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.String;
 
 import org.cocos2dx.cpp.AppActivity;
 import org.cocos2dx.cpp.DebugManager;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Environment;
-import android.provider.ContactsContract;
 
 /**
  * These method are called by c++, when the cpp part of the WifiDirectFacade
@@ -118,36 +111,8 @@ public class JniJavaFacade {
 
 	public static void getApplicationDirectory()
 	{
-		File f = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + _wifiDirectFacade.getActivity().getPackageName());
-		if(!f.exists())
-			f.mkdir();
-		/*File f = _wifiDirectFacade.getActivity().getDir("res", Context.MODE_WORLD_WRITEABLE);
-		try
-		{
-			new File(f.getAbsolutePath()).createNewFile();
-		}
-		catch (IOException e)
-		{
-			DebugManager.print("error: " + e.getLocalizedMessage(), WifiDirectManager.DEBUGGER_CHANNEL);
-			e.printStackTrace();
-		}*/
-		JniCppFacade.setApplicationDirectory(f.getAbsolutePath());
-		
-		/*PackageManager m = _wifiDirectFacade.getActivity().getPackageManager();
-		String s = _wifiDirectFacade.getActivity().getPackageName();
-		try
-		{
-			PackageInfo p = m.getPackageInfo(s, 0);
-			s = p.applicationInfo.dataDir;
-			JniCppFacade.setApplicationDirectory(s);
-		}
-		catch (PackageManager.NameNotFoundException e)
-		{
-			DebugManager.print("PackageManager.NameNotFoundException",
-					WifiDirectManager.DEBUGGER_CHANNEL);
-			JniCppFacade.setApplicationDirectory("");
-		}*/
-
+		AppActivity appActivity = (AppActivity) _wifiDirectFacade.getActivity();
+		JniCppFacade.setApplicationDirectory(appActivity.createOrReturnAppDir());
 	}
 
 }

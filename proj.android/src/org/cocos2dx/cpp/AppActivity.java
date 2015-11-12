@@ -3,8 +3,12 @@ package org.cocos2dx.cpp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 
+import org.cocos2dx.cpp.jniFacade.JniJavaFacade;
 import org.cocos2dx.cpp.jniFacade.WifiDirectFacade;
 import org.cocos2dx.cpp.jniFacade.JniCppFacade;
 import org.cocos2dx.cpp.wifiDirect.WifiDirectManager;
@@ -17,10 +21,11 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.Override;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 /**
  * This is the main activity for LudoMuse. THERE MUST NOT BE ANY GRAPHICS
@@ -58,14 +63,18 @@ public class AppActivity extends Cocos2dxActivity {
 
 	}
 
-	@Override
-	protected void onStop()
+	//private boolean stopAllowed = true;
+	//@Override
+	/*protected void onStop()
 	{
-		DebugManager.print("[FINISHING] on stop",
-				WifiDirectManager.DEBUGGER_CHANNEL);
-		_wifiFacade.clear(); // TODO totest
-		super.onStop();
-	}
+		if(stopAllowed)
+		{
+			DebugManager.print("[FINISHING] on stop",
+					WifiDirectManager.DEBUGGER_CHANNEL);
+			//_wifiFacade.clear(); // TODO totest
+			super.onStop();
+		}
+	}*/
 
 	/* register the broadcast receiver with the intent values to be matched */
 	@Override
@@ -85,68 +94,76 @@ public class AppActivity extends Cocos2dxActivity {
 
 	// Taking photo
 
-	static final int REQUEST_TAKE_PHOTO = 1;
-
+	//static final int REQUEST_TAKE_PHOTO = 1;
+	static final int REQUEST_IMAGE_CAPTURE = 1;
 	public void dispatchTakePictureIntent()
 	{
-		Camera camera = Camera.open();
-		camera.getParameters().setPictureSize(4096, 4096);
-		
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		// Ensure that there's a camera activity to handle the intent
-		if (takePictureIntent.resolveActivity(getPackageManager()) != null)
-		{
-			// Create the File where the photo should go
-			File photoFile = null;
-			try
-			{
-				photoFile = createImageFile();
-			}
-			catch (IOException ex)
-			{
-				// Error occurred while creating the File
-			}
-			// Continue only if the File was successfully created
-			if (photoFile != null)
-			{
-				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-						Uri.fromFile(photoFile));
-				startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-			}
-		}
+		//4096 * 4096
+	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+	        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+	    }
 	}
 
 	String mCurrentPhotoPath;
 
+	public String createOrReturnAppDir()
+	{
+		return getInstance().getApplicationInfo().dataDir;
+		/*File f = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName());
+		if(!f.exists())
+			f.mkdir();
+		return f.getAbsolutePath();*/
+	}
+		
 	private File createImageFile() throws IOException
 	{
 		// Create an image file name
 		/*String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
 		String imageFileName = "JPEG_" + timeStamp + "_";*/
-		String imageFileName = "MyPic";
-		File storageDir = Environment
-				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-		File image = File.createTempFile(imageFileName, /* prefix */
-				".jpg", /* suffix */
-				storageDir /* directory */
-		);
+		File image = new File(createOrReturnAppDir() + "/MyPic" + ".jpg");
+		if(image.exists())
+		{	
+			image.delete();
+		}
 
+		image.createNewFile();
 		// Save a file: path for use with ACTION_VIEW intents
-		mCurrentPhotoPath =image.getAbsolutePath();
+		mCurrentPhotoPath = image.getAbsolutePath();
 		return image;
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
 	    super.onActivityResult(requestCode, resultCode, data);
 
-	    if (requestCode == REQUEST_TAKE_PHOTO) {
-	        if (resultCode == RESULT_OK) {
-	        	Toast.makeText(this, "Image saved to:\n" + mCurrentPhotoPath, Toast.LENGTH_LONG).show();
-	        	JniCppFacade.setCurrentPicturePath(mCurrentPhotoPath);
-	          //  handleAvatarUpload(data); // which uses Uri selectedImage = data.getData();
-	        } 
+	    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+	        Bundle extras = data.getExtras();
+	        Bitmap imageBitmap = (Bitmap) extras.get("data");
+	        imageBitmap = Bitmap.createScaledBitmap(imageBitmap, Math.min(imageBitmap.getWidth(), 4096), Math.min(imageBitmap.getHeight(), 4096), true);
+	      
+	        FileOutputStream fos;
+			try
+			{
+				fos = new FileOutputStream(createImageFile());
+				imageBitmap.compress(Bitmap.CompressFormat.PNG, 50, fos);
+				fos.close();
+				JniCppFacade.setCurrentPicturePath(mCurrentPhotoPath);
+			}
+			catch (FileNotFoundException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+	        
 	    }
 	}
 	

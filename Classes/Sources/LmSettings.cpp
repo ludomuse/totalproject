@@ -21,12 +21,13 @@ LmSettings::LmSettings(LmUser* l_pUser )
 	m_pUser = l_pUser;
 
 
-	//primitive type
+
+
 	m_pLmCredits = nullptr;
+
 
 	//pointer
 	m_pBackGroundSprite = nullptr;
-
 }
 
 LmSettings::~LmSettings()
@@ -36,6 +37,7 @@ LmSettings::~LmSettings()
 
 bool LmSettings::init()
 {
+
 
 	//init credit scene
 	m_pLmCredits = new LmCredits;
@@ -194,7 +196,7 @@ void LmSettings::runCredits(Ref* p_Sender)
 
 LmCredits::LmCredits()
 {
-
+	CCLOG("lm credits constructor");
 	//prmitive type
 	m_bLayerTouched = false;
 

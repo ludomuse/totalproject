@@ -15,6 +15,7 @@ LmGameManager::LmGameManager()
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
 
+
 	//primitive type
 	m_iIndexInteractionScene = 0;
 	m_iInteractionDone = 0;
@@ -106,6 +107,7 @@ bool LmGameManager::init()
 	//user have been get by menu and set by appdelegate
 	m_pLmSettings = new LmSettings(m_pUser1);
 
+
 	if (!m_pLmServerManager->init())
 	{
 		CCLOG("Initialization Server Manager failed");
@@ -114,10 +116,9 @@ bool LmGameManager::init()
 
 	//init id game into stats of user
 	m_pUser1->getPLmStatistics()->init();
-	m_pUser1->getPLmStatistics()->setIdGameForStats(
-			m_pLmServerManager->getIdGame());
-	m_pUser1->getPLmStatistics()->setGameTitle(
-			m_pLmServerManager->getSTitleApplication());
+	m_pUser1->getPLmStatistics()->setIdGameForStats(m_pLmServerManager->getIdGame());
+	m_pUser1->getPLmStatistics()->setGameTitle(m_pLmServerManager->getSTitleApplication());
+
 
 	//init splashscreen
 	if (!initSplashScreen())
@@ -182,6 +183,7 @@ bool LmGameManager::init()
 		//reset touch enable
 			inputDisabled(false);
 
+
 		};
 
 	//add the custom event to the event dispatcher
@@ -206,6 +208,8 @@ bool LmGameManager::initSplashScreen()
 	m_pSplashSreenLayer = Layer::create();
 	m_pGameManagerScene->addChild(m_pSplashSreenLayer);
 
+
+	CCLOG("%s",m_pLmServerManager->getSFilenameSpriteSplashScreen().c_str());
 	//add the sprite background get from the config json file
 	auto l_pSplashScreenSprite = Sprite::create(
 			m_pLmServerManager->getSFilenameSpriteSplashScreen());

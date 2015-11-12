@@ -233,7 +233,6 @@ void LmStatistics::init()
 	m_aData.insert( { "Tableau de Bord", 0 });
 	m_aData.insert( { "Comparez", 0 });
 	m_aData.insert( { "Settings", 0 });
-
 }
 
 void LmStatistics::importIntoGameStatsVector(

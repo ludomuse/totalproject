@@ -1,7 +1,6 @@
 package org.cocos2dx.cpp.wifiDirect;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +35,7 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
-import android.os.Build;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -307,11 +306,20 @@ public class WifiDirectManager {
 
 	public void reconnectToPeer()
 	{
-
 		if(lastPeerName != null && !lastPeerName.equals("") && socket.wasPreviouslyAttached())
 		{
-			socket.attachToRemoteHost();
-			connectToPeer(lastPeerName, _cmPeerConnected);
+			//socket.attachToRemoteHost();
+			
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable(){
+
+				@Override
+				public void run()
+				{
+					connectToPeer(lastPeerName, _cmPeerConnected);
+					
+				}}, 2000);
+			
 		}
 
 		/*
@@ -413,7 +421,10 @@ public class WifiDirectManager {
 				requestForConnectionAlreadyLaunched = false;
 				// A disconnection message will be passed to the
 				// wifidirectmanager
-				// reconnectToPeer();
+				if(autoReconnect)
+				{
+					reconnectToPeer();
+				}
 			}
 		});
 	}
@@ -1066,7 +1077,6 @@ public class WifiDirectManager {
 			@Override
 			public void onConnectionInfoAvailable(WifiP2pInfo info)
 			{
-				String peerMacAddress = getPeerMacAddress();
 				String ownerAddress = info.groupOwnerAddress.getHostAddress();
 				DebugManager.print("owner address is = " + ownerAddress, WifiDirectManager.DEBUGGER_CHANNEL);
 				DebugManager.print("<font color='red'>owner sdk ? </font>" + info.isGroupOwner, DEBUGGER_CHANNEL);

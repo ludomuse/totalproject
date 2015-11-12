@@ -146,6 +146,7 @@ class LmStatistics
 
 		void mergeTimeWithGameStats();
 
+
 		//get the description for stats
 		void setDescriptionOfScene(int idscene, std::string description)
 		{

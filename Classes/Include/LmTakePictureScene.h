@@ -32,7 +32,6 @@ public:
 	void resetScene();
 
 	//dispatcher
-	virtual void onReceivingMsg(bytes);
 	virtual void onReceivingFile(std::string);
 
 
