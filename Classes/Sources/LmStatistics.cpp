@@ -149,7 +149,7 @@ void LmStatistics::clicked(std::string tag)
 	if (m_aData.find(tag) != m_aData.end())
 	{
 		m_aData.find(tag)->second++;
-
+		CCLOG("%s clicked %d times",tag.c_str(),m_aData.find(tag)->second);
 	}
 	else
 	{
@@ -228,11 +228,13 @@ void LmStatistics::init()
 
 	}
 
+	std::vector<std::string> l_aKeyButtonToListen = KEY_BUTTONS;
+
 	//insert what we listen to
-	m_aData.insert( { "Sortie Tableau de Bord", 0 });
-	m_aData.insert( { "Tableau de Bord", 0 });
-	m_aData.insert( { "Comparez", 0 });
-	m_aData.insert( { "Settings", 0 });
+	for(int i=0;i<l_aKeyButtonToListen.size();i++)
+	{
+		m_aData.insert({l_aKeyButtonToListen.at(i).c_str(),0});
+	}
 }
 
 void LmStatistics::importIntoGameStatsVector(
@@ -303,7 +305,7 @@ void LmStatistics::importIntoGameStatsVector(
 			l_SeedBufferGame->SceneMap.insert( { l_SeedBufferScene->IdScene,
 					l_SeedBufferScene });
 		}
-		CCLOG("on import un jeux avec %d scene deja recorded index %d",
+		CCLOG(" import game with %d scene already recorded index %d",
 				l_SeedBufferGame->SceneMap.size(), i);
 		m_aGameStatsVector.push_back(l_SeedBufferGame);
 	}
@@ -370,9 +372,9 @@ void LmStatistics::mergeWithExistingJson()
 			if (l_oDocument.HasMember(it->first.c_str()))
 			{
 				assert(l_oDocument[it->first.c_str()].IsInt());
-				it->second = (int) (l_oDocument[it->first.c_str()].GetInt()
+				it->second = (int) ((l_oDocument[it->first.c_str()].GetInt()
 						* (m_iNumberOfUsers - 1) + it->second)
-						/ m_iNumberOfUsers;
+						/ m_iNumberOfUsers);
 			}
 		}
 
@@ -420,21 +422,16 @@ void LmStatistics::mergeTimeWithGameStats()
 
 				itSceneStats->second->testPrint(1);
 
-				CCLOG("scenestats key %d vs id %d", itSceneStats->first,
-						itSceneStats->second->IdScene);
-
 				std::map<int, LmSceneStats*>::iterator itGameRecordedScene;
 				itGameRecordedScene = m_aGameStatsVector.at(i)->SceneMap.find(
 						itSceneStats->first);
 
-				itGameRecordedScene->second->testPrint(2);
 
 				if (itGameRecordedScene
 						!= m_aGameStatsVector.at(i)->SceneMap.end())
 				{
-					CCLOG(
-							"same scene into the previous json idscenstats = %d , l'autre = %d",
-							itSceneStats->first, itGameRecordedScene->first);
+
+					itGameRecordedScene->second->testPrint(2);
 
 					//find smthg itGameRecordedScene idscene = itSceneStats idscene
 					itSceneStats->second->testPrint(3);
@@ -442,16 +439,16 @@ void LmStatistics::mergeTimeWithGameStats()
 
 					//merge value
 					itSceneStats->second->TimeGame =
-							(int) (itGameRecordedScene->second->TimeGame
+							(int) ((itGameRecordedScene->second->TimeGame
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeGame)
-									/ m_iNumberOfUsers;
+									/ m_iNumberOfUsers);
 
 					itSceneStats->second->TimeInteraction =
-							(int) (itGameRecordedScene->second->TimeInteraction
+							(int) ((itGameRecordedScene->second->TimeInteraction
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeInteraction)
-									/ m_iNumberOfUsers;
+									/ m_iNumberOfUsers);
 
 					//erase the record into the vector recorded record to not write it two time
 					m_aGameStatsVector.at(i)->SceneMap.erase(
@@ -472,14 +469,8 @@ void LmStatistics::mergeTimeWithGameStats()
 						++itGameRecordedScene)
 				{
 
-					CCLOG(
-							"il y a une scene en plus de recorded dans le precedent json");
 					m_pGameStats->SceneMap.insert((*itGameRecordedScene));
 				}
-			}
-			else
-			{
-				CCLOG("autant de scene joué avant que mainteant");
 			}
 
 			//then remove the previous gamestats recorded from vector this game

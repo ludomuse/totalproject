@@ -71,7 +71,7 @@
               "WidthPercent": 75,
               "HeightPercent": 25,
               "SizePercent": 40,
-              "Text": " Nǐ hǎo, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
+              "Text": " Ni hao, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
             },
             "Images": [
               {
@@ -206,7 +206,7 @@
               "WidthPercent": 75,
               "HeightPercent": 25,
               "SizePercent": 40,
-              "Text": " Nǐ hǎo, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
+              "Text": " Ni hao, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
             },
             "Images": [
               {
@@ -378,7 +378,7 @@
           }
         ],
         "FilenameSpriteBackground": "Game/Background/background2Cernuschi.png",
-        "FilenameSpriteSendingArea": "Game/GUIElements/sendingAreaCernuschi.png",
+        "FilenameSpriteSendingArea": "Game/Content/patchment.png",
         "FilenameAudioGoodCategory": "Audio/Game/gong.mp3",
         "FilenameAudioBadCategory": "Audio/Game/beep.wav",
         "Images": [
@@ -418,19 +418,23 @@
         "Categories": [
           {
             "Id": 0,
-            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category1.png"
+            "FilenameCategorySprite": "Game/Content/cerf1red.png",
+            "FilenameCategorySpriteEnd": "Game/Content/cerf1green.png"
           },
           {
             "Id": 1,
-            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category2.png"
+            "FilenameCategorySprite": "Game/Content/gif_elephantred.png",
+            "FilenameCategorySpriteEnd": "Game/Content/gif_elephantgreen.png"
           },
           {
             "Id": 2,
-            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category3.png"
+            "FilenameCategorySprite": "Game/Content/dragon-tete-oiseau-source_5xyred.png",
+            "FilenameCategorySpriteEnd": "Game/Content/dragon-tete-oiseau-source_5xygreen.png"
           },
           {
             "Id": 3,
-            "FilenameCategorySprite": "Game/Content/cernuschi_etape1_category4.png"
+            "FilenameCategorySprite": "Game/Content/vipere2red.png",
+            "FilenameCategorySpriteEnd": "Game/Content/vipere2green.png"
           }
         ],
         "NumberOfGoodImages": 4
@@ -591,9 +595,9 @@
           }
         ],
         "FilenameSpriteBackground": "Game/Background/background4Cernuschi.png",
-        "FilenameSpriteBandTop": "Game/GUIElements/questionBackgroundCernuschi.png",
-        "FilenameSpriteAnswerBackground": "Game/GUIElements/answerBackgroundCernuschi.png",
-        "FilenameSpriteAnswerCross": "Game/GUIElements/answerSelected.png",
+        "FilenameSpriteBandTop": "Game/Content/questionBackgroundCernuschi.png",
+        "FilenameSpriteAnswerBackground": "Game/Content/answerbackgroundCernuschi.png",
+        "FilenameSpriteAnswerCross": "Game/Content/answerSelected.png",
         "FilenameAudioGoodAnswer": "Audio/Game/gong.mp3",
         "FilenameAudioBadAnswer": "Audio/Game/beep.wav",
         "QuestionsParent": [
@@ -609,10 +613,10 @@
         "QuestionsChild": [
           {
             "Question": "Regarde bien la Tigresse sur toutes ses facettes et sélectionne l’animal qui est bien caché ! ",
-            "Answer1": "Game/Content/cernuschi_etape2_category1.png",
-            "Answer2": "Game/Content/cernuschi_etape2_category2.png",
-            "Answer3": "Game/Content/cernuschi_etape2_category3.png",
-            "Answer4": "Game/Content/cernuschi_etape2_category4.png",
+            "Answer1": "Game/Content/nMcen79TRred.png",
+            "Answer2": "Game/Content/nMie6bocRred.png",
+            "Answer3": "Game/Content/coloriage-animaux-g-6red.png",
+            "Answer4": "Game/Content/animaux-lionred.png",
             "NumberRightAnswer": 1
           }
         ],

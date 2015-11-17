@@ -19,8 +19,7 @@
 
 #define FILENAME_USER_CHILD "userStatsChild.json"
 #define FILENAME_USER_PARENT "userStatsParent.json"
-
-#define USER_NUMBER_KEY "Nombre d'Utilisateur"
+#define USER_NUMBER_KEY "Nombre total d'utilisateur"
 #define ARRAY_DATE_KEY "Historique d'Utilisation"
 #define ARRAY_GAME_KEY "Listes des Jeux"
 #define ID_GAME "Identifiant jeux"
@@ -30,6 +29,7 @@
 #define DESCRIPTION_SCENE "Description"
 #define TIME_GAME "Temps dans le jeux (sec)"
 #define TIME_INTERACTION "Temps (jeux + consigne) (sec)"
+#define KEY_BUTTONS {"Sortie Tableau de Bord", "Tableau de Bord", "Comparez", "Settings"}
 
 struct LmSceneStats
 {
@@ -40,8 +40,9 @@ struct LmSceneStats
 
 		void testPrint(int tag)
 		{
-			CCLOG("test No %d",tag);
-			CCLOG("IdScene = %d , TimeGame = %d TimeInteraction = %d",IdScene,TimeGame,TimeInteraction);
+			CCLOG("test No %d", tag);
+			CCLOG("IdScene = %d , TimeGame = %d TimeInteraction = %d", IdScene,
+					TimeGame, TimeInteraction);
 		}
 };
 
@@ -77,7 +78,7 @@ class LmStatistics
 		//set id game from json
 		void setIdGameForStats(int idgame)
 		{
-			CCLOG("setIdGameForStats %d",idgame);
+			CCLOG("setIdGameForStats %d", idgame);
 			m_pGameStats->IdGame = idgame;
 		}
 
@@ -95,7 +96,7 @@ class LmStatistics
 		void interactionEnd();
 
 		//end recording info of the scene
-		void endRecord(int,std::string);
+		void endRecord(int, std::string);
 
 		//init
 		void init();
@@ -145,7 +146,6 @@ class LmStatistics
 		void addSceneGameStats(int);
 
 		void mergeTimeWithGameStats();
-
 
 		//get the description for stats
 		void setDescriptionOfScene(int idscene, std::string description)

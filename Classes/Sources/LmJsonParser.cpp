@@ -785,16 +785,30 @@ void LmJsonParser::makeLmFindGoodCategoryScene(const rapidjson::Value& l_oScene)
 	assert(l_oScene.HasMember("Categories"));
 	for (int i = 0; i < l_oScene["Categories"].Size(); i++)
 	{
+		std::pair<std::string, std::string> pairBuffer;
+
 		assert(l_oScene["Categories"][i].IsObject());
 		assert(l_oScene["Categories"][i].HasMember("Id"));
 		assert(l_oScene["Categories"][i]["Id"].IsInt());
 		assert(l_oScene["Categories"][i].HasMember("FilenameCategorySprite"));
 		assert(l_oScene["Categories"][i]["FilenameCategorySprite"].IsString());
+		assert(
+				l_oScene["Categories"][i].HasMember(
+						"FilenameCategorySpriteEnd"));
+		assert(
+				l_oScene["Categories"][i]["FilenameCategorySpriteEnd"].IsString());
+
 		l_sBufferString =
 				l_oScene["Categories"][i]["FilenameCategorySprite"].GetString();
-		l_SeedBuffer.Categories.push_back(
-				{ l_oScene["Categories"][i]["Id"].GetInt(),
-						l_sBufferString.c_str() });
+
+		pairBuffer.first = l_sBufferString.c_str();
+
+		l_sBufferString =
+				l_oScene["Categories"][i]["FilenameCategorySpriteEnd"].GetString();
+		pairBuffer.second = l_sBufferString.c_str();
+
+		l_SeedBuffer.Categories.insert( {
+				l_oScene["Categories"][i]["Id"].GetInt(), pairBuffer });
 	}
 
 	assert(l_oScene["NumberOfGoodImages"].IsInt());

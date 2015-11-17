@@ -67,8 +67,8 @@ LmUser::~LmUser()
 
 void LmUser::winReward(LmReward* reward)
 {
-	//clone reward and push it
 
+	//clone reward and push it
 	m_aRewards.push_back(new LmReward(reward));
 
 	//update score

@@ -146,7 +146,7 @@ bool LmHintScene::initGame()
 
 		//init his icon
 		l_pSpriteHintIconCreated = Sprite::create(
-				"Ludomuse/GUIElements/hint.png");
+				"Ludomuse/Content/hint.png");
 		//we get coordonnate in percent from json
 		Vec2 l_oPosition = Vec2(
 				(m_aLabelsCoordonateHole.find(it->first)->second.x

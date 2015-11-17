@@ -15,7 +15,6 @@ LmGameManager::LmGameManager()
 	//object
 	m_pLmServerManager = new LmServerManager; //need to be delete
 
-
 	//primitive type
 	m_iIndexInteractionScene = 0;
 	m_iInteractionDone = 0;
@@ -107,7 +106,6 @@ bool LmGameManager::init()
 	//user have been get by menu and set by appdelegate
 	m_pLmSettings = new LmSettings(m_pUser1);
 
-
 	if (!m_pLmServerManager->init())
 	{
 		CCLOG("Initialization Server Manager failed");
@@ -116,9 +114,10 @@ bool LmGameManager::init()
 
 	//init id game into stats of user
 	m_pUser1->getPLmStatistics()->init();
-	m_pUser1->getPLmStatistics()->setIdGameForStats(m_pLmServerManager->getIdGame());
-	m_pUser1->getPLmStatistics()->setGameTitle(m_pLmServerManager->getSTitleApplication());
-
+	m_pUser1->getPLmStatistics()->setIdGameForStats(
+			m_pLmServerManager->getIdGame());
+	m_pUser1->getPLmStatistics()->setGameTitle(
+			m_pLmServerManager->getSTitleApplication());
 
 	//init splashscreen
 	if (!initSplashScreen())
@@ -143,16 +142,19 @@ bool LmGameManager::init()
 			{
 				if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->isBWin())
 				{
-					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneRewardDone.png");
+					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneRewardDone.png");
+
+					addSpriteReward(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward(),
+							m_aSpritesInteractions.at(m_iIndexInteractionScene),true);
 				}
 				else
 				{
-					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneRewardNotDone.png");
+					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneRewardNotDone.png");
 				}
 			}
 			else
 			{
-				m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/GUIElements/interactionDoneNoReward.png");
+				m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneNoReward.png");
 			}
 
 			m_iInteractionDone++;
@@ -161,7 +163,7 @@ bool LmGameManager::init()
 			m_iIndexInteractionScene++;
 
 			//update label of dashboard
-			updateDashboard();
+			updateUsers();
 
 			//it's not a back to dashboard
 			m_bBackToDashboard=false;
@@ -182,7 +184,6 @@ bool LmGameManager::init()
 
 		//reset touch enable
 			inputDisabled(false);
-
 
 		};
 
@@ -208,8 +209,6 @@ bool LmGameManager::initSplashScreen()
 	m_pSplashSreenLayer = Layer::create();
 	m_pGameManagerScene->addChild(m_pSplashSreenLayer);
 
-
-	CCLOG("%s",m_pLmServerManager->getSFilenameSpriteSplashScreen().c_str());
 	//add the sprite background get from the config json file
 	auto l_pSplashScreenSprite = Sprite::create(
 			m_pLmServerManager->getSFilenameSpriteSplashScreen());
@@ -273,7 +272,7 @@ bool LmGameManager::initDashboard()
 
 	//background pink
 	m_pSpriteBackgroundPink = Sprite::create(
-			"Ludomuse/GUIElements/compareNormal.png");
+			"Ludomuse/Content/compareNormal.png");
 	m_pSpriteBackgroundPink->setPosition(l_oVisibleSize.width * 0.5f,
 			m_pSpriteBackgroundPink->getContentSize().height
 					* (-0.5f + s_fMagingRatioOfSpriteBackgroundUser2Profile));
@@ -286,7 +285,7 @@ bool LmGameManager::initDashboard()
 
 	//background profile blue
 	m_pSpriteBackgroundBlueProfile = Sprite::create(
-			"Ludomuse/GUIElements/spriteBackgroundUser1Profile.png");
+			"Ludomuse/Content/spriteBackgroundUser1Profile.png");
 	m_pSpriteBackgroundBlueProfile->setPosition(
 			m_pSpriteBackgroundBlueProfile->getContentSize().width * 0.5f,
 			l_oVisibleSize.height * 0.5);
@@ -317,14 +316,14 @@ bool LmGameManager::initDashboard()
 	char l_aScoreString[20];
 	sprintf(l_aScoreString, "%d pts", m_pUser1->getPScore());
 	m_pLabelScore = Label::createWithTTF(l_aScoreString,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 	m_pLabelScore->setPosition(l_fMidOfSpriteBackgroundUsers,
-			l_fHeightSpriteBackgroundUser1 * 0.65f);
+			l_fHeightSpriteBackgroundUser1 * 0.68f);
 	m_pSpriteBackgroundBlueProfile->addChild(m_pLabelScore, 1);
 
 	//star user1 score
 	m_pStarUser1Sprite = addSpriteToLabel(m_pLabelScore,
-			"Ludomuse/GUIElements/stargreen.png");
+			"Ludomuse/Content/stargreen.png");
 	m_pSpriteBackgroundBlueProfile->addChild(m_pStarUser1Sprite);
 
 	//how manny interaction done label user 1
@@ -332,14 +331,14 @@ bool LmGameManager::initDashboard()
 	sprintf(l_aInteractionDoneString, "%d/%d", m_iInteractionDone,
 			m_aInteractionSceneOfTheGame.size());
 	m_pLabelInteractionDone = Label::createWithTTF(l_aInteractionDoneString,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 	m_pLabelInteractionDone->setPosition(l_fMidOfSpriteBackgroundUsers,
-			l_fHeightSpriteBackgroundUser1 * 0.55f);
+			l_fHeightSpriteBackgroundUser1 * 0.58f);
 	m_pSpriteBackgroundBlueProfile->addChild(m_pLabelInteractionDone, 1);
 
 	//sprite associated to interaction label user1
 	m_pCheckSpriteUser1 = addSpriteToLabel(m_pLabelInteractionDone,
-			"Ludomuse/GUIElements/checkgreen.png");
+			"Ludomuse/Content/checkgreen.png");
 	m_pSpriteBackgroundBlueProfile->addChild(m_pCheckSpriteUser1);
 
 	/*
@@ -349,7 +348,7 @@ bool LmGameManager::initDashboard()
 
 	//background profil pink
 	m_pSpriteBackgroundPinkProfile = Sprite::create(
-			"Ludomuse/GUIElements/spriteBackgroundUser2Profile.png");
+			"Ludomuse/Content/spriteBackgroundUser2Profile.png");
 	m_pSpriteBackgroundPinkProfile->setPosition(
 			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5f,
 			m_pSpriteBackgroundPinkProfile->getContentSize().height
@@ -379,14 +378,14 @@ bool LmGameManager::initDashboard()
 	//label score user 2
 	sprintf(l_aScoreString, "%d pts", m_pUser2->getPScore());
 	m_pLabelScoreUser2 = Label::createWithTTF(l_aScoreString,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.04);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 	m_pLabelScoreUser2->setPosition(l_fMidOfSpriteBackgroundUsers,
 			l_fHeightSpriteBackgroundUser2 * 0.7f);
 	m_pSpriteBackgroundPinkProfile->addChild(m_pLabelScoreUser2, 1);
 
 	//star user2 score
 	m_pStarUser2Sprite = addSpriteToLabel(m_pLabelScoreUser2,
-			"Ludomuse/GUIElements/redstar.png");
+			"Ludomuse/Content/redstar.png");
 	m_pSpriteBackgroundPinkProfile->addChild(m_pStarUser2Sprite);
 
 	//how manny interaction done label user 2
@@ -394,14 +393,14 @@ bool LmGameManager::initDashboard()
 			m_aInteractionSceneOfTheGame.size());
 	m_pLabelInteractionDoneUser2 = Label::createWithTTF(
 			l_aInteractionDoneString, "Fonts/JosefinSans-Regular.ttf",
-			l_oVisibleSize.width * 0.04);
+			l_oVisibleSize.width * 0.03);
 	m_pLabelInteractionDoneUser2->setPosition(l_fMidOfSpriteBackgroundUsers,
-			l_fHeightSpriteBackgroundUser2 * 0.1f);
+			l_fHeightSpriteBackgroundUser2 * 0.16f);
 	m_pSpriteBackgroundPinkProfile->addChild(m_pLabelInteractionDoneUser2, 1);
 
 	//sprite associated to interaction label user2
 	m_pCheckSpriteUser2 = addSpriteToLabel(m_pLabelInteractionDoneUser2,
-			"Ludomuse/GUIElements/checkred.png");
+			"Ludomuse/Content/checkred.png");
 	m_pSpriteBackgroundPinkProfile->addChild(m_pCheckSpriteUser2);
 
 	m_pCheckSpriteUser2->setVisible(false);
@@ -412,7 +411,7 @@ bool LmGameManager::initDashboard()
 	 */
 
 	//put the top band
-	m_pSpriteBandTop = Sprite::create("Ludomuse/GUIElements/bandTop.png");
+	m_pSpriteBandTop = Sprite::create("Ludomuse/Content/bandTop.png");
 	m_pSpriteBandTop->setAnchorPoint(Vec2(0, 1));
 	m_pSpriteBandTop->setPosition(
 			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
@@ -437,7 +436,7 @@ bool LmGameManager::initDashboard()
 	m_pSpriteBandTop->addChild(m_pLabelTitleApplication);
 
 	//add the band mid at the top of the pink background
-	m_pSpriteBandMid = Sprite::create("Ludomuse/GUIElements/bandMid.png");
+	m_pSpriteBandMid = Sprite::create("Ludomuse/Content/bandMid.png");
 	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
 	m_pSpriteBandMid->setPosition(
 			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
@@ -451,17 +450,20 @@ bool LmGameManager::initDashboard()
 
 	//compare butto
 	m_pCompareButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/compareNormal1.png",
-			"Ludomuse/GUIElements/compareNormal1.png",
+			"Ludomuse/Content/compareNormal1.png",
+			"Ludomuse/Content/compareNormal1.png",
 			CC_CALLBACK_1(LmGameManager::compare, this));
 	m_pCompareButton->setPosition(
-			Vect(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.2f));
+			Vec2(
+					(l_oVisibleSize.width
+							- m_pSpriteBackgroundBlueProfile->getContentSize().width)
+							* 0.5, l_oVisibleSize.height * 0.15f));
 	l_pMenu->addChild(m_pCompareButton);
 
 	//play next interaction button
 	m_pPlayNextInteractionButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/playNextInteraction.png",
-			"Ludomuse/GUIElements/playNextInteraction.png",
+			"Ludomuse/Content/jouertext.png",
+			"Ludomuse/Content/jouertextred.png",
 			CC_CALLBACK_1(LmGameManager::runNextInteraction, this));
 	m_pPlayNextInteractionButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pPlayNextInteractionButton->setPosition(
@@ -470,9 +472,8 @@ bool LmGameManager::initDashboard()
 	l_pMenu->addChild(m_pPlayNextInteractionButton, 2);
 
 	//checkbox settings
-	m_pSettingsButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/settings.png",
-			"Ludomuse/GUIElements/settings.png",
+	m_pSettingsButton = MenuItemImage::create("Ludomuse/Content/settings.png",
+			"Ludomuse/Content/settingspress.png",
 			CC_CALLBACK_1(LmGameManager::settings, this));
 	m_pSettingsButton->setAnchorPoint(Vec2(1, 1));
 	m_pSettingsButton->setPosition(
@@ -484,8 +485,8 @@ bool LmGameManager::initDashboard()
 	m_pBackgroundLayer->addChild(l_pStaticMenu);
 
 	//back button
-	m_pBackButton = MenuItemImage::create("Ludomuse/GUIElements/backNormal.png",
-			"Ludomuse/GUIElements/backNormal.png",
+	m_pBackButton = MenuItemImage::create("Ludomuse/Content/backNormal.png",
+			"Ludomuse/Content/backNormal.png",
 			CC_CALLBACK_1(LmGameManager::back, this));
 	m_pBackButton->setAnchorPoint(Vec2(0.5, 1));
 	m_pBackButton->setPosition(
@@ -529,23 +530,22 @@ Sprite* LmGameManager::makeUserAvatarSprite(LmUser* l_pUser)
 
 	if (l_pUser->isBParent() && l_pUser->isBMale())
 	{
-		result->setTexture("Ludomuse/GUIElements/dadavatar.png");
+		result->setTexture("Ludomuse/Content/dadavatar.png");
 	}
 	else
 		if (l_pUser->isBParent() && !l_pUser->isBMale())
 		{
-			result->setTexture("Ludomuse/GUIElements/momavatar.png");
+			result->setTexture("Ludomuse/Content/momavatar.png");
 		}
 		else
 			if (!l_pUser->isBParent() && l_pUser->isBMale())
 			{
-				result->setTexture("Ludomuse/GUIElements/sonavatar.png");
+				result->setTexture("Ludomuse/Content/sonavatar.png");
 			}
 			else
 				if (!l_pUser->isBParent() && !l_pUser->isBMale())
 				{
-					result->setTexture(
-							"Ludomuse/GUIElements/daughteravatar.png");
+					result->setTexture("Ludomuse/Content/daughteravatar.png");
 				}
 
 	return result;
@@ -569,12 +569,12 @@ void LmGameManager::initDashboardInteraction()
 		if ((*it)->getReward())
 		{
 			l_pSpriteBuffer = Sprite::create(
-					"Ludomuse/GUIElements/interactionNotDoneRewardNotDone.png");
+					"Ludomuse/Content/interactionNotDoneRewardNotDone.png");
 		}
 		else
 		{
 			l_pSpriteBuffer = Sprite::create(
-					"Ludomuse/GUIElements/interactionNotDoneNoReward.png");
+					"Ludomuse/Content/interactionNotDoneNoReward.png");
 		}
 
 		l_pSpriteBuffer->setAnchorPoint(Vec2(0, 0));
@@ -588,12 +588,12 @@ void LmGameManager::initDashboardInteraction()
 		{
 			l_pSpriteBuffer =
 					Sprite::create(
-							"Ludomuse/GUIElements/interactionNotDoneRewardNotDoneUser2.png");
+							"Ludomuse/Content/interactionNotDoneRewardNotDoneUser2.png");
 		}
 		else
 		{
 			l_pSpriteBuffer = Sprite::create(
-					"Ludomuse/GUIElements/interactionNotDoneNoRewardUser2.png");
+					"Ludomuse/Content/interactionNotDoneNoRewardUser2.png");
 		}
 
 		l_pSpriteBuffer->setAnchorPoint(Vec2(0, 1));
@@ -672,8 +672,7 @@ void LmGameManager::initDashboardInteraction()
 
 	//init the box containing description
 
-	m_pDescriptionBox = Sprite::create(
-			"Ludomuse/GUIElements/descriptionBox.png");
+	m_pDescriptionBox = Sprite::create("Ludomuse/Content/descriptionBox.png");
 	m_pDescriptionBox->setPosition(
 			Vec2(
 					m_pSpriteBackgroundBlueProfile->getContentSize().width
@@ -704,7 +703,7 @@ void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,
 	sprite->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
 }
 
-void LmGameManager::updateDashboard()
+void LmGameManager::updateUsers()
 {
 	/*
 	 * USER 1 LABEL
@@ -790,7 +789,7 @@ void LmGameManager::compareDone()
 	//move the label of the score and the star
 	m_pLabelScoreUser2->setPosition(
 			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5,
-			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.3f);
+			m_pSpriteBackgroundPinkProfile->getContentSize().height * 0.36f);
 	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
 
 }
@@ -1047,16 +1046,22 @@ void LmGameManager::onInteractionDoneEvent(bytes l_oMsg)
 	{
 		if (l_bWin)
 		{
+			m_aInteractionSceneOfTheGame.at(idInteractionScene)->getPLmRewardUser2()->init();
 			m_pUser2->winReward(
 					m_aInteractionSceneOfTheGame.at(idInteractionScene)->getPLmRewardUser2());
+
 			m_aSpritesInteractionsUser2.at(idInteractionScene)->setTexture(
-					"Ludomuse/GUIElements/interactionDoneRewardDoneUser2.png");
+					"Ludomuse/Content/interactionDoneRewardDoneUser2.png");
+
+			addSpriteReward(
+					m_aInteractionSceneOfTheGame.at(idInteractionScene)->getPLmRewardUser2(),
+					m_aSpritesInteractionsUser2.at(idInteractionScene), false);
 
 		}
 		else
 		{
 			m_aSpritesInteractionsUser2.at(idInteractionScene)->setTexture(
-					"Ludomuse/GUIElements/interactionDoneRewardNotDoneUser2.png");
+					"Ludomuse/Content/interactionDoneRewardNotDoneUser2.png");
 
 		}
 
@@ -1064,12 +1069,79 @@ void LmGameManager::onInteractionDoneEvent(bytes l_oMsg)
 	else
 	{
 		m_aSpritesInteractionsUser2.at(idInteractionScene)->setTexture(
-				"Ludomuse/GUIElements/interactionDoneNoRewardUser2.png");
+				"Ludomuse/Content/interactionDoneNoRewardUser2.png");
 
 	}
 
 	m_iInteractionDoneUser2++;
 
-	updateDashboard();
+	updateUsers();
+}
+
+void LmGameManager::addSpriteReward(LmReward* l_pReward,
+		Sprite* l_pInteractionSprite, bool l_bIsUser1)
+{
+
+	CCLOG("here");
+
+	//if there is a sprite associate to the reward
+	if (l_pReward->getPSpriteReward())
+	{
+
+		Sprite* l_pSpriteReward = Sprite::create(
+				l_pReward->getSFilenameSpriteReward());
+
+		l_pInteractionSprite->addChild(l_pSpriteReward);
+
+		Size l_oParentSize;
+
+		//set position in parent put into the second circle
+		if (l_bIsUser1)
+		{
+
+			l_pInteractionSprite->setTexture(
+					"Ludomuse/Content/interactionDoneRewardDoneEmpty.png");
+			l_oParentSize = l_pInteractionSprite->getContentSize();
+			l_pSpriteReward->setPosition(
+					Vec2(l_oParentSize.width * 0.73,
+							l_oParentSize.height * 0.83));
+
+		}
+		else
+		{
+
+			l_pInteractionSprite->setTexture(
+					"Ludomuse/Content/interactionDoneRewardDoneEmptyUser2.png");
+
+			l_oParentSize = l_pInteractionSprite->getContentSize();
+
+			l_pSpriteReward->setPosition(
+					Vec2(l_oParentSize.width * 0.73,
+							l_oParentSize.height * 0.17));
+
+		}
+
+		//scale it in order to fit the circle
+		float l_fRadius = l_oParentSize.width * 0.42;
+		float l_fScaleFactor;
+
+		//get the max dimension of the reward sprite
+		if (l_pSpriteReward->getContentSize().width
+				> l_pSpriteReward->getContentSize().width)
+		{
+			l_fScaleFactor = l_fRadius
+					/ l_pSpriteReward->getContentSize().width;
+		}
+		else
+		{
+			l_fScaleFactor = l_fRadius
+					/ l_pSpriteReward->getContentSize().height;
+		}
+
+		l_pSpriteReward->setScaleX(l_fScaleFactor);
+		l_pSpriteReward->setScaleY(l_fScaleFactor);
+
+	}
+
 }
 

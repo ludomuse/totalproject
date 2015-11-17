@@ -289,8 +289,8 @@ bool LmQuizz_v1Scene::initGame()
 
 	//init next question button
 	m_pNextQuestionButton = ui::Button::create(
-			"Ludomuse/GUIElements/nextButtonNormal.png",
-			"Ludomuse/GUIElements/nextButtonPressed.png");
+			"Ludomuse/Content/nextButtonNormal.png",
+			"Ludomuse/Content/nextButtonPressed.png");
 	m_pNextQuestionButton->setTouchEnabled(true);
 	m_pNextQuestionButton->setAnchorPoint(Vec2(1,0.5));
 	m_pNextQuestionButton->setPosition(

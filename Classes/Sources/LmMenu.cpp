@@ -161,15 +161,15 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(m_pSpriteLogBackground);
 
 	//add the sprite of the form
-	auto l_pFormSprite = Sprite::create("Ludomuse/GUIElements/form.png");
+	auto l_pFormSprite = Sprite::create("Ludomuse/Content/form.png");
 	l_pFormSprite->setPosition(l_oVisibleSize.width / 2 + l_oOrigin.x,
 			l_oVisibleSize.height / 2 + l_oOrigin.y);
 	m_pLogLayer->addChild(l_pFormSprite);
 
 	//log button
 	auto l_oLogButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/logNormal.png",
-			"Ludomuse/GUIElements/logPressed.png",
+			"Ludomuse/Content/connexion.png",
+			"Ludomuse/Content/connexionpress.png",
 			CC_CALLBACK_1(LmMenu::logFinished, this));
 	l_oLogButton->setAnchorPoint(Point(0.5, 0.5));
 	l_oLogButton->setPosition(
@@ -188,7 +188,7 @@ bool LmMenu::logScreen()
 			Size(l_pFormSprite->getContentSize().width * 0.4,
 					l_oVisibleSize.height * 0.1),
 			Scale9Sprite::create(
-					"Ludomuse/GUIElements/textfieldBackground.png"));
+					"Ludomuse/Content/textfieldBackground.png"));
 	m_pLogEditBox->setPosition(
 			Vect(
 					(l_oVisibleSize.width
@@ -243,24 +243,20 @@ void LmMenu::logFinished(Ref* p_Sender)
 
 		//init checkbox male
 		m_pMenuItemImageMale = MenuItemImage::create(
-				"Ludomuse/GUIElements/checkoutmale2.png",
-				"Ludomuse/GUIElements/checkoutmalepress2.png",
+				"Ludomuse/Content/checkoutmale2.png",
+				"Ludomuse/Content/checkoutmalepress2.png",
 				CC_CALLBACK_1(LmMenu::maleSelected, this));
 		m_pMenuItemImageMale->setPosition(
 				Vec2(l_oVisibleSize.width * 0.25, l_oVisibleSize.height * 0.5));
-		m_pMenuItemImageMale->setScaleX(7);
-		m_pMenuItemImageMale->setScaleY(7);
 		m_pMenu->addChild(m_pMenuItemImageMale);
 
 		//init checkbox female
 		m_pMenuItemImageFemale = MenuItemImage::create(
-				"Ludomuse/GUIElements/checkoutfemale2.png",
-				"Ludomuse/GUIElements/checkoutfemalepress2.png",
+				"Ludomuse/Content/checkoutfemale2.png",
+				"Ludomuse/Content/checkoutfemalepress2.png",
 				CC_CALLBACK_1(LmMenu::femaleSelected, this));
 		m_pMenuItemImageFemale->setPosition(
 				Vec2(l_oVisibleSize.width * 0.75, l_oVisibleSize.height * 0.5));
-		m_pMenuItemImageFemale->setScaleX(7);
-		m_pMenuItemImageFemale->setScaleY(7);
 		m_pMenu->addChild(m_pMenuItemImageFemale);
 	}
 }
@@ -275,7 +271,7 @@ bool LmMenu::wifiDirectScreen()
 
 	//m_oWindowListOfDevice = Rect()
 	auto l_pSpriteCheckBoxDevices = Sprite::create(
-			"Ludomuse/GUIElements/backgroundDevice.png");
+			"Ludomuse/Content/backgroundDevice.png");
 	Size l_oButtonDevicesSize = l_pSpriteCheckBoxDevices->getContentSize();
 	m_oWindowListOfDevice = Rect(s_fMarginLeftMenu, l_oVisibleSize.height * 0.5,
 			l_oVisibleSize.width - (s_fMarginLeftMenu * 2),
@@ -294,7 +290,7 @@ bool LmMenu::wifiDirectScreen()
 	m_pLabelFeedback->setString(m_sSearching);
 
 	//sprite to indicate if ready or not
-	m_pSpriteReadyIndicator = Sprite::create("Ludomuse/GUIElements/cross.png");
+	m_pSpriteReadyIndicator = Sprite::create("Ludomuse/Content/cross.png");
 	m_pSpriteReadyIndicator->setAnchorPoint(Vec2(1, 0.5));
 	m_pSpriteReadyIndicator->setPosition(
 			Vec2(l_oVisibleSize.width - s_fMarginLeftMenu,
@@ -302,8 +298,8 @@ bool LmMenu::wifiDirectScreen()
 	m_pWifiLayer->addChild(m_pSpriteReadyIndicator);
 
 	//ready button
-	m_pReadyButton = MenuItemImage::create("Ludomuse/GUIElements/prete.png",
-			"Ludomuse/GUIElements/pretepress.png",
+	m_pReadyButton = MenuItemImage::create("Ludomuse/Content/prete.png",
+			"Ludomuse/Content/pretepress.png",
 			CC_CALLBACK_1(LmMenu::ready, this));
 	m_pReadyButton->setAnchorPoint(Point(1, 0.5));
 	m_pReadyButton->setPosition(
@@ -327,8 +323,8 @@ bool LmMenu::wifiDirectScreen()
 
 	//refresh button
 	m_pRefreshButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/refreshbutton.png",
-			"Ludomuse/GUIElements/refreshbuttonpress.png",
+			"Ludomuse/Content/refreshbutton.png",
+			"Ludomuse/Content/refreshbuttonpress.png",
 			CC_CALLBACK_1(LmMenu::scan, this));
 	m_pRefreshButton->setAnchorPoint(Point(1, 0));
 	m_pRefreshButton->setPosition(
@@ -340,23 +336,23 @@ bool LmMenu::wifiDirectScreen()
 	if (m_pUser1->isBMale())
 	{
 		m_pCheckBoxParent = CheckBox::create(
-				"Ludomuse/GUIElements/parentcheckbutton.png",
-				"Ludomuse/GUIElements/parentpressbutton.png");
+				"Ludomuse/Content/parentcheckbutton.png",
+				"Ludomuse/Content/parentpressbutton.png");
 
 		m_pCheckBoxChild = CheckBox::create(
-				"Ludomuse/GUIElements/childcheckbutton.png",
-				"Ludomuse/GUIElements/childpressbutton.png");
+				"Ludomuse/Content/childcheckbutton.png",
+				"Ludomuse/Content/childpressbutton.png");
 
 	}
 	else
 	{
 		m_pCheckBoxParent = CheckBox::create(
-				"Ludomuse/GUIElements/momcheckbutton.png",
-				"Ludomuse/GUIElements/mompressbutton.png");
+				"Ludomuse/Content/momcheckbutton.png",
+				"Ludomuse/Content/mompressbutton.png");
 
 		m_pCheckBoxChild = CheckBox::create(
-				"Ludomuse/GUIElements/daughtercheckbutton.png",
-				"Ludomuse/GUIElements/daughterpressbutton.png");
+				"Ludomuse/Content/daughtercheckbutton.png",
+				"Ludomuse/Content/daughterpressbutton.png");
 	}
 
 	m_pCheckBoxParent->setTouchEnabled(true);
@@ -416,7 +412,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 		//role are selected and user 2 has a tablet name
 		m_bReady = true;
 
-		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/check.png");
+		m_pSpriteReadyIndicator->setTexture("Ludomuse/Content/check.png");
 
 		//send the msg
 		bytes msg(50);
@@ -431,7 +427,7 @@ void LmMenu::ready(cocos2d::Ref* l_oSender)
 		//not ready anymore
 		m_bReady = false;
 
-		m_pSpriteReadyIndicator->setTexture("Ludomuse/GUIElements/cross.png");
+		m_pSpriteReadyIndicator->setTexture("Ludomuse/Content/cross.png");
 
 		m_pLabelFeedback->setString(m_sDeviceAndRoleSlected);
 
@@ -564,8 +560,8 @@ void LmMenu::makeCheckboxUserTabletName(
 		l_pLabel->setColor(Color3B::BLACK);
 
 		auto l_pCheckBox = ui::CheckBox::create(
-				"Ludomuse/GUIElements/backgroundDevice.png",
-				"Ludomuse/GUIElements/backgroundDevicePressed.png");
+				"Ludomuse/Content/backgroundDevice.png",
+				"Ludomuse/Content/backgroundDevicePressed.png");
 		l_pCheckBox->setTouchEnabled(true);
 		l_pCheckBox->setSwallowTouches(false);
 		l_pCheckBox->addEventListener(

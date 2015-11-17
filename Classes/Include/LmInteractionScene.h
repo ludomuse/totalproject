@@ -284,7 +284,7 @@ protected:
 	void finishInteraction();
 
 	//to remove from the menu the next and previous menuitem
-	void removeNextPreviousMenuItem();
+	void removeMenuItem();
 
 	//check id there is a sound to display or not the play checkbox
 	void checkIfDisplayPlayCheckBox(LmSetPoint*);

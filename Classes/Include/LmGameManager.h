@@ -153,7 +153,7 @@ private:
 	void initDashboardInteraction();
 
 	//update dashboard after each interactionscene
-	void updateDashboard();
+	void updateUsers();
 
 	//remove listeners avoid conflict between scene true = remove false = add
 	void inputDisabled(bool);
@@ -189,6 +189,10 @@ private:
 	void compareScreen(bool);
 
 	void settings(cocos2d::Ref*);
+
+	//put the sprite reward to the sprite of interaction in dashboard the bool is to differentioate user 1 and 2
+	void addSpriteReward(LmReward*,cocos2d::Sprite*,bool);
+
 
 };
 

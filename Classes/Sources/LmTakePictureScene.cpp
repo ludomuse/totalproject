@@ -57,8 +57,8 @@ bool LmTakePictureScene::initGame()
 	{
 		//take picture button
 		auto l_pTakepictureButton = MenuItemImage::create(
-				"Ludomuse/GUIElements/playNormal.png",
-				"Ludomuse/GUIElements/playPressed.png",
+				"Ludomuse/Content/playNormal.png",
+				"Ludomuse/Content/playPressed.png",
 				CC_CALLBACK_1(LmTakePictureScene::takePicture, this));
 		l_pTakepictureButton->setAnchorPoint(Vec2(1, 0.5));
 		l_pTakepictureButton->setPosition(

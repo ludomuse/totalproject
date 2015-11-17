@@ -17,7 +17,7 @@ struct LmFindGoodCategorySceneSeed
 	std::string FilenameAudioGoodCategory;
 	std::string FilenameAudioBadCategory;
 	std::vector<std::pair<int, std::string>> Images;
-	std::vector<std::pair<int, std::string>> Categories;
+	std::map<int, std::pair<std::string,std::string>> Categories;
 	int NumberOfGoodImages;
 };
 
@@ -48,10 +48,8 @@ private:
 	std::string m_sFilenameSpriteSendingArea;
 	std::string m_sFilenameAudioGoodCategory;
 	std::string m_sFilenameAudioBadCategory;
-
 	std::vector<std::pair<int, std::string>> m_aImages;
-	std::vector<std::pair<int, std::string>> m_aCategories;
-
+	std::map<int, std::pair<std::string,std::string>> m_aCategories;
 	int m_iNumberOfGoodImages;
 
 	//gui elements

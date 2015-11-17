@@ -113,8 +113,8 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	initNextPreviousButton();
 
 	//play pause checkbox
-	m_pPlayCheckBox = ui::CheckBox::create("Ludomuse/GUIElements/pause.png",
-			"Ludomuse/GUIElements/play.png");
+	m_pPlayCheckBox = ui::CheckBox::create("Ludomuse/Content/pause.png",
+			"Ludomuse/Content/play.png");
 	m_pPlayCheckBox->setTouchEnabled(true);
 	m_pPlayCheckBox->setSwallowTouches(false);
 	m_pPlayCheckBox->setPosition(
@@ -131,8 +131,8 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pLayerGame->retain();
 
 	//finish button default one
-	m_pFinishGameButton = ui::Button::create("Ludomuse/GUIElements/fin.png",
-			"Ludomuse/GUIElements/finpress.png");
+	m_pFinishGameButton = ui::Button::create("Ludomuse/Content/fin.png",
+			"Ludomuse/Content/finpress.png");
 	m_pFinishGameButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pFinishGameButton->setPosition(
 			Vec2(l_oVisibleSize.width, l_oVisibleSize.height * 0.1));
@@ -143,8 +143,8 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pLayerGame->addChild(m_pFinishGameButton, 2);
 
 	//replay button default one
-	m_pReplayButton = ui::Button::create("Ludomuse/GUIElements/rejouer.png",
-			"Ludomuse/GUIElements/rejouerpress.png");
+	m_pReplayButton = ui::Button::create("Ludomuse/Content/rejouer.png",
+			"Ludomuse/Content/rejouerpress.png");
 	m_pReplayButton->setAnchorPoint(Vec2(0, 0.5));
 	m_pReplayButton->setPosition(Vect(0, l_oVisibleSize.height * 0.2));
 	m_pReplayButton->setTouchEnabled(true);
@@ -229,8 +229,8 @@ void LmInteractionScene::initNextPreviousButton()
 
 	//next button
 	m_pNextButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/nextButtonNormal.png",
-			"Ludomuse/GUIElements/nextButtonPressed.png",
+			"Ludomuse/Content/nextButtonNormal.png",
+			"Ludomuse/Content/nextButtonPressed.png",
 			CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
 	m_pNextButton->setPosition(
 			Vect(
@@ -240,9 +240,8 @@ void LmInteractionScene::initNextPreviousButton()
 	m_pMenu->addChild(m_pNextButton, 1);
 
 	//previous button
-	m_pPreviousButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/previousButtonNormal.png",
-			"Ludomuse/GUIElements/previousButtonPressed.png",
+	m_pPreviousButton = MenuItemImage::create("Ludomuse/Content/precedent.png",
+			"Ludomuse/Content/precedentpress.png",
 			CC_CALLBACK_1(LmInteractionScene::previousSetPointLayer, this));
 	m_pPreviousButton->setPosition(
 			Vect(m_pPreviousButton->getContentSize().width * 0.8,
@@ -325,8 +324,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				&& m_pLmSetPointBegin->isBActionDone() && !m_bSetPointFinished)
 		{
 			m_bSetPointFinished = true;
-			ON_CC_THREAD(LmInteractionScene::removeNextPreviousMenuItem, this);
-			m_pPlayCheckBox->setVisible(false);
+			ON_CC_THREAD(LmInteractionScene::removeMenuItem, this);
 
 			//we are ready
 			m_bUser1IsReadyForNextInteraction = true;
@@ -348,6 +346,19 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 			if (!startGame())
 			{
 				m_pSpriteWaitingScreen->setVisible(true);
+
+				Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+
+				//feedback label init
+				auto l_pLabelFeedback = Label::createWithTTF(
+						"En attente de ton partenaire ...",
+						"Fonts/JosefinSans-Bold.ttf",
+						l_oVisibleSize.height * 0.05);
+				l_pLabelFeedback->setPosition(l_oVisibleSize.width * 0.5,
+						l_oVisibleSize.height * 0.3);
+				l_pLabelFeedback->setColor(Color3B::BLACK);
+				m_pSpriteWaitingScreen->addChild(l_pLabelFeedback);
+
 			}
 
 		}
@@ -372,7 +383,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 		{
 			m_bSetPointFinished = true;
 			m_pPlayCheckBox->setVisible(false);
-			ON_CC_THREAD(LmInteractionScene::removeNextPreviousMenuItem, this);
+			ON_CC_THREAD(LmInteractionScene::removeMenuItem, this);
 
 			//stop sound
 			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
@@ -400,7 +411,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 			}
 
 			m_pUser->getPLmStatistics()->interactionEnd();
-			m_pUser->getPLmStatistics()->endRecord(m_iIdGame,m_sDescription);
+			m_pUser->getPLmStatistics()->endRecord(m_iIdGame, m_sDescription);
 
 			//test to see if we need to display event in cocos thread
 			ON_CC_THREAD(LmInteractionScene::finishInteraction, this);
@@ -448,15 +459,15 @@ void LmInteractionScene::initDashboardLayer()
 
 	//spritebackground
 	m_pSpriteDashboardBand = LmSprite::create(
-			"Ludomuse/GUIElements/dashboardLayerTexture.png");
+			"Ludomuse/Content/dashboardLayerTexture.png");
 	m_pSpriteDashboardBand->setAnchorPoint(Vec2(0, 0));
 	m_pSpriteDashboardBand->setPosition(Vec2(0, 0));
 	m_pDashboardBandLayer->addChild(m_pSpriteDashboardBand, 0);
 
 	//button to move the layer
 	m_pMoveLayerButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/moveDashboardLayer.png",
-			"Ludomuse/GUIElements/moveDashboardLayer.png",
+			"Ludomuse/Content/moveDashboardLayer.png",
+			"Ludomuse/Content/moveDashboardLayer.png",
 			CC_CALLBACK_1(LmInteractionScene::moveDashboardLayer, this));
 	m_pMoveLayerButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width,
@@ -491,8 +502,8 @@ void LmInteractionScene::initDashboardLayer()
 	m_pSpriteDashboardBand->addChild(m_pLabelScore);
 
 	m_pBackDashboardButton = MenuItemImage::create(
-			"Ludomuse/GUIElements/backToDashboard.png",
-			"Ludomuse/GUIElements/backToDashboardpressed.png",
+			"Ludomuse/Content/backToDashboard.png",
+			"Ludomuse/Content/backToDashboardpressed.png",
 			CC_CALLBACK_1(LmInteractionScene::backToDashboard, this));
 	m_pBackDashboardButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width * (0.5f),
@@ -587,7 +598,6 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
 	FILENAME_BUTTON_CLICKED);
 
-
 	//stats
 	m_pUser->getPLmStatistics()->clicked("Tableau de Bord");
 
@@ -602,7 +612,6 @@ void LmInteractionScene::backToDashboard(cocos2d::Ref* p_Sender)
 			CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 			m_pPlayCheckBox->setSelected(true);
 		}
-
 
 		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 				"BackToDashboard");
@@ -641,8 +650,10 @@ void LmInteractionScene::initFinishButtonTexture()
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
-		//init sprite reward
+		//add reward to the user
 		m_pLmReward->init();
+		m_pUser->winReward(m_pLmReward);
+
 		//init background button
 		m_pFinishGameButton->loadTextures(
 				m_pLmReward->getSFilenameSpriteBackground(),
@@ -683,12 +694,6 @@ void LmInteractionScene::endGame()
 
 		//stop send event async till the next inetraction
 		stopListenWifiFacade();
-
-		if (m_pLmReward && m_bWin)
-		{
-			//add reward to the user
-			m_pUser->winReward(m_pLmReward);
-		}
 
 		//the game is finished we can remove the layer of the game
 		removeChild(m_pLayerGame);
@@ -743,9 +748,10 @@ LmGameComponent* LmInteractionScene::makeGameComponent()
 	return m_aIdTable.find(m_iNumberOfGameComponent)->second;
 }
 
-void LmInteractionScene::removeNextPreviousMenuItem()
+void LmInteractionScene::removeMenuItem()
 {
 	m_pMenu->removeAllChildrenWithCleanup(true);
+	m_pPlayCheckBox->setVisible(false);
 
 }
 

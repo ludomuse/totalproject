@@ -47,7 +47,7 @@ void LmFindGoodCategoryScene::restart()
 
 }
 
-void LmFindGoodCategoryScene::resetScene( )
+void LmFindGoodCategoryScene::resetScene()
 {
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
@@ -168,23 +168,22 @@ bool LmFindGoodCategoryScene::initGame()
 		//init with filename json
 		l_pBufferGameComponent->initSpriteComponent(it->second);
 		//register into the map
-		m_aIdGamecomponentToIdCategory.insert(
-		{ l_pBufferGameComponent->getIId(), it->first });
+		m_aIdGamecomponentToIdCategory.insert( {
+				l_pBufferGameComponent->getIId(), it->first });
 		l_pBufferGameComponent->setVisible(false);
 		l_pBufferGameComponent->addTo(m_pLayerGame);
 
 	}
 
 	//create categories of the game
-	for (std::vector<std::pair<int, std::string>>::iterator it =
+	for (std::map<int,std::pair<std::string,std::string>>::iterator it =
 			m_aCategories.begin(); it != m_aCategories.end(); ++it)
 	{
 		//create the component
 		l_pBufferGameComponent = makeGameComponent();
 		//init with filename json
-		l_pBufferGameComponent->initSpriteComponent(it->second);
-		m_aCategoriesElement.insert(
-		{ it->first, l_pBufferGameComponent });
+		l_pBufferGameComponent->initSpriteComponent(it->second.first);
+		m_aCategoriesElement.insert( { it->first, l_pBufferGameComponent });
 		l_pBufferGameComponent->setVisible(false);
 		l_pBufferGameComponent->addTo(m_pLayerGame);
 
@@ -275,32 +274,40 @@ bool LmFindGoodCategoryScene::initGame()
 
 			switch (it->first)
 			{
-			case 0:
-				//top left
-				it->second->setPosition(
-						Vec2(l_oPlayableScreenSize.width * 0.25 + s_fMarginLeft,
-								l_oPlayableScreenSize.height * 0.75));
-				break;
-			case 1:
-				//top right
-				it->second->setPosition(
-						Vec2(l_oPlayableScreenSize.width * 0.75 + s_fMarginLeft,
-								l_oPlayableScreenSize.height * 0.75));
-				break;
-			case 2:
-				//bot left
-				it->second->setPosition(
-						Vec2(l_oPlayableScreenSize.width * 0.25 + s_fMarginLeft,
-								l_oPlayableScreenSize.height * 0.25));
-				break;
-			case 3:
-				//bot right
-				it->second->setPosition(
-						Vec2(l_oPlayableScreenSize.width * 0.75 + s_fMarginLeft,
-								l_oPlayableScreenSize.height * 0.25));
-				break;
-			default:
-				break;
+				case 0:
+					//top left
+					it->second->setPosition(
+							Vec2(
+									l_oPlayableScreenSize.width * 0.25
+											+ s_fMarginLeft,
+									l_oPlayableScreenSize.height * 0.75));
+					break;
+				case 1:
+					//top right
+					it->second->setPosition(
+							Vec2(
+									l_oPlayableScreenSize.width * 0.75
+											+ s_fMarginLeft,
+									l_oPlayableScreenSize.height * 0.75));
+					break;
+				case 2:
+					//bot left
+					it->second->setPosition(
+							Vec2(
+									l_oPlayableScreenSize.width * 0.25
+											+ s_fMarginLeft,
+									l_oPlayableScreenSize.height * 0.25));
+					break;
+				case 3:
+					//bot right
+					it->second->setPosition(
+							Vec2(
+									l_oPlayableScreenSize.width * 0.75
+											+ s_fMarginLeft,
+									l_oPlayableScreenSize.height * 0.25));
+					break;
+				default:
+					break;
 			}
 
 			it->second->setVisible(true);
@@ -410,12 +417,13 @@ void LmFindGoodCategoryScene::onTouchEndedParent(cocos2d::Touch* touch,
 			l_bThereIsElementInSendingArea = true;
 
 		}
-		else if (m_bSendingAreaElementTouched && !bufferCollideSendingArea())
-		{
+		else
+			if (m_bSendingAreaElementTouched && !bufferCollideSendingArea())
+			{
 
-			//we can't touch the sending area element
-			replaceSendingAreaElementToHisOriginalPlace();
-		}
+				//we can't touch the sending area element
+				replaceSendingAreaElementToHisOriginalPlace();
+			}
 
 		m_bSendingAreaElementTouched = false;
 
@@ -496,7 +504,9 @@ void LmFindGoodCategoryScene::onTouchEndedChild(cocos2d::Touch* touch,
 			msg.write(true);
 			WIFIFACADE->sendBytes(msg);
 
-			CCLOG("well placed");
+			//change the sprite of the category to the second one
+			m_aCategoriesElement.at(m_iCategoryTouchedIndex)->setTexture(
+					m_aCategories.find(m_iCategoryTouchedIndex)->second.second);
 
 			m_iNumberOfGoodImages--;
 
@@ -522,7 +532,6 @@ void LmFindGoodCategoryScene::onTouchEndedChild(cocos2d::Touch* touch,
 			WIFIFACADE->sendBytes(msg);
 
 			CCLOG("bad placed");
-
 
 			//play a sound from the json
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
@@ -692,20 +701,21 @@ void LmFindGoodCategoryScene::onReceivingMsg(bytes l_oMsg)
 	CCLOG("LmFindGoodCategoryScene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{
-	case LmEvent::Gamecomponent:
-		CCLOG("Gamecomponent");
-		ON_CC_THREAD(LmFindGoodCategoryScene::onGamecomponentEvent, this,
-				l_oMsg)
-		;
-		break;
-	case LmEvent::GamecomponentWellPlaced:
-		CCLOG("GamecomponentWellPlaced");
-		ON_CC_THREAD(LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent,
-				this, l_oMsg)
-		;
-		break;
-	default:
-		break;
+		case LmEvent::Gamecomponent:
+			CCLOG("Gamecomponent");
+			ON_CC_THREAD(LmFindGoodCategoryScene::onGamecomponentEvent, this,
+					l_oMsg)
+			;
+			break;
+		case LmEvent::GamecomponentWellPlaced:
+			CCLOG("GamecomponentWellPlaced");
+			ON_CC_THREAD(
+					LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent,
+					this, l_oMsg)
+			;
+			break;
+		default:
+			break;
 	}
 
 }
@@ -730,7 +740,7 @@ void LmFindGoodCategoryScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 				std::remove(m_aGameComponentImages.begin(),
 						m_aGameComponentImages.end(),
 						m_aIdTable.find(l_iIdGameComponent)->second),
-						m_aGameComponentImages.end());
+				m_aGameComponentImages.end());
 
 		//make disapear this element
 		m_aIdTable.find(l_iIdGameComponent)->second->setVisible(false);

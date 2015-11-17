@@ -134,6 +134,8 @@ void LmQuizz_v2Scene::resetScene()
 bool LmQuizz_v2Scene::initGame()
 {
 
+	CCLOG("init");
+
 	//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
@@ -146,7 +148,7 @@ bool LmQuizz_v2Scene::initGame()
 
 	//init timer
 	m_pTimer = LoadingBar::create();
-	m_pTimer->loadTexture("Ludomuse/Content/timer.png");
+	m_pTimer->loadTexture("Ludomuse/Content/sliderred.png");
 	m_pTimer->setPercent(0);
 	m_pTimer->setPosition(
 			Point(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
@@ -211,6 +213,8 @@ bool LmQuizz_v2Scene::initGame()
 			CC_CALLBACK_2(LmQuizz_v2Scene::answerSelected, this));
 	m_pLayerGame->addChild(m_pCheckBoxAnswer[3]);
 
+	CCLOG("truc");
+
 	//init label question
 	m_pQuestionLabel = Label::createWithTTF("", "Fonts/JosefinSans-Regular.ttf",
 			l_oVisibleSize.width * 0.03);
@@ -229,8 +233,8 @@ bool LmQuizz_v2Scene::initGame()
 
 	//init next question button
 	m_pNextQuestionButton = ui::Button::create(
-			"Ludomuse/GUIElements/nextButtonNormal.png",
-			"Ludomuse/GUIElements/nextButtonPressed.png");
+			"Ludomuse/Content/nextButtonNormal.png",
+			"Ludomuse/Content/nextButtonPressed.png");
 	m_pNextQuestionButton->setTouchEnabled(true);
 	m_pNextQuestionButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pNextQuestionButton->setPosition(
