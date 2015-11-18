@@ -72,6 +72,7 @@ void LmReward::init()
 
 	//init label
 	//we add text to the center of the screen
+
 	m_pLabekReward = Label::createWithTTF(m_sText,
 			"Fonts/JosefinSans-Regular.ttf", m_fFontSize);
 	m_pLabekReward->setPosition(l_oVisibleSize.width * m_fWidthPercent,

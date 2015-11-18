@@ -153,7 +153,9 @@ private:
 	void initDashboardInteraction();
 
 	//update dashboard after each interactionscene
-	void updateUsers();
+	void updateUser1();
+	void updateUser2();
+
 
 	//remove listeners avoid conflict between scene true = remove false = add
 	void inputDisabled(bool);
@@ -178,6 +180,7 @@ private:
 	//list of callback event
 	void onReadyForNextInteractionEvent(bytes);
 	void onInteractionDoneEvent(bytes);
+	void onGameFinishedEvent(bytes);
 
 	//push the index scene interaction
 	void runInteraction(int);

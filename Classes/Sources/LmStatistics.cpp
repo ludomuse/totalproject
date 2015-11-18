@@ -336,6 +336,8 @@ void LmStatistics::mergeWithExistingJson()
 			m_iNumberOfUsers += l_oDocument[USER_NUMBER_KEY].GetInt();
 		}
 
+		CCLOG("nb user :%d",m_iNumberOfUsers);
+
 		CCLOG("Date");
 
 		//get all the date
@@ -371,10 +373,17 @@ void LmStatistics::mergeWithExistingJson()
 		{
 			if (l_oDocument.HasMember(it->first.c_str()))
 			{
+				CCLOG("%s session : %d",it->first.c_str(),it->second);
+				CCLOG("%s json : %d",it->first.c_str(),l_oDocument[it->first.c_str()].GetInt());
+
+
 				assert(l_oDocument[it->first.c_str()].IsInt());
-				it->second = (int) ((l_oDocument[it->first.c_str()].GetInt()
+				it->second = floor ((l_oDocument[it->first.c_str()].GetInt()
 						* (m_iNumberOfUsers - 1) + it->second)
 						/ m_iNumberOfUsers);
+
+				CCLOG("%s after merge : %d",it->first.c_str(),it->second);
+
 			}
 		}
 
@@ -434,18 +443,16 @@ void LmStatistics::mergeTimeWithGameStats()
 					itGameRecordedScene->second->testPrint(2);
 
 					//find smthg itGameRecordedScene idscene = itSceneStats idscene
-					itSceneStats->second->testPrint(3);
-					itGameRecordedScene->second->testPrint(4);
 
 					//merge value
 					itSceneStats->second->TimeGame =
-							(int) ((itGameRecordedScene->second->TimeGame
+							floor ((itGameRecordedScene->second->TimeGame
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeGame)
 									/ m_iNumberOfUsers);
 
 					itSceneStats->second->TimeInteraction =
-							(int) ((itGameRecordedScene->second->TimeInteraction
+							floor ((itGameRecordedScene->second->TimeInteraction
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeInteraction)
 									/ m_iNumberOfUsers);

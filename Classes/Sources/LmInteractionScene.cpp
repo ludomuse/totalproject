@@ -54,11 +54,13 @@ LmInteractionScene::LmInteractionScene()
 	m_pSpriteWaitingScreen = nullptr;
 	m_pPlayCheckBox = nullptr;
 	m_pMenu = nullptr;
+	m_pInstruction = nullptr;
 
 }
 
 LmInteractionScene::~LmInteractionScene()
 {
+
 	s_iNumberOfInteraction--;
 
 	//if this scene own a reward delete it
@@ -88,6 +90,9 @@ LmInteractionScene::~LmInteractionScene()
 		Director::getInstance()->getEventDispatcher()->removeEventListener(
 				m_pListener);
 	}
+
+	//we retained it because it w&as create into lmjsonparser class
+	m_pInstruction->release();
 
 }
 
@@ -154,11 +159,21 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pLayerGame->addChild(m_pReplayButton, 2);
 
 	//waiting screen to wait his partner before each interaction
-	m_pSpriteWaitingScreen = Sprite::create("Ludomuse/Background/splash.png");
+	m_pSpriteWaitingScreen = Sprite::create(
+			"Ludomuse/Background/creditsbg.png");
 	m_pSpriteWaitingScreen->setPosition(
 			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
 	m_pLayerGame->addChild(m_pSpriteWaitingScreen);
 	m_pSpriteWaitingScreen->setVisible(false);
+
+	//add instruction label
+	if (m_pInstruction)
+	{
+		CCLOG("there is instruction");
+		m_pInstruction->setVisible(false);
+
+		m_pLayerGame->addChild(m_pInstruction, 2);
+	}
 
 	initDashboardLayer();
 
@@ -193,6 +208,9 @@ bool LmInteractionScene::startGame()
 		listenWifiFacade();
 
 		m_pUser->getPLmStatistics()->interactionGameBegin();
+
+		//set visible instruction
+		m_pInstruction->setVisible(true);
 
 		CCLOG("LmInteractionScene::runGame");
 		runGame();
@@ -352,10 +370,10 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 				//feedback label init
 				auto l_pLabelFeedback = Label::createWithTTF(
 						"En attente de ton partenaire ...",
-						"Fonts/JosefinSans-Bold.ttf",
-						l_oVisibleSize.height * 0.05);
+						"Fonts/JosefinSans-Italic.ttf",
+						l_oVisibleSize.height * 0.06);
 				l_pLabelFeedback->setPosition(l_oVisibleSize.width * 0.5,
-						l_oVisibleSize.height * 0.3);
+						l_oVisibleSize.height * 0.5);
 				l_pLabelFeedback->setColor(Color3B::BLACK);
 				m_pSpriteWaitingScreen->addChild(l_pLabelFeedback);
 
@@ -390,25 +408,10 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 					true);
 
 			//to permit the user2 to update his dashboard
-			if (m_bWin)
-			{
-				//send msg to inform other usert that he wins
-				bytes msg(10);
-				msg << LmEvent::InteractionDone;
-				msg.write(m_iIdGame);
-				msg.write(true);
-				WIFIFACADE->sendBytes(msg);
 
-			}
-			else
-			{
-				//send msg to inform other usert that he wins
-				bytes msg(10);
-				msg << LmEvent::InteractionDone;
-				msg.write(m_iIdGame);
-				msg.write(false);
-				WIFIFACADE->sendBytes(msg);
-			}
+			bytes msg(10);
+			msg << LmEvent::InteractionDone;
+			WIFIFACADE->sendBytes(msg);
 
 			m_pUser->getPLmStatistics()->interactionEnd();
 			m_pUser->getPLmStatistics()->endRecord(m_iIdGame, m_sDescription);
@@ -628,13 +631,19 @@ void LmInteractionScene::win(bool win)
 
 	//depend of m_bwin
 	initFinishButtonTexture();
-
-	if (m_bWin)
-	{
-		m_pLmReward->playRewardSound();
-	}
+	m_pInstruction->setVisible(false);
 
 	m_pFinishGameButton->setVisible(true);
+
+	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+			"GameFinished");
+
+	//send msg to inform other usert that he wins or not
+	bytes msg(10);
+	msg << LmEvent::GameFinished;
+	msg.write(m_iIdGame);
+	msg.write(m_bWin);
+	WIFIFACADE->sendBytes(msg);
 }
 
 void LmInteractionScene::initFinishButtonTexture()
@@ -649,6 +658,7 @@ void LmInteractionScene::initFinishButtonTexture()
 		//use to place elements
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
+		Size l_oWinSize = Director::getInstance()->getWinSize();
 
 		//add reward to the user
 		m_pLmReward->init();
@@ -662,8 +672,8 @@ void LmInteractionScene::initFinishButtonTexture()
 
 		m_pFinishGameButton->setAnchorPoint(Vec2(0.5, 0.5));
 		m_pFinishGameButton->setPosition(
-				Vect(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-						l_oVisibleSize.height * 0.5 + l_oOrigin.y));
+				Vect(l_oWinSize.width * 0.5 + l_oOrigin.x,
+						l_oWinSize.height * 0.5 + l_oOrigin.y));
 
 		//if there is a sprite reward
 		if (m_pLmReward->getPSpriteReward())
@@ -671,12 +681,14 @@ void LmInteractionScene::initFinishButtonTexture()
 			//add the sprite to the button
 			m_pLmReward->getPSpriteReward()->setPosition(
 					Vec2(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-							l_oVisibleSize.height * 0.5 + l_oOrigin.y));
+							l_oVisibleSize.height * 0.65 + l_oOrigin.y));
 
 			m_pFinishGameButton->addChild(m_pLmReward->getPSpriteReward());
 		}
 
 		m_pFinishGameButton->addChild(m_pLmReward->getPLabekReward());
+
+		m_pLmReward->playRewardSound();
 
 	}
 }
@@ -768,5 +780,13 @@ void LmInteractionScene::checkIfDisplayPlayCheckBox(LmSetPoint* l_pSetPoint)
 
 		m_pPlayCheckBox->setVisible(true);
 	}
+}
+
+void LmInteractionScene::updateScoreLabel()
+{
+	//update score user1
+	char l_aScoreString[10];
+	sprintf(l_aScoreString, "%d pts", m_pUser->getPScore());
+	m_pLabelScore->setString(l_aScoreString);
 }
 

@@ -73,9 +73,14 @@ struct LmEvent
 	static const event GamecomponentWellPlaced = 8;
 
 	/*
-	 * parameter : true when m_bwin false otherwise + int to know whhat game it is
+	 * no parameter to increment the user2 dashboard
 	 */
 	static const event InteractionDone = 9;
+
+	/*
+	 * parameter : true when m_bwin false otherwise + int to know whhat game it is
+	 */
+	static const event GameFinished = 10;
 
 };
 

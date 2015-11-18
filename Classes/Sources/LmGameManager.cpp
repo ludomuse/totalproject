@@ -83,6 +83,8 @@ LmGameManager::~LmGameManager()
 			"InteractionSceneFinished");
 	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(
 			"BackToDashboard");
+	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(
+			"GameFinished");
 
 }
 
@@ -137,33 +139,11 @@ bool LmGameManager::init()
 
 		CCLOG("onInteractionSceneFinishedEvent");
 
-		//check if t's done and win etc and update sprite
-			if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward())
-			{
-				if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->isBWin())
-				{
-					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneRewardDone.png");
+		m_iInteractionDone++;
+		updateUser1();
 
-					addSpriteReward(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward(),
-							m_aSpritesInteractions.at(m_iIndexInteractionScene),true);
-				}
-				else
-				{
-					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneRewardNotDone.png");
-				}
-			}
-			else
-			{
-				m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneNoReward.png");
-			}
-
-			m_iInteractionDone++;
-
-			//update index
+		//update index
 			m_iIndexInteractionScene++;
-
-			//update label of dashboard
-			updateUsers();
 
 			//it's not a back to dashboard
 			m_bBackToDashboard=false;
@@ -187,11 +167,40 @@ bool LmGameManager::init()
 
 		};
 
+	auto GameFinished = [=](EventCustom * event)
+	{
+		//check if t's done and win etc and update sprite
+			if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward())
+			{
+				if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->isBWin())
+				{
+					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneRewardDone.png");
+
+					addSpriteReward(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward(),
+							m_aSpritesInteractions.at(m_iIndexInteractionScene),true);
+				}
+				else
+				{
+					m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneRewardNotDone.png");
+				}
+			}
+			else
+			{
+				m_aSpritesInteractions.at(m_iIndexInteractionScene)->setTexture("Ludomuse/Content/interactionDoneNoReward.png");
+			}
+
+			//update label of dashboard
+			updateUser1();
+
+		};
+
 	//add the custom event to the event dispatcher
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"InteractionSceneFinished", InteractionSceneFinished);
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
 			"BackToDashboard", BackToDashboard);
+	Director::getInstance()->getEventDispatcher()->addCustomEventListener(
+			"GameFinished", GameFinished);
 
 	return true;
 }
@@ -681,8 +690,8 @@ void LmGameManager::initDashboardInteraction()
 									* 0.5, l_oVisibleSize.height * 0.6));
 	m_pBackgroundLayer->addChild(m_pDescriptionBox);
 
-	m_pDescriptionLabel = Label::createWithTTF("test",
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.02);
+	m_pDescriptionLabel = Label::createWithTTF("Description",
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 	m_pDescriptionBox->addChild(m_pDescriptionLabel);
 	m_pDescriptionLabel->setPosition(
 			Vec2(m_pDescriptionBox->getContentSize().width * 0.5,
@@ -703,8 +712,11 @@ void LmGameManager::updateSpriteToLabel(cocos2d::Sprite* sprite,
 	sprite->setPosition(Vec2(position.x - labelSize.width * 0.5, position.y));
 }
 
-void LmGameManager::updateUsers()
+void LmGameManager::updateUser1()
 {
+
+	CCLOG("update user1");
+
 	/*
 	 * USER 1 LABEL
 	 */
@@ -727,11 +739,20 @@ void LmGameManager::updateUsers()
 	//update sprite associated user1 score
 	updateSpriteToLabel(m_pStarUser1Sprite, m_pLabelScore);
 
+	//update the score on the interaction scene
+	m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->updateScoreLabel();
+
+}
+
+void LmGameManager::updateUser2()
+{
+	CCLOG("update user2");
 	/*
 	 * USER 2 LABEL
 	 */
 
 	//update interaction done user2
+	char l_aInteractionDoneString[10];
 	sprintf(l_aInteractionDoneString, "%d/%d", m_iInteractionDoneUser2,
 			m_aInteractionSceneOfTheGame.size());
 	m_pLabelInteractionDoneUser2->setString(l_aInteractionDoneString);
@@ -740,12 +761,12 @@ void LmGameManager::updateUsers()
 	updateSpriteToLabel(m_pCheckSpriteUser2, m_pLabelInteractionDoneUser2);
 
 	//update score user2
+	char l_aScoreString[10];
 	sprintf(l_aScoreString, "%d pts", m_pUser2->getPScore());
 	m_pLabelScoreUser2->setString(l_aScoreString);
 
 	//update sprite associated user1 score
 	updateSpriteToLabel(m_pStarUser2Sprite, m_pLabelScoreUser2);
-
 }
 
 void LmGameManager::compare(Ref* p_Sender)
@@ -1016,6 +1037,11 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 			ON_CC_THREAD(LmGameManager::onInteractionDoneEvent, this, l_oMsg)
 			;
 			break;
+		case LmEvent::GameFinished:
+			CCLOG("GameFinished");
+			ON_CC_THREAD(LmGameManager::onGameFinishedEvent, this, l_oMsg)
+			;
+			break;
 		default:
 			break;
 	}
@@ -1038,6 +1064,13 @@ void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 }
 
 void LmGameManager::onInteractionDoneEvent(bytes l_oMsg)
+{
+	m_iInteractionDoneUser2++;
+
+	updateUser2();
+}
+
+void LmGameManager::onGameFinishedEvent(bytes l_oMsg)
 {
 	int idInteractionScene = l_oMsg.readInt();
 	bool l_bWin = l_oMsg.readBool();
@@ -1073,9 +1106,10 @@ void LmGameManager::onInteractionDoneEvent(bytes l_oMsg)
 
 	}
 
-	m_iInteractionDoneUser2++;
+	//update score
+	updateUser2();
 
-	updateUsers();
+
 }
 
 void LmGameManager::addSpriteReward(LmReward* l_pReward,
@@ -1117,7 +1151,7 @@ void LmGameManager::addSpriteReward(LmReward* l_pReward,
 
 			l_pSpriteReward->setPosition(
 					Vec2(l_oParentSize.width * 0.73,
-							l_oParentSize.height * 0.17));
+							l_oParentSize.height * 0.19));
 
 		}
 

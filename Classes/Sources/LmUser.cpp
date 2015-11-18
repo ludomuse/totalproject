@@ -78,6 +78,8 @@ void LmUser::winReward(LmReward* reward)
 		sum += m_aRewards.at(i)->getIRewardScore();
 	}
 	m_iScore = sum;
+
+
 }
 
 std::string LmUser::getUserSerialized()

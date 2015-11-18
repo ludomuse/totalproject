@@ -112,7 +112,7 @@ const std::vector<LmInteractionScene*>& LmJsonParser::getAInteractionSceneOfTheG
 
 	if (!m_aInteractionSceneOfTheGame.size())
 	{
-		initInteractionAttributesSceneOfTheGame();
+		initInteractionSceneOfTheGame();
 	}
 
 	return m_aInteractionSceneOfTheGame;
@@ -265,12 +265,14 @@ LmReward* LmJsonParser::makeLmReward(const rapidjson::Value& l_oReward)
 	assert(l_oReward["Label"].HasMember("Text"));
 	assert(l_oReward["Label"]["Text"].IsString());
 	l_sBufferString = l_oReward["Label"]["Text"].GetString();
+	//to indicate to touch screen
+	l_sBufferString.append("\n\n(Touchez pour continuer)");
 	l_oSeedBuffer.Text = l_sBufferString.c_str();
 
 	return new LmReward(l_oSeedBuffer);
 }
 
-void LmJsonParser::initInteractionAttributesSceneOfTheGame()
+void LmJsonParser::initInteractionSceneOfTheGame()
 {
 	// Using a reference for consecutive access is handy and faster.
 	assert(m_oDocument["Ludomuse"]["SceneArray"].IsArray());
@@ -392,8 +394,81 @@ void LmJsonParser::initInteractionAttributes(const rapidjson::Value& l_oScene,
 	initReward(l_oScene, l_pInteractionScene);
 
 	initDescription(l_oScene, l_pInteractionScene);
+
+	//get instruction
+	if (m_bIsParent)
+	{
+		if (l_oScene.HasMember("InstructionParent"))
+		{
+			l_pInteractionScene->setPInstruction(
+					getLabel(l_oScene["InstructionParent"]));
+		}
+	}
+	else
+	{
+		if (l_oScene.HasMember("InstructionChild"))
+		{
+			l_pInteractionScene->setPInstruction(
+					getLabel(l_oScene["InstructionChild"]));
+		}
+	}
+
 }
 
+cocos2d::Label* LmJsonParser::getLabel(const rapidjson::Value& l_oLabel)
+{
+	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+
+	cocos2d::Color3B l_oColorBuffer;
+	float l_fFontSizeBuffer, l_fWidthPercent, l_fHeightPercent, l_fSizePercent;
+	std::string l_sBufferText;
+	//Label
+	assert(l_oLabel.IsObject());
+	//color
+	int r, g, b;
+	assert(l_oLabel.HasMember("ColorText"));
+	assert(l_oLabel["ColorText"].IsObject());
+	assert(l_oLabel["ColorText"].HasMember("R"));
+	assert(l_oLabel["ColorText"]["R"].IsInt());
+	assert(l_oLabel["ColorText"]["R"].GetInt() < 256);
+	r = l_oLabel["ColorText"]["R"].GetInt();
+	assert(l_oLabel["ColorText"].HasMember("G"));
+	assert(l_oLabel["ColorText"]["G"].IsInt());
+	assert(l_oLabel["ColorText"]["G"].GetInt() < 256);
+	g = l_oLabel["ColorText"]["G"].GetInt();
+	assert(l_oLabel["ColorText"].HasMember("B"));
+	assert(l_oLabel["ColorText"]["B"].IsInt());
+	assert(l_oLabel["ColorText"]["B"].GetInt() < 256);
+	b = l_oLabel["ColorText"]["B"].GetInt();
+	l_oColorBuffer = cocos2d::Color3B(r, g, b);
+	//percent
+	assert(l_oLabel.HasMember("FontSize"));
+	assert(l_oLabel["FontSize"].IsInt());
+	l_fFontSizeBuffer = (float) l_oLabel["FontSize"].GetInt();
+	assert(l_oLabel.HasMember("WidthPercent"));
+	assert(l_oLabel["WidthPercent"].IsInt());
+	l_fWidthPercent = (float) l_oLabel["WidthPercent"].GetInt() * 0.01;
+	assert(l_oLabel.HasMember("HeightPercent"));
+	assert(l_oLabel["HeightPercent"].IsInt());
+	l_fHeightPercent = (float) l_oLabel["HeightPercent"].GetInt() * 0.01;
+	assert(l_oLabel.HasMember("SizePercent"));
+	assert(l_oLabel["SizePercent"].IsInt());
+	l_fSizePercent = (float) l_oLabel["SizePercent"].GetInt() * 0.01;
+	//Text
+	assert(l_oLabel.HasMember("Text"));
+	assert(l_oLabel["Text"].IsString());
+	l_sBufferText = l_oLabel["Text"].GetString();
+
+	cocos2d::Label* l_pResult = Label::createWithTTF(l_sBufferText.c_str(),
+			"Fonts/JosefinSans-Regular.ttf", l_fFontSizeBuffer);
+	l_pResult->setPosition(l_oVisibleSize.width * l_fWidthPercent,
+			l_oVisibleSize.height * l_fHeightPercent);
+	l_pResult->setColor(l_oColorBuffer);
+	l_pResult->setAlignment(TextHAlignment::CENTER);
+	l_pResult->setMaxLineWidth(l_oVisibleSize.width * l_fSizePercent);
+
+	return l_pResult;
+}
 void LmJsonParser::initReward(const rapidjson::Value& l_oScene,
 		LmInteractionScene* l_pInteractionScene)
 {
@@ -902,3 +977,4 @@ void LmJsonParser::makeLmTakePictureScene(const rapidjson::Value& l_oScene)
 			m_aInteractionSceneOfTheGame.at(
 					m_aInteractionSceneOfTheGame.size() - 1));
 }
+

@@ -8,7 +8,31 @@
     "SceneArray": [
       {
         "Id": 2,
-        "Description": "Défi 1: Un jeu de coopération, où l'on doit placer des pièces dans les bonnes catégories.",
+        "Description": "Etape No. 1 : Tigresse (Shanghai) - Un jeux de puzzle collaboratif",
+        "InstructionChild": {
+          "ColorText": {
+            "R": 255,
+            "G": 255,
+            "B": 255
+          },
+          "FontSize": 40,
+          "WidthPercent": 50,
+          "HeightPercent": 90,
+          "SizePercent": 40,
+          "Text": "Explorateur, à toi de jouer, associe les animaux qui se cachent sur les différentes parties de l'objet \"La tigresse\" !"
+        },
+        "InstructionParent": {
+          "ColorText": {
+            "R": 255,
+            "G": 255,
+            "B": 255
+          },
+          "FontSize": 40,
+          "WidthPercent": 75,
+          "HeightPercent": 30,
+          "SizePercent": 50,
+          "Text": "Cher collectionneur, nous vous invitons à glisser déplacer les détails d’objets en bronze qui figurent bien sur « La Tigresse » vers l’écran de votre compagnon de jeu."
+        },
         "SetPointBeginParent": [
           {
             "Label": {
@@ -25,7 +49,7 @@
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background1Cernuschi.png",
+                "imgURL": "Game/Background/background4Cernuschi.png",
                 "anchorPoint": 0
               },
               {
@@ -50,7 +74,7 @@
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background1Cernuschi.png",
+                "imgURL": "Game/Background/background4Cernuschi.png",
                 "anchorPoint": 0
               },
               {
@@ -63,13 +87,13 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 25,
+              "HeightPercent": 30,
               "SizePercent": 40,
               "Text": " Ni hao, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
             },
@@ -85,6 +109,10 @@
               {
                 "imgURL": "Game/Content/chinaMapCernuschi.png",
                 "anchorPoint": 2
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 4
               }
             ],
             "SoundURL": ""
@@ -92,14 +120,14 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
-              "FontSize": 30,
+              "FontSize": 28,
               "WidthPercent": 75,
-              "HeightPercent": 75,
-              "SizePercent": 40,
+              "HeightPercent": 32,
+              "SizePercent": 45,
               "Text": "Vous tombez bien ! J’admirais un très bel objet que j’ai depuis longtemps en boutique et qui servait autrefois à contenir des boissons fermentées. C’est un objet qui représente une tigresse et un petit homme blotti dans ses pattes. Il est en bronze, un métal lourd et très solide ! J’ai un problème il détient une magie qui me dépasse ! Pouvez-vous vous occuper de cet objet magique en trouvant quels animaux se cachent ?"
             },
             "Images": [
@@ -112,8 +140,12 @@
                 "anchorPoint": 3
               },
               {
-                "imgURL": "Game/Content/statueTigresse.png",
+                "imgURL": "Game/Content/text.png",
                 "anchorPoint": 4
+              },
+              {
+                "imgURL": "Game/Content/statueTigresse.png",
+                "anchorPoint": 2
               }
             ],
             "SoundURL": ""
@@ -121,24 +153,28 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
-              "FontSize": 60,
+              "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 50,
+              "HeightPercent": 85,
               "SizePercent": 40,
               "Text": "Cher collectionneur, nous vous invitons à glisser déplacer les détails d’objets en bronze qui figurent bien sur « La Tigresse » vers l’écran de votre compagnon de jeu."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/backgroundCernuschi.png",
+                "imgURL": "Game/Background/background1Cernuschi.png",
                 "anchorPoint": 0
               },
               {
                 "imgURL": "Game/Content/seller.png",
                 "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 2
               }
             ],
             "SoundURL": ""
@@ -160,7 +196,7 @@
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background1Cernuschi.png",
+                "imgURL": "Game/Background/background4Cernuschi.png",
                 "anchorPoint": 0
               },
               {
@@ -185,7 +221,7 @@
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background1Cernuschi.png",
+                "imgURL": "Game/Background/background4Cernuschi.png",
                 "anchorPoint": 0
               },
               {
@@ -198,13 +234,13 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 25,
+              "HeightPercent": 30,
               "SizePercent": 40,
               "Text": " Ni hao, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
             },
@@ -220,6 +256,10 @@
               {
                 "imgURL": "Game/Content/chinaMapCernuschi.png",
                 "anchorPoint": 2
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 4
               }
             ],
             "SoundURL": "Audio/Game/cernuschi6.wav"
@@ -227,14 +267,14 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
-              "FontSize": 30,
+              "FontSize": 28,
               "WidthPercent": 75,
-              "HeightPercent": 75,
-              "SizePercent": 40,
+              "HeightPercent": 32,
+              "SizePercent": 45,
               "Text": "Vous tombez bien ! J’admirais un très bel objet que j’ai depuis longtemps en boutique et qui servait autrefois à contenir des boissons fermentées. C’est un objet qui représente une tigresse et un petit homme blotti dans ses pattes. Il est en bronze, un métal lourd et très solide ! J’ai un problème il détient une magie qui me dépasse ! Pouvez-vous vous occuper de cet objet magique en trouvant quels animaux se cachent ?"
             },
             "Images": [
@@ -247,8 +287,12 @@
                 "anchorPoint": 3
               },
               {
-                "imgURL": "Game/Content/statueTigresse.png",
+                "imgURL": "Game/Content/text.png",
                 "anchorPoint": 4
+              },
+              {
+                "imgURL": "Game/Content/statueTigresse.png",
+                "anchorPoint": 2
               }
             ],
             "SoundURL": "Audio/Game/cernuschi5.wav"
@@ -256,24 +300,28 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
-              "FontSize": 60,
+              "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 50,
+              "HeightPercent": 85,
               "SizePercent": 40,
-              "Text": "Explorateur, à toi de jouer, associe les animaux qui se cachent sur les différentes parties de l’objet « La tigresse » "
+              "Text": "Explorateur, à toi de jouer, associe les animaux qui se cachent sur les différentes parties de l'objet \"La tigresse\" !"
             },
             "Images": [
               {
-                "imgURL": "Game/Background/backgroundCernuschi.png",
+                "imgURL": "Game/Background/background1Cernuschi.png",
                 "anchorPoint": 0
               },
               {
                 "imgURL": "Game/Content/seller.png",
                 "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 2
               }
             ],
             "SoundURL": ""
@@ -286,14 +334,14 @@
               "G": 255,
               "B": 255
             },
-            "FontSize": 30,
+            "FontSize": 50,
             "WidthPercent": 50,
-            "HeightPercent": 25,
+            "HeightPercent": 50,
             "SizePercent": 90,
-            "Text": " Mais vous avez déjà décodé des secrets de la Tigresse! Pour affronter la suite de votre voyage je vous donne cette amulette en forme de tigre. Ce tigre pourra vous protéger pour la suite des aventures."
+            "Text": " Mais vous avez déjà décodé des secrets de la Tigresse! Pour affronter la suite de votre voyage je donne cette amulette en forme de tigre à l'explorateur. Ce tigre pourra vous protéger pour la suite des aventures."
           },
           "FilenameSpriteBackground": "Game/Background/backgroundCernuschi.png",
-          "FilenameSpriteReward": "Game/Content/tiger.png",
+          "FilenameSpriteReward": "",
           "FilenameSound": "",
           "RewardScore": 50
         },
@@ -304,7 +352,7 @@
               "G": 255,
               "B": 255
             },
-            "FontSize": 30,
+            "FontSize": 40,
             "WidthPercent": 50,
             "HeightPercent": 25,
             "SizePercent": 90,
@@ -319,15 +367,15 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 75,
-              "SizePercent": 40,
-              "Text": "Pas mal... Une question subsidiaire vous permettra peut-être de me convaincre de vous offrir cet objet. C’est parti « quel est l’animal le mieux caché sur cette tigresse?\" Attention « on a toujours besoin de plus petit que soi » et je vous laisse peu de temps ! "
+              "HeightPercent": 30,
+              "SizePercent": 30,
+              "Text": "Pas mal... Une question subsidiaire vous permettra peut-être de me convaincre de vous offrir cet objet."
             },
             "Images": [
               {
@@ -340,6 +388,43 @@
               },
               {
                 "imgURL": "Game/Content/statueTigresse.png",
+                "anchorPoint": 2
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 0,
+                "G": 0,
+                "B": 0
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 35,
+              "SizePercent": 40,
+              "Text": "C’est parti « quel est l’animal le mieux caché sur cette tigresse?\" Attention « on a toujours besoin de plus petit que soi » et je vous laisse peu de temps ! "
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/alley.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/seller.png",
+                "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/statueTigresse.png",
+                "anchorPoint": 2
+              },
+              {
+                "imgURL": "Game/Content/text.png",
                 "anchorPoint": 4
               }
             ],
@@ -350,15 +435,15 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 75,
+              "HeightPercent": 30,
               "SizePercent": 40,
-              "Text": "Pas mal... Une question subsidiaire vous permettra peut-être de me convaincre de vous offrir cet objet. C’est parti « quel est l’animal le mieux caché sur cette tigresse?\" Attention « on a toujours besoin de plus petit que soi » et je vous laisse peu de temps ! "
+              "Text": "Pas mal... Une question subsidiaire vous permettra peut-être de me convaincre de vous offrir cet objet."
             },
             "Images": [
               {
@@ -371,13 +456,50 @@
               },
               {
                 "imgURL": "Game/Content/statueTigresse.png",
+                "anchorPoint": 2
+              },
+              {
+                "imgURL": "Game/Content/text.png",
                 "anchorPoint": 4
               }
             ],
-            "SoundURL": "Audio/Game/cernuschi3.mp3"
+            "SoundURL": "Audio/Game/cernuschi8.wav"
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 0,
+                "G": 0,
+                "B": 0
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 35,
+              "SizePercent": 40,
+              "Text": "C’est parti « quel est l’animal le mieux caché sur cette tigresse?\" Attention « on a toujours besoin de plus petit que soi » et je vous laisse peu de temps ! "
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/alley.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/seller.png",
+                "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/statueTigresse.png",
+                "anchorPoint": 2
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": "Audio/Game/cernuschi7.wav"
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/background2Cernuschi.png",
+        "FilenameSpriteBackground": "Game/Background/background1Cernuschi.png",
         "FilenameSpriteSendingArea": "Game/Content/patchment.png",
         "FilenameAudioGoodCategory": "Audio/Game/gong.mp3",
         "FilenameAudioBadCategory": "Audio/Game/beep.wav",
@@ -441,29 +563,33 @@
       },
       {
         "Id": 4,
-        "Description": "Défi 2: Un Quizz de rapidité !",
+        "Description": "Etape No. 2 : Tigresse (Shanghai) - Un quizz de rapidité.",
         "SetPointBeginParent": [
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
-              "FontSize": 60,
+              "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 50,
+              "HeightPercent": 85,
               "SizePercent": 40,
-              "Text": "Observez bien la Tigresse, quel est parmi ces animaux celui qui est le mieux caché ? "
+              "Text": "Observez bien la Tigresse, quel est parmis ces animaux celui qui est le mieux caché ?"
             },
             "Images": [
               {
-                "imgURL": "Game/Background/backgroundCernuschi.png",
+                "imgURL": "Game/Background/background1Cernuschi.png",
                 "anchorPoint": 0
               },
               {
                 "imgURL": "Game/Content/seller.png",
                 "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 2
               }
             ],
             "SoundURL": ""
@@ -473,24 +599,28 @@
           {
             "Label": {
               "ColorText": {
-                "R": 255,
-                "G": 255,
-                "B": 255
+                "R": 0,
+                "G": 0,
+                "B": 0
               },
-              "FontSize": 60,
+              "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 50,
+              "HeightPercent": 85,
               "SizePercent": 40,
-              "Text": "Regarde bien la Tigresse sur toutes ses facettes et sélectionne l’animal qui est bien caché ! "
+              "Text": "Regarde bien la Tigresse sur toutes ses facettes et sélectionne l'animal qui est caché !"
             },
             "Images": [
               {
-                "imgURL": "Game/Background/backgroundCernuschi.png",
+                "imgURL": "Game/Background/background1Cernuschi.png",
                 "anchorPoint": 0
               },
               {
                 "imgURL": "Game/Content/seller.png",
                 "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 2
               }
             ],
             "SoundURL": ""
@@ -503,9 +633,9 @@
               "G": 255,
               "B": 255
             },
-            "FontSize": 50,
+            "FontSize": 45,
             "WidthPercent": 50,
-            "HeightPercent": 20,
+            "HeightPercent": 30,
             "SizePercent": 90,
             "Text": " Bravo vous m’impressionnez ! Je me fais un plaisir de vous offrir La Tigresse"
           },
@@ -521,9 +651,9 @@
               "G": 255,
               "B": 255
             },
-            "FontSize": 50,
+            "FontSize": 45,
             "WidthPercent": 50,
-            "HeightPercent": 20,
+            "HeightPercent": 30,
             "SizePercent": 90,
             "Text": " Bravo vous m’impressionnez ! Je me fais un plaisir de vous offrir La Tigresse"
           },
@@ -540,7 +670,7 @@
                 "G": 0,
                 "B": 0
               },
-              "FontSize": 40,
+              "FontSize": 30,
               "WidthPercent": 75,
               "HeightPercent": 75,
               "SizePercent": 40,
@@ -548,12 +678,16 @@
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background1Cernuschi.png",
+                "imgURL": "Game/Background/alley.png",
                 "anchorPoint": 0
               },
               {
                 "imgURL": "Game/Content/seller.png",
                 "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 2
               },
               {
                 "imgURL": "Game/Content/Caballo.png",
@@ -571,7 +705,7 @@
                 "G": 0,
                 "B": 0
               },
-              "FontSize": 40,
+              "FontSize": 30,
               "WidthPercent": 75,
               "HeightPercent": 75,
               "SizePercent": 40,
@@ -579,12 +713,16 @@
             },
             "Images": [
               {
-                "imgURL": "Game/Background/background1Cernuschi.png",
+                "imgURL": "Game/Background/alley.png",
                 "anchorPoint": 0
               },
               {
                 "imgURL": "Game/Content/seller.png",
                 "anchorPoint": 3
+              },
+              {
+                "imgURL": "Game/Content/text.png",
+                "anchorPoint": 2
               },
               {
                 "imgURL": "Game/Content/Caballo.png",
@@ -594,7 +732,7 @@
             "SoundURL": "Audio/Game/cernuschi1.mp3"
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/background4Cernuschi.png",
+        "FilenameSpriteBackground": "Game/Background/background1Cernuschi.png",
         "FilenameSpriteBandTop": "Game/Content/questionBackgroundCernuschi.png",
         "FilenameSpriteAnswerBackground": "Game/Content/answerbackgroundCernuschi.png",
         "FilenameSpriteAnswerCross": "Game/Content/answerSelected.png",

@@ -124,7 +124,6 @@ void AppDelegate::initPathsForResolution()
 {
 	CCLOG("AppDelegate::initPathsForResolution");
 
-
 	//create app directory
 	LmJniJavaFacade::getApplicationDirectory();
 	//set server default directory to app directory
@@ -132,7 +131,6 @@ void AppDelegate::initPathsForResolution()
 
 	CCLOG("<font color=\"red\"> application directory is: %s</font>",
 			APP_DIR.c_str());
-
 
 	// initialize director
 	auto l_director = Director::getInstance();

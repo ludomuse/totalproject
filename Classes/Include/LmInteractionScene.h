@@ -19,8 +19,6 @@
 //use for stats
 #include "LmStatistics.h"
 
-
-
 typedef std::map<int, LmGameComponent*>::iterator it_type;
 
 static const float s_fDashboardRatioHidden = 0.95f;
@@ -31,267 +29,272 @@ static const float s_fMarginBot = 20.0f;
 //margin between image when images has to be display
 static const float s_fMarginBetweenImage = 20.0f;
 
-
-
-class LmInteractionScene: public cocos2d::Scene , public LmWifiObserver
+class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 {
 
-public:
+	public:
 
-	LmInteractionScene();
-	virtual ~LmInteractionScene();
+		LmInteractionScene();
+		virtual ~LmInteractionScene();
 
-	//in case we need to do stuff when we get the focus again after a back
-	void restart();
+		//in case we need to do stuff when we get the focus again after a back
+		void restart();
 
-	//call by replay button
-	virtual void resetScene()=0;
+		//call by replay button
+		virtual void resetScene()=0;
 
-	//init
-	bool init(LmUser*);
+		//init
+		bool init(LmUser*);
 
-	bool isDone() const
-	{
-		return m_bDone;
-	}
-
-	void setBBackPressed(bool bBackPressed)
-	{
-		m_bBackPressed = bBackPressed;
-	}
-
-	void setPLmSetPointEnd(LmSetPoint* pLmSetPoint)
-	{
-		m_pLmSetPointEnd = pLmSetPoint;
-	}
-
-	void setPLmSetPointBegin(LmSetPoint* pLmSetPoint)
-	{
-		m_pLmSetPointBegin = pLmSetPoint;
-	}
-
-	void setPLmReward(LmReward* pLmReward)
-	{
-		m_pLmReward = pLmReward;
-	}
-
-	void setPLmRewardUser2(LmReward* pLmRewardUser2)
-	{
-		m_pLmRewardUser2 = pLmRewardUser2;
-	}
-
-	bool getReward() const
-	{
-		if (m_pLmReward)
+		bool isDone() const
 		{
-			return true;
+			return m_bDone;
 		}
-		return false;
-	}
 
-	bool getRewardUser2() const
-	{
-		if (m_pLmRewardUser2)
+		void setBBackPressed(bool bBackPressed)
 		{
-			return true;
+			m_bBackPressed = bBackPressed;
 		}
-		return false;
-	}
 
-	const std::string& getSDescription() const
-	{
-		return m_sDescription;
-	}
+		void setPLmSetPointEnd(LmSetPoint* pLmSetPoint)
+		{
+			m_pLmSetPointEnd = pLmSetPoint;
+		}
 
-	void setSDescription(const std::string& sDescription)
-	{
-		m_sDescription = sDescription;
-	}
+		void setPLmSetPointBegin(LmSetPoint* pLmSetPoint)
+		{
+			m_pLmSetPointBegin = pLmSetPoint;
+		}
 
-	virtual void onReceivingMsg(bytes );
-	virtual void onReceivingFile(std::string)
-	{
+		void setPLmReward(LmReward* pLmReward)
+		{
+			m_pLmReward = pLmReward;
+		}
 
-	}
+		void setPLmRewardUser2(LmReward* pLmRewardUser2)
+		{
+			m_pLmRewardUser2 = pLmRewardUser2;
+		}
 
-	bool startGame();
+		bool getReward() const
+		{
+			if (m_pLmReward)
+			{
+				return true;
+			}
+			return false;
+		}
 
-	void setBUser1IsReadyForNextInteraction(
-			bool bUser1IsReadyForNextInteraction)
-	{
-		m_bUser1IsReadyForNextInteraction = bUser1IsReadyForNextInteraction;
-	}
+		bool getRewardUser2() const
+		{
+			if (m_pLmRewardUser2)
+			{
+				return true;
+			}
+			return false;
+		}
 
-	void setBUser2IsReadyForNextInteraction(
-			bool bUser2IsReadyForNextInteraction)
-	{
-		m_bUser2IsReadyForNextInteraction = bUser2IsReadyForNextInteraction;
-	}
+		const std::string& getSDescription() const
+		{
+			return m_sDescription;
+		}
 
-	bool isBGameIsRunning() const
-	{
-		return m_bGameIsRunning;
-	}
+		void setSDescription(const std::string& sDescription)
+		{
+			m_sDescription = sDescription;
+		}
 
-	int getIIdGame() const
-	{
-		return m_iIdGame;
-	}
+		virtual void onReceivingMsg(bytes);
+		virtual void onReceivingFile(std::string)
+		{
 
-	LmReward* getPLmReward() const
-	{
-		return m_pLmReward;
-	}
+		}
 
-	LmReward* getPLmRewardUser2() const
-	{
-		return m_pLmRewardUser2;
-	}
+		bool startGame();
 
-	bool isBWin() const
-	{
-		return m_bWin;
-	}
+		void setBUser1IsReadyForNextInteraction(
+				bool bUser1IsReadyForNextInteraction)
+		{
+			m_bUser1IsReadyForNextInteraction = bUser1IsReadyForNextInteraction;
+		}
 
-protected:
+		void setBUser2IsReadyForNextInteraction(
+				bool bUser2IsReadyForNextInteraction)
+		{
+			m_bUser2IsReadyForNextInteraction = bUser2IsReadyForNextInteraction;
+		}
 
-	//ATTRIBUTES
+		bool isBGameIsRunning() const
+		{
+			return m_bGameIsRunning;
+		}
 
-	static int s_iNumberOfInteraction;
+		int getIIdGame() const
+		{
+			return m_iIdGame;
+		}
 
-	int m_iIdGame;
+		LmReward* getPLmReward() const
+		{
+			return m_pLmReward;
+		}
 
-	//to sync users before launching a game
-	bool m_bUser1IsReadyForNextInteraction;
-	bool m_bUser2IsReadyForNextInteraction;
+		LmReward* getPLmRewardUser2() const
+		{
+			return m_pLmRewardUser2;
+		}
 
-	//to know if game is running or not
-	bool m_bGameIsRunning;
+		bool isBWin() const
+		{
+			return m_bWin;
+		}
 
-	cocos2d::Sprite* m_pSpriteWaitingScreen;
+		void setPInstruction(cocos2d::Label* label)
+		{
+			m_pInstruction = label;
+			m_pInstruction->retain();
+		}
 
+		//update score
+		void updateScoreLabel();
 
-	//text to display in the dashboard to describe the scene
-	std::string m_sDescription;
+	protected:
 
-	//use to sync movement
-	bool m_bTouchBeganDisabled;
+		//ATTRIBUTES
 
-	//to know if this has been win
-	bool m_bWin;
+		static int s_iNumberOfInteraction;
 
-	//reward of user 1
-	LmReward* m_pLmReward;
-	//user 2 reward
-	LmReward* m_pLmRewardUser2;
+		//calculate with s_iNumberOfInteraction into constructor/destructor
+		int m_iIdGame;
 
-	//autorelease object it's the first layer of the scene
-	cocos2d::Layer* m_pLayerGame;
+		//to sync users before launching a game
+		bool m_bUser1IsReadyForNextInteraction;
+		bool m_bUser2IsReadyForNextInteraction;
 
-	//an introduction to the InteractionScene
-	LmSetPoint* m_pLmSetPointBegin;
-	LmSetPoint* m_pLmSetPointEnd;
+		//to know if game is running or not
+		bool m_bGameIsRunning;
 
-	cocos2d::Layer* m_pDashboardBandLayer;
+		cocos2d::Sprite* m_pSpriteWaitingScreen;
 
-	//user which play the scene to know if it's 1 or 2 init dashbord layer and modify his score
-	LmUser* m_pUser;
+		//text to display in the dashboard to describe the scene
+		std::string m_sDescription;
 
-	//finish button
-	cocos2d::ui::Button* m_pFinishGameButton;
-	bool m_bFinishGameButtonSync;
+		//instruction to display during game
+		cocos2d::Label* m_pInstruction;
 
-	//replay button
-	cocos2d::ui::Button* m_pReplayButton;
-	bool m_bReplayButtonSync;
+		//use to sync movement
+		bool m_bTouchBeganDisabled;
 
-	//introduction gui element
-	//buttons next and previous
-	cocos2d::MenuItemImage* m_pNextButton;
-	cocos2d::MenuItemImage* m_pPreviousButton;
-	cocos2d::Menu* m_pMenu;
-	cocos2d::ui::CheckBox* m_pPlayCheckBox;
+		//to know if this has been win
+		bool m_bWin;
 
-	//to know when a set point is finish
-	bool m_bSetPointFinished;
-	//to know if next button pass through the begion set point begin or other one
-	bool m_bSetPointBegin;
+		//reward of user 1
+		LmReward* m_pLmReward;
+		//user 2 reward
+		LmReward* m_pLmRewardUser2;
 
-	//gui elements
-	LmSprite* m_pSpriteDashboardBand;
+		//autorelease object it's the first layer of the scene
+		cocos2d::Layer* m_pLayerGame;
 
-	cocos2d::MenuItemImage* m_pMoveLayerButton;
-	bool m_bMoveDone;
-	bool m_bDone;
+		//an introduction to the InteractionScene
+		LmSetPoint* m_pLmSetPointBegin;
+		LmSetPoint* m_pLmSetPointEnd;
 
-	cocos2d::Label* m_pLabelUserName;
-	cocos2d::Label* m_pLabelScore;
-	cocos2d::MenuItemImage* m_pBackDashboardButton;
+		cocos2d::Layer* m_pDashboardBandLayer;
 
-	bool m_bBackPressed;
+		//user which play the scene to know if it's 1 or 2 init dashbord layer and modify his score
+		LmUser* m_pUser;
 
-	bool m_bActionRunning;
+		//finish button
+		cocos2d::ui::Button* m_pFinishGameButton;
+		bool m_bFinishGameButtonSync;
 
-	std::map<int, LmGameComponent*> m_aIdTable;
+		//replay button
+		cocos2d::ui::Button* m_pReplayButton;
+		bool m_bReplayButtonSync;
 
-	int m_iNumberOfGameComponent;
+		//introduction gui element
+		//buttons next and previous
+		cocos2d::MenuItemImage* m_pNextButton;
+		cocos2d::MenuItemImage* m_pPreviousButton;
+		cocos2d::Menu* m_pMenu;
+		cocos2d::ui::CheckBox* m_pPlayCheckBox;
 
-	bool m_bDashboardIsHidden;
+		//to know when a set point is finish
+		bool m_bSetPointFinished;
+		//to know if next button pass through the begion set point begin or other one
+		bool m_bSetPointBegin;
 
-	//listener
-	cocos2d::EventListenerTouchOneByOne* m_pListener;
+		//gui elements
+		LmSprite* m_pSpriteDashboardBand;
 
-	//METHODS
+		cocos2d::MenuItemImage* m_pMoveLayerButton;
+		bool m_bMoveDone;
+		bool m_bDone;
 
-	//callback
-	void nextSetPointLayer(cocos2d::Ref*);
-	void previousSetPointLayer(cocos2d::Ref*);
+		cocos2d::Label* m_pLabelUserName;
+		cocos2d::Label* m_pLabelScore;
+		cocos2d::MenuItemImage* m_pBackDashboardButton;
 
-	//interface for all games where we init our games and so on
-	virtual void runGame()=0;
+		bool m_bBackPressed;
 
-	//init the game
-	virtual bool initGame()=0;
+		bool m_bActionRunning;
 
-	//add the dashboard layer
-	void initDashboardLayer();
+		std::map<int, LmGameComponent*> m_aIdTable;
 
-	void moveDashboardLayer(cocos2d::Ref*);
-	void moveRightDone();
-	void moveLeftDone();
+		int m_iNumberOfGameComponent;
 
-	void backToDashboard(cocos2d::Ref* );
+		bool m_bDashboardIsHidden;
 
-	//register the gamecomponent and return a pointer to it
-	LmGameComponent* makeGameComponent();
+		//listener
+		cocos2d::EventListenerTouchOneByOne* m_pListener;
 
-	//call when the finishgamebutton is pressed
-	void endGame();
+		//METHODS
 
-	//when it's a win
-	void win(bool);
+		//callback
+		void nextSetPointLayer(cocos2d::Ref*);
+		void previousSetPointLayer(cocos2d::Ref*);
 
-	//callback event wifi
-	void onWinEvent(bytes );
+		//interface for all games where we init our games and so on
+		virtual void runGame()=0;
 
+		//init the game
+		virtual bool initGame()=0;
 
-	void playCallback(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
+		//add the dashboard layer
+		void initDashboardLayer();
 
-	void initFinishButtonTexture();
+		void moveDashboardLayer(cocos2d::Ref*);
+		void moveRightDone();
+		void moveLeftDone();
 
-	void initNextPreviousButton();
+		void backToDashboard(cocos2d::Ref*);
 
-	void finishInteraction();
+		//register the gamecomponent and return a pointer to it
+		LmGameComponent* makeGameComponent();
 
-	//to remove from the menu the next and previous menuitem
-	void removeMenuItem();
+		//call when the finishgamebutton is pressed
+		void endGame();
 
-	//check id there is a sound to display or not the play checkbox
-	void checkIfDisplayPlayCheckBox(LmSetPoint*);
+		//when it's a win
+		void win(bool);
 
+		//callback event wifi
+		void onWinEvent(bytes);
 
+		void playCallback(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
+		void initFinishButtonTexture();
 
+		void initNextPreviousButton();
+
+		void finishInteraction();
+
+		//to remove from the menu the next and previous menuitem
+		void removeMenuItem();
+
+		//check id there is a sound to display or not the play checkbox
+		void checkIfDisplayPlayCheckBox(LmSetPoint*);
 
 };
 

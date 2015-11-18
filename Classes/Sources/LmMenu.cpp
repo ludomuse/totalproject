@@ -167,8 +167,7 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(l_pFormSprite);
 
 	//log button
-	auto l_oLogButton = MenuItemImage::create(
-			"Ludomuse/Content/connexion.png",
+	auto l_oLogButton = MenuItemImage::create("Ludomuse/Content/connexion.png",
 			"Ludomuse/Content/connexionpress.png",
 			CC_CALLBACK_1(LmMenu::logFinished, this));
 	l_oLogButton->setAnchorPoint(Point(0.5, 0.5));
@@ -187,8 +186,7 @@ bool LmMenu::logScreen()
 	m_pLogEditBox = EditBox::create(
 			Size(l_pFormSprite->getContentSize().width * 0.4,
 					l_oVisibleSize.height * 0.1),
-			Scale9Sprite::create(
-					"Ludomuse/Content/textfieldBackground.png"));
+			Scale9Sprite::create("Ludomuse/Content/textfieldBackground.png"));
 	m_pLogEditBox->setPosition(
 			Vect(
 					(l_oVisibleSize.width
@@ -836,23 +834,20 @@ void LmMenu::initText()
 {
 	auto l_pLmJsonParser = new LmJsonParser;
 
-	 if (!l_pLmJsonParser->initJsonDocument("Json/strings.json"))
-	 {
-	 CCLOG("init json credit failed");
-	 }
+	l_pLmJsonParser->initJsonDocument("Json/strings.json");
 
-	 m_sUserIsReady = l_pLmJsonParser->getStringValue("UserIsReady");
-	 m_sDeviceAndRoleSlected = l_pLmJsonParser->getStringValue(
-	 "DeviceAndRoleSlected");
-	 m_sRoleNotChoose = l_pLmJsonParser->getStringValue("RoleNotChoose");
-	 m_sBegining = l_pLmJsonParser->getStringValue("Begining");
-	 m_sUserNotCompatibleRole = l_pLmJsonParser->getStringValue(
-	 "UserNotCompatibleRole");
-	 m_sUserNotCompatibleTabletName = l_pLmJsonParser->getStringValue(
-	 "UserNotCompatibleTabletName");
-	 m_sError = l_pLmJsonParser->getStringValue("Error");
-	 m_sSearching = l_pLmJsonParser->getStringValue("Searching");
+	m_sUserIsReady = l_pLmJsonParser->getStringValue("UserIsReady");
+	m_sDeviceAndRoleSlected = l_pLmJsonParser->getStringValue(
+			"DeviceAndRoleSlected");
+	m_sRoleNotChoose = l_pLmJsonParser->getStringValue("RoleNotChoose");
+	m_sBegining = l_pLmJsonParser->getStringValue("Begining");
+	m_sUserNotCompatibleRole = l_pLmJsonParser->getStringValue(
+			"UserNotCompatibleRole");
+	m_sUserNotCompatibleTabletName = l_pLmJsonParser->getStringValue(
+			"UserNotCompatibleTabletName");
+	m_sError = l_pLmJsonParser->getStringValue("Error");
+	m_sSearching = l_pLmJsonParser->getStringValue("Searching");
 
-	 delete l_pLmJsonParser;
+	delete l_pLmJsonParser;
 }
 

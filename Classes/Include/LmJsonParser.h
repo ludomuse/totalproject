@@ -92,15 +92,18 @@ class LmJsonParser
 		//METHODS
 
 		//init
-		void initInteractionAttributesSceneOfTheGame();
+		void initInteractionSceneOfTheGame();
 
 		//generic method to make all the setpoint 2nd precise which one to take
 		LmSetPoint* getLmSetPoint(const rapidjson::Value&, const char*);
+		cocos2d::Label* getLabel(const rapidjson::Value& );
+
 
 		//init the setpoint of an interaction according to the json
 		void initSetPoint(const rapidjson::Value&, LmInteractionScene*);
 		void initReward(const rapidjson::Value&, LmInteractionScene*);
 		void initDescription(const rapidjson::Value&, LmInteractionScene*);
+
 
 		void initInteractionAttributes(const rapidjson::Value&,
 				LmInteractionScene*);
