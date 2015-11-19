@@ -480,13 +480,13 @@ bool LmGameManager::initDashboard()
 					m_pSpriteBandMid->getContentSize().height * 0.5f));
 	l_pMenu->addChild(m_pPlayNextInteractionButton, 2);
 
-	//checkbox settings
+	//settings
 	m_pSettingsButton = MenuItemImage::create("Ludomuse/Content/settings.png",
 			"Ludomuse/Content/settingspress.png",
 			CC_CALLBACK_1(LmGameManager::settings, this));
-	m_pSettingsButton->setAnchorPoint(Vec2(1, 1));
+	m_pSettingsButton->setAnchorPoint(Vec2(1, 0));
 	m_pSettingsButton->setPosition(
-			Vec2(m_pSpriteBandMid->getContentSize().width, l_oWinSize.height));
+			Vec2(m_pSpriteBandMid->getContentSize().width, 0));
 	l_pMenu->addChild(m_pSettingsButton);
 
 	auto l_pStaticMenu = Menu::create();
