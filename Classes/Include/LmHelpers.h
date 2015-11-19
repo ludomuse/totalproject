@@ -86,13 +86,4 @@ struct LmEvent
 
 typedef struct LmEvent LmEvent;
 
-
-/*struct bytes
- {
- byte* data;
- int len;
- };
-
- typedef struct bytes bytes;*/
-
 #endif /* HELPERS_H_ */

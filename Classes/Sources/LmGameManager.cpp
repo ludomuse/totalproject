@@ -687,15 +687,16 @@ void LmGameManager::initDashboardInteraction()
 					m_pSpriteBackgroundBlueProfile->getContentSize().width
 							+ (l_oVisibleSize.width
 									- m_pSpriteBackgroundBlueProfile->getContentSize().width)
-									* 0.5, l_oVisibleSize.height * 0.6));
+									* 0.5, l_oVisibleSize.height * 0.65));
 	m_pBackgroundLayer->addChild(m_pDescriptionBox);
 
 	m_pDescriptionLabel = Label::createWithTTF("Description",
 			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 	m_pDescriptionBox->addChild(m_pDescriptionLabel);
+	m_pDescriptionLabel->setAnchorPoint(Vec2(0.5,1));
 	m_pDescriptionLabel->setPosition(
 			Vec2(m_pDescriptionBox->getContentSize().width * 0.5,
-					m_pDescriptionBox->getContentSize().height * 0.5));
+					m_pDescriptionBox->getContentSize().height * 0.95));
 	m_pDescriptionLabel->setMaxLineWidth(
 			m_pDescriptionBox->getContentSize().width * 0.9);
 

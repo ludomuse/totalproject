@@ -92,7 +92,10 @@ LmInteractionScene::~LmInteractionScene()
 	}
 
 	//we retained it because it w&as create into lmjsonparser class
-	m_pInstruction->release();
+	if(m_pInstruction)
+	{
+		m_pInstruction->release();
+	}
 
 }
 
@@ -123,7 +126,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pPlayCheckBox->setTouchEnabled(true);
 	m_pPlayCheckBox->setSwallowTouches(false);
 	m_pPlayCheckBox->setPosition(
-			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.1));
+			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.05));
 	m_pPlayCheckBox->addEventListener(
 			CC_CALLBACK_2(LmInteractionScene::playCallback, this));
 	m_pPlayCheckBox->retain();
@@ -140,7 +143,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 			"Ludomuse/Content/finpress.png");
 	m_pFinishGameButton->setAnchorPoint(Vec2(1, 0.5));
 	m_pFinishGameButton->setPosition(
-			Vec2(l_oVisibleSize.width, l_oVisibleSize.height * 0.1));
+			Vec2(l_oVisibleSize.width, l_oVisibleSize.height * 0.05));
 	m_pFinishGameButton->setTouchEnabled(true);
 	m_pFinishGameButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::endGame, this));
@@ -151,7 +154,7 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	m_pReplayButton = ui::Button::create("Ludomuse/Content/rejouer.png",
 			"Ludomuse/Content/rejouerpress.png");
 	m_pReplayButton->setAnchorPoint(Vec2(0, 0.5));
-	m_pReplayButton->setPosition(Vect(0, l_oVisibleSize.height * 0.2));
+	m_pReplayButton->setPosition(Vect(0, l_oVisibleSize.height * 0.05));
 	m_pReplayButton->setTouchEnabled(true);
 	m_pReplayButton->addTouchEventListener(
 			CC_CALLBACK_0(LmInteractionScene::resetScene, this));
@@ -171,7 +174,6 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	{
 		CCLOG("there is instruction");
 		m_pInstruction->setVisible(false);
-
 		m_pLayerGame->addChild(m_pInstruction, 2);
 	}
 
@@ -210,7 +212,10 @@ bool LmInteractionScene::startGame()
 		m_pUser->getPLmStatistics()->interactionGameBegin();
 
 		//set visible instruction
-		m_pInstruction->setVisible(true);
+		if(m_pInstruction)
+		{
+			m_pInstruction->setVisible(true);
+		}
 
 		CCLOG("LmInteractionScene::runGame");
 		runGame();
@@ -246,24 +251,21 @@ void LmInteractionScene::initNextPreviousButton()
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
 	//next button
-	m_pNextButton = MenuItemImage::create(
-			"Ludomuse/Content/nextButtonNormal.png",
-			"Ludomuse/Content/nextButtonPressed.png",
+	m_pNextButton = LmMenuItemImage::create("Suivant",
 			CC_CALLBACK_1(LmInteractionScene::nextSetPointLayer, this));
 	m_pNextButton->setPosition(
 			Vect(
 					l_oVisibleSize.width
 							- m_pNextButton->getContentSize().width * 0.8,
-					l_oVisibleSize.height * 0.1));
+					l_oVisibleSize.height * 0.05));
 	m_pMenu->addChild(m_pNextButton, 1);
 
 	//previous button
-	m_pPreviousButton = MenuItemImage::create("Ludomuse/Content/precedent.png",
-			"Ludomuse/Content/precedentpress.png",
+	m_pPreviousButton = LmMenuItemImage::create("Precedent",
 			CC_CALLBACK_1(LmInteractionScene::previousSetPointLayer, this));
 	m_pPreviousButton->setPosition(
 			Vect(m_pPreviousButton->getContentSize().width * 0.8,
-					l_oVisibleSize.height * 0.1));
+					l_oVisibleSize.height * 0.05));
 	m_pMenu->addChild(m_pPreviousButton, 1);
 
 	m_pNextButton->setVisible(true);
@@ -504,9 +506,7 @@ void LmInteractionScene::initDashboardLayer()
 			m_pSpriteDashboardBand->getContentSize().height * 0.55f);
 	m_pSpriteDashboardBand->addChild(m_pLabelScore);
 
-	m_pBackDashboardButton = MenuItemImage::create(
-			"Ludomuse/Content/backToDashboard.png",
-			"Ludomuse/Content/backToDashboardpressed.png",
+	m_pBackDashboardButton = LmMenuItemImage::create("Tableau de Bord",
 			CC_CALLBACK_1(LmInteractionScene::backToDashboard, this));
 	m_pBackDashboardButton->setPosition(
 			Vec2(m_pSpriteDashboardBand->getContentSize().width * (0.5f),
@@ -631,7 +631,11 @@ void LmInteractionScene::win(bool win)
 
 	//depend of m_bwin
 	initFinishButtonTexture();
-	m_pInstruction->setVisible(false);
+
+	if(m_pInstruction)
+	{
+		m_pInstruction->setVisible(false);
+	}
 
 	m_pFinishGameButton->setVisible(true);
 
@@ -674,6 +678,8 @@ void LmInteractionScene::initFinishButtonTexture()
 		m_pFinishGameButton->setPosition(
 				Vect(l_oWinSize.width * 0.5 + l_oOrigin.x,
 						l_oWinSize.height * 0.5 + l_oOrigin.y));
+
+		m_pFinishGameButton->setScaleX(1.2);
 
 		//if there is a sprite reward
 		if (m_pLmReward->getPSpriteReward())

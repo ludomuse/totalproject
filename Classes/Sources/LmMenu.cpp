@@ -167,8 +167,7 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(l_pFormSprite);
 
 	//log button
-	auto l_oLogButton = MenuItemImage::create("Ludomuse/Content/connexion.png",
-			"Ludomuse/Content/connexionpress.png",
+	auto l_oLogButton = LmMenuItemImage::create("Connexion",
 			CC_CALLBACK_1(LmMenu::logFinished, this));
 	l_oLogButton->setAnchorPoint(Point(0.5, 0.5));
 	l_oLogButton->setPosition(
@@ -296,8 +295,7 @@ bool LmMenu::wifiDirectScreen()
 	m_pWifiLayer->addChild(m_pSpriteReadyIndicator);
 
 	//ready button
-	m_pReadyButton = MenuItemImage::create("Ludomuse/Content/prete.png",
-			"Ludomuse/Content/pretepress.png",
+	m_pReadyButton = LmMenuItemImage::create("Pret",
 			CC_CALLBACK_1(LmMenu::ready, this));
 	m_pReadyButton->setAnchorPoint(Point(1, 0.5));
 	m_pReadyButton->setPosition(
@@ -315,14 +313,12 @@ bool LmMenu::wifiDirectScreen()
 			"Fonts/JosefinSans-Bold.ttf", l_oVisibleSize.height * 0.05);
 	l_pLabelDeviceName->setAnchorPoint(Vec2(1, 0));
 	l_pLabelDeviceName->setPosition(l_oVisibleSize.width - s_fMarginLeftMenu,
-			l_oVisibleSize.height * 0.15);
+			l_oVisibleSize.height * 0.05);
 	l_pLabelDeviceName->setColor(Color3B::WHITE);
 	m_pSpriteWifiBackground->addChild(l_pLabelDeviceName);
 
 	//refresh button
-	m_pRefreshButton = MenuItemImage::create(
-			"Ludomuse/Content/refreshbutton.png",
-			"Ludomuse/Content/refreshbuttonpress.png",
+	m_pRefreshButton = LmMenuItemImage::create("Actualiser",
 			CC_CALLBACK_1(LmMenu::scan, this));
 	m_pRefreshButton->setAnchorPoint(Point(1, 0));
 	m_pRefreshButton->setPosition(
@@ -358,8 +354,6 @@ bool LmMenu::wifiDirectScreen()
 	m_pCheckBoxParent->setAnchorPoint(Vec2(0, 0.5));
 	m_pCheckBoxParent->setPosition(
 			Vec2(s_fMarginLeftMenu, l_oVisibleSize.height * 0.25));
-	m_pCheckBoxParent->setScaleX(2.3);
-	m_pCheckBoxParent->setScaleY(2.3);
 	m_pCheckBoxParent->addEventListener(
 			CC_CALLBACK_2(LmMenu::parentSelected, this));
 	m_pWifiLayer->addChild(m_pCheckBoxParent);
@@ -372,12 +366,10 @@ bool LmMenu::wifiDirectScreen()
 	m_pCheckBoxChild->setPosition(
 			Vec2(
 					s_fMarginLeftMenu
-							+ m_pCheckBoxParent->getCustomSize().width * 2.3,
+							+ m_pCheckBoxParent->getCustomSize().width,
 					l_oVisibleSize.height * 0.25));
 	m_pCheckBoxChild->addEventListener(
 			CC_CALLBACK_2(LmMenu::childSelected, this));
-	m_pCheckBoxChild->setScaleX(2.3);
-	m_pCheckBoxChild->setScaleY(2.3);
 	m_pWifiLayer->addChild(m_pCheckBoxChild);
 
 	//init user1
@@ -552,14 +544,31 @@ void LmMenu::makeCheckboxUserTabletName(
 	for (std::vector<std::string>::iterator it = l_aVectorOfTabletName.begin();
 			it != l_aVectorOfTabletName.end(); ++it)
 	{
-		//init label and menuitem associated
-		auto l_pLabel = Label::createWithTTF((*it),
-				"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.02);
-		l_pLabel->setColor(Color3B::BLACK);
 
 		auto l_pCheckBox = ui::CheckBox::create(
 				"Ludomuse/Content/backgroundDevice.png",
 				"Ludomuse/Content/backgroundDevicePressed.png");
+
+		//calculate the size of the font
+		Size l_oSizeButton = l_pCheckBox->getContentSize();
+		int l_iTextLenght = (*it).length();
+		float l_fFontSize = (l_oSizeButton.width / l_iTextLenght) * 1.8;
+
+		if (l_fFontSize > l_oSizeButton.height * 0.5)
+		{
+			l_fFontSize = l_oSizeButton.height * 0.5;
+		}
+		else if(l_fFontSize<l_oSizeButton.height * 0.25)
+		{
+			l_fFontSize=l_oSizeButton.height * 0.25;
+		}
+
+		//init label and menuitem associated
+		auto l_pLabel = Label::createWithTTF((*it),
+				"Fonts/JosefinSans-Regular.ttf",l_fFontSize );
+		l_pLabel->setColor(Color3B::BLACK);
+
+
 		l_pCheckBox->setTouchEnabled(true);
 		l_pCheckBox->setSwallowTouches(false);
 		l_pCheckBox->addEventListener(

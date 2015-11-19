@@ -378,7 +378,7 @@ void LmStatistics::mergeWithExistingJson()
 
 
 				assert(l_oDocument[it->first.c_str()].IsInt());
-				it->second = floor ((l_oDocument[it->first.c_str()].GetInt()
+				it->second = ceil ((l_oDocument[it->first.c_str()].GetInt()
 						* (m_iNumberOfUsers - 1) + it->second)
 						/ m_iNumberOfUsers);
 
@@ -446,13 +446,13 @@ void LmStatistics::mergeTimeWithGameStats()
 
 					//merge value
 					itSceneStats->second->TimeGame =
-							floor ((itGameRecordedScene->second->TimeGame
+							ceil ((itGameRecordedScene->second->TimeGame
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeGame)
 									/ m_iNumberOfUsers);
 
 					itSceneStats->second->TimeInteraction =
-							floor ((itGameRecordedScene->second->TimeInteraction
+							ceil ((itGameRecordedScene->second->TimeInteraction
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeInteraction)
 									/ m_iNumberOfUsers);

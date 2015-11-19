@@ -13,6 +13,8 @@
 
 #include "../../cocos2d/external/json/document.h"
 
+#include "../Include/LmMenuItemImage.h"
+
 using namespace cocos2d;
 
 LmSettings::LmSettings(LmUser* l_pUser)
@@ -50,15 +52,21 @@ bool LmSettings::init()
 	m_pBackGroundSprite->setPosition(
 			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
 
+	//label ludomuse settings
+	auto l_pLabelOption = Label::createWithTTF("Ludomuse Options",
+			"Fonts/JosefinSans-Bold.ttf", l_oVisibleSize.height * 0.1);
+	l_pLabelOption->setPosition(l_oVisibleSize.width * 0.5,
+			l_oVisibleSize.height * 0.9);
+	l_pLabelOption->setColor(Color3B::WHITE);
+	m_pBackGroundSprite->addChild(l_pLabelOption);
+
 	//menu
 	auto l_pMenu = Menu::create();
 	l_pMenu->setPosition(Vec2::ZERO);
 	m_pBackGroundSprite->addChild(l_pMenu);
 
 	//back to dashboard button
-	auto l_pMenuItemImageBack = MenuItemImage::create(
-			"Ludomuse/Content/backToDashboard.png",
-			"Ludomuse/Content/backToDashboardpressed.png",
+	auto l_pMenuItemImageBack = LmMenuItemImage::create("Retour",
 			CC_CALLBACK_1(LmSettings::back, this));
 	l_pMenuItemImageBack->setPosition(
 			Vec2(l_oVisibleSize.width * 0.9, l_oVisibleSize.height * 0.9));
@@ -112,16 +120,14 @@ bool LmSettings::init()
 	m_pBackGroundSprite->addChild(l_pVolumeEffectSlider);
 
 	//stats button child
-	auto l_pMenuItemImageStatsChild = MenuItemImage::create(
-			"Ludomuse/Content/rejouer.png", "Ludomuse/Content/rejouerpress.png",
+	auto l_pMenuItemImageStatsChild = LmMenuItemImage::create("Statistique Enfant",
 			CC_CALLBACK_1(LmSettings::displayStatsChild, this));
 	l_pMenuItemImageStatsChild->setPosition(
 			Vec2(l_oVisibleSize.width * 0.33, l_oVisibleSize.height * 0.4));
 	l_pMenu->addChild(l_pMenuItemImageStatsChild);
 
 	//stats button parent
-	auto l_pMenuItemImageStatsParent = MenuItemImage::create(
-			"Ludomuse/Content/fin.png", "Ludomuse/Content/finpress.png",
+	auto l_pMenuItemImageStatsParent = LmMenuItemImage::create("Statistique Adulte",
 			CC_CALLBACK_1(LmSettings::displayStatsParent, this));
 	l_pMenuItemImageStatsParent->setPosition(
 			Vec2(l_oVisibleSize.width * 0.66, l_oVisibleSize.height * 0.4));
@@ -130,8 +136,7 @@ bool LmSettings::init()
 	m_pLmStatsView->initStats();
 
 	//credits button
-	auto l_pMenuItemImageCredits = MenuItemImage::create(
-			"Ludomuse/Content/credits.png", "Ludomuse/Content/creditspress.png",
+	auto l_pMenuItemImageCredits = LmMenuItemImage::create("Credits",
 			CC_CALLBACK_1(LmSettings::runCredits, this));
 	l_pMenuItemImageCredits->setPosition(
 			Vec2(l_oVisibleSize.width * 0.33, l_oVisibleSize.height * 0.2));
@@ -140,9 +145,7 @@ bool LmSettings::init()
 	m_pLmCredits->initCredits();
 
 	//end button
-	auto l_pMenuItemImageEndApplication = MenuItemImage::create(
-			"Ludomuse/Content/quitterludomuse.png",
-			"Ludomuse/Content/quitterludomusepress.png",
+	auto l_pMenuItemImageEndApplication = LmMenuItemImage::create("Quitter LudoMuse",
 			CC_CALLBACK_1(LmSettings::endApplicationCallbackButton, this));
 	l_pMenuItemImageEndApplication->setPosition(
 			Vec2(l_oVisibleSize.width * 0.66, l_oVisibleSize.height * 0.2));
@@ -284,12 +287,12 @@ void LmCredits::initCredits()
 
 	//init label
 	m_pLabel = Label::createWithTTF(m_sCreditsText,
-			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.05);
+			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.025);
 	m_pLabel->setAnchorPoint(Vec2(0.5, 1));
 	m_pLabel->setPosition(Vec2(l_oVisibleSize.width * 0.5, 0));
 	m_pLabel->setColor(Color3B::BLACK);
 	m_pLabel->setAlignment(TextHAlignment::CENTER);
-	m_pLabel->setMaxLineWidth(l_oVisibleSize.width * 0.8);
+	m_pLabel->setMaxLineWidth(l_oVisibleSize.width * 0.65);
 	l_pLayerBackground->addChild(m_pLabel);
 
 	//menu
@@ -298,8 +301,7 @@ void LmCredits::initCredits()
 	l_pSpriteBackground->addChild(l_pMenu);
 
 	//stats button parent
-	auto l_pBackButton = MenuItemImage::create("Ludomuse/Content/fin.png",
-			"Ludomuse/Content/finpress.png",
+	auto l_pBackButton =LmMenuItemImage::create("Retour",
 			CC_CALLBACK_1(LmCredits::back, this));
 	l_pBackButton->setPosition(
 			Vec2(l_oVisibleSize.width * 0.9, l_oVisibleSize.height * 0.9));
@@ -383,8 +385,7 @@ void LmStatsView::initStats()
 	l_pSpriteBackground->addChild(l_pMenu);
 
 	//stats button parent
-	auto l_pBackButton = MenuItemImage::create("Ludomuse/Content/fin.png",
-			"Ludomuse/Content/finpress.png",
+	auto l_pBackButton = LmMenuItemImage::create("Retour",
 			CC_CALLBACK_1(LmStatsView::back, this));
 	l_pBackButton->setPosition(
 			Vec2(l_oVisibleSize.width * 0.9, l_oVisibleSize.height * 0.9));

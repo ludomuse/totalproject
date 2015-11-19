@@ -11,26 +11,26 @@
         "Description": "Etape No. 1 : Tigresse (Shanghai) - Un jeux de puzzle collaboratif",
         "InstructionChild": {
           "ColorText": {
-            "R": 255,
-            "G": 255,
-            "B": 255
+            "R": 0,
+            "G": 0,
+            "B": 0
           },
-          "FontSize": 40,
+          "FontSize": 30,
           "WidthPercent": 50,
           "HeightPercent": 90,
-          "SizePercent": 40,
+          "SizePercent": 90,
           "Text": "Explorateur, à toi de jouer, associe les animaux qui se cachent sur les différentes parties de l'objet \"La tigresse\" !"
         },
         "InstructionParent": {
           "ColorText": {
-            "R": 255,
-            "G": 255,
-            "B": 255
+            "R": 0,
+            "G": 0,
+            "B": 0
           },
-          "FontSize": 40,
-          "WidthPercent": 75,
-          "HeightPercent": 30,
-          "SizePercent": 50,
+          "FontSize": 30,
+          "WidthPercent": 66,
+          "HeightPercent": 90,
+          "SizePercent": 66,
           "Text": "Cher collectionneur, nous vous invitons à glisser déplacer les détails d’objets en bronze qui figurent bien sur « La Tigresse » vers l’écran de votre compagnon de jeu."
         },
         "SetPointBeginParent": [
@@ -93,7 +93,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 30,
+              "HeightPercent": 25,
               "SizePercent": 40,
               "Text": " Ni hao, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
             },
@@ -124,9 +124,9 @@
                 "G": 0,
                 "B": 0
               },
-              "FontSize": 28,
+              "FontSize": 25,
               "WidthPercent": 75,
-              "HeightPercent": 32,
+              "HeightPercent": 25,
               "SizePercent": 45,
               "Text": "Vous tombez bien ! J’admirais un très bel objet que j’ai depuis longtemps en boutique et qui servait autrefois à contenir des boissons fermentées. C’est un objet qui représente une tigresse et un petit homme blotti dans ses pattes. Il est en bronze, un métal lourd et très solide ! J’ai un problème il détient une magie qui me dépasse ! Pouvez-vous vous occuper de cet objet magique en trouvant quels animaux se cachent ?"
             },
@@ -159,7 +159,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 85,
+              "HeightPercent": 75,
               "SizePercent": 40,
               "Text": "Cher collectionneur, nous vous invitons à glisser déplacer les détails d’objets en bronze qui figurent bien sur « La Tigresse » vers l’écran de votre compagnon de jeu."
             },
@@ -240,7 +240,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 30,
+              "HeightPercent": 25,
               "SizePercent": 40,
               "Text": " Ni hao, bonjour, je suis marchand. Bienvenue à Shanghai et dans ma boutique!"
             },
@@ -271,9 +271,9 @@
                 "G": 0,
                 "B": 0
               },
-              "FontSize": 28,
+              "FontSize": 25,
               "WidthPercent": 75,
-              "HeightPercent": 32,
+              "HeightPercent": 25,
               "SizePercent": 45,
               "Text": "Vous tombez bien ! J’admirais un très bel objet que j’ai depuis longtemps en boutique et qui servait autrefois à contenir des boissons fermentées. C’est un objet qui représente une tigresse et un petit homme blotti dans ses pattes. Il est en bronze, un métal lourd et très solide ! J’ai un problème il détient une magie qui me dépasse ! Pouvez-vous vous occuper de cet objet magique en trouvant quels animaux se cachent ?"
             },
@@ -306,7 +306,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 85,
+              "HeightPercent": 75,
               "SizePercent": 40,
               "Text": "Explorateur, à toi de jouer, associe les animaux qui se cachent sur les différentes parties de l'objet \"La tigresse\" !"
             },
@@ -373,7 +373,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 30,
+              "HeightPercent": 25,
               "SizePercent": 30,
               "Text": "Pas mal... Une question subsidiaire vous permettra peut-être de me convaincre de vous offrir cet objet."
             },
@@ -406,7 +406,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 35,
+              "HeightPercent": 25,
               "SizePercent": 40,
               "Text": "C’est parti « quel est l’animal le mieux caché sur cette tigresse?\" Attention « on a toujours besoin de plus petit que soi » et je vous laisse peu de temps ! "
             },
@@ -441,7 +441,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 30,
+              "HeightPercent": 25,
               "SizePercent": 40,
               "Text": "Pas mal... Une question subsidiaire vous permettra peut-être de me convaincre de vous offrir cet objet."
             },
@@ -474,7 +474,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 35,
+              "HeightPercent": 25,
               "SizePercent": 40,
               "Text": "C’est parti « quel est l’animal le mieux caché sur cette tigresse?\" Attention « on a toujours besoin de plus petit que soi » et je vous laisse peu de temps ! "
             },
@@ -574,7 +574,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 85,
+              "HeightPercent": 75,
               "SizePercent": 40,
               "Text": "Observez bien la Tigresse, quel est parmis ces animaux celui qui est le mieux caché ?"
             },
@@ -605,7 +605,7 @@
               },
               "FontSize": 40,
               "WidthPercent": 75,
-              "HeightPercent": 85,
+              "HeightPercent": 75,
               "SizePercent": 40,
               "Text": "Regarde bien la Tigresse sur toutes ses facettes et sélectionne l'animal qui est caché !"
             },

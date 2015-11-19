@@ -76,7 +76,7 @@ void LmFindGoodCategoryScene::resetScene()
 				m_aGameComponentImages.begin();
 				it != m_aGameComponentImages.end(); ++it)
 		{
-			(*it)->setAnchorPoint(Vec2(0, 0));
+			(*it)->setAnchorPoint(Vec2(0, 0.5));
 			(*it)->setVisible(true);
 			(*it)->setPosition(
 					Vec2(
@@ -221,7 +221,7 @@ bool LmFindGoodCategoryScene::initGame()
 				m_aGameComponentImages.begin();
 				it != m_aGameComponentImages.end(); ++it)
 		{
-			(*it)->setAnchorPoint(Vec2(0, 0));
+			(*it)->setAnchorPoint(Vec2(0, 0.5));
 			(*it)->setVisible(true);
 			(*it)->setPosition(
 					Vec2(
@@ -687,7 +687,7 @@ void LmFindGoodCategoryScene::replaceSendingAreaElementToHisOriginalPlace()
 
 	//place to his last position
 	auto m_oHoleToFill = holeOfThisImage(m_iBufferId);
-	m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
+	m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0.5));
 	m_pSendingAreaElement->setPosition(
 			Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
 

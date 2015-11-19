@@ -14,6 +14,7 @@
 #include "ui/CocosGUI.h"
 #include "LmUser.h"
 #include "LmJniCppFacade.h"
+#include "LmMenuItemImage.h"
 #include "LmWifiObserver.h"
 
 //Parameters
@@ -92,7 +93,7 @@ private:
 	//menu
 	cocos2d::Menu* m_pMenu;
 	//menuitem image
-	cocos2d::MenuItemImage* m_pReadyButton;
+	LmMenuItemImage* m_pReadyButton;
 	std::map<cocos2d::ui::CheckBox*, cocos2d::Label*> m_aMenuItemUserTabletName;
 	//checkbox
 	cocos2d::ui::CheckBox* m_pCheckBoxParent;
@@ -100,7 +101,7 @@ private:
 	//the window to display the list of device
 	cocos2d::Rect m_oWindowListOfDevice;
 
-	cocos2d::MenuItemImage* m_pRefreshButton;
+	LmMenuItemImage* m_pRefreshButton;
 
 	/*
 	 * BOOLEAN

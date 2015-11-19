@@ -79,7 +79,7 @@ void LmReward::init()
 			l_oVisibleSize.height * m_fHeightPercent);
 	m_pLabekReward->setColor(m_oColorText);
 	m_pLabekReward->setAlignment(TextHAlignment::CENTER);
-	m_pLabekReward->setMaxLineWidth(l_oVisibleSize.width * m_fSizePercent);
+	m_pLabekReward->setMaxLineWidth(l_oVisibleSize.width * (m_fSizePercent-0.1));//-0.1 because we setscaleX of the button to 1.2
 
 }
 

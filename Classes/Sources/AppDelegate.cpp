@@ -151,7 +151,7 @@ void AppDelegate::initPathsForResolution()
 	// Set the design resolution, refer to this link for more information => http://www.cocos2d-x.org/wiki/Detailed_explanation_of_Cocos2d-x_Multi-resolution_adaptation
 	//EXACT_FIT || NO_BORDER || SHOW_ALL
 	l_glview->setDesignResolutionSize(s_DesignResolutionSize.width,
-			s_DesignResolutionSize.height, ResolutionPolicy::NO_BORDER);
+			s_DesignResolutionSize.height, ResolutionPolicy::SHOW_ALL);
 
 	//get the size of the device's screen
 	Size l_frameSize = l_glview->getFrameSize();

@@ -15,9 +15,11 @@
 #include "LmJniCppFacade.h"
 #include "LmWifiObserver.h"
 #include "LmHelpers.h"
+#include "LmMenuItemImage.h"
 
 //use for stats
 #include "LmStatistics.h"
+
 
 typedef std::map<int, LmGameComponent*>::iterator it_type;
 
@@ -215,8 +217,8 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 
 		//introduction gui element
 		//buttons next and previous
-		cocos2d::MenuItemImage* m_pNextButton;
-		cocos2d::MenuItemImage* m_pPreviousButton;
+		LmMenuItemImage* m_pNextButton;
+		LmMenuItemImage* m_pPreviousButton;
 		cocos2d::Menu* m_pMenu;
 		cocos2d::ui::CheckBox* m_pPlayCheckBox;
 
@@ -234,7 +236,7 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 
 		cocos2d::Label* m_pLabelUserName;
 		cocos2d::Label* m_pLabelScore;
-		cocos2d::MenuItemImage* m_pBackDashboardButton;
+		LmMenuItemImage* m_pBackDashboardButton;
 
 		bool m_bBackPressed;
 

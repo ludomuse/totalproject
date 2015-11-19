@@ -166,7 +166,7 @@ private:
 	//to add a star sprite to a label true = red; false = green
 	cocos2d::Sprite* addSpriteToLabel(cocos2d::Label*, std::string);
 
-	//callback method of parent layer
+	//callback method of parent layer (to pop description box)
 	bool onTouchBegan(cocos2d::Touch*, cocos2d::Event*);
 	void onTouchMoved(cocos2d::Touch*, cocos2d::Event*);
 	void onTouchEnded(cocos2d::Touch*, cocos2d::Event*);
