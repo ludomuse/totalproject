@@ -14,7 +14,7 @@
 #include "LmWifiObserver.h"
 #include "LmSettings.h"
 
-static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.5f;
+static const float s_fMagingRatioOfSpriteBackgroundUser2Profile = 0.25f;
 static const float s_fTimeCompareAction = 0.5f;
 static const float s_fMarginBetweenInteraction = 260.0f;
 

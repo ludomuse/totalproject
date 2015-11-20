@@ -282,9 +282,10 @@ bool LmGameManager::initDashboard()
 	//background pink
 	m_pSpriteBackgroundPink = Sprite::create(
 			"Ludomuse/Content/compareNormal.png");
+	m_pSpriteBackgroundPink->setAnchorPoint(Vec2(0.5,1));
 	m_pSpriteBackgroundPink->setPosition(l_oVisibleSize.width * 0.5f,
-			m_pSpriteBackgroundPink->getContentSize().height
-					* (-0.5f + s_fMagingRatioOfSpriteBackgroundUser2Profile));
+			l_oVisibleSize.height
+					* s_fMagingRatioOfSpriteBackgroundUser2Profile);
 	m_pPinkLayer->addChild(m_pSpriteBackgroundPink);
 
 	/*
@@ -358,10 +359,11 @@ bool LmGameManager::initDashboard()
 	//background profil pink
 	m_pSpriteBackgroundPinkProfile = Sprite::create(
 			"Ludomuse/Content/spriteBackgroundUser2Profile.png");
+	m_pSpriteBackgroundPinkProfile->setAnchorPoint(Vec2(0.5,1));
 	m_pSpriteBackgroundPinkProfile->setPosition(
 			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5f,
-			m_pSpriteBackgroundPinkProfile->getContentSize().height
-					* (-0.5f + s_fMagingRatioOfSpriteBackgroundUser2Profile));
+			l_oVisibleSize.height
+					* s_fMagingRatioOfSpriteBackgroundUser2Profile);
 	m_pPinkLayer->addChild(m_pSpriteBackgroundPinkProfile, 1);
 
 	auto l_fHeightSpriteBackgroundUser2 =
@@ -449,7 +451,7 @@ bool LmGameManager::initDashboard()
 	m_pSpriteBandMid->setAnchorPoint(Vec2(0, 0.5));
 	m_pSpriteBandMid->setPosition(
 			Vec2(m_pSpriteBackgroundBlueProfile->getContentSize().width,
-					m_pSpriteBackgroundPink->getContentSize().height
+					l_oVisibleSize.height
 							* s_fMagingRatioOfSpriteBackgroundUser2Profile));
 	m_pPinkLayer->addChild(m_pSpriteBandMid);
 
@@ -486,7 +488,8 @@ bool LmGameManager::initDashboard()
 			CC_CALLBACK_1(LmGameManager::settings, this));
 	m_pSettingsButton->setAnchorPoint(Vec2(1, 1));
 	m_pSettingsButton->setPosition(
-			Vec2(m_pSpriteBandMid->getContentSize().width, l_oVisibleSize.height));
+			Vec2(m_pSpriteBandMid->getContentSize().width,
+					l_oVisibleSize.height));
 	l_pMenu->addChild(m_pSettingsButton);
 
 	auto l_pStaticMenu = Menu::create();
@@ -693,14 +696,13 @@ void LmGameManager::initDashboardInteraction()
 	m_pDescriptionLabel = Label::createWithTTF("Description",
 			"Fonts/JosefinSans-Regular.ttf", l_oVisibleSize.width * 0.03);
 	m_pDescriptionBox->addChild(m_pDescriptionLabel);
-	m_pDescriptionLabel->setAnchorPoint(Vec2(0.5,1));
+	m_pDescriptionLabel->setAnchorPoint(Vec2(0.5, 1));
 	m_pDescriptionLabel->setPosition(
 			Vec2(m_pDescriptionBox->getContentSize().width * 0.5,
 					m_pDescriptionBox->getContentSize().height * 0.95));
 	m_pDescriptionLabel->setMaxLineWidth(
 			m_pDescriptionBox->getContentSize().width * 0.9);
 	m_pDescriptionLabel->setAlignment(TextHAlignment::CENTER);
-
 
 	m_pDescriptionBox->setVisible(false);
 
@@ -788,12 +790,14 @@ void LmGameManager::compare(Ref* p_Sender)
 
 		m_pListener->setEnabled(false);
 
+		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+
 		auto l_oCompareAction =
 				MoveBy::create(s_fTimeCompareAction,
-						Vect(0,
-								(m_pSpriteBackgroundPink->getContentSize().height)
-										* 0.5f
-										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
+						Vec2(0,
+								l_oVisibleSize.height
+										* (0.5
+												- s_fMagingRatioOfSpriteBackgroundUser2Profile)));
 		auto l_oCompareActionIsDone = CallFunc::create(
 				std::bind(&LmGameManager::compareDone, this));
 		m_pPinkLayer->runAction(
@@ -827,12 +831,12 @@ void LmGameManager::back(Ref* p_Sender)
 		FILENAME_BUTTON_CLICKED);
 
 		m_bActionIsDone = false;
-		auto l_oBackAction =
-				MoveBy::create(s_fTimeCompareAction,
-						Vect(0,
-								-(m_pSpriteBackgroundPink->getContentSize().height)
-										* 0.5f
-										- s_fMagingRatioOfSpriteBackgroundUser2Profile));
+
+		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
+
+
+		auto l_oBackAction =MoveBy::create(s_fTimeCompareAction,
+				Vec2(0,-l_oVisibleSize.height*(0.5-s_fMagingRatioOfSpriteBackgroundUser2Profile)));
 		auto l_oBackActionIsDone = CallFunc::create(
 				std::bind(&LmGameManager::backDone, this));
 		m_pPinkLayer->runAction(
@@ -1111,7 +1115,6 @@ void LmGameManager::onGameFinishedEvent(bytes l_oMsg)
 
 	//update score
 	updateUser2();
-
 
 }
 
