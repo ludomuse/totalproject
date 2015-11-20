@@ -21,6 +21,8 @@ LmReward::LmReward(const LmRewardSeed& l_oSeed)
 	m_fWidthPercent = l_oSeed.WidthPercent;
 	m_fHeightPercent = l_oSeed.HeightPercent;
 	m_fSizePercent = l_oSeed.SizePercent;
+	m_fSpriteRewardHeightPercent=l_oSeed.SpriteRewardHeightPercent;
+	m_fSpriteRewardWidthPercent=l_oSeed.SpriteRewardWidthPercent;
 
 	//pointer
 	m_pSpriteReward = nullptr;
@@ -40,6 +42,8 @@ LmReward::LmReward(LmReward* reward)
 	m_fWidthPercent = reward->getFWidthPercent();
 	m_fHeightPercent = reward->getFHeightPercent();
 	m_fSizePercent = reward->getFSizePercent();
+	m_fSpriteRewardHeightPercent = reward->getFSpriteRewardHeightPercent();
+	m_fSpriteRewardWidthPercent = reward->getFSpriteRewardWidthPercent();
 
 	init();
 }
@@ -64,6 +68,7 @@ void LmReward::init()
 		CCLOG("init sprite reward");
 		m_pSpriteReward = Sprite::create(m_sFilenameSpriteReward);
 		m_pSpriteReward->setAnchorPoint(Vec2(0.5, 0.5));
+
 	}
 
 	//we preload the sound
@@ -81,10 +86,6 @@ void LmReward::init()
 	m_pLabekReward->setAlignment(TextHAlignment::CENTER);
 	m_pLabekReward->setMaxLineWidth(l_oVisibleSize.width * (m_fSizePercent-0.1));//-0.1 because we setscaleX of the button to 1.2
 
-}
 
-void LmReward::playRewardSound()
-{
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
-			m_sFilenameSound.c_str(), false);
+
 }

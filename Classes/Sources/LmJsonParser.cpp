@@ -216,6 +216,16 @@ LmReward* LmJsonParser::makeLmReward(const rapidjson::Value& l_oReward)
 	l_sBufferString = l_oReward["FilenameSpriteReward"].GetString();
 	l_oSeedBuffer.FilenameSpriteReward = l_sBufferString.c_str();
 
+	assert(l_oReward.HasMember("SpriteRewardWidthPercent"));
+	assert(l_oReward["SpriteRewardWidthPercent"].IsInt());
+	l_oSeedBuffer.SpriteRewardWidthPercent =
+			(float) l_oReward["SpriteRewardWidthPercent"].GetInt() * 0.01;
+
+	assert(l_oReward.HasMember("SpriteRewardHeightPercent"));
+	assert(l_oReward["SpriteRewardHeightPercent"].IsInt());
+	l_oSeedBuffer.SpriteRewardHeightPercent =
+			(float) l_oReward["SpriteRewardHeightPercent"].GetInt() * 0.01;
+
 	assert(l_oReward["RewardScore"].IsInt());
 	assert(l_oReward.HasMember("RewardScore"));
 	l_oSeedBuffer.RewardScore = l_oReward["RewardScore"].GetInt();
@@ -265,8 +275,6 @@ LmReward* LmJsonParser::makeLmReward(const rapidjson::Value& l_oReward)
 	assert(l_oReward["Label"].HasMember("Text"));
 	assert(l_oReward["Label"]["Text"].IsString());
 	l_sBufferString = l_oReward["Label"]["Text"].GetString();
-	//to indicate to touch screen
-	l_sBufferString.append("\n\n(Touchez pour continuer)");
 	l_oSeedBuffer.Text = l_sBufferString.c_str();
 
 	return new LmReward(l_oSeedBuffer);

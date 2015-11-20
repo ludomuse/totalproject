@@ -159,7 +159,7 @@ bool LmQuizz_v1Scene::initGame()
 
 	//init timer
 	m_pTimer = LoadingBar::create();
-	m_pTimer->loadTexture("Ludomuse/Content/timer.png");
+	m_pTimer->loadTexture("Ludomuse/Content/sliderred.png");
 	m_pTimer->setPercent(0);
 	m_pTimer->setPosition(
 			Point(l_oVisibleSize.width * 0.5f + l_oOrigin.x,

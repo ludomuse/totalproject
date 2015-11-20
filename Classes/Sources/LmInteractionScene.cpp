@@ -92,7 +92,7 @@ LmInteractionScene::~LmInteractionScene()
 	}
 
 	//we retained it because it w&as create into lmjsonparser class
-	if(m_pInstruction)
+	if (m_pInstruction)
 	{
 		m_pInstruction->release();
 	}
@@ -212,7 +212,7 @@ bool LmInteractionScene::startGame()
 		m_pUser->getPLmStatistics()->interactionGameBegin();
 
 		//set visible instruction
-		if(m_pInstruction)
+		if (m_pInstruction)
 		{
 			m_pInstruction->setVisible(true);
 		}
@@ -632,7 +632,7 @@ void LmInteractionScene::win(bool win)
 	//depend of m_bwin
 	initFinishButtonTexture();
 
-	if(m_pInstruction)
+	if (m_pInstruction)
 	{
 		m_pInstruction->setVisible(false);
 	}
@@ -684,18 +684,34 @@ void LmInteractionScene::initFinishButtonTexture()
 		//if there is a sprite reward
 		if (m_pLmReward->getPSpriteReward())
 		{
-			//add the sprite to the button
+
+			CCLOG("on place la sprite de la reward %f width,%f height",
+					m_pLmReward->getFSpriteRewardWidthPercent(),
+					m_pLmReward->getFSpriteRewardHeightPercent());
+
 			m_pLmReward->getPSpriteReward()->setPosition(
-					Vec2(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
-							l_oVisibleSize.height * 0.65 + l_oOrigin.y));
+					Vec2(
+							l_oVisibleSize.width
+									* m_pLmReward->getFSpriteRewardWidthPercent(),
+							l_oVisibleSize.height
+									* m_pLmReward->getFSpriteRewardHeightPercent()));
 
 			m_pFinishGameButton->addChild(m_pLmReward->getPSpriteReward());
 		}
 
 		m_pFinishGameButton->addChild(m_pLmReward->getPLabekReward());
 
-		m_pLmReward->playRewardSound();
+		auto l_pLabelInstruction = Label::createWithTTF(
+				"(Touchez pour continuez)", "Fonts/JosefinSans-Italic.ttf",
+				l_oVisibleSize.width * 0.04);
+		l_pLabelInstruction->setAnchorPoint(Vec2(0.5, 0));
+		l_pLabelInstruction->setPosition(l_oVisibleSize.width * 0.5, 0);
+		l_pLabelInstruction->setColor(m_pLmReward->getOColorText());
+		l_pLabelInstruction->setAlignment(TextHAlignment::CENTER);
+		m_pFinishGameButton->addChild(l_pLabelInstruction);
 
+		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
+				m_pLmReward->getSFilenameSound().c_str(), false);
 	}
 }
 

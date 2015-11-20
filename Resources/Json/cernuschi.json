@@ -341,7 +341,7 @@
             "Text": " Mais vous avez déjà décodé des secrets de la Tigresse! Pour affronter la suite de votre voyage je donne cette amulette en forme de tigre à l'explorateur. Ce tigre pourra vous protéger pour la suite des aventures."
           },
           "FilenameSpriteBackground": "Game/Background/backgroundCernuschi.png",
-          "FilenameSpriteReward": "",
+          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 65,"FilenameSpriteReward": "",
           "FilenameSound": "",
           "RewardScore": 50
         },
@@ -359,7 +359,7 @@
             "Text": " Mais vous avez déjà décodé des secrets de la Tigresse! Pour affronter la suite de votre voyage je vous donne cette amulette en forme de tigre. Ce tigre pourra vous protéger pour la suite des aventures."
           },
           "FilenameSpriteBackground": "Game/Background/backgroundCernuschi.png",
-          "FilenameSpriteReward": "Game/Content/tiger.png",
+          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 65,"FilenameSpriteReward": "Game/Content/tiger.png",
           "FilenameSound": "Audio/Game/cernuschi4.mp3",
           "RewardScore": 50
         },
@@ -640,7 +640,7 @@
             "Text": " Bravo vous m’impressionnez ! Je me fais un plaisir de vous offrir La Tigresse"
           },
           "FilenameSpriteBackground": "Game/Background/backgroundCernuschi.png",
-          "FilenameSpriteReward": "Game/Content/statueTigresse.png",
+          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 65,"FilenameSpriteReward": "Game/Content/statueTigresse.png",
           "FilenameSound": "",
           "RewardScore": 50
         },
@@ -658,7 +658,7 @@
             "Text": " Bravo vous m’impressionnez ! Je me fais un plaisir de vous offrir La Tigresse"
           },
           "FilenameSpriteBackground": "Game/Background/backgroundCernuschi.png",
-          "FilenameSpriteReward": "Game/Content/statueTigresse.png",
+          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 65,"FilenameSpriteReward": "Game/Content/statueTigresse.png",
           "FilenameSound": "Audio/Game/cernuschi2.mp3",
           "RewardScore": 50
         },

@@ -15,115 +15,126 @@
 
 struct LmRewardSeed
 {
-	std::string FilenameSpriteBackground;
-	std::string FilenameSpriteReward;
-	int RewardScore;
-	std::string FilenameSound;
-	std::string Text;
-	cocos2d::Color3B ColorText;
-	float FontSize;
-	float WidthPercent;
-	float HeightPercent;
-	float SizePercent;
+		std::string FilenameSpriteBackground;
+		std::string FilenameSpriteReward;
+		int RewardScore;
+		std::string FilenameSound;
+		std::string Text;
+		cocos2d::Color3B ColorText;
+		float FontSize;
+		float WidthPercent;
+		float HeightPercent;
+		float SizePercent;
+		float SpriteRewardWidthPercent;
+		float SpriteRewardHeightPercent;
 };
 
 class LmReward
 {
-public:
+	public:
 
-	LmReward();
-	LmReward(const LmRewardSeed&);
-	LmReward(LmReward*);
-	~LmReward();
+		LmReward();
+		LmReward(const LmRewardSeed&);
+		LmReward(LmReward*);
+		~LmReward();
 
-	int getIRewardScore() const
-	{
-		return m_iRewardScore;
-	}
+		int getIRewardScore() const
+		{
+			return m_iRewardScore;
+		}
 
-	const std::string& getSFilenameSpriteBackground() const
-	{
-		return m_sFilenameSpriteBackground;
-	}
+		const std::string& getSFilenameSpriteBackground() const
+		{
+			return m_sFilenameSpriteBackground;
+		}
 
-	cocos2d::Sprite* getPSpriteReward() const
-	{
-		return m_pSpriteReward;
-	}
+		cocos2d::Sprite* getPSpriteReward() const
+		{
+			return m_pSpriteReward;
+		}
 
-	void init();
+		void init();
 
-	//play the reward sound
-	void playRewardSound();
+		const std::string& getSFilenameSound() const
+		{
+			return m_sFilenameSound;
+		}
 
-	const std::string& getSFilenameSound() const
-	{
-		return m_sFilenameSound;
-	}
+		const std::string& getSFilenameSpriteReward() const
+		{
+			return m_sFilenameSpriteReward;
+		}
 
-	const std::string& getSFilenameSpriteReward() const
-	{
-		return m_sFilenameSpriteReward;
-	}
+		float getFFontSize() const
+		{
+			return m_fFontSize;
+		}
 
-	float getFFontSize() const
-	{
-		return m_fFontSize;
-	}
+		float getFHeightPercent() const
+		{
+			return m_fHeightPercent;
+		}
 
-	float getFHeightPercent() const
-	{
-		return m_fHeightPercent;
-	}
+		float getFSizePercent() const
+		{
+			return m_fSizePercent;
+		}
 
-	float getFSizePercent() const
-	{
-		return m_fSizePercent;
-	}
+		float getFWidthPercent() const
+		{
+			return m_fWidthPercent;
+		}
 
-	float getFWidthPercent() const
-	{
-		return m_fWidthPercent;
-	}
+		cocos2d::Color3B getOColorText() const
+		{
+			return m_oColorText;
+		}
 
-	cocos2d::Color3B getOColorText() const
-	{
-		return m_oColorText;
-	}
+		cocos2d::Label* getPLabekReward() const
+		{
+			return m_pLabekReward;
+		}
 
-	cocos2d::Label* getPLabekReward() const
-	{
-		return m_pLabekReward;
-	}
+		const std::string& getSText() const
+		{
+			return m_sText;
+		}
 
-	const std::string& getSText() const
-	{
-		return m_sText;
-	}
+		float getFSpriteRewardHeightPercent() const
+		{
+			return m_fSpriteRewardHeightPercent;
+		}
 
-private:
+		float getFSpriteRewardWidthPercent() const
+		{
+			return m_fSpriteRewardWidthPercent;
+		}
 
-	//ATTRIBUTES
+	private:
 
-	//get from json
-	std::string m_sFilenameSpriteBackground;
-	std::string m_sFilenameSpriteReward;
-	int m_iRewardScore;
-	std::string m_sFilenameSound;
-	std::string m_sText;
-	cocos2d::Color3B m_oColorText;
-	float m_fFontSize;
-	float m_fWidthPercent;
-	float m_fHeightPercent;
-	float m_fSizePercent;
+		//ATTRIBUTES
 
-	//sprite to add to the button
-	cocos2d::Sprite* m_pSpriteReward;
+		//get from json
+		std::string m_sFilenameSpriteBackground;
+		std::string m_sFilenameSpriteReward;
+		int m_iRewardScore;
+		std::string m_sFilenameSound;
+		std::string m_sText;
+		cocos2d::Color3B m_oColorText;
+		float m_fFontSize;
+		float m_fWidthPercent;
+		float m_fHeightPercent;
+		float m_fSizePercent;
+		float m_fSpriteRewardWidthPercent;
+		float m_fSpriteRewardHeightPercent;
 
-	//label
-	cocos2d::Label* m_pLabekReward;
+		//sprite to add to the button
+		cocos2d::Sprite* m_pSpriteReward;
 
-	//METHODS
+		//label
+		cocos2d::Label* m_pLabekReward;
+
+		//METHODS
 
 };
 

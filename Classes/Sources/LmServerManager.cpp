@@ -21,7 +21,7 @@ bool LmServerManager::init()
 
 	//filename json have to be write here for now
 
-	if (m_pLmJsonparser->init("Json/cernuschi.json"))
+	if (m_pLmJsonparser->init("Json/lu.json"))
 
 	{
 		l_bInit = true;

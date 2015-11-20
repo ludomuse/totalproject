@@ -484,9 +484,9 @@ bool LmGameManager::initDashboard()
 	m_pSettingsButton = MenuItemImage::create("Ludomuse/Content/settings.png",
 			"Ludomuse/Content/settingspress.png",
 			CC_CALLBACK_1(LmGameManager::settings, this));
-	m_pSettingsButton->setAnchorPoint(Vec2(1, 0));
+	m_pSettingsButton->setAnchorPoint(Vec2(1, 1));
 	m_pSettingsButton->setPosition(
-			Vec2(m_pSpriteBandMid->getContentSize().width, 0));
+			Vec2(m_pSpriteBandMid->getContentSize().width, l_oVisibleSize.height));
 	l_pMenu->addChild(m_pSettingsButton);
 
 	auto l_pStaticMenu = Menu::create();
@@ -699,6 +699,8 @@ void LmGameManager::initDashboardInteraction()
 					m_pDescriptionBox->getContentSize().height * 0.95));
 	m_pDescriptionLabel->setMaxLineWidth(
 			m_pDescriptionBox->getContentSize().width * 0.9);
+	m_pDescriptionLabel->setAlignment(TextHAlignment::CENTER);
+
 
 	m_pDescriptionBox->setVisible(false);
 

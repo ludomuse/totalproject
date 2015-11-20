@@ -202,7 +202,7 @@ bool LmMenu::logScreen()
 	m_pLogLayer->addChild(m_pLogEditBox, 1);
 
 	//test
-	m_pLogEditBox->setText("UserName");
+	//m_pLogEditBox->setText("UserName");
 
 	return true;
 }
