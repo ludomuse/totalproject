@@ -629,7 +629,14 @@ void LmInteractionScene::win(bool win)
 
 	m_bWin = win;
 
-	//depend of m_bwin
+	//send msg to inform other usert that he wins or not
+	bytes msg(10);
+	msg << LmEvent::GameFinished;
+	msg.write(m_iIdGame);
+	msg.write(m_bWin);
+	WIFIFACADE->sendBytes(msg);
+
+	//depend of m_bwin TODO try to launch it into cocos thread
 	initFinishButtonTexture();
 
 	if (m_pInstruction)
@@ -642,12 +649,6 @@ void LmInteractionScene::win(bool win)
 	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
 			"GameFinished");
 
-	//send msg to inform other usert that he wins or not
-	bytes msg(10);
-	msg << LmEvent::GameFinished;
-	msg.write(m_iIdGame);
-	msg.write(m_bWin);
-	WIFIFACADE->sendBytes(msg);
 }
 
 void LmInteractionScene::initFinishButtonTexture()
@@ -759,6 +760,8 @@ void LmInteractionScene::endGame()
 		}
 
 		checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
+
+		backToDashboard(nullptr);
 
 	}
 }

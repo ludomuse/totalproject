@@ -58,6 +58,7 @@ LmGameManager::LmGameManager()
 	m_pCheckSpriteUser1 = nullptr;
 	m_pCheckSpriteUser2 = nullptr;
 	m_pSettingsButton = nullptr;
+	m_pLmSettings=nullptr;
 }
 
 LmGameManager::~LmGameManager()

@@ -319,6 +319,9 @@ void LmJsonParser::initInteractionSceneOfTheGame()
 			case LmTakePictureScene::s_iId:
 				makeLmTakePictureScene(l_aSceneArray[i]);
 				break;
+			case LmDrawScene::s_iId:
+				makeLmDrawScene(l_aSceneArray[i]);
+				break;
 			default:
 				break;
 		}
@@ -986,3 +989,24 @@ void LmJsonParser::makeLmTakePictureScene(const rapidjson::Value& l_oScene)
 					m_aInteractionSceneOfTheGame.size() - 1));
 }
 
+void LmJsonParser::makeLmDrawScene(const rapidjson::Value& l_oScene)
+{
+	//buffer seed
+	LmDrawSceneSeed l_SeedBuffer;
+
+	//use to deep copy string
+	std::string l_sBufferString;
+
+	assert(l_oScene["FilenameSpriteBackground"].IsString());
+	assert(l_oScene.HasMember("FilenameSpriteBackground"));
+	l_sBufferString = l_oScene["FilenameSpriteBackground"].GetString();
+	l_SeedBuffer.FilenameSpriteBackground = l_sBufferString.c_str();
+
+	m_aInteractionSceneOfTheGame.push_back(
+			new LmDrawScene(l_SeedBuffer));
+
+	initInteractionAttributes(l_oScene,
+			m_aInteractionSceneOfTheGame.at(
+					m_aInteractionSceneOfTheGame.size() - 1));
+
+}

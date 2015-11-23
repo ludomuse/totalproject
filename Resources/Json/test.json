@@ -1,36 +1,36 @@
 {
   "Ludomuse": {
     "Configuration": {
-      "IdGame": 999,
-      "Title": "Test",
+      "IdGame": 3,
+      "Title": "Jeu de Bastien",
       "FilenameSpriteSplashScreen": "Game/Background/splashScreenLu.png"
     },
     "SceneArray": [
       {
-        "Id": 5,
-        "Description": "Un jeu ou on peut prendre des photos",
+        "Id": 6,
+        "Description": "Défi 4 : Dessine des trucs",
         "SetPointBeginParent": [
           {
             "Label": {
               "ColorText": {
-                "R": 255,
+                "R": 0,
                 "G": 255,
                 "B": 255
               },
-              "FontSize": 70,
-              "WidthPercent": 80,
-              "HeightPercent": 75,
-              "SizePercent": 40,
-              "Text": "Bienvenue !"
+              "FontSize": 25,
+              "WidthPercent": 85,
+              "HeightPercent": 50,
+              "SizePercent": 10,
+              "Text": "Dessine des trucs c'est bon pour la santé"
             },
             "Images": [
               {
-                "imgURL": "Game/Background/backgroundFactory.png",
+                "imgURL": "Game/Background/background1LU.png",
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso4.png",
-                "anchorPoint": 3
+                "imgURL": "Game/Content/seller.png",
+                "anchorPoint": 4
               }
             ],
             "SoundURL": ""
@@ -44,25 +44,65 @@
                 "G": 255,
                 "B": 255
               },
-              "FontSize": 70,
-              "WidthPercent": 80,
-              "HeightPercent": 75,
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Bienvenue !"
+              "Text": "A l'aide des indices qui apparaissent sur ton écran, donne oralement des indications à ton ouvrier pour qu'il place au bon endroit les noms des différents ateliers."
             },
             "Images": [
               {
-                "imgURL": "Game/Background/backgroundFactory.png",
+                "imgURL": "Game/Background/background1LU.png",
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/perso4.png",
+                "imgURL": "Game/Content/perso3.png",
                 "anchorPoint": 3
               }
             ],
-            "SoundURL": ""
+            "SoundURL": "Audio/Game/nantes6.mp3"
           }
         ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 50,
+          "FilenameSpriteReward": "Game/Content/sugar.png",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 50,
+          "FilenameSpriteReward": "Game/Content/sugar.png",
+          "FilenameSound": "Audio/Game/nantes7.mp3",
+          "RewardScore": 50
+        },
         "SetPointEndParent": [
           {
             "Label": {
@@ -75,7 +115,7 @@
               "WidthPercent": 30,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+              "Text": "Bravo, tu dois maintenant te rendre en salle 24."
             },
             "Images": [
               {
@@ -102,7 +142,7 @@
               "WidthPercent": 30,
               "HeightPercent": 50,
               "SizePercent": 40,
-              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+              "Text": "Bravo, tu dois maintenant te rendre en salle 24."
             },
             "Images": [
               {
@@ -117,7 +157,7 @@
             "SoundURL": ""
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/alley.png"
+        "FilenameSpriteBackground": "Game/Background/background4LU.png"
       }
     ]
   }

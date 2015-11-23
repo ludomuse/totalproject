@@ -28,6 +28,7 @@
 #include "LmHintScene.h"
 #include "LmQuizz_v2Scene.h"
 #include "LmTakePictureScene.h"
+#include "LmDrawScene.h"
 
 class LmJsonParser
 {
@@ -119,7 +120,7 @@ class LmJsonParser
 		void makeLmHintScene(const rapidjson::Value&);
 		void makeLmQuizz_v2Scene(const rapidjson::Value&);
 		void makeLmTakePictureScene(const rapidjson::Value&);
-
+		void makeLmDrawScene(const rapidjson::Value&);
 };
 
 #endif /* CLASSES_LMJSONPARSER_H_ */
