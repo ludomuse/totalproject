@@ -30,6 +30,11 @@ class LmServerManager
 			return m_pLmJsonparser->getGameId();
 		}
 
+		LmJsonParser* getPLmJsonparser() const
+		{
+			return m_pLmJsonparser;
+		}
+
 	private:
 
 		//JsonParser to read our Json File & to instanciate InteractionScene

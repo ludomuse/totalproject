@@ -16,6 +16,8 @@ LmRightSpotScene::LmRightSpotScene(const LmRightSpotSceneSeed &l_Seed) :
 
 	//json parameters we need to make deep copy
 	m_sFilenameSpriteBackground = l_Seed.FilenameSpriteBackground;
+	m_sFilenameSpriteFail = l_Seed.FilenameSpriteFail;
+	m_sFilenameAudioWellPlaced = l_Seed.FilenameAudioWellPlaced;
 	m_sFilenameSpriteSendingArea = l_Seed.FilenameSpriteSendingArea;
 	m_sFilenameMainImage = l_Seed.FilenameMainImage;
 	m_iHoleOnX = l_Seed.HoleOnX;
@@ -163,22 +165,25 @@ void LmRightSpotScene::runGame()
 		CCLOG("initGame failed");
 	}
 
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(
+			m_sFilenameAudioWellPlaced.c_str());
+
 }
 
 bool LmRightSpotScene::initGame()
 {
-	//use to place elements
+//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 	Size l_oWinSize = Director::getInstance()->getWinSize();
 
-	//init the background
+//init the background
 	m_pSpriteBackground = Sprite::create(m_sFilenameSpriteBackground);
 	m_pSpriteBackground->setPosition(l_oVisibleSize.width * 0.5f + l_oOrigin.x,
 			l_oVisibleSize.height * 0.5f + l_oOrigin.y);
 	m_pLayerGame->addChild(m_pSpriteBackground);
 
-	//init Sending Area
+//init Sending Area
 	m_pSendingArea = makeGameComponent();
 	m_pSendingArea->initSpriteComponent(m_sFilenameSpriteSendingArea);
 	m_pSendingArea->setPosition(
@@ -188,11 +193,19 @@ bool LmRightSpotScene::initGame()
 							+ l_oOrigin.x, l_oVisibleSize.height * 0.5));
 	m_pSendingArea->addTo(m_pLayerGame);
 
-	//init buffer sprite
+//fail sprite
+	CCLOG("fail sprite init");
+	m_pSpriteFail = Sprite::create(m_sFilenameAudioWellPlaced);
+	m_pSpriteFail->setPosition(
+			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
+	m_pSpriteFail->setVisible(false);
+	m_pLayerGame->addChild(m_pSpriteFail, 1);
+
+//init buffer sprite
 	m_pBufferSprite = Sprite::create();
 	m_pLayerGame->addChild(m_pBufferSprite, 1);
 
-	//init some usefull variable
+//init some usefull variable
 	Point l_oMiddleOfPlayableArea = Point(
 			l_oOrigin.x
 					+ (l_oVisibleSize.width
@@ -204,7 +217,7 @@ bool LmRightSpotScene::initGame()
 							- m_pSendingArea->getContentSize().width),
 			l_oVisibleSize.height);
 
-	//we get dimension of the image
+//we get dimension of the image
 	auto l_oSpriteRightImgSpot = Sprite::create(m_sFilenameMainImage);
 	float l_fWidthRightImage = l_oSpriteRightImgSpot->getContentSize().width;
 	float l_fHeightRightImage = l_oSpriteRightImgSpot->getContentSize().height;
@@ -213,7 +226,7 @@ bool LmRightSpotScene::initGame()
 
 	Rect l_oRectStencil;
 
-	//init vector of the right image
+//init vector of the right image
 	Point l_oPointToPlaceRightImage = Point(
 			l_oMiddleOfPlayableArea.x - l_fWidthRightImage * 0.5,
 			l_oMiddleOfPlayableArea.y - l_fHeightRightImage * 0.5);
@@ -238,8 +251,7 @@ bool LmRightSpotScene::initGame()
 
 			//check if this piece is a hole
 			std::vector<std::pair<int, int>>::iterator it;
-			std::pair<int, int> l_PairBuffer =
-			{ i, j };
+			std::pair<int, int> l_PairBuffer = { i, j };
 			it = std::find(m_aLocationOfHole.begin(), m_aLocationOfHole.end(),
 					l_PairBuffer);
 			//yes
@@ -276,10 +288,10 @@ bool LmRightSpotScene::initGame()
 		}
 	}
 
-	//so we know how many hole to fill
+//so we know how many hole to fill
 	m_iNumberOfHole = m_aHolesImageChild.size();
 
-	//we check what type of user is playing to display good stuff
+//we check what type of user is playing to display good stuff
 	if (m_pUser->isBParent())
 	{
 		//parent view
@@ -385,7 +397,7 @@ bool LmRightSpotScene::initGame()
 
 bool LmRightSpotScene::onTouchBeganParent(Touch* touch, Event* event)
 {
-	//to avoid to bein a touch when the previous is not finish
+//to avoid to bein a touch when the previous is not finish
 	if (m_bTouchBeganDisabled)
 	{
 		return false;
@@ -395,9 +407,14 @@ bool LmRightSpotScene::onTouchBeganParent(Touch* touch, Event* event)
 		m_bTouchBeganDisabled = true;
 	}
 
+	if (m_pSpriteFail->isVisible())
+	{
+		m_pSpriteFail->setVisible(false);
+	}
+
 	m_iBufferId = idDynamicLmGameComponent(touch);
 
-	//if something is touched
+//if something is touched
 	if (m_iBufferId >= 0)
 	{
 		//check if its the sending area element
@@ -494,7 +511,7 @@ void LmRightSpotScene::onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*)
 
 bool LmRightSpotScene::onTouchBeganChild(Touch* touch, Event* event)
 {
-	//to avoid to bein a touch when the previous is not finish
+//to avoid to bein a touch when the previous is not finish
 	if (m_bTouchBeganDisabled)
 	{
 		return false;
@@ -504,9 +521,14 @@ bool LmRightSpotScene::onTouchBeganChild(Touch* touch, Event* event)
 		m_bTouchBeganDisabled = true;
 	}
 
+	if (m_pSpriteFail->isVisible())
+	{
+		m_pSpriteFail->setVisible(false);
+	}
+
 	m_iBufferId = idLmGameComponentTouchedInSendingArea(touch);
 
-	//if something is touched
+//if something is touched
 	if (m_iBufferId >= 0)
 	{
 		//init buffer gamecomponent set buffer sprite with his attributes and go invisible
@@ -565,6 +587,9 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 			if (imageWellPlaced(m_iHoleTouchedIndex, m_iBufferId))
 			{
 
+				CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+						m_sFilenameAudioWellPlaced.c_str(), false);
+
 				//we change position of this gameobject to that hole
 				m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
 				m_pSendingAreaElement->setPosition(
@@ -596,6 +621,9 @@ void LmRightSpotScene::onTouchEndedChild(Touch* touch, Event* event)
 			}
 			else
 			{
+
+				//make appear the fail sprite
+				m_pSpriteFail->setVisible(true);
 
 				//send back to the void
 				bytes msg(20);
@@ -685,7 +713,7 @@ bool LmRightSpotScene::bufferCollideSendingArea()
 
 void LmRightSpotScene::setPositionInSendingArea(int id)
 {
-	//use to place elements
+//use to place elements
 	Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 	Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
@@ -706,9 +734,9 @@ void LmRightSpotScene::moveBufferSprite(Touch* touch)
 
 void LmRightSpotScene::initBufferSprite(int l_iIdGameComponent)
 {
-	//the sprite is selected
+//the sprite is selected
 	m_bSpriteSelected = true;
-	//the gamecomponent selected is copy in the buffer
+//the gamecomponent selected is copy in the buffer
 
 	m_pBufferSprite->setSpriteFrame(
 			m_aIdTable.find(l_iIdGameComponent)->second->getPSpriteComponent()->getSpriteFrame());
@@ -728,11 +756,11 @@ bool LmRightSpotScene::imageWellPlaced(int l_iIndexHole,
 
 void LmRightSpotScene::layerChildReceive(int l_iIdLmGameComponent)
 {
-	//we get the gamecomponent with id
+//we get the gamecomponent with id
 	auto l_pGameComponentReceived =
 			m_aIdTable.find(l_iIdLmGameComponent)->second;
 
-	//put it approximatly in the sending area(
+//put it approximatly in the sending area(
 	setPositionInSendingArea(l_iIdLmGameComponent);
 	m_pSendingAreaElement = l_pGameComponentReceived;
 	l_pGameComponentReceived->setVisible(true);
@@ -755,35 +783,37 @@ Rect LmRightSpotScene::holeOfThisDynamicElement(int l_iIdGamecomponent)
 
 void LmRightSpotScene::replaceSendingAreaElementToHisOriginalPlace()
 {
-	//place to his last position
+//place to his last position
 	auto m_oHoleToFill = holeOfThisDynamicElement(m_iBufferId);
 	m_pSendingAreaElement->setAnchorPoint(Vec2(0, 0));
 	m_pSendingAreaElement->setPosition(
 			Vec2(m_oHoleToFill.origin.x, m_oHoleToFill.origin.y));
 
-	//remove the element of the sending area
+//remove the element of the sending area
 	m_pSendingAreaElement = nullptr;
 }
 
 void LmRightSpotScene::onReceivingMsg(bytes l_oMsg)
 {
 
+	LmInteractionScene::onReceivingMsg(l_oMsg);
+
 	CCLOG("lmrightsportscene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{
-	case LmEvent::Gamecomponent:
-		CCLOG("Gamecomponent");
-		ON_CC_THREAD(LmRightSpotScene::onGamecomponentEvent, this, l_oMsg)
-		;
-		break;
-	case LmEvent::GamecomponentWellPlaced:
-		CCLOG("GamecomponentWellPlaced");
-		ON_CC_THREAD(LmRightSpotScene::onGamecomponentWellPlacedEvent, this,
-				l_oMsg)
-		;
-		break;
-	default:
-		break;
+		case LmEvent::Gamecomponent:
+			CCLOG("Gamecomponent");
+			ON_CC_THREAD(LmRightSpotScene::onGamecomponentEvent, this, l_oMsg)
+			;
+			break;
+		case LmEvent::GamecomponentWellPlaced:
+			CCLOG("GamecomponentWellPlaced");
+			ON_CC_THREAD(LmRightSpotScene::onGamecomponentWellPlacedEvent, this,
+					l_oMsg)
+			;
+			break;
+		default:
+			break;
 	}
 
 }
@@ -826,6 +856,8 @@ void LmRightSpotScene::onGamecomponentWellPlacedEvent(bytes l_oMsg)
 	{
 		//replace this element in the list
 		replaceSendingAreaElementToHisOriginalPlace();
+
+		m_pSpriteFail->setVisible(true);
 	}
 
 	m_bTouchBeganDisabled = false;

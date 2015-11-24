@@ -130,6 +130,9 @@ private:
 	//bool to sync when compare button is pushed
 	bool m_bActionIsDone;
 
+	//when there is a sync
+	bool m_bSync;
+
 	//METHODS
 
 	//call server manager and init m_vectorSceneOfTheGame
@@ -178,6 +181,7 @@ private:
 	void updateSpriteToLabel(cocos2d::Sprite*, cocos2d::Label*);
 
 	//list of callback event
+	void onReadyForNextGameEvent(bytes);
 	void onReadyForNextInteractionEvent(bytes);
 	void onInteractionDoneEvent(bytes);
 	void onGameFinishedEvent(bytes);

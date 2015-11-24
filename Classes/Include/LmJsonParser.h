@@ -68,6 +68,11 @@ class LmJsonParser
 		//init
 		bool init(std::string);
 
+		bool isBSync() const
+		{
+			return m_bSync;
+		}
+
 	private:
 
 		//ATTRIBUTES
@@ -77,6 +82,9 @@ class LmJsonParser
 
 		//to know which setpoint to get in json file
 		bool m_bIsParent;
+
+		//to sync or not layer
+		bool m_bSync;
 
 		//Where we parse the json file
 		rapidjson::Document m_oDocument;

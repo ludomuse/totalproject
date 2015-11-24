@@ -698,6 +698,8 @@ void LmFindGoodCategoryScene::replaceSendingAreaElementToHisOriginalPlace()
 void LmFindGoodCategoryScene::onReceivingMsg(bytes l_oMsg)
 {
 
+	LmInteractionScene::onReceivingMsg(l_oMsg);
+
 	CCLOG("LmFindGoodCategoryScene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{

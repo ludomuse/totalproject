@@ -58,7 +58,7 @@ LmGameManager::LmGameManager()
 	m_pCheckSpriteUser1 = nullptr;
 	m_pCheckSpriteUser2 = nullptr;
 	m_pSettingsButton = nullptr;
-	m_pLmSettings=nullptr;
+	m_pLmSettings = nullptr;
 }
 
 LmGameManager::~LmGameManager()
@@ -122,6 +122,8 @@ bool LmGameManager::init()
 	m_pUser1->getPLmStatistics()->setGameTitle(
 			m_pLmServerManager->getSTitleApplication());
 
+	m_bSync = m_pLmServerManager->getPLmJsonparser()->isBSync();
+
 	//init splashscreen
 	if (!initSplashScreen())
 	{
@@ -133,6 +135,13 @@ bool LmGameManager::init()
 	m_aInteractionSceneOfTheGame =
 			m_pLmServerManager->getInteractionSceneOfTheGame(
 					m_pUser1->isBParent());
+
+	//init all scene
+	for (int i = 0; i < m_aInteractionSceneOfTheGame.size(); i++)
+	{
+		CCLOG("init scene");
+		m_aInteractionSceneOfTheGame.at(i)->init(m_pUser1);
+	}
 
 	//init callback method of the custom event (use to know when an interactionScene want to communicate with this)
 	auto InteractionSceneFinished = [=](EventCustom * event)
@@ -170,6 +179,8 @@ bool LmGameManager::init()
 
 	auto GameFinished = [=](EventCustom * event)
 	{
+
+
 		//check if t's done and win etc and update sprite
 			if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward())
 			{
@@ -192,6 +203,10 @@ bool LmGameManager::init()
 
 			//update label of dashboard
 			updateUser1();
+
+			Director::getInstance()->popScene();
+
+			inputDisabled(false);
 
 		};
 
@@ -283,7 +298,7 @@ bool LmGameManager::initDashboard()
 	//background pink
 	m_pSpriteBackgroundPink = Sprite::create(
 			"Ludomuse/Content/compareNormal.png");
-	m_pSpriteBackgroundPink->setAnchorPoint(Vec2(0.5,1));
+	m_pSpriteBackgroundPink->setAnchorPoint(Vec2(0.5, 1));
 	m_pSpriteBackgroundPink->setPosition(l_oVisibleSize.width * 0.5f,
 			l_oVisibleSize.height
 					* s_fMagingRatioOfSpriteBackgroundUser2Profile);
@@ -360,7 +375,7 @@ bool LmGameManager::initDashboard()
 	//background profil pink
 	m_pSpriteBackgroundPinkProfile = Sprite::create(
 			"Ludomuse/Content/spriteBackgroundUser2Profile.png");
-	m_pSpriteBackgroundPinkProfile->setAnchorPoint(Vec2(0.5,1));
+	m_pSpriteBackgroundPinkProfile->setAnchorPoint(Vec2(0.5, 1));
 	m_pSpriteBackgroundPinkProfile->setPosition(
 			m_pSpriteBackgroundPinkProfile->getContentSize().width * 0.5f,
 			l_oVisibleSize.height
@@ -835,9 +850,12 @@ void LmGameManager::back(Ref* p_Sender)
 
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 
-
-		auto l_oBackAction =MoveBy::create(s_fTimeCompareAction,
-				Vec2(0,-l_oVisibleSize.height*(0.5-s_fMagingRatioOfSpriteBackgroundUser2Profile)));
+		auto l_oBackAction =
+				MoveBy::create(s_fTimeCompareAction,
+						Vec2(0,
+								-l_oVisibleSize.height
+										* (0.5
+												- s_fMagingRatioOfSpriteBackgroundUser2Profile)));
 		auto l_oBackActionIsDone = CallFunc::create(
 				std::bind(&LmGameManager::backDone, this));
 		m_pPinkLayer->runAction(
@@ -897,10 +915,26 @@ void LmGameManager::runInteraction(int index)
 			TransitionFade::create(s_fTimeBetweenLmLayer,
 					m_aInteractionSceneOfTheGame.at(index)));
 
+
+
 	//it was a back
 	if (m_bBackToDashboard)
 	{
 		m_aInteractionSceneOfTheGame.at(index)->restart();
+	}
+	else
+	{
+		if (m_bSync)
+		{
+			//indicate to other tab we begin ieme interaction
+			bytes msg(20);
+			msg << LmEvent::ReadyForInteraction;
+			msg.write(m_iIndexInteractionScene);
+			WIFIFACADE->sendBytes(msg);
+		}
+
+		//play the sound of the first layer works for begin and end setpoint
+		m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->playSound();
 	}
 }
 
@@ -918,21 +952,7 @@ void LmGameManager::runNextInteraction(Ref* p_Sender)
 	}
 	else
 	{
-
-		//if yes we need to init the scene
-		if (!m_bBackToDashboard)
-		{
-			//we pass the local user
-			if (!m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->init(
-					m_pUser1))
-			{
-				CCLOG("Interaction scene init failed");
-			}
-
-		}
-
 		runInteraction(m_iIndexInteractionScene);
-
 	}
 
 }
@@ -1033,10 +1053,9 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 	CCLOG("lmgamemanager _event is %d", _event);
 	switch (_event)
 	{
-		case LmEvent::ReadyForNextInteraction:
-			CCLOG("ReadyForNextInteraction");
-			ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this,
-					l_oMsg)
+		case LmEvent::ReadyForNextGame:
+			CCLOG("ReadyForNextGame");
+			ON_CC_THREAD(LmGameManager::onReadyForNextGameEvent, this, l_oMsg)
 			;
 			break;
 
@@ -1050,8 +1069,29 @@ void LmGameManager::onReceivingMsg(bytes l_oMsg)
 			ON_CC_THREAD(LmGameManager::onGameFinishedEvent, this, l_oMsg)
 			;
 			break;
+		case LmEvent::ReadyForInteraction:
+			CCLOG("onReadyForNextInteractionEvent");
+			ON_CC_THREAD(LmGameManager::onReadyForNextInteractionEvent, this,
+					l_oMsg)
+			;
+			break;
 		default:
 			break;
+	}
+
+}
+
+void LmGameManager::onReadyForNextGameEvent(bytes l_oMsg)
+{
+	int idInteractionScene = l_oMsg.readInt();
+
+	//when we received it mean the user 2 cklicked his button
+	m_aInteractionSceneOfTheGame.at(idInteractionScene)->setBUser2IsReadyForNextGame(
+			true);
+
+	if (!m_aInteractionSceneOfTheGame.at(idInteractionScene)->isBGameIsRunning())
+	{
+		m_aInteractionSceneOfTheGame.at(idInteractionScene)->startGame();
 	}
 
 }
@@ -1060,14 +1100,9 @@ void LmGameManager::onReadyForNextInteractionEvent(bytes l_oMsg)
 {
 	int idInteractionScene = l_oMsg.readInt();
 
-	//when we received it mean the user 2 cklicked his button
-	m_aInteractionSceneOfTheGame.at(idInteractionScene)->setBUser2IsReadyForNextInteraction(
+	//user 2 is ready for the next interaction
+	m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->setNextVisible(
 			true);
-
-	if (!m_aInteractionSceneOfTheGame.at(idInteractionScene)->isBGameIsRunning())
-	{
-		m_aInteractionSceneOfTheGame.at(idInteractionScene)->startGame();
-	}
 
 }
 

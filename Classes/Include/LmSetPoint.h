@@ -48,6 +48,11 @@ public:
 		return m_aLayers.at(m_iIndex);
 	}
 
+	void playSound()
+	{
+		m_pCurrentLayer->playSound();
+	}
+
 
 
 private:

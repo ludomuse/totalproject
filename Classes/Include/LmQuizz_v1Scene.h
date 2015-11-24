@@ -103,7 +103,7 @@ private:
 	int m_iIndexQuestion;
 
 	//to go to the next question
-	cocos2d::ui::Button* m_pNextQuestionButton;
+	LmMenuItemImage* m_pNextQuestionButton;
 
 	//buffer to know how attempt remain
 	int m_iNumberOfAttempt;
@@ -120,7 +120,7 @@ private:
 	void timerEnd(float);
 
 	//utility method
-	void beginQuestion();
+	void beginQuestion(cocos2d::Ref*);
 
 	//init label and incrtement index for the next question
 	void initNextQuestion();

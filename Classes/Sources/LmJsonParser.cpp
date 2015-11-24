@@ -44,6 +44,10 @@ bool LmJsonParser::init(string l_sFilename)
 	assert(m_oDocument["Ludomuse"]["Configuration"].HasMember("IdGame"));
 	m_iIdGame = m_oDocument["Ludomuse"]["Configuration"]["IdGame"].GetInt();
 
+	assert(m_oDocument["Ludomuse"]["Configuration"]["Sync"].IsBool());
+	assert(m_oDocument["Ludomuse"]["Configuration"].HasMember("Sync"));
+	m_bSync = m_oDocument["Ludomuse"]["Configuration"]["Sync"].GetBool();
+
 	//init the string
 	assert(m_oDocument["Ludomuse"]["Configuration"].IsObject());
 	assert(m_oDocument["Ludomuse"].HasMember("Configuration"));
@@ -363,6 +367,22 @@ LmSetPoint* LmJsonParser::getLmSetPoint(const rapidjson::Value& l_oScene,
 void LmJsonParser::initSetPoint(const rapidjson::Value& l_oScene,
 		LmInteractionScene* l_pInteractionScene)
 {
+	if (m_bSync)
+	{
+		//check set point are consistent (same size)
+		assert(l_oScene["SetPointBeginParent"].IsArray());
+		assert(l_oScene["SetPointEndParent"].IsArray());
+		assert(l_oScene["SetPointBeginChild"].IsArray());
+		assert(l_oScene["SetPointEndChild"].IsArray());
+
+		assert(
+				l_oScene["SetPointBeginParent"].Size()
+						== l_oScene["SetPointBeginChild"].Size());
+		assert(
+				l_oScene["SetPointEndParent"].Size()
+						== l_oScene["SetPointEndChild"].Size());
+	}
+
 	if (m_bIsParent)
 	{
 		//get the element we just push to set the introduction begin
@@ -423,6 +443,9 @@ void LmJsonParser::initInteractionAttributes(const rapidjson::Value& l_oScene,
 					getLabel(l_oScene["InstructionChild"]));
 		}
 	}
+
+	//set synchro attributes
+	l_pInteractionScene->setBSync(m_bSync);
 
 }
 
@@ -526,6 +549,16 @@ void LmJsonParser::makeLmRightSpotScene(const rapidjson::Value& l_oScene)
 	assert(l_oScene.HasMember("FilenameSpriteBackground"));
 	l_sBuffer = l_oScene["FilenameSpriteBackground"].GetString();
 	l_SeedBuffer.FilenameSpriteBackground = l_sBuffer.c_str();
+
+	assert(l_oScene["FilenameAudioWellPlaced"].IsString());
+	assert(l_oScene.HasMember("FilenameAudioWellPlaced"));
+	l_sBuffer = l_oScene["FilenameAudioWellPlaced"].GetString();
+	l_SeedBuffer.FilenameAudioWellPlaced = l_sBuffer.c_str();
+
+	assert(l_oScene["FilenameSpriteFail"].IsString());
+	assert(l_oScene.HasMember("FilenameSpriteFail"));
+	l_sBuffer = l_oScene["FilenameSpriteFail"].GetString();
+	l_SeedBuffer.FilenameSpriteFail = l_sBuffer.c_str();
 
 	assert(l_oScene["FilenameSpriteSendingArea"].IsString());
 	assert(l_oScene.HasMember("FilenameSpriteSendingArea"));
@@ -1002,8 +1035,7 @@ void LmJsonParser::makeLmDrawScene(const rapidjson::Value& l_oScene)
 	l_sBufferString = l_oScene["FilenameSpriteBackground"].GetString();
 	l_SeedBuffer.FilenameSpriteBackground = l_sBufferString.c_str();
 
-	m_aInteractionSceneOfTheGame.push_back(
-			new LmDrawScene(l_SeedBuffer));
+	m_aInteractionSceneOfTheGame.push_back(new LmDrawScene(l_SeedBuffer));
 
 	initInteractionAttributes(l_oScene,
 			m_aInteractionSceneOfTheGame.at(

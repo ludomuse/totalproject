@@ -2,6 +2,7 @@
   "Ludomuse": {
     "Configuration": {
       "IdGame": 1,
+      "Sync": true,
       "Title": "Lu Biscuit",
       "FilenameSpriteSplashScreen": "Game/Background/splashScreenLu.png"
     },
@@ -177,7 +178,9 @@
             "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
           },
           "FilenameSpriteBackground": "Game/Background/background1LU.png",
-          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 45,"FilenameSpriteReward": "",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "",
           "FilenameSound": "",
           "RewardScore": 50
         },
@@ -195,7 +198,9 @@
             "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
           },
           "FilenameSpriteBackground": "Game/Background/background1LU.png",
-          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 45,"FilenameSpriteReward": "",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "",
           "FilenameSound": "Audio/Game/nantes3.mp3",
           "RewardScore": 50
         },
@@ -401,7 +406,9 @@
             "Text": ""
           },
           "FilenameSpriteBackground": "Game/Background/rewardbg.png",
-          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 45,"FilenameSpriteReward": "Game/Content/butter.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "Game/Content/butter.png",
           "FilenameSound": "",
           "RewardScore": 50
         },
@@ -419,7 +426,9 @@
             "Text": ""
           },
           "FilenameSpriteBackground": "Game/Background/rewardbg.png",
-          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 45,"FilenameSpriteReward": "Game/Content/butter.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "Game/Content/butter.png",
           "FilenameSound": "Audio/Game/nantes7.mp3",
           "RewardScore": 50
         },
@@ -478,6 +487,8 @@
           }
         ],
         "FilenameSpriteBackground": "Game/Background/background3LU.png",
+        "FilenameAudioWellPlaced": "Audio/Game/xylophone.mp3",
+        "FilenameSpriteFail": "Game/Content/youlose.png",
         "FilenameSpriteSendingArea": "Game/Content/sendingArea.png",
         "FilenameMainImage": "Game/Content/rightSpotImage.png",
         "HoleOnX": 5,
@@ -572,7 +583,9 @@
             "Text": ""
           },
           "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
-          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 45,"FilenameSpriteReward": "Game/Content/sugar.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "Game/Content/sugar.png",
           "FilenameSound": "",
           "RewardScore": 50
         },
@@ -590,7 +603,9 @@
             "Text": ""
           },
           "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
-          "SpriteRewardWidthPercent": 50,"SpriteRewardHeightPercent": 45,"FilenameSpriteReward": "Game/Content/sugar.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "Game/Content/sugar.png",
           "FilenameSound": "Audio/Game/nantes7.mp3",
           "RewardScore": 50
         },

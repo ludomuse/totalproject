@@ -23,133 +23,141 @@
 
 struct LmRightSpotSceneSeed
 {
-	std::string FilenameSpriteBackground;
-	std::string FilenameSpriteSendingArea;
-	std::string FilenameMainImage;
-	int HoleOnX;
-	int HoleOnY;
-	std::vector<std::pair<int, int>> LocationOfHole;
+		std::string FilenameSpriteBackground;
+		std::string FilenameAudioWellPlaced;
+		std::string FilenameSpriteFail;
+		std::string FilenameSpriteSendingArea;
+		std::string FilenameMainImage;
+		int HoleOnX;
+		int HoleOnY;
+		std::vector<std::pair<int, int>> LocationOfHole;
 
 };
 
 class LmRightSpotScene: public LmInteractionScene
 {
 
-public:
+	public:
 
-	//id of this scene
-	static const int s_iId = 0;
+		//id of this scene
+		static const int s_iId = 0;
 
-	LmRightSpotScene(const LmRightSpotSceneSeed&);
-	~LmRightSpotScene();
+		LmRightSpotScene(const LmRightSpotSceneSeed&);
+		~LmRightSpotScene();
 
-	//restart
-	void restart();
+		//restart
+		void restart();
 
-	//to reset the game
-	void resetScene();
+		//to reset the game
+		void resetScene();
 
-	//dispatcher
-	virtual void onReceivingMsg(bytes);
+		//dispatcher
+		virtual void onReceivingMsg(bytes);
 
-private:
+	private:
 
-	//ATTRIBUTES
+		//ATTRIBUTES
 
-	//what we need to get from the json file
-	std::string m_sFilenameSpriteBackground;
-	std::string m_sFilenameSpriteSendingArea;
-	std::string m_sFilenameMainImage;
-	int m_iHoleOnX;
-	int m_iHoleOnY;
-	std::vector<std::pair<int, int>> m_aLocationOfHole;
+		//sprite to indicate fail
+		cocos2d::Sprite* m_pSpriteFail;
 
-	//different vector of gamecomponent
-	//dynamic element parent/child game
-	std::vector<LmGameComponent*> m_aDynamicGameComponents;
-	//element fix child game
-	std::vector<LmGameComponent*> m_aStaticGameComponents;
-	//holes in  image the int is to know the id of the gamecomponent
-	std::vector<std::pair<cocos2d::Rect, int>> m_aHolesImageChild;
-	//hole in  view parent
-	std::vector<std::pair<cocos2d::Rect, int>> m_aHolesLayerParent;
 
-	//element in sending area
-	LmGameComponent* m_pSendingAreaElement;
+		//what we need to get from the json file
+		std::string m_sFilenameSpriteBackground;
+		std::string m_sFilenameAudioWellPlaced;
+		std::string m_sFilenameSpriteFail;
+		std::string m_sFilenameSpriteSendingArea;
+		std::string m_sFilenameMainImage;
+		int m_iHoleOnX;
+		int m_iHoleOnY;
+		std::vector<std::pair<int, int>> m_aLocationOfHole;
 
-	//sending area
-	LmGameComponent* m_pSendingArea;
+		//different vector of gamecomponent
+		//dynamic element parent/child game
+		std::vector<LmGameComponent*> m_aDynamicGameComponents;
+		//element fix child game
+		std::vector<LmGameComponent*> m_aStaticGameComponents;
+		//holes in  image the int is to know the id of the gamecomponent
+		std::vector<std::pair<cocos2d::Rect, int>> m_aHolesImageChild;
+		//hole in  view parent
+		std::vector<std::pair<cocos2d::Rect, int>> m_aHolesLayerParent;
 
-	//rect stencil dimension
-	float m_fHeightRect;
-	float m_fWidthRect;
+		//element in sending area
+		LmGameComponent* m_pSendingAreaElement;
 
-	//attributes gui
-	cocos2d::Sprite* m_pSpriteBackground;
+		//sending area
+		LmGameComponent* m_pSendingArea;
 
-	//use to handle touch event
-	int m_iBufferId;
-	int m_iHoleTouchedIndex;
-	bool m_bSendingAreaElementTouched;
+		//rect stencil dimension
+		float m_fHeightRect;
+		float m_fWidthRect;
 
-	//where we stock the sprite while moving with listener
-	cocos2d::Sprite* m_pBufferSprite;
-	bool m_bSpriteSelected;
-	//to know if the buffer fill an hole
-	bool m_bBufferSpriteFillHole;
+		//attributes gui
+		cocos2d::Sprite* m_pSpriteBackground;
 
-	//to check win
-	int m_iNumberOfHole;
+		//use to handle touch event
+		int m_iBufferId;
+		int m_iHoleTouchedIndex;
+		bool m_bSendingAreaElementTouched;
 
-	//METHODS
+		//where we stock the sprite while moving with listener
+		cocos2d::Sprite* m_pBufferSprite;
+		bool m_bSpriteSelected;
+		//to know if the buffer fill an hole
+		bool m_bBufferSpriteFillHole;
 
-	//inherit method main of the scene
-	void runGame();
-	bool initGame();
+		//to check win
+		int m_iNumberOfHole;
 
-	//callback method of parent layer
-	bool onTouchBeganParent(cocos2d::Touch*, cocos2d::Event*);
-	void onTouchMovedParent(cocos2d::Touch*, cocos2d::Event*);
-	void onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*);
-	//callback method of child layer
-	bool onTouchBeganChild(cocos2d::Touch*, cocos2d::Event*);
-	void onTouchMovedChild(cocos2d::Touch*, cocos2d::Event*);
-	void onTouchEndedChild(cocos2d::Touch*, cocos2d::Event*);
+		//METHODS
 
-	//return the id of the gameobject touched -1 otherwise
-	int idDynamicLmGameComponent(cocos2d::Touch*);
-	int idLmGameComponentTouchedInSendingArea(cocos2d::Touch*);
+		//inherit method main of the scene
+		void runGame();
+		bool initGame();
 
-	//move pieces received in child layer
-	void moveBufferSprite(cocos2d::Touch*);
+		//callback method of parent layer
+		bool onTouchBeganParent(cocos2d::Touch*, cocos2d::Event*);
+		void onTouchMovedParent(cocos2d::Touch*, cocos2d::Event*);
+		void onTouchEndedParent(cocos2d::Touch*, cocos2d::Event*);
+		//callback method of child layer
+		bool onTouchBeganChild(cocos2d::Touch*, cocos2d::Event*);
+		void onTouchMovedChild(cocos2d::Touch*, cocos2d::Event*);
+		void onTouchEndedChild(cocos2d::Touch*, cocos2d::Event*);
 
-	//to know if the sprite that we are moving collide sending area
-	bool bufferCollideSendingArea();
+		//return the id of the gameobject touched -1 otherwise
+		int idDynamicLmGameComponent(cocos2d::Touch*);
+		int idLmGameComponentTouchedInSendingArea(cocos2d::Touch*);
 
-	//init texture and position of the buffer and set to invisible the gamecomponent touched /!\ change the anchor point of the buffer sprite
-	void initBufferSprite(int);
+		//move pieces received in child layer
+		void moveBufferSprite(cocos2d::Touch*);
 
-	//use to know what hole need to be fill with the buffer img
-	int touchCollideHoleInRightImage(cocos2d::Touch*);
+		//to know if the sprite that we are moving collide sending area
+		bool bufferCollideSendingArea();
 
-	//set position of the gamecomponent id in the  sending area
-	void setPositionInSendingArea(int);
+		//init texture and position of the buffer and set to invisible the gamecomponent touched /!\ change the anchor point of the buffer sprite
+		void initBufferSprite(int);
 
-	//id hole + id element to know if it's well placed
-	bool imageWellPlaced(int, int);
+		//use to know what hole need to be fill with the buffer img
+		int touchCollideHoleInRightImage(cocos2d::Touch*);
 
-	//get the hole of this id dynamic element
-	cocos2d::Rect holeOfThisDynamicElement(int);
+		//set position of the gamecomponent id in the  sending area
+		void setPositionInSendingArea(int);
 
-	//replace to his place
-	void replaceSendingAreaElementToHisOriginalPlace();
+		//id hole + id element to know if it's well placed
+		bool imageWellPlaced(int, int);
 
-	//when child receive an element
-	void layerChildReceive(int);
+		//get the hole of this id dynamic element
+		cocos2d::Rect holeOfThisDynamicElement(int);
 
-	//callback function event
-	void onGamecomponentEvent(bytes);
-	void onGamecomponentWellPlacedEvent(bytes);
+		//replace to his place
+		void replaceSendingAreaElementToHisOriginalPlace();
+
+		//when child receive an element
+		void layerChildReceive(int);
+
+		//callback function event
+		void onGamecomponentEvent(bytes);
+		void onGamecomponentWellPlacedEvent(bytes);
 
 };
 

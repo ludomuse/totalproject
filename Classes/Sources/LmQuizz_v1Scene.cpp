@@ -288,20 +288,16 @@ bool LmQuizz_v1Scene::initGame()
 			m_pCheckBoxAnswer[3]->getContentSize().width * 0.9);
 
 	//init next question button
-	m_pNextQuestionButton = ui::Button::create(
-			"Ludomuse/Content/nextButtonNormal.png",
-			"Ludomuse/Content/nextButtonPressed.png");
-	m_pNextQuestionButton->setTouchEnabled(true);
+	m_pNextQuestionButton = LmMenuItemImage::create("Question suivante",
+			CC_CALLBACK_1(LmQuizz_v1Scene::beginQuestion, this));;
 	m_pNextQuestionButton->setAnchorPoint(Vec2(1,0.5));
 	m_pNextQuestionButton->setPosition(
 			Vec2(l_oVisibleSize.width , l_oVisibleSize.height * 0.1));
-	m_pNextQuestionButton->addTouchEventListener(
-			CC_CALLBACK_0(LmQuizz_v1Scene::beginQuestion, this));
 	m_pNextQuestionButton->setVisible(false);
 	m_pLayerGame->addChild(m_pNextQuestionButton,2);
 
 	m_iIndexQuestion = -1;	//so when we init the next question index = 0
-	beginQuestion();
+	beginQuestion(nullptr);
 
 	return true;
 
@@ -324,7 +320,7 @@ void LmQuizz_v1Scene::timerEnd(float dt)
 	checkAnswer();
 }
 
-void LmQuizz_v1Scene::beginQuestion()
+void LmQuizz_v1Scene::beginQuestion(Ref* p_Sender)
 {
 	if (m_bQuestionFinished)
 	{
@@ -566,6 +562,8 @@ void LmQuizz_v1Scene::checkBoxTouchEnabled(bool enabled)
 
 void LmQuizz_v1Scene::onReceivingMsg(bytes l_oMsg)
 {
+
+	LmInteractionScene::onReceivingMsg(l_oMsg);
 
 	CCLOG("lmquizzscene _event is %d", LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)

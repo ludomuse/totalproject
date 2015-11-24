@@ -5,6 +5,9 @@
 //to avoid double inclusion and to use static method makeuseravatar
 #include "../Include/LmGameManager.h"
 
+#include <algorithm>    // std::max
+#include <stdlib.h>     /* abs */
+
 USING_NS_CC;
 
 int LmInteractionScene::s_iNumberOfInteraction = 0;
@@ -31,11 +34,14 @@ LmInteractionScene::LmInteractionScene()
 	m_bSetPointFinished = false;
 	m_bWin = false;
 	m_bTouchBeganDisabled = false;
-	m_bUser1IsReadyForNextInteraction = false;
-	m_bUser2IsReadyForNextInteraction = false;
+	m_bUser1IsReadyForNextGame = false;
+	m_bUser2IsReadyForNextGame = false;
 	m_bGameIsRunning = false;
 	m_iIdGame = s_iNumberOfInteraction; //interaction scene can know which scene of the game it is (use to send event)
 	s_iNumberOfInteraction++;
+	m_iSetPointPositionUser1 = 0;
+	m_iSetPointPositionUser2 = 0;
+	m_bSync = true;
 
 	//pointer
 	m_pBackDashboardButton = nullptr;
@@ -166,8 +172,16 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 			"Ludomuse/Background/creditsbg.png");
 	m_pSpriteWaitingScreen->setPosition(
 			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
-	m_pLayerGame->addChild(m_pSpriteWaitingScreen);
+	addChild(m_pSpriteWaitingScreen, 1);
 	m_pSpriteWaitingScreen->setVisible(false);
+	//feedback label init
+	auto l_pLabelFeedback = Label::createWithTTF(
+			"En attente de ton partenaire ...", "Fonts/JosefinSans-Italic.ttf",
+			l_oVisibleSize.height * 0.06);
+	l_pLabelFeedback->setPosition(l_oVisibleSize.width * 0.5,
+			l_oVisibleSize.height * 0.5);
+	l_pLabelFeedback->setColor(Color3B::BLACK);
+	m_pSpriteWaitingScreen->addChild(l_pLabelFeedback);
 
 	//add instruction label
 	if (m_pInstruction)
@@ -187,6 +201,10 @@ bool LmInteractionScene::init(LmUser* l_pUser)
 	else
 	{
 		m_pUser->getPLmStatistics()->interactionBegin();
+
+		m_iSetPointPositionUser1 = 0;
+		m_iSetPointPositionUser2 = 0;
+
 	}
 
 	return true;
@@ -201,13 +219,12 @@ bool LmInteractionScene::startGame()
 {
 	CCLOG("LmInteractionScene::startGame");
 
-	if (m_bUser1IsReadyForNextInteraction && m_bUser2IsReadyForNextInteraction)
+	if (m_bUser1IsReadyForNextGame && m_bUser2IsReadyForNextGame)
 	{
 		m_bGameIsRunning = true;
 
 		//to get notigy by event
 		m_pSpriteWaitingScreen->setVisible(false);
-		listenWifiFacade();
 
 		m_pUser->getPLmStatistics()->interactionGameBegin();
 
@@ -228,6 +245,28 @@ bool LmInteractionScene::startGame()
 
 }
 
+void LmInteractionScene::setNextVisible(bool visible)
+{
+	CCLOG("scene %d next button visible",m_iIdGame);
+
+	m_pNextButton->setVisible(visible);
+
+	listenWifiFacade();
+
+}
+
+void LmInteractionScene::playSound()
+{
+	if (m_bSetPointBegin)
+	{
+		m_pLmSetPointBegin->playSound();
+	}
+	else
+	{
+		m_pLmSetPointEnd->playSound();
+	}
+}
+
 void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 {
 	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
@@ -236,6 +275,12 @@ void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 		case LmEvent::Win:
 			CCLOG("Win");
 			ON_CC_THREAD(LmInteractionScene::onWinEvent, this, l_oMsg)
+			;
+			break;
+		case LmEvent::SetPointPosition:
+			CCLOG("SetPointPosition");
+			ON_CC_THREAD(LmInteractionScene::onSetPointPositionEvent, this,
+					l_oMsg)
 			;
 			break;
 		default:
@@ -268,7 +313,11 @@ void LmInteractionScene::initNextPreviousButton()
 					l_oVisibleSize.height * 0.05));
 	m_pMenu->addChild(m_pPreviousButton, 1);
 
-	m_pNextButton->setVisible(true);
+	if (m_bSync)
+	{
+		//wait user 2
+		m_pNextButton->setVisible(false);
+	}
 	m_pPreviousButton->setVisible(false);
 
 }
@@ -336,104 +385,40 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 	FILENAME_BUTTON_CLICKED);
 
 	CCLOG("LmInteractionScene::nextSetPointLayer");
+	CCLOG("abs(%d-%d)", m_iSetPointPositionUser1, m_iSetPointPositionUser2);
 
 	if (m_bSetPointBegin)
 	{
-		//false => setpoint begin is finished
-		if (!m_pLmSetPointBegin->nextLayer()
-				&& m_pLmSetPointBegin->isBActionDone() && !m_bSetPointFinished)
-		{
-			m_bSetPointFinished = true;
-			ON_CC_THREAD(LmInteractionScene::removeMenuItem, this);
 
-			//we are ready
-			m_bUser1IsReadyForNextInteraction = true;
-
-			//send the msg to indicate user 2 we are ready
-			bytes msg(10);
-			msg << LmEvent::ReadyForNextInteraction;
-			msg.write(m_iIdGame);
-			WIFIFACADE->sendBytes(msg);
-
-			//add the layer of the game
-			this->addChild(m_pLayerGame, 0);
-
-			//stop sound
-			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
-					true);
-
-			//if we can't start game because we are waiting for user 2
-			if (!startGame())
-			{
-				m_pSpriteWaitingScreen->setVisible(true);
-
-				Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
-
-				//feedback label init
-				auto l_pLabelFeedback = Label::createWithTTF(
-						"En attente de ton partenaire ...",
-						"Fonts/JosefinSans-Italic.ttf",
-						l_oVisibleSize.height * 0.06);
-				l_pLabelFeedback->setPosition(l_oVisibleSize.width * 0.5,
-						l_oVisibleSize.height * 0.5);
-				l_pLabelFeedback->setColor(Color3B::BLACK);
-				m_pSpriteWaitingScreen->addChild(l_pLabelFeedback);
-
-			}
-
-		}
-		else
-		{
-			if (m_pLmSetPointBegin->getIIndex() > 0 && !m_bSetPointFinished)
-			{
-				m_pPreviousButton->setVisible(true);
-			}
-
-			checkIfDisplayPlayCheckBox(m_pLmSetPointBegin);
-
-			m_pPlayCheckBox->setSelected(false);
-		}
+		setPointBeginNext();
 
 	}
 	else
 	{
-		//false => setpoint end is finished
-		if (!m_pLmSetPointEnd->nextLayer() && m_pLmSetPointEnd->isBActionDone()
-				&& !m_bSetPointFinished)
+		setPointEndNext();
+	}
+
+	if (m_bSync && !(m_iSetPointPositionUser1 - m_iSetPointPositionUser2 <= 0))
+	{
+
+		CCLOG("waiting screen");
+
+		CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+
+		//waiting screen appear
+		m_pSpriteWaitingScreen->setVisible(true);
+
+		if (m_bSetPointBegin)
 		{
-			m_bSetPointFinished = true;
-			m_pPlayCheckBox->setVisible(false);
-			ON_CC_THREAD(LmInteractionScene::removeMenuItem, this);
 
-			//stop sound
-			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
-					true);
-
-			//to permit the user2 to update his dashboard
-
-			bytes msg(10);
-			msg << LmEvent::InteractionDone;
-			WIFIFACADE->sendBytes(msg);
-
-			m_pUser->getPLmStatistics()->interactionEnd();
-			m_pUser->getPLmStatistics()->endRecord(m_iIdGame, m_sDescription);
-
-			//test to see if we need to display event in cocos thread
-			ON_CC_THREAD(LmInteractionScene::finishInteraction, this);
+			setVisibleSetPointElements(false, m_pLmSetPointBegin);
 
 		}
 		else
 		{
-			if (m_pLmSetPointEnd->getIIndex() > 0 && !m_bSetPointFinished)
-			{
-				m_pPreviousButton->setVisible(true);
-			}
-
-			checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
-
-			//uncheck play button
-			m_pPlayCheckBox->setSelected(false);
+			setVisibleSetPointElements(false, m_pLmSetPointEnd);
 		}
+
 	}
 
 }
@@ -646,9 +631,6 @@ void LmInteractionScene::win(bool win)
 
 	m_pFinishGameButton->setVisible(true);
 
-	Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
-			"GameFinished");
-
 }
 
 void LmInteractionScene::initFinishButtonTexture()
@@ -663,7 +645,6 @@ void LmInteractionScene::initFinishButtonTexture()
 		//use to place elements
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
-		Size l_oWinSize = Director::getInstance()->getWinSize();
 
 		//add reward to the user
 		m_pLmReward->init();
@@ -677,8 +658,8 @@ void LmInteractionScene::initFinishButtonTexture()
 
 		m_pFinishGameButton->setAnchorPoint(Vec2(0.5, 0.5));
 		m_pFinishGameButton->setPosition(
-				Vect(l_oWinSize.width * 0.5 + l_oOrigin.x,
-						l_oWinSize.height * 0.5 + l_oOrigin.y));
+				Vect(l_oVisibleSize.width * 0.5 + l_oOrigin.x,
+						l_oVisibleSize.height * 0.5 + l_oOrigin.y));
 
 		m_pFinishGameButton->setScaleX(1.2);
 
@@ -702,6 +683,8 @@ void LmInteractionScene::initFinishButtonTexture()
 
 		m_pFinishGameButton->addChild(m_pLmReward->getPLabekReward());
 
+		CCLOG("place label");
+
 		auto l_pLabelInstruction = Label::createWithTTF(
 				"(Touchez pour continuez)", "Fonts/JosefinSans-Italic.ttf",
 				l_oVisibleSize.width * 0.04);
@@ -724,11 +707,8 @@ void LmInteractionScene::endGame()
 		m_bFinishGameButtonSync = false;
 
 		//reset sync beetween player
-		m_bUser1IsReadyForNextInteraction = false;
-		m_bUser2IsReadyForNextInteraction = false;
-
-		//stop send event async till the next inetraction
-		stopListenWifiFacade();
+		m_bUser1IsReadyForNextGame = false;
+		m_bUser2IsReadyForNextGame = false;
 
 		//the game is finished we can remove the layer of the game
 		removeChild(m_pLayerGame);
@@ -759,10 +739,14 @@ void LmInteractionScene::endGame()
 			CCLOG("LmSetPoint init failed");
 		}
 
+		//reset
+		m_iSetPointPositionUser1 = 0;
+		m_iSetPointPositionUser2 = 0;
+
 		checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
 
-		backToDashboard(nullptr);
-
+		Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+				"GameFinished");
 	}
 }
 
@@ -771,6 +755,34 @@ void LmInteractionScene::onWinEvent(bytes l_oMsg)
 	bool buffer = l_oMsg.readBool();
 
 	win(buffer);
+}
+
+void LmInteractionScene::onSetPointPositionEvent(bytes l_oMsg)
+{
+	m_iSetPointPositionUser2 = l_oMsg.readInt();
+
+	CCLOG("abs(%d-%d)", m_iSetPointPositionUser1, m_iSetPointPositionUser2);
+
+	if (abs(m_iSetPointPositionUser1 - m_iSetPointPositionUser2) < 2)
+	{
+		//waiting screen appear
+		m_pSpriteWaitingScreen->setVisible(false);
+
+		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+
+		//restore gui elements
+		if (m_bSetPointBegin)
+		{
+
+			setVisibleSetPointElements(true, m_pLmSetPointBegin);
+
+		}
+		else
+		{
+			setVisibleSetPointElements(true, m_pLmSetPointEnd);
+		}
+
+	}
 }
 
 LmGameComponent* LmInteractionScene::makeGameComponent()
@@ -815,3 +827,142 @@ void LmInteractionScene::updateScoreLabel()
 	m_pLabelScore->setString(l_aScoreString);
 }
 
+void LmInteractionScene::updatePosition(int l_iSetPointIndex)
+{
+	int buffer = m_iSetPointPositionUser1;
+
+	//the new position is the max
+	m_iSetPointPositionUser1 = std::max(m_iSetPointPositionUser1,
+			l_iSetPointIndex);
+
+	if (buffer != m_iSetPointPositionUser1 && m_bSync)
+	{
+		//update user 2 position on the other tab
+		bytes msg(20);
+		msg << LmEvent::SetPointPosition;
+		msg.write(m_iSetPointPositionUser1);
+		WIFIFACADE->sendBytes(msg);
+
+		CCLOG("new position = %d", m_iSetPointPositionUser1);
+	}
+
+}
+
+void LmInteractionScene::setPointBeginNext()
+{
+	//false => setpoint begin is finished
+	if (!m_pLmSetPointBegin->nextLayer() && m_pLmSetPointBegin->isBActionDone()
+			&& !m_bSetPointFinished)
+	{
+		m_bSetPointFinished = true;
+		ON_CC_THREAD(LmInteractionScene::removeMenuItem, this);
+
+		//we are ready
+		m_bUser1IsReadyForNextGame = true;
+
+		//send the msg to indicate user 2 we are ready
+		bytes msg(10);
+		msg << LmEvent::ReadyForNextGame;
+		msg.write(m_iIdGame);
+		WIFIFACADE->sendBytes(msg);
+
+		//add the layer of the game
+		this->addChild(m_pLayerGame, 0);
+
+		//stop sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
+				true);
+
+		//if we can't start game because we are waiting for user 2
+		if (!startGame())
+		{
+			m_pSpriteWaitingScreen->setVisible(true);
+		}
+
+	}
+	else
+	{
+		//go to the next layer
+		if (m_pLmSetPointBegin->getIIndex() > 0 && !m_bSetPointFinished)
+		{
+			m_pPreviousButton->setVisible(true);
+		}
+
+		checkIfDisplayPlayCheckBox(m_pLmSetPointBegin);
+
+		m_pPlayCheckBox->setSelected(false);
+
+		updatePosition(m_pLmSetPointBegin->getIIndex());
+	}
+}
+
+void LmInteractionScene::setPointEndNext()
+{
+	//false => setpoint end is finished
+	if (!m_pLmSetPointEnd->nextLayer() && m_pLmSetPointEnd->isBActionDone()
+			&& !m_bSetPointFinished)
+	{
+		m_bSetPointFinished = true;
+		m_pPlayCheckBox->setVisible(false);
+		ON_CC_THREAD(LmInteractionScene::removeMenuItem, this);
+
+		//stop sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(
+				true);
+
+		//to permit the user2 to update his dashboard
+
+		bytes msg(10);
+		msg << LmEvent::InteractionDone;
+		WIFIFACADE->sendBytes(msg);
+
+		m_pUser->getPLmStatistics()->interactionEnd();
+		m_pUser->getPLmStatistics()->endRecord(m_iIdGame, m_sDescription);
+
+		//stop send event async till the next inetraction
+		stopListenWifiFacade();
+
+		//test to see if we need to display event in cocos thread
+		ON_CC_THREAD(LmInteractionScene::finishInteraction, this);
+
+	}
+	else
+	{
+		if (m_pLmSetPointEnd->getIIndex() > 0 && !m_bSetPointFinished)
+		{
+			m_pPreviousButton->setVisible(true);
+		}
+
+		checkIfDisplayPlayCheckBox(m_pLmSetPointEnd);
+
+		//uncheck play button
+		m_pPlayCheckBox->setSelected(false);
+
+		updatePosition(m_pLmSetPointEnd->getIIndex());
+
+	}
+}
+
+void LmInteractionScene::setVisibleSetPointElements(bool visible,
+		LmSetPoint* setpoint)
+{
+	m_pNextButton->setVisible(visible);
+
+	CCLOG("previous button visible or not?");
+	if (setpoint->getIIndex() > 0 && !m_bSetPointFinished)
+	{
+		m_pPreviousButton->setVisible(visible);
+	}
+
+	CCLOG("playcheckbox  visible or not?");
+	if (visible)
+	{
+		checkIfDisplayPlayCheckBox(setpoint);
+
+	}
+	else
+	{
+		m_pPlayCheckBox->setVisible(visible);
+
+	}
+}

@@ -1,27 +1,128 @@
 {
   "Ludomuse": {
     "Configuration": {
-      "IdGame": 3,
-      "Title": "Jeu de Bastien",
+      "IdGame": 1,
+      "Sync": true,
+      "Title": "Lu Biscuit",
       "FilenameSpriteSplashScreen": "Game/Background/splashScreenLu.png"
     },
     "SceneArray": [
       {
-        "Id": 6,
-        "Description": "Défi 4 : Dessine des trucs",
+        "Id": 1,
+        "Description": "Défi 1: Un entretien d'embauche !",
         "SetPointBeginParent": [
           {
             "Label": {
               "ColorText": {
-                "R": 0,
+                "R": 255,
                 "G": 255,
                 "B": 255
               },
-              "FontSize": 25,
-              "WidthPercent": 85,
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 0"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 1"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 2"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 3"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
               "HeightPercent": 50,
-              "SizePercent": 10,
-              "Text": "Dessine des trucs c'est bon pour la santé"
+              "SizePercent": 40,
+              "Text": "diapo 4"
             },
             "Images": [
               {
@@ -29,8 +130,561 @@
                 "anchorPoint": 0
               },
               {
-                "imgURL": "Game/Content/seller.png",
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "diapo 5"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 0"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 1"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 2"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 70,
+              "WidthPercent": 80,
+              "HeightPercent": 75,
+              "SizePercent": 40,
+              "Text": "diapo 3"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/backgroundFactory.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso4.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "diapo 4"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          },
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 40,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "diapo 5"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso3.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 85,
+            "Text": "Félicitation, vous avez été embauché dans l'entreprise LU !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 80,
+            "Text": "Bravo, tu as un nouvel ouvrier dans ton équipe !"
+          },
+          "FilenameSpriteBackground": "Game/Background/background1LU.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "",
+          "FilenameSound": "Audio/Game/nantes3.mp3",
+          "RewardScore": 50
+        },
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu es embauché nous pouvons continuer."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
                 "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 30,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bien, maintenant que tu as un ouvrier nous allons pouvoir commencer la nouvelle recette !"
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1.png",
+                "anchorPoint": 4
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
+        "FilenameSpriteBandTop": "Game/Content/questionBackground.png",
+        "FilenameSpriteAnswerBackground": "Game/Content/answerBackground.png",
+        "FilenameSpriteAnswerCross": "Game/Content/answerSelected.png",
+        "FilenameAudioAnswerSelected": "Audio/Game/xylophone.mp3",
+        "InGameScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 40,
+            "Text": "Repond à la question de M.LU"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso1.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "ReplayScreen": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 255
+            },
+            "FontSize": 70,
+            "WidthPercent": 30,
+            "HeightPercent": 50,
+            "SizePercent": 60,
+            "Text": "Attention, rejoue !"
+          },
+          "Images": [
+            {
+              "imgURL": "Game/Background/background4LU.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/cookie.png",
+              "anchorPoint": 0
+            },
+            {
+              "imgURL": "Game/Content/perso3right.png",
+              "anchorPoint": 4
+            }
+          ],
+          "SoundURL": ""
+        },
+        "Questions": [
+          {
+            "Question": "Demande à ton ouvrier combien de marche il a compté:",
+            "Answer1": "84",
+            "Answer2": "66",
+            "Answer3": "70",
+            "Answer4": "77",
+            "NumberRightAnswer": 4
+          }
+        ],
+        "AttemptByQuestion": 1,
+        "TimerDuration": 0,
+        "TimerEnbaled": false
+      },
+      {
+        "Id": 0,
+        "Description": "Défi 2: Présentation du personel LU ",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Vous allez maintenant découvrir vos collègues grâce à un jeu.Faites glisser les personnages un par un dans la zone de partage en forme de petit beurre pour les envoyer à Monsieur Louis. Il va devoir les replacer au bon endroit."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso6.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointBeginChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Plutôt que de te présenter tes collègues un par un ce qui nous prendrait trop de temps. Je te propose un jeu ! Lorsque l'ouvrier patissier t'envoie un détail dans la zone de partage (en forme de petit beurre), replace le au bon endroit sur la photographie."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso6.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes4.mp3"
+          }
+        ],
+        "RewardParent": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "Game/Content/butter.png",
+          "FilenameSound": "",
+          "RewardScore": 50
+        },
+        "RewardChild": {
+          "Label": {
+            "ColorText": {
+              "R": 255,
+              "G": 255,
+              "B": 0
+            },
+            "FontSize": 100,
+            "WidthPercent": 50,
+            "HeightPercent": 50,
+            "SizePercent": 50,
+            "Text": ""
+          },
+          "FilenameSpriteBackground": "Game/Background/rewardbg.png",
+          "SpriteRewardWidthPercent": 50,
+          "SpriteRewardHeightPercent": 45,
+          "FilenameSpriteReward": "Game/Content/butter.png",
+          "FilenameSound": "Audio/Game/nantes7.mp3",
+          "RewardScore": 50
+        },
+        "SetPointEndParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bravo, nous avons un ingrédient pour la recette."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": ""
+          }
+        ],
+        "SetPointEndChild": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Bravo, nous avons un ingrédient pour la recette."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso1left.png",
+                "anchorPoint": 3
+              }
+            ],
+            "SoundURL": "Audio/Game/nantes5.mp3"
+          }
+        ],
+        "FilenameSpriteBackground": "Game/Background/background3LU.png",
+        "FilenameSpriteSendingArea": "Game/Content/sendingArea.png",
+        "FilenameMainImage": "Game/Content/rightSpotImage.png",
+        "HoleOnX": 5,
+        "HoleOnY": 4,
+        "LocationOfHole": [
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "Id": 3,
+        "Description": "Défi 3: L'organisation de l'usine",
+        "SetPointBeginParent": [
+          {
+            "Label": {
+              "ColorText": {
+                "R": 255,
+                "G": 255,
+                "B": 255
+              },
+              "FontSize": 50,
+              "WidthPercent": 75,
+              "HeightPercent": 50,
+              "SizePercent": 40,
+              "Text": "Sois attentif aux informations que Monsieur Louis te donne. Elles vont te permettre de t'orienter dans l'usine et de replacer les ateliers au bon endroit."
+            },
+            "Images": [
+              {
+                "imgURL": "Game/Background/background1LU.png",
+                "anchorPoint": 0
+              },
+              {
+                "imgURL": "Game/Content/perso2left.png",
+                "anchorPoint": 3
               }
             ],
             "SoundURL": ""
@@ -78,7 +732,7 @@
           },
           "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
           "SpriteRewardWidthPercent": 50,
-          "SpriteRewardHeightPercent": 50,
+          "SpriteRewardHeightPercent": 45,
           "FilenameSpriteReward": "Game/Content/sugar.png",
           "FilenameSound": "",
           "RewardScore": 50
@@ -98,7 +752,7 @@
           },
           "FilenameSpriteBackground": "Game/Background/rewardbg1.png",
           "SpriteRewardWidthPercent": 50,
-          "SpriteRewardHeightPercent": 50,
+          "SpriteRewardHeightPercent": 45,
           "FilenameSpriteReward": "Game/Content/sugar.png",
           "FilenameSound": "Audio/Game/nantes7.mp3",
           "RewardScore": 50
@@ -157,7 +811,38 @@
             "SoundURL": ""
           }
         ],
-        "FilenameSpriteBackground": "Game/Background/background4LU.png"
+        "FilenameSpriteBackground": "Game/Background/background4LU.png",
+        "FilenameSpriteMainImage": "Game/Content/audioHintImage.png",
+        "Labels": [
+          {
+            "Id": 0,
+            "WidthPercent": 18,
+            "HeightPercent": 55,
+            "FilenameSpriteLabel": "Game/Content/labelCuisson.png",
+            "FilenameSpriteHint": "Game/Content/Cuisson.png"
+          },
+          {
+            "Id": 1,
+            "WidthPercent": 41,
+            "HeightPercent": 33,
+            "FilenameSpriteLabel": "Game/Content/labelEmballage.png",
+            "FilenameSpriteHint": "Game/Content/MiseEnBoite.png"
+          },
+          {
+            "Id": 2,
+            "WidthPercent": 89,
+            "HeightPercent": 55,
+            "FilenameSpriteLabel": "Game/Content/labelFabrication.png",
+            "FilenameSpriteHint": "Game/Content/PreparationPates.png"
+          },
+          {
+            "Id": 3,
+            "WidthPercent": 63,
+            "HeightPercent": 67,
+            "FilenameSpriteLabel": "Game/Content/labelTransport.png",
+            "FilenameSpriteHint": "Game/Content/PreparationExpedition.png"
+          }
+        ]
       }
     ]
   }

@@ -2,6 +2,7 @@
   "Ludomuse": {
     "Configuration": {
       "IdGame": 0,
+      "Sync": true,
       "Title": "Musée Cernuschi",
       "FilenameSpriteSplashScreen": "Game/Background/splashScreenCernuschi.png"
     },

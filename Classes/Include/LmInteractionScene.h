@@ -48,6 +48,12 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 		//init
 		bool init(LmUser*);
 
+		//to sync at the begining
+		void setNextVisible(bool);
+
+		//play the sound appropriate
+		void playSound();
+
 		bool isDone() const
 		{
 			return m_bDone;
@@ -114,16 +120,16 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 
 		bool startGame();
 
-		void setBUser1IsReadyForNextInteraction(
-				bool bUser1IsReadyForNextInteraction)
+		void setBUser1IsReadyForNextGame(
+				bool bUser1IsReadyForNextGame)
 		{
-			m_bUser1IsReadyForNextInteraction = bUser1IsReadyForNextInteraction;
+			m_bUser1IsReadyForNextGame = bUser1IsReadyForNextGame;
 		}
 
-		void setBUser2IsReadyForNextInteraction(
-				bool bUser2IsReadyForNextInteraction)
+		void setBUser2IsReadyForNextGame(
+				bool bUser2IsReadyForNextGame)
 		{
-			m_bUser2IsReadyForNextInteraction = bUser2IsReadyForNextInteraction;
+			m_bUser2IsReadyForNextGame = bUser2IsReadyForNextGame;
 		}
 
 		bool isBGameIsRunning() const
@@ -160,18 +166,28 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 		//update score
 		void updateScoreLabel();
 
+		void setBSync(bool bSync)
+		{
+			m_bSync = bSync;
+		}
+
 	protected:
 
 		//ATTRIBUTES
 
 		static int s_iNumberOfInteraction;
 
+
+		//to sync setpoint between users
+		int m_iSetPointPositionUser1;
+		int m_iSetPointPositionUser2;
+
 		//calculate with s_iNumberOfInteraction into constructor/destructor
 		int m_iIdGame;
 
 		//to sync users before launching a game
-		bool m_bUser1IsReadyForNextInteraction;
-		bool m_bUser2IsReadyForNextInteraction;
+		bool m_bUser1IsReadyForNextGame;
+		bool m_bUser2IsReadyForNextGame;
 
 		//to know if game is running or not
 		bool m_bGameIsRunning;
@@ -251,6 +267,9 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 		//listener
 		cocos2d::EventListenerTouchOneByOne* m_pListener;
 
+		//to sync or not layer
+		bool m_bSync;
+
 		//METHODS
 
 		//callback
@@ -281,8 +300,14 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 		//when it's a win
 		void win(bool);
 
+		//update value of posuition
+		void updatePosition(int);
+		void setPointBeginNext();
+		void setPointEndNext();
+
 		//callback event wifi
 		void onWinEvent(bytes);
+		void onSetPointPositionEvent(bytes);
 
 		void playCallback(cocos2d::Ref*, cocos2d::ui::CheckBox::EventType);
 
@@ -297,6 +322,10 @@ class LmInteractionScene: public cocos2d::Scene, public LmWifiObserver
 
 		//check id there is a sound to display or not the play checkbox
 		void checkIfDisplayPlayCheckBox(LmSetPoint*);
+
+		//use during the sync to make appear or disapear element according to the waiting screen
+		void setVisibleSetPointElements(bool ,LmSetPoint*);
+
 
 };
 

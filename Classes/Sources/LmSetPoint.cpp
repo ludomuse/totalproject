@@ -56,7 +56,6 @@ bool LmSetPoint::init(cocos2d::Scene* l_pInteractionScene)
 	m_pCurrentLayer->init();
 	m_pLayerTransition->addChild(m_pCurrentLayer,0);
 
-	m_pCurrentLayer->playSound();
 
 
 	return true;
