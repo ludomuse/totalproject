@@ -8,7 +8,8 @@
 					for (; lit != lend; ++lit)\
 					{\
 						LmWifiObserver* tps = (*lit);\
-						tps->X;\
+						if(tps)\
+							tps->X;\
 					}
 
 using namespace std;
@@ -154,9 +155,16 @@ int LmWifiDirectFacade::addObserver(LmWifiObserver* wo)
 
 void LmWifiDirectFacade::removeObserver(int index)
 {
+
+
 	list<LmWifiObserver*>::iterator it = _observers.begin();
 	advance(it, index);
-	_observers.erase(it);
+	FORWARD(printId());
+	CCLOG("list size %d",_observers.size() - 1);
+	(*it)=nullptr;
+	//_observers.erase(it);
+
+	//FORWARD(printId());
 }
 
 void LmWifiDirectFacade::group(int size, SEND_F* send_functions, void** params)

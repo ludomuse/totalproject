@@ -29,11 +29,17 @@ private:
 	public:
 		//attributs
 
+
+
 		LmWifiObserver()
 		{
 			_wifiFacade = WIFIFACADE;
 		}
 
+		void printId()
+		{
+			CCLOG("index obs = %d",_observerIndex);
+		}
 
 		virtual void onGettingPeers(std::vector<std::string> peers)
 		{
@@ -88,11 +94,13 @@ private:
 
 		void listenWifiFacade()
 		{
+			CCLOG("<font color=\"green\"> ADD OBSERVER</font>");
 			_observerIndex = _wifiFacade->addObserver(this);
 		}
 
 		void stopListenWifiFacade()
 		{
+
 			_wifiFacade->removeObserver(_observerIndex);
 		}
 

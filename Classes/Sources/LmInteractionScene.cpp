@@ -247,11 +247,15 @@ bool LmInteractionScene::startGame()
 
 void LmInteractionScene::setNextVisible(bool visible)
 {
-	CCLOG("scene %d next button visible",m_iIdGame);
 
 	m_pNextButton->setVisible(visible);
 
-	listenWifiFacade();
+	if(m_bSetPointBegin)
+	{
+		CCLOG("scene %d is listening", m_iIdGame);
+
+		listenWifiFacade();
+	}
 
 }
 
@@ -269,7 +273,8 @@ void LmInteractionScene::playSound()
 
 void LmInteractionScene::onReceivingMsg(bytes l_oMsg)
 {
-	CCLOG("LmInteractionScene _event is %d", LmWifiObserver::_event);
+	CCLOG("LmInteractionScene %d _event is %d", m_iIdGame,
+			LmWifiObserver::_event);
 	switch (LmWifiObserver::_event)
 	{
 		case LmEvent::Win:
@@ -398,7 +403,7 @@ void LmInteractionScene::nextSetPointLayer(cocos2d::Ref* p_Sender)
 		setPointEndNext();
 	}
 
-	if (m_bSync && !(m_iSetPointPositionUser1 - m_iSetPointPositionUser2 <= 0))
+	if (m_bSync && !(m_iSetPointPositionUser1 - m_iSetPointPositionUser2 <= 1))
 	{
 
 		CCLOG("waiting screen");
@@ -646,10 +651,12 @@ void LmInteractionScene::initFinishButtonTexture()
 		Size l_oVisibleSize = Director::getInstance()->getVisibleSize();
 		Point l_oOrigin = Director::getInstance()->getVisibleOrigin();
 
+		CCLOG("add reward");
 		//add reward to the user
 		m_pLmReward->init();
 		m_pUser->winReward(m_pLmReward);
 
+		CCLOG("init texture");
 		//init background button
 		m_pFinishGameButton->loadTextures(
 				m_pLmReward->getSFilenameSpriteBackground(),
@@ -763,26 +770,37 @@ void LmInteractionScene::onSetPointPositionEvent(bytes l_oMsg)
 
 	CCLOG("abs(%d-%d)", m_iSetPointPositionUser1, m_iSetPointPositionUser2);
 
-	if (abs(m_iSetPointPositionUser1 - m_iSetPointPositionUser2) < 2)
+	//set viisible if there less than 1 layer distance and user 1 is not waiting to play
+	if (!m_bUser1IsReadyForNextGame)
 	{
-		//waiting screen appear
-		m_pSpriteWaitingScreen->setVisible(false);
-
-		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-
-		//restore gui elements
-		if (m_bSetPointBegin)
+		if (abs(m_iSetPointPositionUser1 - m_iSetPointPositionUser2) < 2)
 		{
+			CCLOG("setvisible layer");
 
-			setVisibleSetPointElements(true, m_pLmSetPointBegin);
+			//waiting screen appear
+			m_pSpriteWaitingScreen->setVisible(false);
+
+			CCLOG("resume sound");
+
+			CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+
+			CCLOG("restore gui element visibility");
+
+			//restore gui elements
+			if (m_bSetPointBegin)
+			{
+
+				setVisibleSetPointElements(true, m_pLmSetPointBegin);
+
+			}
+			else
+			{
+				setVisibleSetPointElements(true, m_pLmSetPointEnd);
+			}
 
 		}
-		else
-		{
-			setVisibleSetPointElements(true, m_pLmSetPointEnd);
-		}
-
 	}
+
 }
 
 LmGameComponent* LmInteractionScene::makeGameComponent()
@@ -919,6 +937,7 @@ void LmInteractionScene::setPointEndNext()
 		m_pUser->getPLmStatistics()->interactionEnd();
 		m_pUser->getPLmStatistics()->endRecord(m_iIdGame, m_sDescription);
 
+		CCLOG("%d stop listen to wifi facade", m_iIdGame);
 		//stop send event async till the next inetraction
 		stopListenWifiFacade();
 
@@ -946,12 +965,18 @@ void LmInteractionScene::setPointEndNext()
 void LmInteractionScene::setVisibleSetPointElements(bool visible,
 		LmSetPoint* setpoint)
 {
-	m_pNextButton->setVisible(visible);
+	CCLOG("next button visible or not?");
 
-	CCLOG("previous button visible or not?");
-	if (setpoint->getIIndex() > 0 && !m_bSetPointFinished)
+	if (!m_bSetPointFinished)
 	{
-		m_pPreviousButton->setVisible(visible);
+		m_pNextButton->setVisible(visible);
+
+		CCLOG("previous button visible or not?");
+		if (setpoint->getIIndex() > 0)
+		{
+			m_pPreviousButton->setVisible(visible);
+		}
+
 	}
 
 	CCLOG("playcheckbox  visible or not?");

@@ -139,7 +139,7 @@ bool LmGameManager::init()
 	//init all scene
 	for (int i = 0; i < m_aInteractionSceneOfTheGame.size(); i++)
 	{
-		CCLOG("init scene");
+		CCLOG("init scene %d",m_aInteractionSceneOfTheGame.at(i)->getIIdGame());
 		m_aInteractionSceneOfTheGame.at(i)->init(m_pUser1);
 	}
 

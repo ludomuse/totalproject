@@ -194,8 +194,8 @@ bool LmRightSpotScene::initGame()
 	m_pSendingArea->addTo(m_pLayerGame);
 
 //fail sprite
-	CCLOG("fail sprite init");
-	m_pSpriteFail = Sprite::create(m_sFilenameAudioWellPlaced);
+	CCLOG("fail sprite init %s",m_sFilenameSpriteFail.c_str());
+	m_pSpriteFail = Sprite::create(m_sFilenameSpriteFail);
 	m_pSpriteFail->setPosition(
 			Vec2(l_oVisibleSize.width * 0.5, l_oVisibleSize.height * 0.5));
 	m_pSpriteFail->setVisible(false);

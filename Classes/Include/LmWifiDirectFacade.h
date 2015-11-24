@@ -16,7 +16,8 @@
 
 class LmWifiObserver;
 
-class LmWifiDirectFacade {
+class LmWifiDirectFacade
+{
 	public:
 
 		enum SEND_F
@@ -31,6 +32,7 @@ class LmWifiDirectFacade {
 			SEND_BYTES,
 			SEND_STRING
 		};
+
 
 		LmWifiDirectFacade();
 
@@ -98,8 +100,8 @@ class LmWifiDirectFacade {
 
 		void sendEvent(event e, LmWifiDirectFacade::SEND_F method, void* arg);
 
-		void sendEvent(event e, int size, const LmWifiDirectFacade::SEND_F* method,
-				const void** args);
+		void sendEvent(event e, int size,
+				const LmWifiDirectFacade::SEND_F* method, const void** args);
 
 	private:
 		std::string _name;
