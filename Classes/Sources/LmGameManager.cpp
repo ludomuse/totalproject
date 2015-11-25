@@ -21,6 +21,7 @@ LmGameManager::LmGameManager()
 	m_iInteractionDoneUser2 = 0;
 	m_bBackToDashboard = false;
 	m_bActionIsDone = true;
+	m_bSync=false;
 
 	//pointer
 	m_pUser1 = nullptr; //need to be delete
@@ -139,7 +140,8 @@ bool LmGameManager::init()
 	//init all scene
 	for (int i = 0; i < m_aInteractionSceneOfTheGame.size(); i++)
 	{
-		CCLOG("init scene %d",m_aInteractionSceneOfTheGame.at(i)->getIIdGame());
+		CCLOG("init scene %d",
+				m_aInteractionSceneOfTheGame.at(i)->getIIdGame());
 		m_aInteractionSceneOfTheGame.at(i)->init(m_pUser1);
 	}
 
@@ -179,7 +181,6 @@ bool LmGameManager::init()
 
 	auto GameFinished = [=](EventCustom * event)
 	{
-
 
 		//check if t's done and win etc and update sprite
 			if(m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->getPLmReward())
@@ -915,8 +916,6 @@ void LmGameManager::runInteraction(int index)
 			TransitionFade::create(s_fTimeBetweenLmLayer,
 					m_aInteractionSceneOfTheGame.at(index)));
 
-
-
 	//it was a back
 	if (m_bBackToDashboard)
 	{
@@ -931,6 +930,11 @@ void LmGameManager::runInteraction(int index)
 			msg << LmEvent::ReadyForInteraction;
 			msg.write(m_iIndexInteractionScene);
 			WIFIFACADE->sendBytes(msg);
+		}
+		else
+		{
+			m_aInteractionSceneOfTheGame.at(m_iIndexInteractionScene)->setNextVisible(
+					true);
 		}
 
 		//play the sound of the first layer works for begin and end setpoint

@@ -149,7 +149,7 @@ void LmStatistics::clicked(std::string tag)
 	if (m_aData.find(tag) != m_aData.end())
 	{
 		m_aData.find(tag)->second++;
-		CCLOG("%s clicked %d times",tag.c_str(),m_aData.find(tag)->second);
+		CCLOG("%s clicked %d times", tag.c_str(), m_aData.find(tag)->second);
 	}
 	else
 	{
@@ -231,9 +231,9 @@ void LmStatistics::init()
 	std::vector<std::string> l_aKeyButtonToListen = KEY_BUTTONS;
 
 	//insert what we listen to
-	for(int i=0;i<l_aKeyButtonToListen.size();i++)
+	for (int i = 0; i < l_aKeyButtonToListen.size(); i++)
 	{
-		m_aData.insert({l_aKeyButtonToListen.at(i).c_str(),0});
+		m_aData.insert( { l_aKeyButtonToListen.at(i).c_str(), 0 });
 	}
 }
 
@@ -336,7 +336,7 @@ void LmStatistics::mergeWithExistingJson()
 			m_iNumberOfUsers += l_oDocument[USER_NUMBER_KEY].GetInt();
 		}
 
-		CCLOG("nb user :%d",m_iNumberOfUsers);
+		CCLOG("nb user :%d", m_iNumberOfUsers);
 
 		CCLOG("Date");
 
@@ -373,16 +373,22 @@ void LmStatistics::mergeWithExistingJson()
 		{
 			if (l_oDocument.HasMember(it->first.c_str()))
 			{
-				CCLOG("%s session : %d",it->first.c_str(),it->second);
-				CCLOG("%s json : %d",it->first.c_str(),l_oDocument[it->first.c_str()].GetInt());
-
+				CCLOG("%s session : %d", it->first.c_str(), it->second);
+				CCLOG("%s json : %d", it->first.c_str(),
+						l_oDocument[it->first.c_str()].GetInt());
 
 				assert(l_oDocument[it->first.c_str()].IsInt());
-				it->second = ceil ((l_oDocument[it->first.c_str()].GetInt()
-						* (m_iNumberOfUsers - 1) + it->second)
-						/ m_iNumberOfUsers);
+				CCLOG("avant arrondi %f",
+						(l_oDocument[it->first.c_str()].GetInt()
+								* (m_iNumberOfUsers - 1) + it->second)
+								/ m_iNumberOfUsers);
 
-				CCLOG("%s after merge : %d",it->first.c_str(),it->second);
+				it->second = ceil(
+						(l_oDocument[it->first.c_str()].GetInt()
+								* (m_iNumberOfUsers - 1) + it->second)
+								/ m_iNumberOfUsers);
+
+				CCLOG("%s after merge : %d", it->first.c_str(), it->second);
 
 			}
 		}
@@ -435,7 +441,6 @@ void LmStatistics::mergeTimeWithGameStats()
 				itGameRecordedScene = m_aGameStatsVector.at(i)->SceneMap.find(
 						itSceneStats->first);
 
-
 				if (itGameRecordedScene
 						!= m_aGameStatsVector.at(i)->SceneMap.end())
 				{
@@ -445,14 +450,14 @@ void LmStatistics::mergeTimeWithGameStats()
 					//find smthg itGameRecordedScene idscene = itSceneStats idscene
 
 					//merge value
-					itSceneStats->second->TimeGame =
-							ceil ((itGameRecordedScene->second->TimeGame
+					itSceneStats->second->TimeGame = ceil(
+							(itGameRecordedScene->second->TimeGame
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeGame)
 									/ m_iNumberOfUsers);
 
-					itSceneStats->second->TimeInteraction =
-							ceil ((itGameRecordedScene->second->TimeInteraction
+					itSceneStats->second->TimeInteraction = ceil(
+							(itGameRecordedScene->second->TimeInteraction
 									* (m_iNumberOfUsers - 1)
 									+ itSceneStats->second->TimeInteraction)
 									/ m_iNumberOfUsers);
