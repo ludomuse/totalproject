@@ -164,6 +164,7 @@ private:
 	void inputDisabled(bool);
 
 	//callback method for the layer splash
+	bool safeTouchBegan(cocos2d::Touch*, cocos2d::Event*);
 	bool onTouchBeganSplashScreen(cocos2d::Touch*, cocos2d::Event*);
 
 	//to add a star sprite to a label true = red; false = green

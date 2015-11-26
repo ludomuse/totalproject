@@ -76,6 +76,8 @@ private:
 	//to know if we touched the sending area element
 	bool m_bSendingAreaElementTouched;
 
+	cocos2d::Vec2 m_oSendingAreaPosition;
+
 	//square diemnsion
 	float m_fSquareDimension;
 

@@ -246,13 +246,20 @@ bool LmGameManager::initSplashScreen()
 	//init its listener
 	m_pListener = EventListenerTouchOneByOne::create();
 	m_pListener->onTouchBegan = CC_CALLBACK_2(
-			LmGameManager::onTouchBeganSplashScreen, this);
+			//LmGameManager::onTouchBeganSplashScreen, this);
+			LmGameManager::safeTouchBegan, this);
 	m_pListener->setSwallowTouches(true);
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
 			m_pListener, m_pSplashSreenLayer);
 
 	return true;
+}
+
+bool LmGameManager::safeTouchBegan(Touch* touch, Event* event)
+{
+	CCLOG("safeTouchBegan");
+	ON_CC_THREAD(LmGameManager::onTouchBeganSplashScreen, this, touch, event);
 }
 
 bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
