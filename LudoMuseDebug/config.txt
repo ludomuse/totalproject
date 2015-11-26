@@ -1,9 +1,9 @@
 --packageName--
 com.IHMTEK.LudoMuse
 --apkPath--
-D:/Documents/LudoMuseUpdated/LudoMuse/proj.android/bin/LudoMuse-debug.apk
+../proj.android/bin/LudoMuse-debug.apk
 --projectPath--
-D:/Documents/LudoMuseUpdated/LudoMuse/
+../
 --tags--
 debug
 LUDOSERVER
