@@ -257,7 +257,7 @@ bool LmGameManager::initSplashScreen()
 
 bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 {
-
+	CCLOG("Before onTouchBeganSplashScreen");
 	//remove layer
 	m_pGameManagerScene->removeChild(m_pSplashSreenLayer);
 	//remove listener
@@ -271,6 +271,7 @@ bool LmGameManager::onTouchBeganSplashScreen(Touch* touch, Event* event)
 		return false;
 	}
 
+	CCLOG("After onTouchBeganSplashScreen");
 	return true;
 }
 

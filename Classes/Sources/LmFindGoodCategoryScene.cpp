@@ -137,12 +137,21 @@ bool LmFindGoodCategoryScene::initGame()
 	//init Sending Area
 	m_pSendingArea = makeGameComponent();
 	m_pSendingArea->initSpriteComponent(m_sFilenameSpriteSendingArea);
-	m_pSendingArea->setPosition(
-			Vec2(
-					l_oVisibleSize.width
-							- m_pSendingArea->getContentSize().width * 0.5f
-							+ l_oOrigin.x, l_oVisibleSize.height * 0.5));
-	m_pSendingArea->addTo(m_pLayerGame);
+
+        Vec2 l_oSendingAreaPosition = (m_pUser->isBParent()) ? Vec2(l_oVisibleSize.width
+                                                      - m_pSendingArea->getContentSize().width * 0.5f
+                                                      + l_oOrigin.x
+                                                      ,
+                                                      l_oVisibleSize.height * 0.5)
+
+                                      : Vec2(m_pSendingArea->getContentSize().width * 0.5f
+                                             + l_oOrigin.x
+                                             ,
+                                             l_oVisibleSize.height * 0.5);
+        
+	m_pSendingArea->setPosition(l_oSendingAreaPosition);
+
+        m_pSendingArea->addTo(m_pLayerGame);
 
 	//init buffer sprite
 	m_pBufferSprite = Sprite::create();
