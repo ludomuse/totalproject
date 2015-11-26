@@ -37,3 +37,6 @@ proj.android/jni/hellocpp/
 LudoMuseDebug/config.txt
 
 /Debug/
+
+*~
+linux-build
